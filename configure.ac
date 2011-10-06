@@ -11,10 +11,10 @@ AM_CONFIG_HEADER([config.h])
 # this implies checking for [dune-common]
 DUNE_CHECK_ALL
 
-# implicitly set the Dune-flags everywhere
-AC_SUBST(AM_CPPFLAGS, $DUNE_CPPFLAGS)
-AC_SUBST(AM_LDFLAGS, $DUNE_LDFLAGS)
-LIBS="$DUNE_LIBS"
+# preset variable to path such that #include <dune/...> works
+AC_SUBST(AM_CPPFLAGS, '$(DUNE_CPPFLAGS) -I$(top_srcdir)')
+AC_SUBST(AM_LDFLAGS, '$(DUNE_LDFLAGS)')
+AC_SUBST([LDADD], '$(DUNE_LIBS)')
 
 AC_CONFIG_FILES([
   Makefile
@@ -23,6 +23,7 @@ AC_CONFIG_FILES([
   doc/doxygen/Doxyfile
   dune/Makefile
   dune/geometry/Makefile
+  dune/geometry/test/Makefile
   dune/geometry/genericgeometry/Makefile
   dune/geometry/genericgeometry/test/Makefile
   dune/geometry/quadraturerules/Makefile

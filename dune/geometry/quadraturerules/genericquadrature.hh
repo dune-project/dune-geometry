@@ -7,9 +7,8 @@
 
 #include <dune/common/fvector.hh>
 
-#include <dune/geometry/type.hh>
-
-#include <dune/grid/common/topologyfactory.hh>
+#include "../type.hh"
+#include "../topologyfactory.hh"
 #include "../quadraturerules.hh"
 #include "../genericgeometry/conversion.hh"
 #include "../genericgeometry/topologytypes.hh"

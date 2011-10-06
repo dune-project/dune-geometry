@@ -1,4 +1,4 @@
-genericgeometrydir = $(includedir)/dune/grid/genericgeometry
+genericgeometrydir = $(includedir)/dune/geometry/genericgeometry
 genericgeometry_HEADERS = cachedmapping.hh  codimtable.hh  conversion.hh \
                           cornermapping.hh geometry.hh  \
                           geometrytraits.hh  hybridmapping.hh \

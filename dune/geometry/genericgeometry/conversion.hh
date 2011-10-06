@@ -677,7 +677,7 @@ namespace Dune
     //! convert a GeometryType into a topologyId
     /**
      * \code
-     *#include <dune/grid/genericgeometry/conversion.hh>
+     *#include <dune/geometry/genericgeometry/conversion.hh>
      * \endcode
      *
      * \deprecated please use GeometryType::id()
