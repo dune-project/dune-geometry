@@ -1,7 +1,7 @@
 /**
-@addtogroup GridDuneREToGenericRE 
+@addtogroup GeometryDuneREToGenericRE 
 
-@section GridDuneTrans1 New Header File and Class Name
+@section GeometryDuneTrans1 New Header File and Class Name
 To obtain the new reference element include the file
 and use the new reference element class
 @code
@@ -19,7 +19,7 @@ The interface of the GenericReferenceElements and
 of the GenericReferenceElement is the same
 as before.
 
-@section GridDuneTrans2 Methods for the new SubEntity Numbering
+@section GeometryDuneTrans2 Methods for the new SubEntity Numbering
 
 In order to facilitate the transition we introduced new method names for
 methods that rely on a numbering.  Methods in the second column of the
@@ -50,14 +50,14 @@ and will be removed for %Dune 1.4.
 </tr>
 </table>
 
-@section GridDuneTrans25 Permanently Switching off old Numbering
+@section GeometryDuneTrans25 Permanently Switching off old Numbering
 
 If you don't want to rely on deprecation warnings and make sure that your code really
 doesn't use any old numbering stuff, then you can configure %Dune with <tt>--disable-old-numbering</tt>.
 If this is set, all methods providing old numbers are removed from the header files.
 
 
-@section GridDuneTrans3 Numbering Conversion Utility
+@section GeometryDuneTrans3 Numbering Conversion Utility
 To map a new subentity number to an old number or vice versa
 use the methods provided by the static methods
 of the class GenericGeometry::MapNumberingProvider.
@@ -84,7 +84,7 @@ given the old one (or vice versa) use
                 generic2dune< codimension >( tid, newNumber );
 @endcode
 
-@section GridDuneTrans4 Change in Numbering
+@section GeometryDuneTrans4 Change in Numbering
 <table>
 <tr>
 <th>Geometry type</th><th>Codim 1</th><th>Codim 2</th><th>Codim 3</th>
@@ -107,7 +107,7 @@ given the old one (or vice versa) use
 </tr>
 </table>
 
-@subsection GridDuneTrans4a Prism 
+@subsection GeometryDuneTrans4a Prism 
 <table>
 <tr>
 <th></th><th>Dune to generic</th><th>generic to Dune</th>
@@ -117,18 +117,18 @@ given the old one (or vice versa) use
 <th>Codim 2</th><td>(3,5,4,0,1,2,6,8,7)</td><td>(3,4,5,0,2,1,6,8,7)</td>
 </tr>
 </table>
-@subsubsection GridDuneTrans4aa Generic reference element
+@subsubsection GeometryDuneTrans4aa Generic reference element
    <table class="imagelist"><tr>
        <td>\image html gg_prism.png "Face Numbering"</td>
        <td>\image html gg_prism_edges.png "Edge Numbering"</td>
    </tr></table>
-@subsubsection GridDuneTrans4ab Dune reference element
+@subsubsection GeometryDuneTrans4ab Dune reference element
    <table class="imagelist"><tr>
        <td>\image html prism.png "Face Numbering"</td>
        <td>\image html prism_edges.png "Edge Numbering"</td>
    </tr></table>
 
-@subsection GridDuneTrans4b Pyramid
+@subsection GeometryDuneTrans4b Pyramid
 <table>
 <tr>
 <th></th><th>Dune to generic</th><th>generic to Dune</th>
@@ -139,12 +139,12 @@ given the old one (or vice versa) use
 </tr>
 </table>
 
-@subsubsection GridDuneTrans4ba Generic reference element
+@subsubsection GeometryDuneTrans4ba Generic reference element
    <table class="imagelist"><tr>
        <td>\image html gg_pyramid.png "Face Numbering"</td>
        <td>\image html gg_pyramid_edges.png "Edge Numbering"</td>
    </tr></table>
-@subsubsection GridDuneTrans4bb Dune reference element
+@subsubsection GeometryDuneTrans4bb Dune reference element
    <table class="imagelist"><tr>
        <td>\image html pyramid.png "Face Numbering"</td>
        <td>\image html pyramid_edges.png "Edge Numbering"</td>

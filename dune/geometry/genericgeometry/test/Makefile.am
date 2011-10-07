@@ -1,14 +1,12 @@
 GEOMETRYTYPE = cube
 DIMENSION = 3
 
-check_PROGRAMS = testbasicgeometry testsubtopologies testmatrix
-TESTS = testbasicgeometry testsubtopologies
+check_PROGRAMS = testsubtopologies testmatrix
+TESTS = testsubtopologies
 
 AM_CPPFLAGS = @AM_CPPFLAGS@ $(ALL_PKG_CPPFLAGS) $(DUNEMPICPPFLAGS)
 AM_LDFLAGS = @AM_LDFLAGS@ $(ALL_PKG_LDFLAGS) $(DUNEMPILIBS)
 LDADD = $(ALL_PKG_LIBS) @LDADD@ $(DUNEMPILDFLAGS)
-
-testbasicgeometry_SOURCES = testbasicgeometry.cc
 
 testsubtopologies_SOURCES = testsubtopologies.cc
 testsubtopologies_CPPFLAGS = $(AM_CPPFLAGS)			\

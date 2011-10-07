@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GAUSSQUADRATURE_HH
-#define DUNE_GAUSSQUADRATURE_HH
+#ifndef DUNE_GEOMETRY_QUADRATURERULES_GAUSSQUADRATURE_HH
+#define DUNE_GEOMETRY_QUADRATURERULES_GAUSSQUADRATURE_HH
 
 #if HAVE_ALGLIB
 #include <alglib/gqgengauss.h>
@@ -24,7 +24,7 @@ namespace Dune
      *
      * if ALGLib is found higher precision Gauss points can be used by
      * prescribing the amp::ampf field type; otherwise
-     * the dune-grid quadrature is used.
+     * the dune-geometry quadrature is used.
      **/
     template< class F>
     class GaussPoints
@@ -117,4 +117,4 @@ namespace Dune
 
 }
 
-#endif // #ifndef DUNE_GAUSSQUADRATURE_HH
+#endif // #ifndef DUNE_GEOMETRY_QUADRATURERULES_GAUSSQUADRATURE_HH

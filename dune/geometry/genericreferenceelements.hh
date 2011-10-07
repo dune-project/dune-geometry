@@ -1,8 +1,8 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
 
-#ifndef DUNE_GENERICREFERENCEELEMENTS_HH
-#define DUNE_GENERICREFERENCEELEMENTS_HH
+#ifndef DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH
+#define DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH
 
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
@@ -24,7 +24,7 @@ namespace Dune
   // -----------------------
 
   /** \class GenericReferenceElement
-   *  \ingroup GridGenericReferenceElements
+   *  \ingroup GeometryGenericReferenceElements
    *  \brief This class provides access to geometric and topological
    *  properties of a reference element. This includes its type,
    *  the number of subentities, the volume, and a method for checking
@@ -633,7 +633,7 @@ namespace Dune
    *  The method general can be used to obtain the reference element
    *  for a given geometry type.
    *
-   *  \ingroup GridGenericReferenceElements
+   *  \ingroup GeometryGenericReferenceElements
    */
   template< class ctype, int dim >
   struct GenericReferenceElements
@@ -660,4 +660,4 @@ namespace Dune
 
 }
 
-#endif // #ifndef DUNE_GENERICREFERENCEELEMENTS_HH
+#endif // #ifndef DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH

@@ -1,8 +1,8 @@
 /**
-\page GridGenericGeometry Generic Geometries
-@ingroup GridGenericReferenceElements
+\page GeometryGenericGeometry Generic Geometries
+@ingroup GeometryGenericReferenceElements
 
-\section GridGenericGeometryIntroduction Introduction
+\section GeometryGenericGeometryIntroduction Introduction
 
 In the following we will give a definition of reference
 elements and subelement numbering. This is used to
@@ -127,7 +127,7 @@ satisfies \f$ Q Q^T = I \f$:
 .
 The next sections describe the details of the construction.
 
-\section GridGenericGeometryTopology Reference Topology
+\section GeometryGenericGeometryTopology Reference Topology
 
 We define the set \f$\mathcal{T}\f$ of reference topologies by the following 
 rules:
@@ -191,7 +191,7 @@ To see this, consider the topologies
 For these topologies we have \f$s_d( T_1 ) = s_d( T_2 ) = 10\f$.
 
 
-\section GridGenericGeometrgElement Reference Domains
+\section GeometryGenericGeometrgElement Reference Domains
 
 For each reference topology \f$T\f$ we assosiate the set of corners
 \f$\mathcal{C}(T):=(p_i(T))_{1=1}^{s_d(T)}\subset\mathbf{R}^d(T)\f$ 
@@ -214,7 +214,7 @@ it follows that
              \bar{x} \in [0,1] \rbrace\f$.
 .
 
-\section GridGenericGeometryMappings Reference Elements and Mappings
+\section GeometryGenericGeometryMappings Reference Elements and Mappings
 
 A pair \f$E=(T,\Phi)\f$ of a topology \f$T\f$ and a map 
 \f$\Phi:\mathrm{domain}( T ) \to \mathbf{R}^w\f$ with \f$w\geq d(T)\f$
@@ -241,7 +241,7 @@ recurive definition of the reference topologies through:
   with \f$x\in \mathrm{domain}( T )\f$ and \f$\bar{x}\in[0,1]\f$.
 .
 
-\section GridGenericGeometryNumbering Numbering of Subelements
+\section GeometryGenericGeometryNumbering Numbering of Subelements
 
 Given a reference topology \f$T\f$, a codimension 
 \f$c\in\{0,\dots,d(T)\}\f$ and

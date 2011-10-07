@@ -1,8 +1,8 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
 
-#ifndef DUNE_QUADRATURERULES_HH
-#define DUNE_QUADRATURERULES_HH
+#ifndef DUNE_GEOMETRY_QUADRATURERULES_HH
+#define DUNE_GEOMETRY_QUADRATURERULES_HH
 
 #include <iostream>
 #include <limits>
@@ -1059,4 +1059,4 @@ namespace Dune {
 
 } // end namespace
 
-#endif // DUNE_QUADRATURERULES_HH
+#endif // DUNE_GEOMETRY_QUADRATURERULES_HH

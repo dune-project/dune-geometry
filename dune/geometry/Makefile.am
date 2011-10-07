@@ -9,8 +9,8 @@ libgridcommon_la_LIBADD = quadraturerules/libquadraturerules.la \
   $(DUNE_LIBS)
 
 geometryincludedir = $(includedir)/dune/geometry
-geometryinclude_HEADERS = genericreferenceelements.hh geometry.hh \
-	quadraturerules.hh topologyfactory.hh type.hh
+geometryinclude_HEADERS = genericreferenceelements.hh  mockgeometry.hh \
+	quadraturerules.hh  topologyfactory.hh  type.hh
 
 SUBDIRS = quadraturerules genericgeometry
 
