@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GENERICGEOMETRY_MAPPING_HH
-#define DUNE_GENERICGEOMETRY_MAPPING_HH
+#ifndef DUNE_GEOMETRY_GENERICGEOMETRY_MAPPING_HH
+#define DUNE_GEOMETRY_GENERICGEOMETRY_MAPPING_HH
 
 #include "topologytypes.hh"
 #include "referenceelements.hh"
@@ -138,4 +138,4 @@ namespace Dune
 
 }
 
-#endif // #ifndef DUNE_GENERICGEOMETRY_MAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_MAPPING_HH

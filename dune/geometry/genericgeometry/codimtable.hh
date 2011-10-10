@@ -1,8 +1,8 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
 
-#ifndef DUNE_GENERICGEOMETRY_CODIMTABLE_HH
-#define DUNE_GENERICGEOMETRY_CODIMTABLE_HH
+#ifndef DUNE_GEOMETRY_GENERICGEOMETRY_CODIMTABLE_HH
+#define DUNE_GEOMETRY_GENERICGEOMETRY_CODIMTABLE_HH
 
 #include <dune/common/typetraits.hh>
 #include <dune/common/tupleutility.hh>
@@ -53,4 +53,4 @@ namespace Dune
 
 }
 
-#endif
+#endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_CODIMTABLE_HH

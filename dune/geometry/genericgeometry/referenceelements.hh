@@ -1,8 +1,8 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
 
-#ifndef DUNE_GENERICGEOMETRY_REFERENCEELEMENTS_HH
-#define DUNE_GENERICGEOMETRY_REFERENCEELEMENTS_HH
+#ifndef DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEELEMENTS_HH
+#define DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEELEMENTS_HH
 
 #include <dune/common/array.hh>
 #include <dune/common/fvector.hh>
@@ -164,4 +164,4 @@ namespace Dune
 
 }
 
-#endif
+#endif // DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEELEMENTS_HH

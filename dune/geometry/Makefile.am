@@ -1,16 +1,16 @@
-noinst_LTLIBRARIES = libgridcommon.la
+noinst_LTLIBRARIES = libgeometry.la
 # construct only from sub-libraries
-libgridcommon_la_SOURCES =
+libgeometry_la_SOURCES =
 # This forces automake to use the C++ linker
 # (see the automake manual, section "Libtool Convenience Libraries")
-nodist_EXTRA_libgridcommon_la_SOURCES = dummy.cc
+nodist_EXTRA_libgeometry_la_SOURCES = dummy.cc
 sourcescheck_DUMMY = dummy.cc
-libgridcommon_la_LIBADD = quadraturerules/libquadraturerules.la \
+libgeometry_la_LIBADD = quadraturerules/libquadraturerules.la \
   $(DUNE_LIBS)
 
 geometryincludedir = $(includedir)/dune/geometry
 geometryinclude_HEADERS = genericreferenceelements.hh  mockgeometry.hh \
-	quadraturerules.hh  topologyfactory.hh  type.hh
+	quadraturerules.hh  topologyfactory.hh  type.hh  vertexorder.hh
 
 SUBDIRS = quadraturerules genericgeometry
 
