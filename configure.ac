@@ -14,10 +14,10 @@ DUNE_CHECK_ALL
 # preset variable to path such that #include <dune/...> works
 AC_SUBST(AM_CPPFLAGS, '$(DUNE_CPPFLAGS) -I$(top_srcdir)')
 AC_SUBST(AM_LDFLAGS, '$(DUNE_LDFLAGS)')
-AC_SUBST([LDADD], '$(DUNE_LIBS)')
-
+AC_SUBST([LDADD], '$(top_builddir)/libdunegeometry.la $(DUNE_LIBS)')
 AC_CONFIG_FILES([
   Makefile
+  lib/Makefile
   doc/Makefile
   doc/doxygen/Makefile
   doc/doxygen/Doxyfile

@@ -7,4 +7,4 @@ Module: dune-geometry
 Version: 2.2-svn
 Maintainer: gruenich@iws.uni-stuttgart.de
 #depending on
-Depends: dune-common
+Depends: dune-common (>= 2.2)
