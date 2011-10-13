@@ -14,7 +14,8 @@ AC_DEFUN([DUNE_GEOMETRY_CHECKS])
 AC_DEFUN([DUNE_GEOMETRY_CHECK_MODULE],
 [
   AC_MSG_NOTICE([Searching for dune-geometry...])
-  DUNE_CHECK_MODULES([dune-geometry], [geometry/type.hh], [dnl
-  return true])
+  DUNE_CHECK_MODULES([dune-geometry], [geometry/quadraturerules.hh],
+  [[Dune::GeometryType gt;
+  gt.makeQuadrilateral();
+  std::cout << Dune::QuadratureRules<double, 2>::rule(gt, 2).size()]])
 ])
-# return Dune::SimplexQuadraturePoints<2>::highest_order == 12])
