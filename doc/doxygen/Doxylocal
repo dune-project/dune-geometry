@@ -6,7 +6,13 @@
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                 += @top_srcdir@/dune/
+INPUT                 += @srcdir@/mainpage \
+                         @srcdir@/modules \
+                         @top_srcdir@/dune/geometry \
+                         @top_srcdir@/dune/geometry/genericgeometry \
+                         @top_srcdir@/dune/geometry/genericgeometry/doc/genericgeometrypage \
+                         @top_srcdir@/dune/geometry/genericgeometry/doc/genericgeometrytransitionpage
+
 # see e.g. dune-grid for the examples of mainpage and modules
 # INPUT                 += @srcdir@/mainpage #                          @srcdir@/modules
 
@@ -14,7 +20,7 @@ INPUT                 += @top_srcdir@/dune/
 # excluded from the INPUT source files. This way you can easily exclude a
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-# EXCLUDE               += @top_srcdir@/dune/geometry/test
+EXCLUDE               += @top_srcdir@/dune/geometry/quadraturerules
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or
 # directories that contain example code fragments that are included (see
@@ -26,5 +32,5 @@ INPUT                 += @top_srcdir@/dune/
 # directories that contain image that are included in the documentation (see
 # the \image command).
 
-# IMAGE_PATH            += @top_srcdir@/dune/geometry/pics
-
+IMAGE_PATH            += @top_srcdir@/doc/appl/refelements \
+                         @top_srcdir@/dune/geometry/genericgeometry/doc

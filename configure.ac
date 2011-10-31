@@ -20,6 +20,8 @@ AC_CONFIG_FILES([
   Makefile
   lib/Makefile
   doc/Makefile
+  doc/appl/Makefile
+  doc/appl/refelements/Makefile
   doc/doxygen/Makefile
   doc/doxygen/Doxyfile
   dune/Makefile
