@@ -9,7 +9,6 @@
 INPUT                 += @srcdir@/mainpage \
                          @srcdir@/modules \
                          @top_srcdir@/dune/geometry \
-                         @top_srcdir@/dune/geometry/genericgeometry \
                          @top_srcdir@/dune/geometry/genericgeometry/doc/genericgeometrypage \
                          @top_srcdir@/dune/geometry/genericgeometry/doc/genericgeometrytransitionpage
 
