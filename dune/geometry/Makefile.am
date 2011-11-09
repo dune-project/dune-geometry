@@ -5,7 +5,8 @@ geometryinclude_HEADERS =			\
 	mockgeometry.hh				\
 	quadraturerules.hh			\
 	topologyfactory.hh			\
-	type.hh
+	type.hh					\
+	typeindex.hh
 
 SUBDIRS = quadraturerules genericgeometry
 
