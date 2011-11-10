@@ -9,14 +9,17 @@
 
    Only @addtogroup is used in the code documentation.
 */
-/**
-@defgroup Geometry dune-geometry
-@{
-  @defgroup GeometryGenericReferenceElements Generic Reference Elements
-  @{
-    @defgroup GeometryDuneREToGenericRE Transition to Generic Reference Elements
-  @}
-  @defgroup GenericGeometry Generic Geometry
-  @defgroup Quadrature Quadrature
-@}
-*/
+/** @defgroup Geometry dune-geometry
+ */
+/**   @defgroup GeometryGenericReferenceElements Generic Reference Elements
+ *    @ingroup Geometry
+ */
+/**     @defgroup GeometryDuneREToGenericRE Transition to Generic Reference Elements
+ *      @ingroup GeometryGenericReferenceElements
+ */
+/**   @defgroup GenericGeometry Generic Geometry
+ *    @ingroup Geometry
+ */
+/**   @defgroup Quadrature Quadrature
+ *    @ingroup Geometry
+ */
