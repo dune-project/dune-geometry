@@ -8,7 +8,7 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
 
-#include "referencedomain.hh"
+#include <dune/geometry/genericgeometry/referencedomain.hh>
 
 namespace Dune
 {

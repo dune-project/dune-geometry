@@ -13,8 +13,8 @@
 
 #include <dune/common/iteratorfacades.hh>
 
-#include "type.hh"
-#include "genericreferenceelements.hh"
+#include <dune/geometry/type.hh>
+#include <dune/geometry/genericreferenceelements.hh>
 
 namespace Dune {
 

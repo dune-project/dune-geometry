@@ -10,8 +10,8 @@
 #include <dune/common/static_assert.hh>
 #include <dune/common/typetraits.hh>
 
-#include "topologytypes.hh"
-#include "codimtable.hh"
+#include <dune/geometry/genericgeometry/topologytypes.hh>
+#include <dune/geometry/genericgeometry/codimtable.hh>
 
 namespace Dune
 {

@@ -3,10 +3,10 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_MAPPING_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_MAPPING_HH
 
-#include "topologytypes.hh"
-#include "referenceelements.hh"
-#include "matrixhelper.hh"
-#include "geometrytraits.hh"
+#include <dune/geometry/genericgeometry/topologytypes.hh>
+#include <dune/geometry/genericgeometry/referenceelements.hh>
+#include <dune/geometry/genericgeometry/matrixhelper.hh>
+#include <dune/geometry/genericgeometry/geometrytraits.hh>
 
 namespace Dune
 {

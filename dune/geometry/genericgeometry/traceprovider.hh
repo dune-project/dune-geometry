@@ -5,7 +5,7 @@
 
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
-#include "subtopologies.hh"
+#include <dune/geometry/genericgeometry/subtopologies.hh>
 
 namespace Dune
 {

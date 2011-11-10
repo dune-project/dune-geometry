@@ -7,11 +7,11 @@
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
 
-#include "genericgeometry/subtopologies.hh"
-#include "genericgeometry/referencedomain.hh"
-#include "genericgeometry/conversion.hh"
-#include "genericgeometry/hybridmapping.hh"
-#include "genericgeometry/mappingprovider.hh"
+#include <dune/geometry/genericgeometry/subtopologies.hh>
+#include <dune/geometry/genericgeometry/referencedomain.hh>
+#include <dune/geometry/genericgeometry/conversion.hh>
+#include <dune/geometry/genericgeometry/hybridmapping.hh>
+#include <dune/geometry/genericgeometry/mappingprovider.hh>
 
 namespace Dune
 {

@@ -11,7 +11,7 @@
 
 #include <dune/common/static_assert.hh>
 
-#include "genericquadrature.hh"
+#include <dune/geometry/quadraturerules/genericquadrature.hh>
 
 namespace Dune
 {

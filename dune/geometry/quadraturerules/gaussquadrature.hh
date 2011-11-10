@@ -7,8 +7,8 @@
 #include <alglib/gqgengauss.h>
 #endif
 
-#include "../quadraturerules.hh"
-#include "genericquadrature.hh"
+#include <dune/geometry/quadraturerules.hh>
+#include <dune/geometry/quadraturerules/genericquadrature.hh>
 
 namespace Dune
 {

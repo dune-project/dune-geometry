@@ -5,8 +5,8 @@
 
 #include <dune/geometry/type.hh>
 
-#include "matrixhelper.hh"
-#include "cornermapping.hh"
+#include <dune/geometry/genericgeometry/matrixhelper.hh>
+#include <dune/geometry/genericgeometry/cornermapping.hh>
 
 namespace Dune
 {

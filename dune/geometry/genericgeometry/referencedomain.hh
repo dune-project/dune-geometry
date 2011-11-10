@@ -7,8 +7,8 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
 
-#include "topologytypes.hh"
-#include "subtopologies.hh"
+#include <dune/geometry/genericgeometry/topologytypes.hh>
+#include <dune/geometry/genericgeometry/subtopologies.hh>
 
 namespace Dune
 {

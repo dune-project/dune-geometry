@@ -7,13 +7,11 @@
 
 #include <dune/common/fvector.hh>
 
-#include "../type.hh"
-#include "../topologyfactory.hh"
-#include "../quadraturerules.hh"
-#include "../genericgeometry/conversion.hh"
-#include "../genericgeometry/topologytypes.hh"
-
-//#include <dune/localfunctions/utility/field.hh>
+#include <dune/geometry/type.hh>
+#include <dune/geometry/topologyfactory.hh>
+#include <dune/geometry/quadraturerules.hh>
+#include <dune/geometry/genericgeometry/conversion.hh>
+#include <dune/geometry/genericgeometry/topologytypes.hh>
 
 namespace Dune
 {

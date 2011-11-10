@@ -3,11 +3,11 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_CACHED_MAPPING_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_CACHED_MAPPING_HH
 
-#include "topologytypes.hh"
-#include "referenceelements.hh"
-#include "matrixhelper.hh"
-#include "mapping.hh"
-#include "traceprovider.hh"
+#include <dune/geometry/genericgeometry/topologytypes.hh>
+#include <dune/geometry/genericgeometry/referenceelements.hh>
+#include <dune/geometry/genericgeometry/matrixhelper.hh>
+#include <dune/geometry/genericgeometry/mapping.hh>
+#include <dune/geometry/genericgeometry/traceprovider.hh>
 
 namespace Dune
 {

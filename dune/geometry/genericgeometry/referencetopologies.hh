@@ -3,8 +3,8 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCETOPOLOGIES_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCETOPOLOGIES_HH
 
-#include "conversion.hh"
-#include "subtopologies.hh"
+#include <dune/geometry/genericgeometry/conversion.hh>
+#include <dune/geometry/genericgeometry/subtopologies.hh>
 
 namespace Dune
 {

@@ -13,7 +13,7 @@
 #include <dune/common/exceptions.hh>
 #include <dune/common/stdstreams.hh>
 
-#include "type.hh"
+#include <dune/geometry/type.hh>
 
 /**
    \file

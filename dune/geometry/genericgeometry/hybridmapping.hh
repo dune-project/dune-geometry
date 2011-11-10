@@ -6,8 +6,8 @@
 
 #include <dune/common/typetraits.hh>
 
-#include "geometrytraits.hh"
-#include "cachedmapping.hh"
+#include <dune/geometry/genericgeometry/geometrytraits.hh>
+#include <dune/geometry/genericgeometry/cachedmapping.hh>
 
 namespace Dune
 {

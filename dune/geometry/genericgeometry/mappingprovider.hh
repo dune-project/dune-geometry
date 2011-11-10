@@ -5,10 +5,10 @@
 
 #include <dune/common/typetraits.hh>
 
-#include "maximum.hh"
-#include "conversion.hh"
-#include "cachedmapping.hh"
-#include "hybridmapping.hh"
+#include <dune/geometry/genericgeometry/maximum.hh>
+#include <dune/geometry/genericgeometry/conversion.hh>
+#include <dune/geometry/genericgeometry/cachedmapping.hh>
+#include <dune/geometry/genericgeometry/hybridmapping.hh>
 
 namespace Dune
 {
