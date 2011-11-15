@@ -1,7 +1,7 @@
 geometryincludedir = $(includedir)/dune/geometry
 geometryinclude_HEADERS =			\
 	generalvertexorder.hh			\
-	genericreferenceelements.hh		\
+	referenceelements.hh		\
 	mockgeometry.hh				\
 	quadraturerules.hh			\
 	topologyfactory.hh			\

@@ -6,7 +6,7 @@
 #include <config.h>
 
 #include "../quadraturerules.hh"
-#include "../genericreferenceelements.hh"
+#include "../referenceelements.hh"
 
 bool success = true;
 
