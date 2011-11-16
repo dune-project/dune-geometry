@@ -4,6 +4,10 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEELEMENTS_HH
 
+/** \file
+ *  \brief Implements some reference element functionality needed by the generic geometries
+ *  \warning This is an internal header.  Do not include it from outside of dune-geometry.
+ */
 #include <dune/common/array.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
