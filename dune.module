@@ -1,10 +1,4 @@
-################################
-# Dune module information file #
-################################
-
-#Name of the module
 Module: dune-geometry
 Version: 2.2-svn
-Maintainer: gruenich@iws.uni-stuttgart.de
-#depending on
+Maintainer: dune@dune-project.org
 Depends: dune-common (>= 2.2)
