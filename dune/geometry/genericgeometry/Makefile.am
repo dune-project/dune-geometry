@@ -4,7 +4,7 @@ genericgeometry_HEADERS = cachedmapping.hh  codimtable.hh  conversion.hh \
                           geometry.hh  hybridmapping.hh \
                           mapping.hh  mappingprovider.hh  matrixhelper.hh \
                           maximum.hh  referencedomain.hh  referenceelements.hh \
-                          referencetopologies.hh  subtopologies.hh \
+                          subtopologies.hh \
                           topologytypes.hh  traceprovider.hh
 
 SUBDIRS = test
