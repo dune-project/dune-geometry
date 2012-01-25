@@ -48,7 +48,6 @@ int main(int argc, char** argv)
     std::cout << "invA = [ " << invA[ 0 ] << ", " << invA[ 1 ] << " ]" << std::endl;
   }
 
-#if 0
   // Lets do the same crap for a non-square matrix.
   FieldMatrix< Field, 2, 3 > B;
   B[0][0] =  0.099999999999999867;
@@ -63,6 +62,7 @@ int main(int argc, char** argv)
   Field sqrtDetBBT = MatrixHelper::sqrtDetAAT< 2, 3 >( B );
   std::cout << "sqrtDetBBT = " << sqrtDetBBT << std::endl;
 
+#if 0
   FieldMatrix< Field, 3, 2 > invB;
   Field detB = MatrixHelper::rightInvA< 2, 3 >( B, invB );
   std::cout << "detB = " << detB << std::endl;
