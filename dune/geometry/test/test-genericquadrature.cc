@@ -95,7 +95,7 @@ void checkQuadrature(const Quadrature &quad)
   }
 
   ctype maxRelativeError = 0;
-  int dir = -1;
+  int DUNE_UNUSED(dir) = -1;
   for( unsigned int d=0; d<dim; d++ )
   {
     ctype exact = analyticalSolution<ctype,dim>(t,p,d);

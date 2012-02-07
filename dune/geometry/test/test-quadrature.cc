@@ -98,7 +98,7 @@ void checkQuadrature(Dune::GeometryType t)
       }
 
       ctype maxRelativeError = 0;
-      int dir = -1;
+      int DUNE_UNUSED(dir) = -1;
       for (int d=0; d<dim; d++)
       {
         ctype exact = analyticSolution<ctype,dim>(t,p,d);
