@@ -1,3 +1,7 @@
 Makefile
 Makefile.in
 .deps
+
+test-genericquadrature
+test-quadrature
+test-referenceelements
