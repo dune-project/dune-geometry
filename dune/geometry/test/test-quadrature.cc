@@ -98,17 +98,13 @@ void checkQuadrature(Dune::GeometryType t)
       }
 
       ctype maxRelativeError = 0;
-      int DUNE_UNUSED(dir) = -1;
       for (int d=0; d<dim; d++)
       {
         ctype exact = analyticSolution<ctype,dim>(t,p,d);
         ctype relativeError = std::abs(integral[d]-exact) /
                               (std::abs(integral[d])+std::abs(exact));
         if (relativeError > maxRelativeError)
-        {
           maxRelativeError = relativeError;
-          dir = d;
-        }
       }
       ctype epsilon = std::pow(2.0,double(p))*p*std::numeric_limits<double>::epsilon();
       if (p==0)
