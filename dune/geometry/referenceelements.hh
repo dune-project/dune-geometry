@@ -3,7 +3,6 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 
-#include <dune/common/array.hh>
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
 
@@ -569,32 +568,14 @@ namespace Dune
   {
     static const unsigned int numTopologies = (1u << dim);
 
-    struct MakeableReferenceElement
-      : public GenericReferenceElement< ctype, dim >
-    {};
-
-    typedef array< MakeableReferenceElement, numTopologies > RealContainer;
-
-    template< int topologyId >
-    struct Builder
-    {
-      static void apply ( RealContainer &values )
-      {
-        typedef typename GenericGeometry::Topology< topologyId, dim >::type Topology;
-        values[ topologyId ].template initializeTopology< Topology >();
-      }
-    };
-
   public:
     typedef GenericReferenceElement< ctype, dim > value_type;
-    typedef typename RealContainer::const_iterator const_iterator;
+    typedef const value_type *const_iterator;
 
     GenericReferenceElementContainer ()
     {
       ForLoop< Builder, 0, numTopologies-1 >::apply( values_ );
     }
-
-    ~GenericReferenceElementContainer () {}
 
     const value_type &operator() ( const unsigned int topologyId ) const DUNE_DEPRECATED
     {
@@ -627,8 +608,8 @@ namespace Dune
       return values_[ GenericGeometry::PrismTopology< dim >::type::id ];
     }
 
-    const_iterator begin () const { return values_.begin(); }
-    const_iterator end () const { return values_.end(); }
+    const_iterator begin () const { return values_; }
+    const_iterator end () const { return values_ + numTopologies; }
 
     static const GenericReferenceElementContainer &instance () DUNE_DEPRECATED
     {
@@ -637,7 +618,17 @@ namespace Dune
     }
 
   private:
-    RealContainer values_;
+    template< int topologyId >
+    struct Builder
+    {
+      static void apply ( value_type (&values)[ numTopologies ] )
+      {
+        typedef typename GenericGeometry::Topology< topologyId, dim >::type Topology;
+        values[ topologyId ].template initializeTopology< Topology >();
+      }
+    };
+
+    value_type values_[ numTopologies ];
   };
 
 
