@@ -586,7 +586,7 @@ namespace Dune
     };
 
   public:
-    typedef typename RealContainer::value_type value_type;
+    typedef GenericReferenceElement< ctype, dim > value_type;
     typedef typename RealContainer::const_iterator const_iterator;
 
     GenericReferenceElementContainer ()
