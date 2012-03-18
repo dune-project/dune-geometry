@@ -13,6 +13,8 @@
 
 #include <dune/geometry/quadraturerules/genericquadrature.hh>
 
+#warning ALGLIB support is deprecated, thus this header will be dropped after DUNE 2.2 (cf. FS#931)
+
 namespace Dune
 {
 

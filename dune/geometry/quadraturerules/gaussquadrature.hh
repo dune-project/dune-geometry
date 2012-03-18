@@ -5,6 +5,7 @@
 
 #if HAVE_ALGLIB
 #include <alglib/gqgengauss.h>
+#warning ALGLIB support is deprecated, thus higher precision Gauss points will be dropped after DUNE 2.2 (cf. FS#931)
 #endif
 
 #include <dune/geometry/quadraturerules.hh>
