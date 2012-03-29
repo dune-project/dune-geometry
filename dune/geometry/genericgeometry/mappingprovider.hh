@@ -266,12 +266,12 @@ namespace Dune
 
       static size_t mappingSize ( const unsigned int topologyId )
       {
-        return Factory::mappingsSize( topologyId );
+        return Factory::mappingSize( topologyId );
       }
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_MAPPINGPROVIDER_HH
