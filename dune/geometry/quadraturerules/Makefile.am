@@ -20,6 +20,6 @@ libquadraturerules_la_SOURCES = quadraturerules.cc cube.cc jacobi_1_0.cc jacobi_
 libquadraturerules_la_LIBADD =			\
 	$(DUNE_LIBS)
 
-extra_DIST=jacobian.mw
+extra_DIST=jacobian.mac
 
 include $(top_srcdir)/am/global-rules
