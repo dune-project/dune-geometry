@@ -3,6 +3,7 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_CACHED_MAPPING_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_CACHED_MAPPING_HH
 
+#include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/genericgeometry/referenceelements.hh>
 #include <dune/geometry/genericgeometry/matrixhelper.hh>
@@ -311,11 +312,14 @@ namespace Dune
         preCompute();
       }
 
-      /** \brief obtain topology id of the corresponding reference element */
-      unsigned int topologyId () const
+      /** \brief obtain the name of the reference element */
+      Dune::GeometryType type () const
       {
-        return ReferenceElement::topologyId;
+        return Dune::GeometryType( Topology() );
       }
+
+      /** \brief obtain topology id of the corresponding reference element */
+      unsigned int topologyId () const DUNE_DEPRECATED { return type().id(); }
 
       /** \brief obtain coordinates of the i-th corner */
       GlobalCoordinate corner ( int i ) const

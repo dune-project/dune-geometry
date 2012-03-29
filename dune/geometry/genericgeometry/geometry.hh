@@ -318,7 +318,7 @@ namespace Dune
       /** \brief Default constructor
        */
       BasicGeometry ()
-        : mapping_(nullptr)
+        : mapping_( nullptr )
       {}
 
       /** \brief constructor
@@ -376,38 +376,41 @@ namespace Dune
 
       /** \brief Copy constructor */
       BasicGeometry ( const BasicGeometry &other )
-      {
-        mapping_ = (other.mapping_) ? other.mapping_->clone( mappingStorage_ ) : nullptr;
-      }
+        : mapping_( other.mapping_ ? other.mapping_->clone( mappingStorage_ ) : nullptr )
+      {}
 
       /** \brief Destructor */
       ~BasicGeometry ()
       {
-        if (mapping_)
+        if( mapping_ )
           mapping_->~Mapping();
       }
 
       /** \brief Assignment from other BasicGeometry */
-      BasicGeometry &operator= ( const BasicGeometry &other )
+      const BasicGeometry &operator= ( const BasicGeometry &other )
       {
-        if (mapping_)
+        if( mapping_ )
           mapping_->~Mapping();
         mapping_ = (other.mapping_) ? other.mapping_->clone( mappingStorage_ ) : nullptr;
         return *this;
       }
 
-      /** \brief Test whether this BasicGeometry is properly set up
-          \todo Please doc me better!
+      /** \brief bool cast
+       *
+       *  Like a pointer, a BasicGeometry casts to <b>true</b> if and only if
+       *  it is properly initialized.
+       *  If a geometry casts to <b>false</b>, none of the interface methods
+       *  may be called.
        */
-      bool operator! () const
+      operator bool () const
       {
-        return (mapping_ == 0);
+        return bool( mapping_ );
       }
 
       /** \brief Return the topological type of this geometry */
       GeometryType type () const
       {
-        return GeometryType( mapping_->topologyId(), mydimension );
+        return mapping_->type();
       }
 
       /** \brief Return the number of corners */

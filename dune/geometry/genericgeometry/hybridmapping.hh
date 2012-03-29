@@ -113,8 +113,11 @@ namespace Dune
       virtual ~HybridMapping ()
       {}
 
+      /** \copydoc CachedMapping::type */
+      virtual Dune::GeometryType type () const = 0;
+
       /** \copydoc CachedMapping::topologyId */
-      virtual unsigned int topologyId () const = 0;
+      unsigned int topologyId () const DUNE_DEPRECATED { return type().id(); }
 
       /** \copydoc CachedMapping::corner */
       virtual GlobalCoordinate corner ( int i ) const = 0;
@@ -256,9 +259,9 @@ namespace Dune
         : mapping_( coordVector )
       {}
 
-      virtual unsigned int topologyId () const
+      virtual Dune::GeometryType type () const
       {
-        return mapping_.topologyId();
+        return mapping_.type();
       }
 
       virtual GlobalCoordinate corner ( int i ) const
