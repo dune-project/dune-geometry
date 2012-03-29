@@ -19,5 +19,5 @@ AC_DEFUN([DUNE_GEOMETRY_CHECK_MODULE],
   DUNE_CHECK_MODULES([dune-geometry], [geometry/quadraturerules.hh],[dnl
   Dune::GeometryType gt;
   gt.makeQuadrilateral();
-  return (Dune::QuadratureRules<double, 2>::rule(gt, 2).size() >= 0);])
+  (Dune::QuadratureRules<double, 2>::rule(gt, 2).size());])
 ])
