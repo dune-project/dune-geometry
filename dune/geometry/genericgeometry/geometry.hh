@@ -288,7 +288,7 @@ namespace Dune
       struct NonHybrid
       {
         typedef typename GenericGeometry::Topology< Traits::topologyId, dimGrid >::type Topology;
-        typedef GenericGeometry::CachedMapping< Topology, Traits > Mapping;
+        typedef GenericGeometry::NonHybridMapping< Topology, Traits > Mapping;
       };
 
       typedef typename SelectType< Traits::hybrid, Hybrid< true >, NonHybrid< false > >::Type::Mapping

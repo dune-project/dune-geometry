@@ -181,6 +181,12 @@ namespace Dune
         static const EvaluationType evaluateIntegrationElement = ComputeOnDemand;
       };
 
+      /** \brief type of additional user data to be stored in each mapping
+       *
+       *  Each HybridMapping and NonHybridMapping stores a user data structure
+       *  of this type.
+       */
+      struct UserData {};
     };
 
 

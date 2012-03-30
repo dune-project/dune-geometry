@@ -5,6 +5,7 @@
 
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
+
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 
 namespace Dune
@@ -17,7 +18,7 @@ namespace Dune
     // -----------------------------
 
     template< class Topology, class GeometryTraits >
-    class CachedMapping;
+    class NonHybridMapping;
 
     template< unsigned int dim, class GeometryTraits >
     class HybridMapping;
@@ -35,37 +36,37 @@ namespace Dune
     {
       typedef TraceProvider< Topology, GeometryTraits, codim, forceHybrid > This;
 
+      typedef typename GeometryTraits::template Mapping< Topology >::type MappingImpl;
+
     public:
-      static const unsigned int dimension = Topology :: dimension;
+      static const unsigned int dimension = Topology::dimension;
       static const unsigned int codimension = codim;
       static const unsigned int mydimension = dimension - codimension;
 
-      static const bool hybrid
-        = (forceHybrid || IsCodimHybrid< Topology, codim > :: value);
+      static const bool hybrid = (forceHybrid || IsCodimHybrid< Topology, codim >::value);
 
-      typedef typename CachedMapping< Topology, GeometryTraits > :: Mapping Mapping;
+      typedef GenericGeometry::Mapping< typename GeometryTraits::CoordTraits, Topology, GeometryTraits::dimWorld, MappingImpl > Mapping;
 
     private:
-      static const unsigned int numSubTopologies
-        = Mapping :: ReferenceElement :: template Codim< codimension > :: size;
+      static const unsigned int numSubTopologies = Mapping::ReferenceElement::template Codim< codimension >::size;
 
       template< bool > class HybridFactory;
       template< bool > class NonHybridFactory;
 
-      typedef typename SelectType< hybrid, HybridFactory<true>, NonHybridFactory<false> > :: Type Factory;
+      typedef typename SelectType< hybrid, HybridFactory< true >, NonHybridFactory< false > >::Type Factory;
 
       template< int i > struct Builder;
 
     public:
       typedef typename Factory::Trace Trace;
 
-      static Trace* construct ( const Mapping &mapping, unsigned int i, char *traceStorage )
+      static Trace *construct ( const Mapping &mapping, unsigned int i, char *traceStorage )
       {
         return (*instance().construct_[ i ])( mapping, traceStorage );
       }
 
     private:
-      typedef Trace* (*Construct)( const Mapping &mapping, char *traceStorage );
+      typedef Trace *(*Construct)( const Mapping &mapping, char *traceStorage );
 
       TraceProvider ()
       {
@@ -83,15 +84,17 @@ namespace Dune
 
 
 
+    // TraceProvider::HybridFactory
+    // ----------------------------
+
     template< class Topology, class GeometryTraits, unsigned int codim, bool forceHybrid >
     template< bool >
-    class TraceProvider< Topology, GeometryTraits, codim, forceHybrid > :: HybridFactory
+    class TraceProvider< Topology, GeometryTraits, codim, forceHybrid >::HybridFactory
     {
       template< unsigned int i >
       struct VirtualTrace
       {
-        typedef typename GenericGeometry :: SubTopology< Topology, codim, i > :: type
-        SubTopology;
+        typedef typename GenericGeometry::SubTopology< Topology, codim, i >::type SubTopology;
         typedef VirtualMapping< SubTopology, GeometryTraits > type;
       };
 
@@ -99,7 +102,7 @@ namespace Dune
       typedef HybridMapping< mydimension, GeometryTraits > Trace;
 
       template< int i >
-      static Trace* construct ( const Mapping &mapping, char *traceStorage )
+      static Trace *construct ( const Mapping &mapping, char *traceStorage )
       {
         typedef typename VirtualTrace< i >::type TraceImpl;
         return new( traceStorage ) TraceImpl( mapping.template trace< codim, i >() );
@@ -108,18 +111,20 @@ namespace Dune
 
 
 
+    // TraceProvider::NonHybridFactory
+    // -------------------------------
+
     template< class Topology, class GeometryTraits, unsigned int codim, bool forceHybrid >
     template< bool >
-    class TraceProvider< Topology, GeometryTraits, codim, forceHybrid > :: NonHybridFactory
+    class TraceProvider< Topology, GeometryTraits, codim, forceHybrid >::NonHybridFactory
     {
-      typedef typename GenericGeometry :: SubTopology< Topology, codim, 0 > :: type
-      SubTopology;
+      typedef typename GenericGeometry::SubTopology< Topology, codim, 0 >::type SubTopology;
 
     public:
-      typedef CachedMapping< SubTopology, GeometryTraits > Trace;
+      typedef NonHybridMapping< SubTopology, GeometryTraits > Trace;
 
       template< int i >
-      static Trace* construct ( const Mapping &mapping, char *traceStorage )
+      static Trace *construct ( const Mapping &mapping, char *traceStorage )
       {
         return new( traceStorage ) Trace( mapping.template trace< codim, i >() );
       }
@@ -127,9 +132,12 @@ namespace Dune
 
 
 
+    // TraceProvider::Builder
+    // ----------------------
+
     template< class Topology, class GeometryTraits, unsigned int codim, bool forceHybrid >
     template< int i >
-    struct TraceProvider< Topology, GeometryTraits, codim, forceHybrid > :: Builder
+    struct TraceProvider< Topology, GeometryTraits, codim, forceHybrid >::Builder
     {
       static void apply ( Construct (&construct)[ numSubTopologies ] )
       {
@@ -137,8 +145,8 @@ namespace Dune
       }
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_TRACEPROVIDER_HH

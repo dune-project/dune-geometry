@@ -8,7 +8,7 @@
 #include <dune/geometry/genericgeometry/referenceelements.hh>
 #include <dune/geometry/genericgeometry/matrixhelper.hh>
 #include <dune/geometry/genericgeometry/mapping.hh>
-#include <dune/geometry/genericgeometry/traceprovider.hh>
+//#include <dune/geometry/genericgeometry/traceprovider.hh>
 
 namespace Dune
 {
@@ -236,34 +236,17 @@ namespace Dune
     // CachedMapping
     // -------------
 
-    /** \class   CachedMapping
-     *  \ingroup GenericGeometry
-     *  \brief   caching implementation of a geometric mapping
-     *
-     *  This is the first user-visible class of the generic geometry
-     *  implementation and the last class that explicitly depends on the
-     *  topology.
-     *
-     *  All functions required for a mapping (that should be used as a Geometry)
-     *  are implemented.
-     *  Moreover, a caching mechanism is added to speed up affine mappings.
-     */
     template< class Topology, class GeometryTraits >
     class CachedMapping
     {
       typedef CachedMapping< Topology, GeometryTraits > This;
 
-      typedef typename GeometryTraits::template Mapping< Topology >::type
-      MappingImpl;
+      typedef typename GeometryTraits::template Mapping< Topology >::type MappingImpl;
 
     public:
-      typedef MappingTraits
-      < typename GeometryTraits::CoordTraits, Topology::dimension, GeometryTraits::dimWorld >
-      Traits;
+      typedef MappingTraits< typename GeometryTraits::CoordTraits, Topology::dimension, GeometryTraits::dimWorld > Traits;
 
-      typedef GenericGeometry::Mapping
-      < typename GeometryTraits::CoordTraits, Topology, GeometryTraits::dimWorld, MappingImpl >
-      Mapping;
+      typedef GenericGeometry::Mapping< typename GeometryTraits::CoordTraits, Topology, GeometryTraits::dimWorld, MappingImpl > Mapping;
 
       static const unsigned int dimension = Traits::dimension;
       static const unsigned int dimWorld = Traits::dimWorld;
@@ -278,14 +261,16 @@ namespace Dune
 
       typedef GenericGeometry::ReferenceElement< Topology, FieldType > ReferenceElement;
 
-      //! can we safely assume that this mapping is always affine?
+      // can we safely assume that this mapping is always affine?
       static const bool alwaysAffine = Mapping::alwaysAffine;
 
+#if 0
       template< unsigned int codim >
       struct Codim
       {
         typedef typename TraceProvider< Topology, GeometryTraits, codim, false >::Trace Trace;
       };
+#endif
 
       typedef typename GeometryTraits::Caching Caching;
 
@@ -312,61 +297,19 @@ namespace Dune
         preCompute();
       }
 
-      /** \brief obtain the name of the reference element */
-      Dune::GeometryType type () const
-      {
-        return Dune::GeometryType( Topology() );
-      }
+      bool affine () const { return (alwaysAffine || storage().affine); }
+      Dune::GeometryType type () const { return Dune::GeometryType( Topology() ); }
 
-      /** \brief obtain topology id of the corresponding reference element */
+#if 0
       unsigned int topologyId () const DUNE_DEPRECATED { return type().id(); }
+#endif
 
-      /** \brief obtain coordinates of the i-th corner */
-      GlobalCoordinate corner ( int i ) const
-      {
-        return mapping_.corner( i );
-      }
+      int numCorners () const { return ReferenceElement::numCorners; }
+      GlobalCoordinate corner ( int i ) const { return mapping().corner( i ); }
+      GlobalCoordinate center () const { return global( ReferenceElement::template baryCenter< 0 >( 0 ) ); }
 
-      /** \brief obtain number of corners of the corresponding reference element */
-      int numCorners () const
-      {
-        return ReferenceElement::numCorners;
-      }
+      static bool checkInside ( const LocalCoordinate &x ) { return ReferenceElement::checkInside( x ); }
 
-      /** \brief obtain the centroid of the mapping's image
-       *
-       *  \note Currently, this method is defined to return the image
-       *        of the reference element's barycenter.
-       */
-      GlobalCoordinate center () const
-      {
-        return global( ReferenceElement::template baryCenter< 0 >( 0 ) );
-      }
-
-      /** \brief check whether a point lies within the reference element
-       *
-       *  \param[in]  x  local coorinate of point to check
-       *
-       *  \note Historically, this method was part of the geometry interface.
-       *        It is still required for the GenericReferenceElement.
-       */
-      static bool checkInside ( const LocalCoordinate &x )
-      {
-        return ReferenceElement::checkInside( x );
-      }
-
-      /** \brief is this mapping affine? */
-      bool affine () const
-      {
-        return (alwaysAffine || storage().affine);
-      }
-
-      /** \brief evaluate the mapping
-       *
-       *  \param[in]  x  local coordinate to map
-       *
-       *  \returns corresponding global coordinate
-       */
       GlobalCoordinate global ( const LocalCoordinate &x ) const
       {
         GlobalCoordinate y;
@@ -378,21 +321,10 @@ namespace Dune
           //y += corner( 0 );
         }
         else
-          mapping_.global( x, y );
+          mapping().global( x, y );
         return y;
       }
 
-      /** \brief evaluate the inverse mapping
-       *
-       *  \param[in]  y  global coorindate to map
-       *
-       *  \return corresponding local coordinate
-       *
-       *  \note The returned local coordinate y minimizes
-       *  \code
-       *  (global( x ) - y).two_norm()
-       *  \endcode
-       */
       LocalCoordinate local ( const GlobalCoordinate &y ) const
       {
         LocalCoordinate x;
@@ -409,19 +341,27 @@ namespace Dune
           MatrixHelper::template xTRightInvA< dimension, dimWorld >( JT, z, x );
         }
         else
-          mapping_.local( y, x );
+          mapping().local( y, x );
         return x;
       }
 
-      /** \brief obtain the transposed of the Jacobian
-       *
-       *  \param[in]  x  local coordinate to evaluate Jacobian in
-       *
-       *  \returns a reference to the transposed of the Jacobian
-       *
-       *  \note The returned reference is reused on the next call to
-       *        JacobianTransposed, destroying the previous value.
-       */
+      FieldType integrationElement ( const LocalCoordinate &x ) const
+      {
+        const EvaluationType evaluateI = Caching::evaluateIntegrationElement;
+        const EvaluationType evaluateJ = Caching::evaluateJacobianInverseTransposed;
+        if( ((evaluateI == PreCompute) || (evaluateJ == PreCompute)) && alwaysAffine )
+          return storage().integrationElement;
+        else
+          return jacobianTransposed( x ).det();
+      }
+
+      FieldType volume () const
+      {
+        // do we need a quadrature of higher order, here?
+        const FieldType refVolume = ReferenceElement::volume();
+        return refVolume * integrationElement( baryCenter() );
+      }
+
       const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &x ) const
       {
         const EvaluationType evaluate = Caching::evaluateJacobianTransposed;
@@ -433,36 +373,6 @@ namespace Dune
         return jacobianTransposed();
       }
 
-      /** \brief obtain the integration element
-       *
-       *  If the Jacobian of the mapping is denoted by $J(x)$, the integration
-       *  integration element \f$\mu(x)\f$ is given by
-       *  \f[ \mu(x) = \sqrt{|\det (J^T(x) J(x))|}.\f]
-       *
-       *  \param[in]  x  local coordinate to evaluate the integration element in
-       *
-       *  \returns the integration element \f$\mu(x)\f$.
-       *
-       *  \note For affine mappings, it is more efficient to call
-       *        jacobianInverseTransposed before integrationElement, if both
-       *        are required.
-       */
-      FieldType integrationElement ( const LocalCoordinate &x ) const
-      {
-        const EvaluationType evaluateI = Caching::evaluateIntegrationElement;
-        const EvaluationType evaluateJ = Caching::evaluateJacobianInverseTransposed;
-        if( ((evaluateI == PreCompute) || (evaluateJ == PreCompute)) && alwaysAffine )
-          return storage().integrationElement;
-        else
-          return jacobianTransposed( x ).det();
-      }
-
-      /** \brief obtain the transposed of the Jacobian's inverse
-       *
-       *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
-       *  the Jacobian by \f$J(x)\f$, the following condition holds:
-       *  \f[J^{-1}(x) J(x) = I.\f]
-       */
       const JacobianInverseTransposed &
       jacobianInverseTransposed ( const LocalCoordinate &x ) const
       {
@@ -475,21 +385,7 @@ namespace Dune
         return jacobianInverseTransposed();
       }
 
-      /** \brief obtain the volume of the mapping's image
-       *
-       *  \note The current implementation just returns
-       *  \code
-       *  integrationElement( baryCenter() ) * ReferenceElement::volume()
-       *  \endcode
-       *  which is wrong for n-linear surface maps and other nonlinear maps.
-       */
-      FieldType volume () const
-      {
-        // do we need a quadrature of higher order, here?
-        const FieldType refVolume = ReferenceElement::volume();
-        return refVolume * integrationElement( baryCenter() );
-      }
-
+#if 0
       This *clone () const
       {
         return new This( *this );
@@ -504,8 +400,11 @@ namespace Dune
       typename TraceProvider< Topology, GeometryTraits, codim, hybrid >::Trace*
       trace ( unsigned int i, char *mappingStorage ) const
       {
-        return TraceProvider< Topology, GeometryTraits, codim, hybrid >::construct( mapping_, i, mappingStorage );
+        return TraceProvider< Topology, GeometryTraits, codim, hybrid >::construct( mapping(), i, mappingStorage );
       }
+#endif
+
+      const Mapping &mapping () const { return mapping_; }
 
     private:
       static const LocalCoordinate &baryCenter ()
@@ -530,7 +429,7 @@ namespace Dune
 
       void preCompute ()
       {
-        assert( affine() == mapping_.jacobianTransposed( baryCenter(), storage().jacobianTransposed ) );
+        assert( affine() == mapping().jacobianTransposed( baryCenter(), storage().jacobianTransposed ) );
         if( !affine() )
           return;
 
@@ -545,7 +444,7 @@ namespace Dune
 
       void computeJacobianTransposed ( const LocalCoordinate &x ) const
       {
-        storage().affine = mapping_.jacobianTransposed( x, storage().jacobianTransposed );
+        storage().affine = mapping().jacobianTransposed( x, storage().jacobianTransposed );
         storage().jacobianTransposedComputed = affine();
       }
 

@@ -16,16 +16,16 @@ namespace Dune
   namespace GenericGeometry
   {
 
-    // CachedMappingFactory
-    // --------------------
+    // NonHybridMappingFactory
+    // -----------------------
 
     template< class Topology, class GeometryTraits >
-    class CachedMappingFactory
+    class NonHybridMappingFactory
     {
-      typedef CachedMappingFactory< Topology, GeometryTraits > This;
+      typedef NonHybridMappingFactory< Topology, GeometryTraits > This;
 
     public:
-      typedef CachedMapping< Topology, GeometryTraits > Mapping;
+      typedef NonHybridMapping< Topology, GeometryTraits > Mapping;
 
       static const unsigned int maxMappingSize = sizeof( Mapping );
 
@@ -37,7 +37,7 @@ namespace Dune
         return new( mappingStorage ) Mapping( coords );
       }
 
-      static size_t mappingSize ( const unsigned int topologyId )
+      static std::size_t mappingSize ( const unsigned int topologyId )
       {
         return sizeof( Mapping );
       }
@@ -61,7 +61,7 @@ namespace Dune
         typedef typename GenericGeometry::Topology< (unsigned int) topologyId, dim >::type Topology;
         static const int v = sizeof( VirtualMapping< Topology, GeometryTraits > );
 
-        static void apply ( size_t (&mappingSize)[ numTopologies ] )
+        static void apply ( std::size_t (&mappingSize)[ numTopologies ] )
         {
           mappingSize[ topologyId ] = v;
         }
@@ -85,7 +85,7 @@ namespace Dune
         return construct[ topologyId ]( coords, mappingStorage );
       }
 
-      static size_t mappingSize ( const unsigned int topologyId )
+      static std::size_t mappingSize ( const unsigned int topologyId )
       {
         static MappingSizeCache mappingSize;
         return mappingSize[ topologyId ];
@@ -158,14 +158,14 @@ namespace Dune
         ForLoop< MappingSize, 0, numTopologies-1 >::apply( size_ );
       }
 
-      size_t operator[] ( const unsigned int topologyId )
+      std::size_t operator[] ( const unsigned int topologyId )
       {
         assert( topologyId < numTopologies );
         return size_[ topologyId ];
       }
 
     private:
-      size_t size_[ numTopologies ];
+      std::size_t size_[ numTopologies ];
     };
 
 
@@ -210,7 +210,7 @@ namespace Dune
         return construct( topologyId, coords, mapping );
       }
 
-      static size_t mappingSize ( const unsigned int topologyId )
+      static std::size_t mappingSize ( const unsigned int topologyId )
       {
         return Factory::mappingSize( topologyId );
       }
@@ -218,16 +218,16 @@ namespace Dune
 
 
     template< class Topology, class GeometryTraits, unsigned int codim >
-    class MappingProvider< CachedMapping< Topology, GeometryTraits >, codim >
+    class MappingProvider< NonHybridMapping< Topology, GeometryTraits >, codim >
     {
-      typedef MappingProvider< CachedMapping< Topology, GeometryTraits >, codim > This;
+      typedef MappingProvider< NonHybridMapping< Topology, GeometryTraits >, codim > This;
 
     public:
-      static const unsigned int dimension = Topology :: dimension;
+      static const unsigned int dimension = Topology::dimension;
       static const unsigned int codimension = codim;
       static const unsigned int mydimension = dimension - codimension;
 
-      static const bool hybrid = IsCodimHybrid< Topology, codim > :: value;
+      static const bool hybrid = IsCodimHybrid< Topology, codim >::value;
 
     private:
       template< bool >
@@ -237,7 +237,7 @@ namespace Dune
 
       template< bool >
       struct NonHybridFactory
-        : public CachedMappingFactory
+        : public NonHybridMappingFactory
           < typename SubTopology< Topology, codim, 0 >::type, GeometryTraits >
       {};
 
@@ -264,7 +264,7 @@ namespace Dune
         return mapping;
       }
 
-      static size_t mappingSize ( const unsigned int topologyId )
+      static std::size_t mappingSize ( const unsigned int topologyId )
       {
         return Factory::mappingSize( topologyId );
       }
