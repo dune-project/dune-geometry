@@ -43,10 +43,6 @@ namespace Dune
 
       typedef typename GeometryTraits::Caching Caching;
 
-      typename Traits::JacobianTransposedType jacobianTransposed;
-      typename Traits::JacobianType jacobianInverseTransposed;
-      typename Traits::FieldType integrationElement;
-
       CachedStorage ()
         : affine( false ),
           jacobianTransposedComputed( false ),
@@ -54,11 +50,15 @@ namespace Dune
           integrationElementComputed( false )
       {}
 
-      bool affine;
+      typename Traits::JacobianTransposedType jacobianTransposed;
+      typename Traits::JacobianType jacobianInverseTransposed;
+      typename Traits::FieldType integrationElement;
 
-      bool jacobianTransposedComputed;        // = affine, if jacobian transposed was computed
-      bool jacobianInverseTransposedComputed; // = affine, if jacobian inverse transposed was computed
-      bool integrationElementComputed;        // = affine, if integration element was computed
+      bool affine : 1;
+
+      bool jacobianTransposedComputed : 1;        // = affine, if jacobian transposed was computed
+      bool jacobianInverseTransposedComputed : 1; // = affine, if jacobian inverse transposed was computed
+      bool integrationElementComputed : 1;        // = affine, if integration element was computed
     };
 
 
