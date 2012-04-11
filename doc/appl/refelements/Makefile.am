@@ -11,7 +11,7 @@ BASEDIR=../../..
 CURDIR=doc/appl/refelements
 
 # install docs
-docdir=$(datadir)/doc/dune-grid/appl/refelements
+docdir=$(datadir)/doc/dune-geometry/appl/refelements
 if BUILD_DOCS
 EXTRA_DIST= $(EXTRAINSTALL)
 endif

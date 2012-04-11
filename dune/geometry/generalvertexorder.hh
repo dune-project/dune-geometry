@@ -13,15 +13,15 @@
 
 #include <dune/common/iteratorfacades.hh>
 
-#include <dune/geometry/type.hh>
-#include <dune/geometry/referenceelements.hh>
+#include "type.hh"
+#include "referenceelements.hh"
 
 namespace Dune {
 
   //! algorithm to reduce vertex order information
   /**
    * \code
-   *#include <dune/grid/utility/vertexorder.hh>
+   *#include <dune/geometry/generalvertexorder.hh>
    * \endcode
    *
    * \param inBegin Start of the range of ids to reduce.

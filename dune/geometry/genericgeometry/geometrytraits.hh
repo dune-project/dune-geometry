@@ -3,14 +3,12 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_GEOMETRYTRAITS_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_GEOMETRYTRAITS_HH
 
-#include <dune/geometry/type.hh>
-
-#include <dune/geometry/genericgeometry/matrixhelper.hh>
-#include <dune/geometry/genericgeometry/cornermapping.hh>
+#include "../type.hh"
+#include "matrixhelper.hh"
+#include "cornermapping.hh"
 
 namespace Dune
 {
-
   namespace GenericGeometry
   {
 

@@ -11,7 +11,7 @@ BASEDIR=../..
 CURDIR=doc/appl
 
 # install the html pages
-docdir=$(datadir)/doc/dune-grid/appl
+docdir=$(datadir)/doc/dune-geometry/appl
 if BUILD_DOCS
 DOCFILES = $(PAGES)
 EXTRA_DIST = $(PAGES)
