@@ -112,7 +112,7 @@ namespace Dune
     std::vector< SubEntityInfo > info_[ dim+1 ];
 
     /** \brief The reference element volume */
-    double volume_;
+    ctype volume_;
     std::vector< FieldVector< ctype, dim > > volumeNormals_;
 
     /** \brief Stores all subentities of all codimensions */
@@ -314,7 +314,7 @@ namespace Dune
     }
 
     /** \brief obtain the volume of the reference element */
-    double volume () const
+    ctype volume () const
     {
       return volume_;
     }
@@ -355,7 +355,7 @@ namespace Dune
 
       // compute reference element volume
       typedef GenericGeometry::ReferenceDomain< Topology > ReferenceDomain;
-      volume_ = ReferenceDomain::template volume< double >();
+      volume_ = ReferenceDomain::template volume< ctype >();
 
       // compute normals
       volumeNormals_.resize( ReferenceDomain::numNormals );
