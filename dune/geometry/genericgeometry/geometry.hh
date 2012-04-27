@@ -476,31 +476,6 @@ namespace Dune
         return mapping_->jacobianInverseTransposed( local );
       }
 
-      /** \brief compute an outer normal to an element face
-       *
-       *  \param[in]  face   number of the face (in generic numbering)
-       *  \param[in]  local  point to compute the normal in (in local coordinates with respect to the element, *not* the face)
-       *
-       *  \returns an outer normal to the given face at the given point
-       *
-       *  \note Though the local coordinates are given with respect to geometry's
-       *        reference domain, the point is required to be on the given face.
-       */
-      GlobalCoordinate normal ( int face, const LocalCoordinate &local ) const DUNE_DEPRECATED
-      {
-        const GenericReferenceElement< ctype, mydimension > &refElement
-          = GenericReferenceElements< ctype, mydimension>::general( type() );
-        assert( face < refElement.size( 1 ) );
-
-        const JacobianInverseTransposed &jit = jacobianInverseTransposed( local );
-        const LocalCoordinate &refNormal = refElement.volumeOuterNormal( face );
-
-        GlobalCoordinate normal;
-        jit.mv( refNormal, normal );
-        normal *= integrationElement( local );
-        return normal;
-      }
-
     private:
 
       /** \brief Always points to mappingStorage_, but has the correct type */
