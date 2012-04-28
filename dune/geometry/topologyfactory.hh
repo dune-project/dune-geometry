@@ -39,8 +39,12 @@ namespace Dune
     typedef typename Traits::Key Key;
     typedef typename Traits::Object Object;
     typedef typename Traits::Factory Factory;
-    //! dynamically create objects
-    static Object *create(unsigned int topologyId, const Key &key) DUNE_DEPRECATED
+    /**
+     * \brief dynamically create objects
+     *
+     * \deprecated Use create(Dune::GeometryType, Key) instead
+     */
+    static Object *create(unsigned int topologyId, const Key &key) DUNE_DEPRECATED_MSG("use create(Dune::GeometryType, Key) instead")
     {
       Object *object;
       GenericGeometry::IfTopology< Maker, dimension >::apply( topologyId, key, object );

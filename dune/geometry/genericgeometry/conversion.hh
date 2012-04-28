@@ -682,7 +682,7 @@ namespace Dune
      *
      * \deprecated please use GeometryType::id()
      */
-    inline unsigned int topologyId ( const GeometryType &type ) DUNE_DEPRECATED;
+    inline unsigned int topologyId ( const GeometryType &type ) DUNE_DEPRECATED_MSG("use GeometryType::id() instead");
     inline unsigned int topologyId ( const GeometryType &type )
     {
       return type.id();
@@ -704,12 +704,11 @@ namespace Dune
 
     // geometryType
     // ------------
-    /*
+    /**
        \deprecated you can now construct a GeometryType directly using GeometryType::GeometryType(unsigned int topologyId, unsigned int dim)
-
      */
     inline GeometryType
-    geometryType ( const unsigned int topologyId, const unsigned int dimension ) DUNE_DEPRECATED;
+    geometryType ( const unsigned int topologyId, const unsigned int dimension ) DUNE_DEPRECATED_MSG("Construct a GeometryTpye directly instead");
     inline GeometryType
     geometryType ( const unsigned int topologyId, const unsigned int dimension )
     {
