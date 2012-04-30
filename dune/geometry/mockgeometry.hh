@@ -40,7 +40,6 @@ namespace Dune {
 
     // Hide members of BasicGeometry that are not part of Dune::Geometry
     using typename Base::JacobianInverseTransposed;
-    using Base::normal;
 
   public:
     //! type of jacobian (also of jacobian inverse transposed)
