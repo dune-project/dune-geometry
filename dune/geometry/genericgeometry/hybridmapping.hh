@@ -133,7 +133,7 @@ namespace Dune
       virtual GlobalCoordinate global ( const LocalCoordinate &x ) const = 0;
       /** \brief evaluate the inverse mapping
        *
-       *  \param[in]  y  global coorindate to map
+       *  \param[in]  y  global coordinate to map
        *
        *  \return corresponding local coordinate
        *
@@ -146,7 +146,7 @@ namespace Dune
 
       /** \brief check whether a point lies within the reference element
        *
-       *  \param[in]  x  local coorinate of point to check
+       *  \param[in]  x  local coordinate of point to check
        *
        *  \note Historically, this method was part of the geometry interface.
        *        It is still required for the GenericReferenceElement.
@@ -420,7 +420,7 @@ namespace Dune
 
       /** \brief check whether a point lies within the reference element
        *
-       *  \param[in]  local  local coorinate of point to check
+       *  \param[in]  local  local coordinate of point to check
        *
        *  \note Historically, this method was part of the geometry interface.
        *        It is still required for the GenericReferenceElement.
