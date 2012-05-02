@@ -31,45 +31,58 @@ void pass(int &result) {
   if(result == 77) result = 0;
 }
 
-/** \brief Test the interface of the given BasicGeometry object
+/** \brief Test whether the given BasicGeometry object 'affine' attribute is
+ *         set correctly
  *
  * \param geometry       The Geometry object to test.
- * \param expectedVolume The volume to expect from the geometry.
  * \param expectedAffine Whether the geometry should be affine.
  * \param result         Collect pass/fail results.
  */
 template <class TestGeometry>
-void testBasicGeometry(const TestGeometry& geometry,
-                       typename TestGeometry::ctype expectedVolume,
-                       bool expectedAffine, int &result)
+void testBasicGeometryAffine(const TestGeometry& geometry, bool expectedAffine,
+                             int &result)
 {
-  typedef typename TestGeometry::ctype ctype;
-
-  // If expectedVolume is NaN that is a sign from above
-  // saying we are supposed to skip the test
-  if(not std::isnan(expectedVolume)) {
-    ctype volume = geometry.volume();
-    if(std::abs(volume - expectedVolume) > 1e-8) {
-      std::cerr << "Volume: " << volume << ", but "
-                << expectedVolume << " was expected!" << std::endl;
-      fail(result);
-    }
-    else
-      pass(result);
-  }
-  else
-    std::cerr << "Warning: volume check skipped." << std::endl;
-
   bool affine = geometry.affine();
   if(affine != expectedAffine) {
     Dune::ios_base_all_saver saver(std::cerr);
     std::cerr << std::boolalpha;
-    std::cerr << "Affine: \"" << affine << "\", but "
+    std::cerr << "Error: Affine: \"" << affine << "\", but "
               << "\"" << expectedAffine << "\" was expected!" << std::endl;
     fail(result);
   }
   else
     pass(result);
+}
+
+/** \brief Test the volume of the given BasicGeometry object
+ *
+ * \param geometry       The Geometry object to test.
+ * \param expectedVolume The volume to expect from the geometry.
+ * \param result         Collect pass/fail results.
+ */
+template <class TestGeometry>
+bool testBasicGeometryVolume(const TestGeometry& geometry,
+                             typename TestGeometry::ctype expectedVolume,
+                             int &result, bool warnOnly = false)
+{
+  typedef typename TestGeometry::ctype ctype;
+
+  ctype volume = geometry.volume();
+  if(std::abs(volume - expectedVolume) > 1e-8) {
+    if(warnOnly)
+      std::cerr << "Warning: Volume: " << volume << ", but "
+                << expectedVolume << " was expected!" << std::endl;
+    else {
+      std::cerr << "Error: Volume: " << volume << ", but "
+                << expectedVolume << " was expected!" << std::endl;
+      fail(result);
+    }
+    return false;
+  }
+  else {
+    pass(result);
+    return true;
+  }
 }
 
 int main (int argc , char **argv) try
@@ -119,7 +132,8 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
 
     }     // mydim = 0
@@ -163,7 +177,8 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
 
     }     // mydim = 0
@@ -196,7 +211,8 @@ int main (int argc , char **argv) try
         gt.makeLine();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // line segment
 
     }     // mydim = 1
@@ -240,7 +256,8 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
 
     }     // mydim = 0
@@ -273,7 +290,8 @@ int main (int argc , char **argv) try
         gt.makeLine();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // line segment
 
     }     // mydim = 1
@@ -307,7 +325,8 @@ int main (int argc , char **argv) try
         gt.makeTriangle();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // triangle
 
@@ -328,7 +347,8 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // affine quadrilateral
 
@@ -349,7 +369,8 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // non-affine quadrilateral
 
@@ -394,7 +415,8 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
 
     }     // mydim = 0
@@ -427,7 +449,8 @@ int main (int argc , char **argv) try
         gt.makeLine();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
       }       // line segment
 
     }     // mydim = 1
@@ -461,7 +484,8 @@ int main (int argc , char **argv) try
         gt.makeTriangle();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // triangle
 
@@ -482,7 +506,8 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // affine quadrilateral
 
@@ -509,17 +534,18 @@ int main (int argc , char **argv) try
         // http://de.wikipedia.org/wiki/Oberfl%C3%A4chenintegral#Beispiel_2:_Explizite_Darstellung_2
         // and
         // http://de.wikibooks.org/wiki/Diffgeo:_Fl%C3%A4chentheorie:_Fl%C3%A4cheninhalt
-        // volume = 1.280789271462219;
-
-        // Skip volume-test for now -- it fails, but we don't want to
-        // spoil all the other tests.
-        std::cerr << "Skipping volume test because of FS#870" << std::endl;
-        volume = std::numeric_limits<double>::quiet_NaN();
+        volume = 1.280789271462219;
 
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        // Downgrade to a warning for now -- it fails, but we don't
+        // want to spoil all the other tests.
+        if(!testBasicGeometryVolume(insideGeometry, volume, result,
+                                    true))
+          std::cerr << "Warning: volume check failure downgraded to "
+                    << "a warning (see FS#870)." << std::endl;
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // non-affine quadrilateral
 
@@ -551,12 +577,14 @@ int main (int argc , char **argv) try
         corners[3][0] = 1.0; corners[3][1] = 0.0; corners[3][2] = 0.0;
 
         // to be determined
-        volume = std::numeric_limits<double>::quiet_NaN();
+        //volume = ???;
 
         gt.makeTetrahedron();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        std::cerr << "Warning: volume check skipped (reference volume "
+                  << "not known)." << std::endl;
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // tetrahedron
 
@@ -578,7 +606,8 @@ int main (int argc , char **argv) try
         gt.makePyramid();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // affine pyramid
 
@@ -596,12 +625,14 @@ int main (int argc , char **argv) try
         corners[4][0] = 0.0; corners[4][1] = 0.0; corners[4][2] = 0.5;
 
         // to be determined
-        volume = std::numeric_limits<double>::quiet_NaN();
+        //volume = ???;
 
         gt.makePyramid();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        std::cerr << "Warning: volume check skipped (reference volume "
+                  << "not known)." << std::endl;
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // non-affine pyramid
 
@@ -625,7 +656,8 @@ int main (int argc , char **argv) try
         gt.makePrism();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // affine prism
 
@@ -644,12 +676,14 @@ int main (int argc , char **argv) try
         corners[5][0] = 0.5; corners[5][1] = 0.0; corners[5][2] = 1.0;
 
         // to be determined
-        volume = std::numeric_limits<double>::quiet_NaN();
+        //volume = ???;
 
         gt.makePrism();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        std::cerr << "Warning: volume check skipped (reference volume "
+                  << "not known)." << std::endl;
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // non-affine prism
 
@@ -676,7 +710,8 @@ int main (int argc , char **argv) try
         gt.makeHexahedron();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        testBasicGeometryVolume(insideGeometry, volume, result);
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // affine hexahedron
 
@@ -698,12 +733,14 @@ int main (int argc , char **argv) try
         corners[7][0] = 0.5; corners[7][1] = 1.0; corners[7][2] = 1.0;
 
         // to be determined
-        volume = std::numeric_limits<double>::quiet_NaN();
+        //volume = ???;
 
         gt.makeHexahedron();
         ElementGeometry insideGeometry( gt, corners );
 
-        testBasicGeometry(insideGeometry, volume, affine, result);
+        std::cerr << "Warning: volume check skipped (reference volume "
+                  << "not known)." << std::endl;
+        testBasicGeometryAffine(insideGeometry, affine, result);
 
       }       // non-affine hexahedron
 
