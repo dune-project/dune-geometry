@@ -1,7 +1,6 @@
 Makefile
 Makefile.in
 .deps
-
 testmatrix
 testsubtopologies
-
+testbasicgeometry

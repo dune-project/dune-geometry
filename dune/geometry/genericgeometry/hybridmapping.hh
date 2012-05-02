@@ -400,14 +400,14 @@ namespace Dune
 
       /** \brief evaluate the mapping
        *
-       *  \param[in]  x  local coordinate to map
+       *  \param[in]  local  local coordinate to map
        *
        *  \returns corresponding global coordinate
        */
       GlobalCoordinate global ( const LocalCoordinate &local ) const { return mapping_.global( local ); }
       /** \brief evaluate the inverse mapping
        *
-       *  \param[in]  y  global coorindate to map
+       *  \param[in]  global  global coorindate to map
        *
        *  \return corresponding local coordinate
        *
@@ -420,7 +420,7 @@ namespace Dune
 
       /** \brief check whether a point lies within the reference element
        *
-       *  \param[in]  x  local coorinate of point to check
+       *  \param[in]  local  local coorinate of point to check
        *
        *  \note Historically, this method was part of the geometry interface.
        *        It is still required for the GenericReferenceElement.
@@ -433,7 +433,7 @@ namespace Dune
        *  integration element \f$\mu(x)\f$ is given by
        *  \f[ \mu(x) = \sqrt{|\det (J^T(x) J(x))|}.\f]
        *
-       *  \param[in]  x  local coordinate to evaluate the integration element in
+       *  \param[in]  local  local coordinate to evaluate the integration element in
        *
        *  \returns the integration element \f$\mu(x)\f$.
        *
@@ -454,7 +454,7 @@ namespace Dune
 
       /** \brief obtain the transposed of the Jacobian
        *
-       *  \param[in]  x  local coordinate to evaluate Jacobian in
+       *  \param[in]  local  local coordinate to evaluate Jacobian in
        *
        *  \returns a reference to the transposed of the Jacobian
        *
