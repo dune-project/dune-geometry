@@ -19,104 +19,32 @@ namespace Dune
   // -----------------------------
 
   template< class ctype, int dim >
+  class GenericReferenceElement;
+
+  template< class ctype, int dim >
   class GenericReferenceElementContainer;
 
 
 
-  // GenericReferenceElement
-  // -----------------------
+  // GenericReferenceElement for ctype = void
+  // ----------------------------------------
 
-  /** \class GenericReferenceElement
-   *  \ingroup GeometryGenericReferenceElements
-   *  \brief This class provides access to geometric and topological
-   *  properties of a reference element. This includes its type,
-   *  the number of subentities, the volume, and a method for checking
-   *  if a point is inside.
-   *  The embedding of each subentity into the reference element is also
-   *  provided.
-   *
-   *  A singleton of this class for a given geometry type can be accessed
-   *  through the GenericReferenceElements class.
-
-   *  \tparam ctype  field type for coordinates
-   *  \tparam dim    dimension of the reference element
-   *
-   */
-  template< class ctype, int dim >
-  class GenericReferenceElement
+  template< int dim >
+  class GenericReferenceElement< void, dim >
   {
-    typedef GenericReferenceElement< ctype, dim > This;
+    typedef GenericReferenceElement< void, dim > This;
 
-    friend class GenericReferenceElementContainer< ctype, dim >;
+    friend class GenericReferenceElementContainer< void, dim >;
+
+    struct SubEntityInfo;
+    template< class Topology > struct Initialize;
 
     // make copy constructor private
-    GenericReferenceElement(const GenericReferenceElement &);
+    GenericReferenceElement ( const This & );
 
+  protected:
     GenericReferenceElement () {}
-
-    ~GenericReferenceElement ()
-    {
-      ForLoop< Destroy, 0, dim >::apply( mappings_ );
-      integral_constant< int, 0 > codim0Variable;
-      if(mappings_[  codim0Variable ].size())
-        delete mappings_[ codim0Variable ][ 0 ];
-    }
-
-    class SubEntityInfo;
-    template< class Topology > class CornerStorage;
-    template< class Topology > struct Initialize;
-    template< int codim > struct Destroy;
-
-    struct GeometryTraits
-      : public GenericGeometry::DefaultGeometryTraits< ctype, dim, dim >
-    {
-      typedef GenericGeometry::DefaultGeometryTraits< ctype, dim, dim > Base;
-
-      typedef typename Base::CoordTraits CoordTraits;
-
-      template< class Topology >
-      struct Mapping
-      {
-        typedef GenericGeometry::CornerMapping< CoordTraits, Topology, dim, CornerStorage< Topology >, true > type;
-      };
-
-      struct Caching
-      {
-        static const GenericGeometry::EvaluationType evaluateJacobianTransposed = GenericGeometry::PreCompute;
-        static const GenericGeometry::EvaluationType evaluateJacobianInverseTransposed = GenericGeometry::PreCompute;
-        static const GenericGeometry::EvaluationType evaluateIntegrationElement = GenericGeometry::PreCompute;
-        static const GenericGeometry::EvaluationType evaluateNormal = GenericGeometry::PreCompute;
-      };
-
-    };
-
-  public:
-    /** \brief Collection of types depending on the codimension */
-    template< int codim >
-    struct Codim
-    {
-      //! type of mapping embedding a subentity into the reference element
-      typedef GenericGeometry::HybridMapping< dim-codim, GeometryTraits > Mapping;
-    };
-
-  private:
-    /** \brief Stores all subentities of a given codimension */
-    template< int codim >
-    struct MappingArray
-      : public std::vector< typename Codim< codim >::Mapping * >
-    {};
-
-    /** \brief Type to store all subentities of all codimensions */
-    typedef GenericGeometry::CodimTable< MappingArray, dim > MappingsTable;
-
-    std::vector< SubEntityInfo > info_[ dim+1 ];
-
-    /** \brief The reference element volume */
-    ctype volume_;
-    std::vector< FieldVector< ctype, dim > > volumeNormals_;
-
-    /** \brief Stores all subentities of all codimensions */
-    MappingsTable mappings_;
+    ~GenericReferenceElement () {}
 
   public:
     /** \brief number of subentities of codimension c
@@ -165,6 +93,233 @@ namespace Dune
       return info_[ c ][ i ].number( ii, cc );
     }
 
+    /** \brief obtain the type of subentity (i,c)
+     *
+     *  Denote by E the i-th subentity of codimension c of the current
+     *  reference element. This method returns the GeometryType of E.
+     *
+     *  \param[in]  i      number of subentity E (0 <= i < size( c ))
+     *  \param[in]  c      codimension of subentity E
+     */
+    const GeometryType &type ( int i, int c ) const
+    {
+      assert( (c >= 0) && (c <= dim) );
+      return info_[ c ][ i ].type();
+    }
+
+    /** \brief obtain the type of this reference element */
+    const GeometryType &type () const { return type( 0, 0 ); }
+
+    unsigned int topologyId ( int i, int c ) const DUNE_DEPRECATED
+    {
+      return type( i, c ).id();
+    }
+
+    /** \brief initialize the reference element
+     *
+     *  \tparam  Topology  topology of the desired reference element
+     *
+     *  \note The dimension of the topology must match dim.
+     */
+    template< class Topology >
+    void initializeTopology ()
+    {
+      dune_static_assert( (Topology::dimension == dim),
+                          "Cannot initialize reference element for different dimension." );
+      typedef Initialize< Topology > Init;
+
+      // set up subentities
+      Dune::ForLoop< Init::template Codim, 0, dim >::apply( info_ );
+    }
+
+  private:
+    std::vector< SubEntityInfo > info_[ dim+1 ];
+  };
+
+
+
+  // GenericReferenceElement::SubEntityInfo
+  // --------------------------------------
+
+  /** \brief topological information about the subentities of a reference element */
+  template< int dim >
+  struct GenericReferenceElement< void, dim >::SubEntityInfo
+  {
+    int size ( int cc ) const
+    {
+      assert( (cc >= codim_) && (cc <= dim) );
+      return numbering_[ cc ].size();
+    }
+
+    int number ( int ii, int cc ) const
+    {
+      assert( (cc >= codim_) && (cc <= dim) );
+      return numbering_[ cc ][ ii ];
+    }
+
+    const GeometryType &type () const
+    {
+      return type_;
+    }
+
+    template< class Topology, unsigned int codim, unsigned int i >
+    void initialize ()
+    {
+      typedef Initialize< Topology, codim > Init;
+
+      codim_ = codim;
+
+      const unsigned int iVariable = i;
+      Dune::ForLoop< Init::template SubCodim, 0, dim-codim >::apply( iVariable, numbering_ );
+
+      typedef typename GenericGeometry::SubTopology< Topology, codim, i >::type SubTopology;
+      type_ = GeometryType( SubTopology::id, SubTopology::dimension );
+    }
+
+  private:
+    template< class Topology, int codim > struct Initialize
+    {
+      template< int subcodim > struct SubCodim;
+    };
+
+    int codim_;
+    std::vector< int > numbering_[ dim+1 ];
+    GeometryType type_;
+  };
+
+
+
+  // GenericReferenceElement::SubEntityInfo::Initialize::SubCodim
+  // ------------------------------------------------------------
+
+  template< int dim >
+  template< class Topology, int codim >
+  template< int subcodim >
+  struct GenericReferenceElement< void, dim >::SubEntityInfo::Initialize< Topology, codim >::SubCodim
+  {
+    typedef GenericGeometry::SubTopologySize< Topology, codim, subcodim > SubSize;
+    typedef GenericGeometry::GenericSubTopologyNumbering< Topology, codim, subcodim > SubNumbering;
+
+    static void apply ( unsigned int i, std::vector< int > (&numbering)[ dim+1 ] )
+    {
+      const unsigned int size = SubSize::size( i );
+      numbering[ codim+subcodim ].resize( size );
+      for( unsigned int j = 0; j < size; ++j )
+        numbering[ codim+subcodim ][ j ] = SubNumbering::number( i, j );
+    }
+  };
+
+
+
+  // GenericReferenceElement::Initialize
+  // -----------------------------------
+
+  template< int dim >
+  template< class Topology >
+  struct GenericReferenceElement< void, dim >::Initialize
+  {
+    typedef Dune::GenericReferenceElement< void, dim > ReferenceElement;
+
+    template< int codim >
+    struct Codim
+    {
+      template< int i >
+      struct SubTopology
+      {
+        static void apply ( std::vector< SubEntityInfo > &info )
+        {
+          info[ i ].template initialize< Topology, codim, i >();
+        }
+      };
+
+      static void apply ( std::vector< SubEntityInfo > (&info)[ dim+1 ] )
+      {
+        const unsigned int size = GenericGeometry::Size< Topology, codim >::value;
+        info[ codim ].resize( size );
+        Dune::ForLoop< SubTopology, 0, size-1 >::apply( info[ codim ] );
+      }
+    };
+  };
+
+
+
+  // GenericReferenceElement
+  // -----------------------
+
+  /** \class GenericReferenceElement
+   *  \ingroup GeometryGenericReferenceElements
+   *  \brief This class provides access to geometric and topological
+   *  properties of a reference element. This includes its type,
+   *  the number of subentities, the volume, and a method for checking
+   *  if a point is inside.
+   *  The embedding of each subentity into the reference element is also
+   *  provided.
+   *
+   *  A singleton of this class for a given geometry type can be accessed
+   *  through the GenericReferenceElements class.
+
+   *  \tparam ctype  field type for coordinates
+   *  \tparam dim    dimension of the reference element
+   *
+   */
+  template< class ctype, int dim >
+  class GenericReferenceElement
+    : public GenericReferenceElement< void, dim >
+  {
+    typedef GenericReferenceElement< ctype, dim > This;
+    typedef GenericReferenceElement< void, dim > Base;
+
+    friend class GenericReferenceElementContainer< ctype, dim >;
+
+    // make copy constructor private
+    GenericReferenceElement ( const This & );
+
+    GenericReferenceElement () {}
+
+    ~GenericReferenceElement ()
+    {
+      ForLoop< Destroy, 1, dim >::apply( mappings_ );
+      integral_constant< int, 0 > codim0Variable;
+      if( mappings_[ codim0Variable ].size() )
+        delete mappings_[ codim0Variable ][ 0 ];
+    }
+
+    template< class Topology > class CornerStorage;
+    template< int codim > struct Create;
+    template< int codim > struct Destroy;
+
+    struct GeometryTraits
+      : public GenericGeometry::DefaultGeometryTraits< ctype, dim, dim >
+    {
+      typedef GenericGeometry::DefaultGeometryTraits< ctype, dim, dim > Base;
+
+      typedef typename Base::CoordTraits CoordTraits;
+
+      template< class Topology >
+      struct Mapping
+      {
+        typedef GenericGeometry::CornerMapping< CoordTraits, Topology, dim, CornerStorage< Topology >, true > type;
+      };
+
+      struct Caching
+      {
+        static const GenericGeometry::EvaluationType evaluateJacobianTransposed = GenericGeometry::PreCompute;
+        static const GenericGeometry::EvaluationType evaluateJacobianInverseTransposed = GenericGeometry::PreCompute;
+        static const GenericGeometry::EvaluationType evaluateIntegrationElement = GenericGeometry::PreCompute;
+        static const GenericGeometry::EvaluationType evaluateNormal = GenericGeometry::PreCompute;
+      };
+
+    };
+
+  public:
+    /** \brief Collection of types depending on the codimension */
+    template< int codim >
+    struct Codim
+    {
+      //! type of mapping embedding a subentity into the reference element
+      typedef GenericGeometry::HybridMapping< dim-codim, GeometryTraits > Mapping;
+    };
+
     /** \brief position of the barycenter of entity (i,c)
      *
      *  Denote by E the i-th subentity of codimension c of the current
@@ -177,7 +332,7 @@ namespace Dune
     const FieldVector< ctype, dim > &position( int i, int c ) const
     {
       assert( (c >= 0) && (c <= dim) );
-      return info_[ c ][ i ].position();
+      return baryCenters_[ c ][ i ];
     }
 
     /** \brief check if a coordinate is in the reference element
@@ -235,7 +390,7 @@ namespace Dune
      */
     template< int codim >
     FieldVector< ctype, dim >
-    global( const FieldVector< ctype, dim-codim > &local, int i, int c ) const
+    global ( const FieldVector< ctype, dim-codim > &local, int i, int c ) const
     {
       if( c != codim )
         DUNE_THROW( Exception, "Local Coordinate Type does not correspond to codimension c." );
@@ -263,7 +418,7 @@ namespace Dune
      */
     template< int codim >
     FieldVector< ctype, dim >
-    global( const FieldVector< ctype, dim-codim > &local, int i ) const
+    global ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
       return mapping< codim >( i ).global( local );
     }
@@ -288,29 +443,6 @@ namespace Dune
     {
       integral_constant< int, codim > codimVariable;
       return *(mappings_[ codimVariable ][ i ]);
-    }
-
-    /** \brief obtain the type of subentity (i,c)
-     *
-     *  Denote by E the i-th subentity of codimension c of the current
-     *  reference element. This method returns the GeometryType of E.
-     *
-     *  \param[in]  i      number of subentity E (0 <= i < size( c ))
-     *  \param[in]  c      codimension of subentity E
-     */
-    const GeometryType &type ( int i, int c ) const
-    {
-      assert( (c >= 0) && (c <= dim) );
-      return info_[ c ][ i ].type();
-    }
-
-    /** \brief obtain the type of this reference element */
-    const GeometryType &type () const { return type( 0, 0 ); }
-
-    unsigned int topologyId ( int i, int c ) const DUNE_DEPRECATED
-    {
-      assert( (c >= 0) && (c <= dim) );
-      return info_[ c ][ i ].topologyId();
     }
 
     /** \brief obtain the volume of the reference element */
@@ -341,101 +473,73 @@ namespace Dune
     template< class Topology >
     void initializeTopology ()
     {
-      dune_static_assert( (Topology::dimension == dim),
-                          "Cannot initialize reference element for different dimension." );
-      typedef Initialize< Topology > Init;
-      typedef GenericGeometry::VirtualMapping< Topology, GeometryTraits > VirtualMapping;
+      typedef GenericGeometry::ReferenceDomain< Topology > ReferenceDomain;
 
-      // set up subentities
-      integral_constant< int, 0 > codim0Variable;
-      mappings_[ codim0Variable ].resize( 1 );
-      mappings_[ codim0Variable ][ 0 ]  = new VirtualMapping( codim0Variable );
+      Base::template initializeTopology< Topology >();
 
-      Dune::ForLoop< Init::template Codim, 0, dim >::apply( info_, mappings_ );
+      // compute corners
+      const unsigned int numVertices = Base::size( dim );
+      baryCenters_[ dim ].resize( numVertices );
+      for( unsigned int i = 0; i < numVertices; ++i )
+        ReferenceDomain::corner( i, baryCenters_[ dim ][ i ] );
+
+      // compute barycenters
+      for( int codim = 0; codim < dim; ++codim )
+      {
+        const unsigned int size = Base::size( codim );
+        baryCenters_[ codim ].resize( size );
+        for( unsigned int i = 0; i < size; ++i )
+        {
+          baryCenters_[ codim ][ i ] = FieldVector< ctype, dim >( ctype( 0 ) );
+          static const unsigned int numCorners = Base::size( i, codim, dim );
+          for( unsigned int j = 0; j < numCorners; ++j )
+            baryCenters_[ codim ][ i ] += baryCenters_[ dim ][ Base::subEntity( i, codim, j, dim ) ];
+          baryCenters_[ codim ][ i ] *= ctype( 1 ) / ctype( numCorners );
+        }
+      }
 
       // compute reference element volume
-      typedef GenericGeometry::ReferenceDomain< Topology > ReferenceDomain;
       volume_ = ReferenceDomain::template volume< ctype >();
 
       // compute normals
       volumeNormals_.resize( ReferenceDomain::numNormals );
       for( unsigned int i = 0; i < ReferenceDomain::numNormals; ++i )
         ReferenceDomain::integrationOuterNormal( i ,volumeNormals_[ i ] );
+
+      // set up mappings
+      typedef GenericGeometry::VirtualMapping< Topology, GeometryTraits > VirtualMapping;
+
+      integral_constant< int, 0 > codim0Variable;
+      mappings_[ codim0Variable ].resize( 1 );
+      mappings_[ codim0Variable ][ 0 ]  = new VirtualMapping( codim0Variable );
+
+      Dune::ForLoop< Create, 1, dim >::apply( static_cast< Base & >( *this ), mappings_ );
     }
+
+  private:
+    /** \brief Stores all subentities of a given codimension */
+    template< int codim >
+    struct MappingArray
+      : public std::vector< typename Codim< codim >::Mapping * >
+    {};
+
+    /** \brief Type to store all subentities of all codimensions */
+    typedef GenericGeometry::CodimTable< MappingArray, dim > MappingsTable;
+
+    /** \brief The reference element volume */
+    ctype volume_;
+
+    std::vector< FieldVector< ctype, dim > > baryCenters_[ dim+1 ];
+    std::vector< FieldVector< ctype, dim > > volumeNormals_;
+
+    /** \brief Stores all subentities of all codimensions */
+    MappingsTable mappings_;
   };
 
 
-  /** \brief Topological and geometric information about the subentities
-   *     of a reference element
-   */
-  template< class ctype, int dim >
-  class GenericReferenceElement< ctype, dim >::SubEntityInfo
-  {
-    template< class Topology, int codim > struct Initialize
-    {
-      template< int subcodim > struct SubCodim;
-    };
 
-    int codim_;
-    std::vector< int > numbering_[ dim+1 ];
-    FieldVector< ctype, dim > baryCenter_;
-    GeometryType type_;
-
-  public:
-    int size ( int cc ) const
-    {
-      assert( (cc >= codim_) && (cc <= dim) );
-      return numbering_[ cc ].size();
-    }
-
-    int number ( int ii, int cc ) const
-    {
-      assert( (cc >= codim_) && (cc <= dim) );
-      return numbering_[ cc ][ ii ];
-    }
-
-    const FieldVector< ctype, dim > &position () const
-    {
-      return baryCenter_;
-    }
-
-    const GeometryType &type () const
-    {
-      return type_;
-    }
-
-    unsigned int topologyId () const DUNE_DEPRECATED
-    {
-      return type_.id();
-    }
-
-    template< class Topology, unsigned int codim, unsigned int i >
-    void initialize ()
-    {
-      typedef Initialize< Topology, codim > Init;
-      typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
-
-      codim_ = codim;
-
-      const unsigned int iVariable = i;
-      Dune::ForLoop< Init::template SubCodim, 0, dim-codim >::apply( iVariable, numbering_ );
-
-      baryCenter_ = ctype( 0 );
-      static const unsigned int numCorners = size( dim );
-      for( unsigned int j = 0; j < numCorners; ++j )
-      {
-        FieldVector< ctype, dim > corner;
-        RefDomain::corner( number( j, dim ), corner );
-        baryCenter_ += corner;
-      }
-      baryCenter_ *= ctype( 1 ) / ctype( numCorners );
-
-      typedef typename GenericGeometry::SubTopology< Topology, codim, i >::type SubTopology;
-      type_ = GeometryType( SubTopology::id, SubTopology::dimension );
-      // type_ = GenericGeometry::DuneGeometryType< SubTopology, GeometryType::simplex >::type();
-    }
-  };
-
+  // GenericReferenceElement::CornerStorage
+  // --------------------------------------
 
   template< class ctype, int dim >
   template< class Topology >
@@ -476,71 +580,36 @@ namespace Dune
   };
 
 
-  template< class ctype, int dim >
-  template< class Topology, int codim >
-  template< int subcodim >
-  struct GenericReferenceElement< ctype, dim >::SubEntityInfo::Initialize< Topology, codim >::SubCodim
-  {
-    typedef GenericGeometry::SubTopologySize< Topology, codim, subcodim > SubSize;
-    typedef GenericGeometry::GenericSubTopologyNumbering< Topology, codim, subcodim > SubNumbering;
 
-    static void apply ( unsigned int i, std::vector< int > (&numbering)[ dim+1 ] )
+  // GenericReferenceElement::Initialize
+  // -----------------------------------
+
+  template< class ctype, int dim >
+  template< int codim >
+  struct GenericReferenceElement< ctype, dim >::Create
+  {
+    static void apply ( const GenericReferenceElement< void, dim > &refElement, MappingsTable &mappings )
     {
-      const unsigned int size = SubSize::size( i );
-      numbering[ codim+subcodim ].resize( size );
-      for( unsigned int j = 0; j < size; ++j )
-        numbering[ codim+subcodim ][ j ] = SubNumbering::number( i, j );
+      integral_constant< int, 0 > codim0Variable;
+      const typename Codim< 0 >::Mapping &refMapping = *(mappings[ codim0Variable ][ 0 ]);
+
+      typedef typename GenericGeometry::MappingProvider< typename Codim< 0 >::Mapping, codim > MappingProvider;
+      integral_constant< int, codim > codimVariable;
+
+      const unsigned int size = refElement.size( codim );
+      mappings[ codimVariable ].resize( size );
+      for( unsigned int i = 0; i < size; ++i )
+      {
+        char *storage = new char[ MappingProvider::maxMappingSize ];
+        mappings[ codimVariable ][ i ] = refMapping.template trace< codim >( i, storage );
+      }
     }
   };
 
 
-  template< class ctype, int dim >
-  template< class Topology >
-  struct GenericReferenceElement< ctype, dim >::Initialize
-  {
-    typedef Dune::GenericReferenceElement< ctype, dim > GenericReferenceElement;
 
-    typedef typename GenericReferenceElement::template Codim< 0 >::Mapping ReferenceMapping;
-
-    template< int codim >
-    struct Codim
-    {
-      template< int i >
-      struct SubTopology
-      {
-        static void apply ( std::vector< SubEntityInfo > &info )
-        {
-          info[ i ].template initialize< Topology, codim, i >();
-        }
-      };
-
-      static void
-      apply ( std::vector< SubEntityInfo > (&info)[ dim+1 ],
-              MappingsTable &mappings )
-      {
-        const unsigned int size = GenericGeometry::Size< Topology, codim >::value;
-        info[ codim ].resize( size );
-        Dune::ForLoop< SubTopology, 0, size-1 >::apply( info[ codim ] );
-
-        if( codim > 0 )
-        {
-          integral_constant< int, 0 > codim0Variable;
-          const ReferenceMapping &refMapping = *(mappings[ codim0Variable ][ 0 ]);
-
-          typedef typename GenericGeometry::MappingProvider< ReferenceMapping, codim > MappingProvider;
-
-          integral_constant< int, codim > codimVariable;
-          mappings[ codimVariable ].resize( size );
-          for( unsigned int i = 0; i < size; ++i ) {
-            char* storage = new char[MappingProvider::maxMappingSize];
-            mappings[ codimVariable ][ i ] = refMapping.template trace< codim >( i, storage );
-          }
-        }
-      }
-    };
-  };
-
-
+  // GenericReferenceElement::Destroy
+  // --------------------------------
 
   template< class ctype, int dim >
   template< int codim >
@@ -548,15 +617,13 @@ namespace Dune
   {
     static void apply ( MappingsTable &mappings )
     {
-      if (codim > 0 )
+      integral_constant< int, codim > codimVariable;
+      for( size_t i = 0; i < mappings[ codimVariable ].size(); ++i )
       {
-        integral_constant< int, codim > codimVariable;
-        for( size_t i = 0; i < mappings[ codimVariable ].size(); ++i ) {
-          typedef typename Codim<codim>::Mapping Mapping;
-          mappings[ codimVariable ][ i ]->~Mapping();
-          char* storage = (char*)mappings[ codimVariable ][ i ];
-          delete[](storage);
-        }
+        typedef typename Codim< codim >::Mapping Mapping;
+        mappings[ codimVariable ][ i ]->~Mapping();
+        char *storage = (char *)mappings[ codimVariable ][ i ];
+        delete[]( storage );
       }
     }
   };
