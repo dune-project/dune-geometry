@@ -278,7 +278,7 @@ namespace Dune
 
     ~GenericReferenceElement ()
     {
-      ForLoop< Destroy, 1, dim >::apply( mappings_ );
+      ForLoop< Destroy, 0, dim >::apply( mappings_ );
       integral_constant< int, 0 > codim0Variable;
       if( mappings_[ codim0Variable ].size() )
         delete mappings_[ codim0Variable ][ 0 ];
@@ -513,7 +513,7 @@ namespace Dune
       mappings_[ codim0Variable ].resize( 1 );
       mappings_[ codim0Variable ][ 0 ]  = new VirtualMapping( codim0Variable );
 
-      Dune::ForLoop< Create, 1, dim >::apply( static_cast< Base & >( *this ), mappings_ );
+      Dune::ForLoop< Create, 0, dim >::apply( static_cast< Base & >( *this ), mappings_ );
     }
 
   private:
@@ -590,18 +590,21 @@ namespace Dune
   {
     static void apply ( const GenericReferenceElement< void, dim > &refElement, MappingsTable &mappings )
     {
-      integral_constant< int, 0 > codim0Variable;
-      const typename Codim< 0 >::Mapping &refMapping = *(mappings[ codim0Variable ][ 0 ]);
-
-      typedef typename GenericGeometry::MappingProvider< typename Codim< 0 >::Mapping, codim > MappingProvider;
-      integral_constant< int, codim > codimVariable;
-
-      const unsigned int size = refElement.size( codim );
-      mappings[ codimVariable ].resize( size );
-      for( unsigned int i = 0; i < size; ++i )
+      if( codim > 0 )
       {
-        char *storage = new char[ MappingProvider::maxMappingSize ];
-        mappings[ codimVariable ][ i ] = refMapping.template trace< codim >( i, storage );
+        integral_constant< int, 0 > codim0Variable;
+        const typename Codim< 0 >::Mapping &refMapping = *(mappings[ codim0Variable ][ 0 ]);
+
+        typedef typename GenericGeometry::MappingProvider< typename Codim< 0 >::Mapping, codim > MappingProvider;
+        integral_constant< int, codim > codimVariable;
+
+        const unsigned int size = refElement.size( codim );
+        mappings[ codimVariable ].resize( size );
+        for( unsigned int i = 0; i < size; ++i )
+        {
+          char *storage = new char[ MappingProvider::maxMappingSize ];
+          mappings[ codimVariable ][ i ] = refMapping.template trace< codim >( i, storage );
+        }
       }
     }
   };
@@ -617,13 +620,16 @@ namespace Dune
   {
     static void apply ( MappingsTable &mappings )
     {
-      integral_constant< int, codim > codimVariable;
-      for( size_t i = 0; i < mappings[ codimVariable ].size(); ++i )
+      if( codim > 0 )
       {
-        typedef typename Codim< codim >::Mapping Mapping;
-        mappings[ codimVariable ][ i ]->~Mapping();
-        char *storage = (char *)mappings[ codimVariable ][ i ];
-        delete[]( storage );
+        integral_constant< int, codim > codimVariable;
+        for( size_t i = 0; i < mappings[ codimVariable ].size(); ++i )
+        {
+          typedef typename Codim< codim >::Mapping Mapping;
+          mappings[ codimVariable ][ i ]->~Mapping();
+          char *storage = (char *)mappings[ codimVariable ][ i ];
+          delete[]( storage );
+        }
       }
     }
   };
