@@ -134,6 +134,37 @@ namespace Dune
 
 
 
+    // size
+    // ----
+
+    unsigned int size ( unsigned int topologyId, int dim, int codim )
+    {
+      assert( (dim >= 0) && (topologyId < numTopologies( dim )) );
+      assert( (0 <= codim) && (codim <= dim) );
+
+      if( codim > 0 )
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+        const unsigned int m = size( baseId, dim-1, codim-1 );
+
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 0);
+          return n + 2*m;
+        }
+        else
+        {
+          assert( isPyramid( topologyId, dim ) );
+          const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 1);
+          return m+n;
+        }
+      }
+      else
+        return 1;
+    }
+
+
+
     // SubTopology
     // -----------
 
@@ -606,8 +637,8 @@ namespace Dune
       unsigned int offsets_[ dimension+2 ];
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_SUBTOPOLOGIES_HH
