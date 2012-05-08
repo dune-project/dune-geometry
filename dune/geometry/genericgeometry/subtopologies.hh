@@ -295,8 +295,8 @@ namespace Dune
 
 
 
-    // subTopology
-    // -----------
+    // subTopologyId
+    // -------------
 
     inline unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i )
     {
