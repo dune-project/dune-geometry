@@ -137,7 +137,7 @@ namespace Dune
     // size
     // ----
 
-    unsigned int size ( unsigned int topologyId, int dim, int codim )
+    inline unsigned int size ( unsigned int topologyId, int dim, int codim )
     {
       assert( (dim >= 0) && (topologyId < numTopologies( dim )) );
       assert( (0 <= codim) && (codim <= dim) );
@@ -292,6 +292,43 @@ namespace Dune
     {
       typedef typename SubTopologyImpl< Topology, Topology :: dimension, codim, i > :: type type;
     };
+
+
+
+    // subTopology
+    // -----------
+
+    inline unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i )
+    {
+      assert( i < size( topologyId, dim, codim ) );
+
+      if( codim > 0 )
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+        const unsigned int m = size( baseId, dim-1, codim-1 );
+
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 0);
+          if( i < n )
+            return subTopologyId( baseId, dim-1, codim, i ) | ((unsigned int)prismConstruction << (dim - codim));
+          else
+            return subTopologyId( baseId, dim-1, codim-1, (i < n+m ? i-n : i - n+m) );
+        }
+        else
+        {
+          assert( isPyramid( topologyId, dim ) );
+          if( i < m )
+            return subTopologyId( baseId, dim-1, codim-1, i );
+          else if( codim < dim )
+            return subTopologyId( baseId, dim-1, codim, i-m ) | ((unsigned int)pyramidConstruction << (dim - codim));
+          else
+            return 0u;
+        }
+      }
+      else
+        return topologyId;
+    }
 
 
 
