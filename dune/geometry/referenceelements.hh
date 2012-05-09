@@ -165,75 +165,27 @@ namespace Dune
     template< class Topology, unsigned int codim, unsigned int i >
     void initialize ()
     {
-      typedef Initialize< Topology, codim > Init;
-
       codim_ = codim;
 
-      const unsigned int iVariable = i;
-      Dune::ForLoop< Init::template SubCodim, 0, dim-codim >::apply( iVariable, numbering_ );
+      const unsigned int topologyId = Topology::id;
 
-      typedef typename GenericGeometry::SubTopology< Topology, codim, i >::type SubTopology;
-      //type_ = GeometryType( SubTopology::id, SubTopology::dimension );
-      const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, Topology::dimension, codim, i );
-      if( subId != SubTopology::id )
-        std::cerr << "Wrong topologyId for SubTopology." << std::endl;
+      const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
       type_ = GeometryType( subId, Topology::dimension - codim );
+
+      for( int subcodim = 0; subcodim <= dim-codim_; ++subcodim )
+      {
+        const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
+
+        numbering_[ codim+subcodim ].resize( size );
+        for( unsigned int j = 0; j < size; ++j )
+          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, subcodim, j );
+      }
     }
 
   private:
-    template< class Topology, int codim > struct Initialize
-    {
-      template< int subcodim > struct SubCodim;
-    };
-
     int codim_;
     std::vector< unsigned int > numbering_[ dim+1 ];
     GeometryType type_;
-  };
-
-
-
-  // GenericReferenceElement::SubEntityInfo::Initialize::SubCodim
-  // ------------------------------------------------------------
-
-  template< int dim >
-  template< class Topology, int codim >
-  template< int subcodim >
-  struct GenericReferenceElement< void, dim >::SubEntityInfo::Initialize< Topology, codim >::SubCodim
-  {
-    typedef GenericGeometry::SubTopologySize< Topology, codim, subcodim > SubSize;
-    typedef GenericGeometry::GenericSubTopologyNumbering< Topology, codim, subcodim > SubNumbering;
-
-    static void apply ( unsigned int i, std::vector< unsigned int > (&numbering)[ dim+1 ] )
-    {
-      const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, Topology::dimension, codim, i );
-      const unsigned int size = GenericGeometry::size( subId, Topology::dimension-codim, subcodim );
-
-      //const unsigned int size = SubSize::size( i );
-      if( size != SubSize::size( i ) )
-      {
-        std::cerr << "Error for SubSize:" << std::endl;
-        std::cerr << "  topologyId = " << Topology::id << ", dimension = " << Topology::dimension
-                  << ", codim = " << codim << ", i = " << i << ", subcodim = " << subcodim << std::endl;
-        std::cerr << "  subTopologyId = " << subId << ", size = " << size << std::endl;
-        std::cerr << "  SubSize = " << SubSize::size( i ) << std::endl;
-      }
-
-      numbering[ codim+subcodim ].resize( size );
-      for( unsigned int j = 0; j < size; ++j )
-      {
-        //numbering[ codim+subcodim ][ j ] = SubNumbering::number( i, j );
-        numbering[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( Topology::id, Topology::dimension, codim, i, subcodim, j );
-        if( numbering[ codim+subcodim ][ j ] != SubNumbering::number( i, j ) )
-        {
-          std::cerr << "Error for SubNumbering:" << std::endl;
-          std::cerr << "  topologyId = " << Topology::id << ", dimension = " << Topology::dimension
-                    << ", codim = " << codim << ", i = " << i << ", subcodim = " << subcodim << ", j = " << j << std::endl;
-          std::cerr << "  subTopologyNumber = " << numbering[ codim+subcodim ][ j ] << std::endl;
-          std::cerr << "  SubNumberinging = " << SubNumbering::number( i, j ) << std::endl;
-        }
-      }
-    }
   };
 
 
