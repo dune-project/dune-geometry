@@ -314,7 +314,7 @@ namespace Dune
           if( i < n )
             return subTopologyId( baseId, dim-1, codim, i ) | ((unsigned int)prismConstruction << (mydim - 1));
           else
-            return subTopologyId( baseId, dim-1, codim-1, (i < n+m ? i-n : i - n+m) );
+            return subTopologyId( baseId, dim-1, codim-1, (i < n+m ? i-n : i-(n+m)) );
         }
         else
         {
@@ -578,7 +578,7 @@ namespace Dune
     {
       assert( (codim >= 0) && (subcodim >= 0) && (codim + subcodim <= dim) );
       assert( i < size( topologyId, dim, codim ) );
-      assert( j < size( subTopologyId( topologyId, dim, codim, i ), subcodim ) );
+      assert( j < size( subTopologyId( topologyId, dim, codim, i ), dim-codim, subcodim ) );
 
       if( codim == 0 )
         return j;
@@ -600,7 +600,7 @@ namespace Dune
           {
             const unsigned int subId = subTopologyId( baseId, dim-1, codim, i );
 
-            const unsigned int ns = size( subId, dim-codim-1, subcodim );
+            const unsigned int ns = (codim + subcodim < dim ? size( subId, dim-codim-1, subcodim ) : 0);
             if( j < ns )
               return subTopologyNumber( baseId, dim-1, codim, i, subcodim, j );
             else
@@ -629,7 +629,7 @@ namespace Dune
             if( j < ms )
               return subTopologyNumber( baseId, dim-1, codim, i-m, subcodim-1, j );
             else
-              return (codim+subcodim < dim ? subTopologyNumber( baseId, dim-1, codim, i-m, subcodim, j-ms ) : mb);
+              return (codim+subcodim < dim ? subTopologyNumber( baseId, dim-1, codim, i-m, subcodim, j-ms ) : 0) + mb;
           }
         }
       }
