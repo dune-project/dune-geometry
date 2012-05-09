@@ -301,6 +301,7 @@ namespace Dune
     inline unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i )
     {
       assert( i < size( topologyId, dim, codim ) );
+      const int mydim = dim - codim;
 
       if( codim > 0 )
       {
@@ -311,7 +312,7 @@ namespace Dune
         {
           const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 0);
           if( i < n )
-            return subTopologyId( baseId, dim-1, codim, i ) | ((unsigned int)prismConstruction << (dim - codim));
+            return subTopologyId( baseId, dim-1, codim, i ) | ((unsigned int)prismConstruction << (mydim - 1));
           else
             return subTopologyId( baseId, dim-1, codim-1, (i < n+m ? i-n : i - n+m) );
         }
@@ -321,7 +322,7 @@ namespace Dune
           if( i < m )
             return subTopologyId( baseId, dim-1, codim-1, i );
           else if( codim < dim )
-            return subTopologyId( baseId, dim-1, codim, i-m ) | ((unsigned int)pyramidConstruction << (dim - codim));
+            return subTopologyId( baseId, dim-1, codim, i-m ) | ((unsigned int)pyramidConstruction << (mydim - 1));
           else
             return 0u;
         }
