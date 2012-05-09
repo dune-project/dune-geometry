@@ -147,32 +147,24 @@ namespace Dune
   {
     int size ( int cc ) const
     {
-      assert( (cc >= codim_) && (cc <= dim) );
+      assert( (cc >= codim()) && (cc <= dim) );
       return numbering_[ cc ].size();
     }
 
     int number ( int ii, int cc ) const
     {
-      assert( (cc >= codim_) && (cc <= dim) );
+      assert( (cc >= codim()) && (cc <= dim) );
       return numbering_[ cc ][ ii ];
     }
 
-    const GeometryType &type () const
+    const GeometryType &type () const { return type_; }
+
+    void initialize ( unsigned int topologyId, int codim, unsigned int i )
     {
-      return type_;
-    }
-
-    template< class Topology, unsigned int codim, unsigned int i >
-    void initialize ()
-    {
-      codim_ = codim;
-
-      const unsigned int topologyId = Topology::id;
-
       const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
-      type_ = GeometryType( subId, Topology::dimension - codim );
+      type_ = GeometryType( subId, dim-codim );
 
-      for( int subcodim = 0; subcodim <= dim-codim_; ++subcodim )
+      for( int subcodim = 0; subcodim <= dim-codim; ++subcodim )
       {
         const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
 
@@ -183,7 +175,8 @@ namespace Dune
     }
 
   private:
-    int codim_;
+    int codim () const { return dim - type().dim(); }
+
     std::vector< unsigned int > numbering_[ dim+1 ];
     GeometryType type_;
   };
@@ -202,25 +195,12 @@ namespace Dune
     template< int codim >
     struct Codim
     {
-      template< int i >
-      struct SubTopology
-      {
-        static void apply ( std::vector< SubEntityInfo > &info )
-        {
-          info[ i ].template initialize< Topology, codim, i >();
-        }
-      };
-
       static void apply ( std::vector< SubEntityInfo > (&info)[ dim+1 ] )
       {
-        //const unsigned int size = GenericGeometry::Size< Topology, codim >::value;
         const unsigned int size = GenericGeometry::size( Topology::id, Topology::dimension, codim );
-        if( size != GenericGeometry::Size< Topology, codim >::value )
-          std::cerr << "Wrong size." << std::endl;
         info[ codim ].resize( size );
-
-        const unsigned int static_size = GenericGeometry::Size< Topology, codim >::value;
-        Dune::ForLoop< SubTopology, 0, static_size-1 >::apply( info[ codim ] );
+        for( unsigned int i = 0; i < size; ++i )
+          info[ codim ][ i ].initialize( Topology::id, codim, i );
       }
     };
   };
