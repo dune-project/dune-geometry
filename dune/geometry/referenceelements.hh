@@ -37,7 +37,6 @@ namespace Dune
     friend class GenericReferenceElementContainer< void, dim >;
 
     struct SubEntityInfo;
-    template< class Topology > struct Initialize;
 
     // make copy constructor private
     GenericReferenceElement ( const This & );
@@ -117,6 +116,24 @@ namespace Dune
 
     /** \brief initialize the reference element
      *
+     *  \param[in]  topologyId  topology id for the desired reference element
+     */
+    void initializeTopology ( unsigned int topologyId )
+    {
+      assert( topologyId < GenericGeometry::numTopologies( dim ) );
+
+      // set up subentities
+      for( int codim = 0; codim <= dim; ++codim )
+      {
+        const unsigned int size = GenericGeometry::size( topologyId, dim, codim );
+        info_[ codim ].resize( size );
+        for( unsigned int i = 0; i < size; ++i )
+          info_[ codim ][ i ].initialize( topologyId, codim, i );
+      }
+    }
+
+    /** \brief initialize the reference element
+     *
      *  \tparam  Topology  topology of the desired reference element
      *
      *  \note The dimension of the topology must match dim.
@@ -126,10 +143,7 @@ namespace Dune
     {
       dune_static_assert( (Topology::dimension == dim),
                           "Cannot initialize reference element for different dimension." );
-      typedef Initialize< Topology > Init;
-
-      // set up subentities
-      Dune::ForLoop< Init::template Codim, 0, dim >::apply( info_ );
+      initializeTopology( Topology::id );
     }
 
   private:
@@ -179,30 +193,6 @@ namespace Dune
 
     std::vector< unsigned int > numbering_[ dim+1 ];
     GeometryType type_;
-  };
-
-
-
-  // GenericReferenceElement::Initialize
-  // -----------------------------------
-
-  template< int dim >
-  template< class Topology >
-  struct GenericReferenceElement< void, dim >::Initialize
-  {
-    typedef Dune::GenericReferenceElement< void, dim > ReferenceElement;
-
-    template< int codim >
-    struct Codim
-    {
-      static void apply ( std::vector< SubEntityInfo > (&info)[ dim+1 ] )
-      {
-        const unsigned int size = GenericGeometry::size( Topology::id, Topology::dimension, codim );
-        info[ codim ].resize( size );
-        for( unsigned int i = 0; i < size; ++i )
-          info[ codim ][ i ].initialize( Topology::id, codim, i );
-      }
-    };
   };
 
 
@@ -437,9 +427,11 @@ namespace Dune
     template< class Topology >
     void initializeTopology ()
     {
+      dune_static_assert( (Topology::dimension == dim),
+                          "Cannot initialize reference element for different dimension." );
       typedef GenericGeometry::ReferenceDomain< Topology > ReferenceDomain;
 
-      Base::template initializeTopology< Topology >();
+      Base::template initializeTopology( Topology::id );
 
       // compute corners
       const unsigned int numVertices = Base::size( dim );
@@ -545,8 +537,8 @@ namespace Dune
 
 
 
-  // GenericReferenceElement::Initialize
-  // -----------------------------------
+  // GenericReferenceElement::Create
+  // -------------------------------
 
   template< class ctype, int dim >
   template< int codim >
