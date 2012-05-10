@@ -69,7 +69,7 @@ namespace Dune
      */
     int size ( int i, int c, int cc ) const
     {
-      assert( (c >= 0) && (c <= dim) );
+      assert( (i >= 0) && (i < size( c )) );
       return info_[ c ][ i ].size( cc );
     }
 
@@ -88,7 +88,7 @@ namespace Dune
      */
     int subEntity ( int i, int c, int ii, int cc ) const
     {
-      assert( (c >= 0) && (c <= dim) );
+      assert( (i >= 0) && (i < size( c )) );
       return info_[ c ][ i ].number( ii, cc );
     }
 
@@ -102,7 +102,7 @@ namespace Dune
      */
     const GeometryType &type ( int i, int c ) const
     {
-      assert( (c >= 0) && (c <= dim) );
+      assert( (i >= 0) && (i < size( c )) );
       return info_[ c ][ i ].type();
     }
 
@@ -167,7 +167,7 @@ namespace Dune
 
     int number ( int ii, int cc ) const
     {
-      assert( (cc >= codim()) && (cc <= dim) );
+      assert( (ii >= 0) && (ii < size( cc )) );
       return numbering_[ cc ][ ii ];
     }
 
@@ -447,7 +447,7 @@ namespace Dune
         for( unsigned int i = 0; i < size; ++i )
         {
           baryCenters_[ codim ][ i ] = FieldVector< ctype, dim >( ctype( 0 ) );
-          static const unsigned int numCorners = Base::size( i, codim, dim );
+          const unsigned int numCorners = Base::size( i, codim, dim );
           for( unsigned int j = 0; j < numCorners; ++j )
             baryCenters_[ codim ][ i ] += baryCenters_[ dim ][ Base::subEntity( i, codim, j, dim ) ];
           baryCenters_[ codim ][ i ] *= ctype( 1 ) / ctype( numCorners );
