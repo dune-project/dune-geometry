@@ -11,6 +11,9 @@
 */
 /** @defgroup Geometry dune-geometry
  */
+/**   @defgroup GeometryType Geometry Type
+ *    @ingroup Geometry
+ */
 /**   @defgroup GeometryGenericReferenceElements Generic Reference Elements
  *    @ingroup Geometry
  */
