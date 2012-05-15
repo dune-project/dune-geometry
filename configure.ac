@@ -5,8 +5,6 @@ DUNE_AC_INIT # gets module version from dune.module file
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER([config.h])
 
-AC_DEFINE(DUNE_GEOMETRY_FLAVOR_MN, 1, [This is Martin's personal development version of dune-geometry!])
-
 # we need no more than the standard DE-stuff
 # this module depends on dune-common
 # this implies checking for [dune-common]
