@@ -193,7 +193,7 @@ namespace Dune
      *    //   hybrid   [ true if Codim 0 is hybrid ]
      *    static const bool hybrid = true;
      *    //   topologyId [ for Codim 0, needed for (hybrid=false) ]
-     *    // static const unsigned int topologyId = SimlexTopology< dimGrid >::type::id;
+     *    // static const unsigned int topologyId = SimplexTopology< dimGrid >::type::id;
      *
      *    // explained below
      *    template< class Topology >
