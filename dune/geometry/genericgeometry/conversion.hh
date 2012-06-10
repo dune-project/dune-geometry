@@ -40,6 +40,7 @@ namespace Dune
     // ----------------
 
     /** \class DuneGeometryType
+     *  \ingroup GenericGeometry
      *  \brief statically convert a generic topology type into a GeometryType
      *
      *  \tparam  Topology  topology type to be converted

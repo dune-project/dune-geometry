@@ -1,27 +1,19 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-
-#include <cassert>
 #ifndef DUNE_GEOMETRY_TYPE_HH
 #define DUNE_GEOMETRY_TYPE_HH
-
-#define DISABLE_GEOMETRYTYPE_DEPRECATION_WARNING
-#include <dune/common/geometrytype.hh>
-#undef DISABLE_GEOMETRYTYPE_DEPRECATION_WARNING
-
-#ifdef DOXYGEN
-// Compare the following code with the original header dune/common/geometrytype.hh
-// for changes before removing the deprecated header!
 
 /** \file
  *  \brief A unique label for each type of element that can occur in a grid
  */
 
+#include <cassert>
+
 #include <dune/common/exceptions.hh>
 #include <dune/common/deprecated.hh>
 
-namespace Dune {
-
+namespace Dune
+{
   /** \brief Unique label for each type of entities that can occur in DUNE grids
    *
    * This class has to be extended if a grid implementation with new entity types
@@ -351,8 +343,8 @@ namespace Dune {
     }
     if (a.isNone())
     {
-      s << "(none, " << a.dim() << ")"; else       // Doxygen
-        return s;
+      s << "(none, " << a.dim() << ")";
+      return s;
     }
     s << "(other [" << a.id() << "], " << a.dim() << ")";
     return s;
@@ -384,7 +376,6 @@ namespace Dune {
     }
     return s;
   }
-}
-#endif // #ifdef DOXYGEN
+} // namespace Dune
 
 #endif // DUNE_GEOMETRY_TYPE_HH
