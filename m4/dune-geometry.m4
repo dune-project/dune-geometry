@@ -7,7 +7,6 @@ dnl -*- autoconf -*-
 # This macro should be invoked by every module which depends on dune-geometry, as
 # well as by dune-geometry itself
 AC_DEFUN([DUNE_GEOMETRY_CHECKS], [
-  AC_REQUIRE([DUNE_PATH_ALGLIB])
 ])
 
 # Additional checks needed to find dune-geometry
