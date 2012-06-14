@@ -6,8 +6,7 @@ quadraturerules_HEADERS =			\
 	gaussquadrature.hh			\
 	genericquadrature.hh			\
 	jacobi_1_0_imp.hh			\
-	jacobi_2_0_imp.hh			\
-	lobattoquadrature.hh
+	jacobi_2_0_imp.hh
 
 headercheck_IGNORE = \
 	cube_imp.hh				\

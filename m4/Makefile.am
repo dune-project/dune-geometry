@@ -1,5 +1,4 @@
 M4FILES = 				\
-	alglib.m4			\
 	dune-geometry.m4
 
 aclocaldir = $(datadir)/aclocal

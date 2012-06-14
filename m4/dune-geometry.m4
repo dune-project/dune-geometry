@@ -8,8 +8,6 @@ dnl -*- autoconf -*-
 # well as by dune-geometry itself
 AC_DEFUN([DUNE_GEOMETRY_CHECKS], [
   AC_DEFINE(DUNE_GEOMETRY_FLAVOR_MN, 1, [This is Martin's personal development version of dune-geometry!])
-
-  AC_REQUIRE([DUNE_PATH_ALGLIB])
 ])
 
 # Additional checks needed to find dune-geometry
