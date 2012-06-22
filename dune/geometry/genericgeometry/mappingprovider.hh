@@ -227,7 +227,7 @@ namespace Dune
       static const unsigned int codimension = codim;
       static const unsigned int mydimension = dimension - codimension;
 
-      static const bool hybrid = IsCodimHybrid< Topology, codim >::value;
+      static const bool hybrid = (mydimension != dimension) && IsHybrid< Topology >::value;
 
     private:
       template< bool >

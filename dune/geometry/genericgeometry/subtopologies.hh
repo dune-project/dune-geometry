@@ -539,18 +539,6 @@ namespace Dune
     };
 
 
-
-    // IsCodimHybrid
-    // -------------
-
-    template< class Topology, unsigned int codim >
-    struct IsCodimHybrid
-    {
-      static const bool value = (codim != 0) && IsHybrid< Topology >::value;
-    };
-
-
-
     // SubTopologyMapper
     // -----------------
 
