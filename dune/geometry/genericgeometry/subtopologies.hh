@@ -576,7 +576,7 @@ namespace Dune
         offsets_[ 0 ] = 0;
         ForLoop< CalcOffset, 0, dimension >::apply( offsets_ );
         assert( size() == staticSize );
-      };
+      }
 
       unsigned int operator() ( const unsigned int codim, const unsigned int subEntity ) const
       {

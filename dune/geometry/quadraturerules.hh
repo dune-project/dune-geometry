@@ -201,7 +201,7 @@ namespace Dune {
       return instance;
     }
     //! private constructor
-    QuadratureRules () {};
+    QuadratureRules () {}
   public:
     //! select the appropriate QuadratureRule for GeometryType t and order p
     static const QuadratureRule& rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::Gauss)
