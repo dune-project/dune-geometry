@@ -27,21 +27,19 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
 {
   using Dune::GeometryType;
   ctype exact = 0;
-  switch (t.basicType())
+  if (t.isCube())
   {
-  case GeometryType::cube :
     exact=1.0/(p+1);
-    break;
-
-  case GeometryType::simplex :
+  }
+  else if (t.isSimplex())
+  {
     /* 1/(prod(k=1..dim,(p+k)) */
     exact = ctype( 1 );
     for( int k = 1; k <= dim; ++k )
       exact *= p+k;
     exact = ctype( 1 ) / exact;
-    break;
-
-  case GeometryType::prism :
+  }
+  else if (t.isPrism())
   {
     const int pdim = (dim > 0 ? dim-1 : 0);
     if( direction < dim-1 )
@@ -54,10 +52,9 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
     }
     else
       exact = ctype( 1 ) / ctype( Dune::Factorial< pdim >::factorial * (p+1));
-    break;
   }
-
-  case GeometryType::pyramid :
+  else if (t.isPyramid())
+  {
     switch( direction )
     {
     case 0 :
@@ -68,10 +65,11 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
       exact=2.0/((p+1)*(p+2)*(p+3));
       break;
     };
-    break;
-  default :
+  }
+  else
+  {
     DUNE_THROW(Dune::NotImplemented, __func__ << " for " << t);
-  };
+  }
   return exact;
 };
 
