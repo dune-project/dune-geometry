@@ -26,11 +26,11 @@ namespace Dune
     #ifndef DEPRECATEDINT
     operator unsigned int () { return i; }
     #endif
-    unsigned int value() { return i; };
+    unsigned int value() { return i; }
     #ifdef DEPRECATEDINT
     explicit
     #endif
-    deprecated_int(unsigned int j) : i(j) {};
+    deprecated_int(unsigned int j) : i(j) {}
   };
 
   namespace GenericGeometry
