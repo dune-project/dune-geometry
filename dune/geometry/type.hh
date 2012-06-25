@@ -10,7 +10,6 @@
 #include <cassert>
 
 #include <dune/common/exceptions.hh>
-#include <dune/common/deprecated.hh>
 
 namespace Dune
 {
@@ -262,21 +261,6 @@ namespace Dune
     /** \brief Return dimension of the type */
     unsigned int dim() const {
       return dim_;
-    }
-
-    /** \brief Return the basic type of the type */
-    BasicType basicType() const DUNE_DEPRECATED {
-      if (isSimplex())
-        return GeometryType::simplex;
-      if (isCube())
-        return GeometryType::cube;
-      if (isPyramid())
-        return GeometryType::pyramid;
-      if (isPrism())
-        return GeometryType::prism;
-      if (isNone())
-        return GeometryType::none;
-      return GeometryType::extended;
     }
 
     /** \brief Return the topology id the type */
