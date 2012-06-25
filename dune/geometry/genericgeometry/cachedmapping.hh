@@ -8,7 +8,6 @@
 #include <dune/geometry/genericgeometry/referenceelements.hh>
 #include <dune/geometry/genericgeometry/matrixhelper.hh>
 #include <dune/geometry/genericgeometry/mapping.hh>
-//#include <dune/geometry/genericgeometry/traceprovider.hh>
 
 namespace Dune
 {
@@ -264,14 +263,6 @@ namespace Dune
       // can we safely assume that this mapping is always affine?
       static const bool alwaysAffine = Mapping::alwaysAffine;
 
-#if 0
-      template< unsigned int codim >
-      struct Codim
-      {
-        typedef typename TraceProvider< Topology, GeometryTraits, codim, false >::Trace Trace;
-      };
-#endif
-
       typedef typename GeometryTraits::Caching Caching;
 
     private:
@@ -299,10 +290,6 @@ namespace Dune
 
       bool affine () const { return (alwaysAffine || storage().affine); }
       Dune::GeometryType type () const { return Dune::GeometryType( Topology() ); }
-
-#if 0
-      unsigned int topologyId () const DUNE_DEPRECATED { return type().id(); }
-#endif
 
       int numCorners () const { return ReferenceElement::numCorners; }
       GlobalCoordinate corner ( int i ) const { return mapping().corner( i ); }
@@ -384,25 +371,6 @@ namespace Dune
           computeJacobianInverseTransposed( x );
         return jacobianInverseTransposed();
       }
-
-#if 0
-      This *clone () const
-      {
-        return new This( *this );
-      }
-
-      This* clone ( char *mappingStorage ) const
-      {
-        return new( mappingStorage ) This( *this );
-      }
-
-      template< unsigned int codim, bool hybrid >
-      typename TraceProvider< Topology, GeometryTraits, codim, hybrid >::Trace*
-      trace ( unsigned int i, char *mappingStorage ) const
-      {
-        return TraceProvider< Topology, GeometryTraits, codim, hybrid >::construct( mapping(), i, mappingStorage );
-      }
-#endif
 
       const Mapping &mapping () const { return mapping_; }
 
