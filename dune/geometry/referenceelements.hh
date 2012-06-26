@@ -598,12 +598,6 @@ namespace Dune
     const_iterator begin () const { return values_; }
     const_iterator end () const { return values_ + numTopologies; }
 
-    static const GenericReferenceElementContainer &instance () DUNE_DEPRECATED
-    {
-      static GenericReferenceElementContainer inst;
-      return inst;
-    }
-
   private:
     template< int topologyId >
     struct Builder
