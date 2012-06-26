@@ -307,12 +307,6 @@ namespace Dune
     /** \brief obtain the type of this reference element */
     const GeometryType &type () const { return type( 0, 0 ); }
 
-    unsigned int topologyId ( int i, int c ) const DUNE_DEPRECATED
-    {
-      assert( (c >= 0) && (c <= dim) );
-      return info_[ c ][ i ].topologyId();
-    }
-
     /** \brief obtain the volume of the reference element */
     ctype volume () const
     {
@@ -402,11 +396,6 @@ namespace Dune
     const GeometryType &type () const
     {
       return type_;
-    }
-
-    unsigned int topologyId () const DUNE_DEPRECATED
-    {
-      return type_.id();
     }
 
     template< class Topology, unsigned int codim, unsigned int i >
@@ -578,11 +567,6 @@ namespace Dune
     GenericReferenceElementContainer ()
     {
       ForLoop< Builder, 0, numTopologies-1 >::apply( values_ );
-    }
-
-    const value_type &operator() ( const unsigned int topologyId ) const DUNE_DEPRECATED
-    {
-      return values_[ topologyId ];
     }
 
     const value_type &operator() ( const GeometryType &type ) const
