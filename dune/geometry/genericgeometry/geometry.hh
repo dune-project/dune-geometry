@@ -272,10 +272,7 @@ namespace Dune
       typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
     private:
-      dune_static_assert( (0 <= mydimension) && (mydimension <= dimGrid),
-                          "Invalid geometry dimension." );
-
-      static const int codimension = dimGrid - mydimension;
+      dune_static_assert( (0 <= mydimension), "Geometry dimension must be nonnegative." );
 
       template< bool >
       struct Hybrid
@@ -292,7 +289,7 @@ namespace Dune
 
       typedef typename SelectType< Traits::hybrid, Hybrid< true >, NonHybrid< false > >::Type::Mapping
       ElementMapping;
-      typedef GenericGeometry::MappingProvider< ElementMapping, codimension > MappingProvider;
+      typedef GenericGeometry::MappingProvider< ElementMapping, dimGrid - mydimension > MappingProvider;
 
     protected:
       typedef typename MappingProvider::Mapping Mapping;
