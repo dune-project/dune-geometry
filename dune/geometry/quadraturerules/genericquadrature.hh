@@ -90,12 +90,6 @@ namespace Dune
         return (*this)[ i ].weight();
       }
 
-      //! topology id of the quadrature
-      unsigned int topologyId () const DUNE_DEPRECATED
-      {
-        return type_.id();
-      }
-
       //! order of the quadrature
       unsigned int order () const
       {

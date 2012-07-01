@@ -115,7 +115,6 @@ namespace Dune
       virtual bool affine () const = 0;
       /** \brief obtain the name of the reference element */
       virtual Dune::GeometryType type () const = 0;
-      unsigned int topologyId () const DUNE_DEPRECATED { return type().id(); }
 
       /** \brief obtain number of corners of the corresponding reference element */
       virtual int numCorners () const = 0;
@@ -389,7 +388,6 @@ namespace Dune
       bool affine () const { return mapping_.affine(); }
       /** \brief obtain the name of the reference element */
       Dune::GeometryType type () const { return mapping_.type(); }
-      unsigned int topologyId () const DUNE_DEPRECATED { return type().id(); }
 
       /** \brief obtain number of corners of the corresponding reference element */
       int numCorners () const { return mapping_.numCorners(); }

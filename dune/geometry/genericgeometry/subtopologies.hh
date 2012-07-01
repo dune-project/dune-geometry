@@ -675,18 +675,6 @@ namespace Dune
     };
 
 
-
-    // IsCodimHybrid
-    // -------------
-
-    template< class Topology, unsigned int codim >
-    struct IsCodimHybrid
-    {
-      static const bool value = (codim != 0) && IsHybrid< Topology >::value;
-    };
-
-
-
     // SubTopologyMapper
     // -----------------
 
@@ -724,7 +712,7 @@ namespace Dune
         offsets_[ 0 ] = 0;
         ForLoop< CalcOffset, 0, dimension >::apply( offsets_ );
         assert( size() == staticSize );
-      };
+      }
 
       unsigned int operator() ( const unsigned int codim, const unsigned int subEntity ) const
       {

@@ -21,6 +21,8 @@
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometry.hh>
 
+#include <dune/geometry/genericgeometry/test/checkgeometry.hh>
+
 
 using namespace Dune;
 
@@ -132,6 +134,10 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
@@ -177,6 +183,10 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
@@ -211,6 +221,10 @@ int main (int argc , char **argv) try
         gt.makeLine();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // line segment
@@ -256,6 +270,10 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
@@ -290,6 +308,10 @@ int main (int argc , char **argv) try
         gt.makeLine();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // line segment
@@ -325,6 +347,10 @@ int main (int argc , char **argv) try
         gt.makeTriangle();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -347,6 +373,10 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -369,6 +399,10 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -415,6 +449,10 @@ int main (int argc , char **argv) try
         gt.makeVertex();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // vertex
@@ -449,6 +487,10 @@ int main (int argc , char **argv) try
         gt.makeLine();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
       }       // line segment
@@ -484,6 +526,10 @@ int main (int argc , char **argv) try
         gt.makeTriangle();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -506,6 +552,10 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -539,6 +589,10 @@ int main (int argc , char **argv) try
         gt.makeQuadrilateral();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         // Downgrade to a warning for now -- it fails, but we don't
         // want to spoil all the other tests.
         if(!testBasicGeometryVolume(insideGeometry, volume, result,
@@ -582,6 +636,10 @@ int main (int argc , char **argv) try
         gt.makeTetrahedron();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         std::cerr << "Warning: volume check skipped (reference volume "
                   << "not known)." << std::endl;
         testBasicGeometryAffine(insideGeometry, affine, result);
@@ -606,6 +664,10 @@ int main (int argc , char **argv) try
         gt.makePyramid();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -629,6 +691,11 @@ int main (int argc , char **argv) try
 
         gt.makePyramid();
         ElementGeometry insideGeometry( gt, corners );
+
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
 
         std::cerr << "Warning: volume check skipped (reference volume "
                   << "not known)." << std::endl;
@@ -656,6 +723,10 @@ int main (int argc , char **argv) try
         gt.makePrism();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 
@@ -680,6 +751,11 @@ int main (int argc , char **argv) try
 
         gt.makePrism();
         ElementGeometry insideGeometry( gt, corners );
+
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
 
         std::cerr << "Warning: volume check skipped (reference volume "
                   << "not known)." << std::endl;
@@ -710,6 +786,10 @@ int main (int argc , char **argv) try
         gt.makeHexahedron();
         ElementGeometry insideGeometry( gt, corners );
 
+        if (checkGeometry(insideGeometry))
+          pass(result);
+        else
+          fail(result);
         testBasicGeometryVolume(insideGeometry, volume, result);
         testBasicGeometryAffine(insideGeometry, affine, result);
 

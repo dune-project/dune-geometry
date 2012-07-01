@@ -109,11 +109,6 @@ namespace Dune
     /** \brief obtain the type of this reference element */
     const GeometryType &type () const { return type( 0, 0 ); }
 
-    unsigned int topologyId ( int i, int c ) const DUNE_DEPRECATED
-    {
-      return type( i, c ).id();
-    }
-
     /** \brief initialize the reference element
      *
      *  \param[in]  topologyId  topology id for the desired reference element
@@ -609,11 +604,6 @@ namespace Dune
       ForLoop< Builder, 0, numTopologies-1 >::apply( values_ );
     }
 
-    const value_type &operator() ( const unsigned int topologyId ) const DUNE_DEPRECATED
-    {
-      return values_[ topologyId ];
-    }
-
     const value_type &operator() ( const GeometryType &type ) const
     {
       assert( type.dim() == dim );
@@ -642,12 +632,6 @@ namespace Dune
 
     const_iterator begin () const { return values_; }
     const_iterator end () const { return values_ + numTopologies; }
-
-    static const GenericReferenceElementContainer &instance () DUNE_DEPRECATED
-    {
-      static GenericReferenceElementContainer inst;
-      return inst;
-    }
 
   private:
     template< int topologyId >

@@ -44,7 +44,7 @@ namespace Dune
       static const unsigned int codimension = codim;
       static const unsigned int mydimension = dimension - codimension;
 
-      static const bool hybrid = (forceHybrid || IsCodimHybrid< Topology, codim >::value);
+      static const bool hybrid = (forceHybrid || ((mydimension != dimension) && IsHybrid< Topology >::value));
 
       typedef GenericGeometry::Mapping< typename GeometryTraits::CoordTraits, Topology, GeometryTraits::dimWorld, MappingImpl > Mapping;
 

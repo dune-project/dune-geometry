@@ -272,10 +272,7 @@ namespace Dune
       typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
     private:
-      dune_static_assert( (0 <= mydimension) && (mydimension <= dimGrid),
-                          "Invalid geometry dimension." );
-
-      static const int codimension = dimGrid - mydimension;
+      dune_static_assert( (0 <= mydimension), "Geometry dimension must be nonnegative." );
 
       template< bool >
       struct Hybrid
@@ -292,7 +289,7 @@ namespace Dune
 
       typedef typename SelectType< Traits::hybrid, Hybrid< true >, NonHybrid< false > >::Type::Mapping
       ElementMapping;
-      typedef GenericGeometry::MappingProvider< ElementMapping, codimension > MappingProvider;
+      typedef GenericGeometry::MappingProvider< ElementMapping, dimGrid - mydimension > MappingProvider;
 
     protected:
       typedef typename MappingProvider::Mapping Mapping;
@@ -319,32 +316,6 @@ namespace Dune
       BasicGeometry ()
         : mapping_( nullptr )
       {}
-
-      /** \brief constructor
-       *
-       *  \param[in]  topologyId  topology id of the desired geometry
-       *  \param[in]  coords      coordinates
-       */
-      template< class CoordVector >
-      DUNE_DEPRECATED BasicGeometry ( const unsigned int topologyId, const CoordVector &coords )
-      {
-        mapping_ = MappingProvider::construct( topologyId, coords, mappingStorage_ );
-      }
-
-      /** \brief constructor
-       *
-       *  \param[in]  topologyId  topology id of the desired geometry
-       *  \param[in]  coords      coordinates
-       *  \param[in]  affine      flag whether the mapping is affine
-       *
-       *  \note It is assume that the flag affine is true if and only if the
-       *        mapping is affine.
-       */
-      template< class CoordVector >
-      DUNE_DEPRECATED BasicGeometry ( const unsigned int topologyId, const CoordVector &coords, const bool affine )
-      {
-        mapping_ = MappingProvider::construct( topologyId, coords, affine, mappingStorage_ );
-      }
 
       /** \brief Constructor using a GeometryType and a list of corner coordinates */
       template< class CoordVector >
@@ -520,16 +491,6 @@ namespace Dune
       Geometry ()
       {}
 
-      template< class CoordVector >
-      DUNE_DEPRECATED Geometry ( const unsigned int topologyId, const CoordVector &coords )
-        : Base( topologyId, coords )
-      {}
-
-      template< class CoordVector >
-      DUNE_DEPRECATED Geometry ( const unsigned int topologyId, const CoordVector &coords, const bool affine )
-        : Base( topologyId, coords, affine )
-      {}
-
       /** \brief Copy constructor from another geometry */
       template< class Geo >
       explicit Geometry ( const Geo &geo )
@@ -576,16 +537,6 @@ namespace Dune
       typedef typename Base::Mapping Mapping;
 
     public:
-      template< class CoordVector >
-      DUNE_DEPRECATED LocalGeometry ( const unsigned int topologyId, const CoordVector &coords )
-        : Base( topologyId, coords )
-      {}
-
-      template< class CoordVector >
-      DUNE_DEPRECATED LocalGeometry ( const unsigned int topologyId, const CoordVector &coords, const bool affine )
-        : Base( topologyId, coords, affine )
-      {}
-
       /** \brief Copy constructor from another geometry */
       template< class Geo >
       explicit LocalGeometry ( const Geo &geo )
