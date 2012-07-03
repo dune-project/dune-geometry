@@ -10,6 +10,7 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
 
+#include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/quadraturerules/gaussquadrature.hh>
 #include <dune/geometry/referenceelements.hh>
 

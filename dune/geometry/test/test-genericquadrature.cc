@@ -7,7 +7,7 @@
 
 #include <dune/common/misc.hh>
 
-#include "../referenceelements.hh"
+#include <dune/geometry/referenceelements.hh>
 #include "../quadraturerules/gaussquadrature.hh"
 
 bool success = true;

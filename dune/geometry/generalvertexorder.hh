@@ -14,7 +14,7 @@
 #include <dune/common/iteratorfacades.hh>
 
 #include "type.hh"
-#include "referenceelements.hh"
+#include <dune/geometry/referenceelements.hh>
 
 namespace Dune {
 
