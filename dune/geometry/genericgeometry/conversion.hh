@@ -648,53 +648,6 @@ namespace Dune
       // dune_static_assert( dim >= 3, "Dune pyramids must be at least 3-dimensional." );
     };
 
-
-
-
-    // topologyId
-    // ----------
-
-    //! convert a GeometryType into a topologyId
-    /**
-     * \code
-     *#include <dune/geometry/genericgeometry/conversion.hh>
-     * \endcode
-     *
-     * \deprecated please use GeometryType::id()
-     */
-    inline unsigned int topologyId ( const GeometryType &type ) DUNE_DEPRECATED_MSG("use GeometryType::id() instead");
-    inline unsigned int topologyId ( const GeometryType &type )
-    {
-      return type.id();
-    }
-
-
-
-    // hasGeometryType
-    // ---------------
-
-    inline bool
-    hasGeometryType ( const unsigned int topologyId, const unsigned int dimension ) DUNE_DEPRECATED;
-    inline bool
-    hasGeometryType ( const unsigned int topologyId, const unsigned int dimension )
-    {
-      return true;
-    }
-
-
-    // geometryType
-    // ------------
-    /**
-       \deprecated you can now construct a GeometryType directly using GeometryType::GeometryType(unsigned int topologyId, unsigned int dim)
-     */
-    inline GeometryType
-    geometryType ( const unsigned int topologyId, const unsigned int dimension ) DUNE_DEPRECATED_MSG("Construct a GeometryTpye directly instead");
-    inline GeometryType
-    geometryType ( const unsigned int topologyId, const unsigned int dimension )
-    {
-      return GeometryType( topologyId, dimension );
-    }
-
   }
 
 }
