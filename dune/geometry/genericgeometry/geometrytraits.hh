@@ -109,6 +109,11 @@ namespace Dune
      *
      *  \note DefaultGeometryTraits can directly be used for the
      *        <em>Traits</em> argument of BasicGeometry.
+     *
+     * \tparam ctype Type used for coordinate coefficients
+     * \tparam dimG Dimension of the grid \note will be ignored!
+     * \tparam dimW Dimension of the range space of this geometry
+     * \tparam alwaysAffine Set to true if geometry is always affine (enables a few optimizations)
      */
     template< class ctype, int dimG, int dimW, bool alwaysAffine = false >
     struct DefaultGeometryTraits
