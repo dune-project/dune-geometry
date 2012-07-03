@@ -77,15 +77,14 @@ namespace Dune
 
 
 
-    // If not affine only volume is cached (based on intElCompute)
-    // otherwise all quantities can be cached using:
-    //   ComputeOnDemand:    assign if method called using barycenter
-    //   PreCompute:         assign in constructor using barycenter
+    /** \brief If not affine only volume is cached (based on intElCompute)
+     * otherwise all quantities can be cached
+     */
     enum EvaluationType
     {
-      //! compute on demand
+      //! assign if method called using barycenter
       ComputeOnDemand,
-      //! compute in constructor
+      //! assign in constructor using barycenter
       PreCompute
     };
 

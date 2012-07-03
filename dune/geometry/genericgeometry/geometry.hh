@@ -23,7 +23,7 @@ namespace Dune
      *
      *  Based on a recursive definition of the reference elements, a generic
      *  implementation of Dune::Geometry is provided. The class used for the
-     *  implementation of the Dune::Geometry engine, is
+     *  implementation of the Dune::Geometry engine is
      *  GenericGeometry::BasicGeometry.
      *
      *  The BasicGeometry class takes a template argument Traits specifying
@@ -87,7 +87,7 @@ namespace Dune
      *    or for grids with only affine transformations - which in the case of
      *    the local geometries is often true - the last template
      *    argument (default false) can be used to switch to mappings which are
-     *    assumed to always be affined (no checking done).
+     *    assumed to always be affine (no checking done).
      *  - Add to the GridFamily::Traits::Codim<codim> structure:
      *    \code
             typedef Dune :: Geometry
@@ -122,7 +122,7 @@ namespace Dune
      *      element. This is achieved by calling the constructor on the
      *      GenericGeometry::Geometry class (with the codim template equal to
      *      one) passing a codimension zero geometry implementation and the number of the
-     *      codimension one subentity (in DUNE numbering).
+     *      codimension one subentity.
      *      \code
             GenericGeometry::Geometry<myGridDim-1,myWorldDim,MyGrid>
                              (inside->geometry(),numberInSelf());
@@ -156,8 +156,7 @@ namespace Dune
             \endcode
      *    .
      *  - To add geometries for subentitiies of codim>0
-     *    given a entity en of codimension zero and the subentity number subNr
-     *    in DUNE numbering:
+     *    given a entity en of codimension zero and the subentity number subNr :
      *    - geometry: the geometry can be constructed by the following line of code
             \code
             GenericGeometry::Geometry<myGridDim-codim,myWorldDim,MyGrid>
@@ -171,13 +170,12 @@ namespace Dune
     // BasicGeometry
     // -------------
 
-    /** \class   BasicGeometry
-     *  \ingroup GenericGeometry
+    /** \ingroup GenericGeometry
      *  \brief   generic implementation of DUNE geometries
      *
      *  This class is provides a generic implementation of a DUNE geometry.
      *
-     *  Parameters shared by all codimensions are summarized into one class
+     *  Parameters shared by all codimensions are summarized in one class
      *  parameter called Traits. The following default implementation can be
      *  used (via subclassing) to provide the necessary information. It contains
      *  exactly the required fields:
