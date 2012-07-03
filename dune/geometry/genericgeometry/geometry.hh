@@ -277,19 +277,19 @@ namespace Dune
       template< bool >
       struct Hybrid
       {
-        typedef HybridMapping< dimGrid, Traits > Mapping;
+        typedef HybridMapping< mydim, Traits > Mapping;
       };
 
       template< bool >
       struct NonHybrid
       {
-        typedef typename GenericGeometry::Topology< Traits::topologyId, dimGrid >::type Topology;
+        typedef typename GenericGeometry::Topology< Traits::topologyId, mydim >::type Topology;
         typedef GenericGeometry::NonHybridMapping< Topology, Traits > Mapping;
       };
 
       typedef typename SelectType< Traits::hybrid, Hybrid< true >, NonHybrid< false > >::Type::Mapping
       ElementMapping;
-      typedef GenericGeometry::MappingProvider< ElementMapping, dimGrid - mydimension > MappingProvider;
+      typedef GenericGeometry::MappingProvider< ElementMapping, 0 > MappingProvider;
 
     protected:
       typedef typename MappingProvider::Mapping Mapping;
