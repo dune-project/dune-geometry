@@ -8,7 +8,6 @@
 
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
-#include <dune/geometry/genericgeometry/conversion.hh>
 #include <dune/geometry/genericgeometry/hybridmapping.hh>
 #include <dune/geometry/genericgeometry/mappingprovider.hh>
 

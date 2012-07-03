@@ -7,8 +7,8 @@
 #include <map>
 
 #include <dune/common/fvector.hh>
-#include <dune/geometry/genericgeometry/conversion.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
+#include "type.hh"
 
 namespace Dune
 {
