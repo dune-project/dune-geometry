@@ -742,9 +742,9 @@ int main (int argc , char **argv) try
         corners[0][0] = 0.5; corners[0][1] = 0.0; corners[0][2] = 0.0;
         corners[1][0] = 1.0; corners[1][1] = 0.5; corners[1][2] = 0.0;
         corners[2][0] = 0.0; corners[2][1] = 1.0; corners[2][2] = 0.0;
-        corners[3][0] = 1.0; corners[3][1] = 1.0; corners[3][2] = 1.0;
-        corners[4][0] = 0.0; corners[4][1] = 0.5; corners[4][2] = 1.0;
-        corners[5][0] = 0.5; corners[5][1] = 0.0; corners[5][2] = 1.0;
+        corners[3][0] = 1.0; corners[3][1] = 0.5; corners[3][2] = 1.0;
+        corners[4][0] = 0.5; corners[4][1] = 1.0; corners[4][2] = 1.0;
+        corners[5][0] = 0.0; corners[5][1] = 0.0; corners[5][2] = 1.0;
 
         // to be determined
         //volume = ???;
