@@ -86,7 +86,7 @@ namespace Dune
       void local ( const GlobalCoordinate &y, LocalCoordinate &x ) const
       {
         const FieldType epsilon = CoordTraits::epsilon();
-        x = ReferenceElement::template baryCenter< 0 >( 0 );
+        x = ReferenceElement::baryCenter();
         LocalCoordinate dx;
         do
         {

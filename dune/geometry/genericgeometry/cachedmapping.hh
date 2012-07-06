@@ -293,7 +293,7 @@ namespace Dune
 
       int numCorners () const { return ReferenceElement::numCorners; }
       GlobalCoordinate corner ( int i ) const { return mapping().corner( i ); }
-      GlobalCoordinate center () const { return global( ReferenceElement::template baryCenter< 0 >( 0 ) ); }
+      GlobalCoordinate center () const { return global( ReferenceElement::baryCenter() ); }
 
       static bool checkInside ( const LocalCoordinate &x ) { return ReferenceElement::checkInside( x ); }
 
@@ -377,7 +377,7 @@ namespace Dune
     private:
       static const LocalCoordinate &baryCenter ()
       {
-        return ReferenceElement::template baryCenter< 0 >( 0 );
+        return ReferenceElement::baryCenter();
       }
 
       Storage &storage () const

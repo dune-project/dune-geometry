@@ -52,12 +52,14 @@ namespace Dune
         return SubTopologySize< Topology, codim, subcodim > :: size( i );
       }
 
-      template< unsigned int codim >
+      /** \brief Return the element barycenter
+       *  \todo Simplify the implementation
+       */
       static const FieldVector< ctype, dimension > &
-      baryCenter ( unsigned int i )
+      baryCenter ()
       {
-        integral_constant< int, codim > codimVariable;
-        return instance().baryCenters_[ codimVariable ][ i ];
+        integral_constant< int, 0 > codimVariable;
+        return instance().baryCenters_[ codimVariable ][ 0 ];
       }
 
       static const CoordinateType &corner ( unsigned int i )
