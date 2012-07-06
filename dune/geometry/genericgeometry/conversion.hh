@@ -567,24 +567,12 @@ namespace Dune
       typedef Pyramid
       < typename Convert< GeometryType :: simplex, dim-1 > :: type >
       type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template<>
     struct Convert< GeometryType :: simplex, 0 >
     {
       typedef Point type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template< unsigned int dim >
@@ -592,24 +580,12 @@ namespace Dune
     {
       typedef Prism< typename Convert< GeometryType :: cube, dim-1 > :: type >
       type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template<>
     struct Convert< GeometryType :: cube, 0 >
     {
       typedef Point type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template< unsigned int dim >
@@ -618,15 +594,6 @@ namespace Dune
       typedef Prism
       < typename Convert< GeometryType :: simplex, dim-1 > :: type >
       type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
-
-    private:
-      // dune_static_assert( dim >= 3, "Dune prisms must be at least 3-dimensional." );
     };
 
     template< unsigned int dim >
@@ -635,17 +602,6 @@ namespace Dune
       typedef Pyramid
       < typename Convert< GeometryType :: cube, dim-1 > :: type >
       type;
-
-      // Note that we map dune numbering into the generic one
-      // this is only important for pyramids
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
-
-    private:
-      // dune_static_assert( dim >= 3, "Dune pyramids must be at least 3-dimensional." );
     };
 
   }
