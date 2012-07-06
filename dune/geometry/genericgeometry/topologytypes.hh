@@ -146,7 +146,7 @@ namespace Dune
 
 
 
-    // PyramidTopoogy
+    // PyramidTopology
     // --------------
 
     template< unsigned int dim >
@@ -157,7 +157,7 @@ namespace Dune
 
 
 
-    // PrismTopoogy
+    // PrismTopology
     // --------------
 
     template< unsigned int dim >
