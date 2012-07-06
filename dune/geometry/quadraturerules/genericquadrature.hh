@@ -10,7 +10,6 @@
 #include <dune/geometry/type.hh>
 #include <dune/geometry/topologyfactory.hh>
 #include <dune/geometry/quadraturerules.hh>
-#include <dune/geometry/genericgeometry/conversion.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 
 namespace Dune

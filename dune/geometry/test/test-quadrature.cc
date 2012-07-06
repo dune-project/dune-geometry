@@ -6,7 +6,7 @@
 #include <config.h>
 
 #include "../quadraturerules.hh"
-#include "../referenceelements.hh"
+#include <dune/geometry/referenceelements.hh>
 
 bool success = true;
 

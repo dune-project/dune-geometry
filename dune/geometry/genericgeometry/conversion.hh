@@ -12,27 +12,6 @@
 namespace Dune
 {
 
-  /*!
-     \brief Helperclass to find spots that still use the old numbering
-
-     add -DDEPRECATEDINT to your CPPFLAGS to disable the transparent usage of
-     deprecated_int. This will disable implicit typeconversion from and to unsigned int
-   */
-  class deprecated_int
-  {
-    unsigned int i;
-  public:
-    //! implicit typeconversion to unsigned int
-    #ifndef DEPRECATEDINT
-    operator unsigned int () { return i; }
-    #endif
-    unsigned int value() { return i; }
-    #ifdef DEPRECATEDINT
-    explicit
-    #endif
-    deprecated_int(unsigned int j) : i(j) {}
-  };
-
   namespace GenericGeometry
   {
 
@@ -588,24 +567,12 @@ namespace Dune
       typedef Pyramid
       < typename Convert< GeometryType :: simplex, dim-1 > :: type >
       type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template<>
     struct Convert< GeometryType :: simplex, 0 >
     {
       typedef Point type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template< unsigned int dim >
@@ -613,24 +580,12 @@ namespace Dune
     {
       typedef Prism< typename Convert< GeometryType :: cube, dim-1 > :: type >
       type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template<>
     struct Convert< GeometryType :: cube, 0 >
     {
       typedef Point type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
     };
 
     template< unsigned int dim >
@@ -639,15 +594,6 @@ namespace Dune
       typedef Prism
       < typename Convert< GeometryType :: simplex, dim-1 > :: type >
       type;
-
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
-
-    private:
-      // dune_static_assert( dim >= 3, "Dune prisms must be at least 3-dimensional." );
     };
 
     template< unsigned int dim >
@@ -656,65 +602,7 @@ namespace Dune
       typedef Pyramid
       < typename Convert< GeometryType :: cube, dim-1 > :: type >
       type;
-
-      // Note that we map dune numbering into the generic one
-      // this is only important for pyramids
-      template< unsigned int codim >
-      static unsigned int map ( unsigned int i )
-      {
-        return MapNumbering<type>::template dune2generic<codim>(i);
-      }
-
-    private:
-      // dune_static_assert( dim >= 3, "Dune pyramids must be at least 3-dimensional." );
     };
-
-
-
-
-    // topologyId
-    // ----------
-
-    //! convert a GeometryType into a topologyId
-    /**
-     * \code
-     *#include <dune/geometry/genericgeometry/conversion.hh>
-     * \endcode
-     *
-     * \deprecated please use GeometryType::id()
-     */
-    inline unsigned int topologyId ( const GeometryType &type ) DUNE_DEPRECATED_MSG("use GeometryType::id() instead");
-    inline unsigned int topologyId ( const GeometryType &type )
-    {
-      return type.id();
-    }
-
-
-
-    // hasGeometryType
-    // ---------------
-
-    inline bool
-    hasGeometryType ( const unsigned int topologyId, const unsigned int dimension ) DUNE_DEPRECATED;
-    inline bool
-    hasGeometryType ( const unsigned int topologyId, const unsigned int dimension )
-    {
-      return true;
-    }
-
-
-    // geometryType
-    // ------------
-    /**
-       \deprecated you can now construct a GeometryType directly using GeometryType::GeometryType(unsigned int topologyId, unsigned int dim)
-     */
-    inline GeometryType
-    geometryType ( const unsigned int topologyId, const unsigned int dimension ) DUNE_DEPRECATED_MSG("Construct a GeometryTpye directly instead");
-    inline GeometryType
-    geometryType ( const unsigned int topologyId, const unsigned int dimension )
-    {
-      return GeometryType( topologyId, dimension );
-    }
 
   }
 

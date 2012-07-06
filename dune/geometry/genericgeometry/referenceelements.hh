@@ -52,12 +52,12 @@ namespace Dune
         return SubTopologySize< Topology, codim, subcodim > :: size( i );
       }
 
-      template< unsigned int codim >
+      /** \brief Return the element barycenter
+       */
       static const FieldVector< ctype, dimension > &
-      baryCenter ( unsigned int i )
+      baryCenter ()
       {
-        integral_constant< int, codim > codimVariable;
-        return instance().baryCenters_[ codimVariable ][ i ];
+        return instance().baryCenter_;
       }
 
       static const CoordinateType &corner ( unsigned int i )
@@ -90,7 +90,6 @@ namespace Dune
       }
 
     private:
-      template< int codim >
       class BaryCenterArray;
 
       ReferenceElement ()
@@ -99,69 +98,27 @@ namespace Dune
           ReferenceDomain< Topology > :: corner( i, corners_[ i ] );
         for( unsigned int i = 0; i < numNormals; ++i )
           ReferenceDomain< Topology > :: integrationOuterNormal( i, normals_[ i ] );
-      }
 
-      Dune::array< CoordinateType, numCorners > corners_;
-      CodimTable< BaryCenterArray, dimension > baryCenters_;
-      Dune::array< CoordinateType, numNormals > normals_;
-    };
+        // Compute the element barycenter
+        typedef SubTopologyNumbering< Topology, 0, dimension > Numbering;
+        typedef SubTopologySize< Topology, 0, dimension > Size;
 
-
-
-    template< class Topology, class ctype >
-    template< int codim >
-    class ReferenceElement< Topology, ctype > :: BaryCenterArray
-    {
-      enum { Size = GenericGeometry :: Size< Topology, codim > :: value };
-
-      typedef FieldVector< ctype, dimension > CoordinateType;
-
-      template< int i >
-      struct Builder;
-
-      CoordinateType baryCenters_[ Size ];
-
-    public:
-      BaryCenterArray ()
-      {
-        ForLoop< Builder, 0, Size-1 > :: apply( baryCenters_ );
-      }
-
-      const CoordinateType &operator[] ( unsigned int i ) const
-      {
-        assert( i < Size );
-        return baryCenters_[ i ];
-      }
-
-      static unsigned int size ()
-      {
-        return Size;
-      }
-    };
-
-    template< class Topology, class ctype >
-    template< int codim >
-    template< int i >
-    struct ReferenceElement< Topology, ctype > :: BaryCenterArray< codim > :: Builder
-    {
-      static void apply ( CoordinateType (&baryCenters)[ Size ] )
-      {
-        typedef SubTopologyNumbering< Topology, codim, dimension - codim > Numbering;
-        typedef SubTopologySize< Topology, codim, dimension - codim > Size;
-
-        CoordinateType &x = baryCenters[ i ];
-        x = 0;
-        const unsigned int numCorners = Size :: size( i );
+        baryCenter_ = 0;
+        const unsigned int numCorners = Size :: size( 0 );
         for( unsigned int k = 0; k < numCorners; ++k )
         {
-          unsigned int j = Numbering :: number( i, k );
+          unsigned int j = Numbering :: number( 0, k );
 
           CoordinateType y;
           ReferenceDomain< Topology > :: corner( j, y );
-          x += y;
+          baryCenter_ += y;
         }
-        x *= ctype( 1 ) / ctype( numCorners );
+        baryCenter_ *= ctype( 1 ) / ctype( numCorners );
       }
+
+      Dune::array< CoordinateType, numCorners > corners_;
+      CoordinateType baryCenter_;
+      Dune::array< CoordinateType, numNormals > normals_;
     };
 
   }
