@@ -14,6 +14,7 @@ CURDIR=doc/appl/refelements
 docdir=$(datadir)/doc/dune-geometry/appl/refelements
 if BUILD_DOCS
 EXTRA_DIST= $(EXTRAINSTALL)
+DOCFILES= $(EXTRAINSTALL)
 endif
 
 if INKSCAPE
