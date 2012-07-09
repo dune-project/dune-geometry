@@ -63,19 +63,6 @@ namespace Dune
       virtual HybridMapping< dim, GeometryTraits > *
       trace ( integral_constant< int, 0 >, unsigned int i, char *mappingStorage ) const = 0;
     };
-
-    template< unsigned int dim, class GeometryTraits >
-    class HybridMappingBase< dim, GeometryTraits, -1 >
-    {
-      typedef HybridMapping< dim, GeometryTraits > Mapping;
-
-    public:
-      virtual ~HybridMappingBase() {}
-
-    protected:
-      virtual HybridMapping< dim, GeometryTraits > *
-      trace ( integral_constant< int, 0 >, unsigned int i, char *mappingStorage ) const = 0;
-    };
     /** \endcond */
 
 
