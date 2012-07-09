@@ -5,11 +5,6 @@ EXTRA_DIST=dune.module
 
 SUBDIRS = m4 dune doc lib
 
-if BUILD_DOCS
-# TODO: set up documentation tree automatically
-#SUBDIRS += doc
-endif
-
 # don't follow the full GNU-standard
 # we need automake 1.9 or newer
 AUTOMAKE_OPTIONS = foreign 1.9
