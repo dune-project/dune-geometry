@@ -39,12 +39,6 @@ namespace Dune
     public:
       static const unsigned int dimension = 0;
       static const GeometryType::BasicType basicType = linetype;
-
-      // GeometryType can be initialized directly with the topologyId
-      static GeometryType type () DUNE_DEPRECATED
-      {
-        return GeometryType( basicType, dimension );
-      }
     };
 
     template< class BaseTopology, GeometryType::BasicType linetype >
@@ -68,12 +62,6 @@ namespace Dune
            : ((dimension == 2) || (DuneBaseGeometryType::basicType == GeometryType::cube))
            ? GeometryType::cube
            : GeometryType::prism);
-
-      // GeometryType can be initialized directly with the topologyId
-      static GeometryType type () DUNE_DEPRECATED
-      {
-        return GeometryType( basicType, dimension );
-      }
     };
 
     template< class BaseTopology, GeometryType::BasicType linetype >
@@ -97,12 +85,6 @@ namespace Dune
            : ((dimension == 2) || (DuneBaseGeometryType::basicType == GeometryType::simplex))
            ? GeometryType::simplex
            : GeometryType::pyramid);
-
-      // GeometryType can be initialized directly with the topologyId
-      static GeometryType type () DUNE_DEPRECATED
-      {
-        return GeometryType( basicType, dimension );
-      }
     };
 
 
@@ -132,32 +114,6 @@ namespace Dune
 
     private:
       GeometryType types_[ (dimension>=1) ? numTopologies / 2 : numTopologies ];
-
-      // GeometryType can be initialized directly with the topologyId
-      DuneGeometryTypeProvider () DUNE_DEPRECATED
-      {
-        if( dimension > 3 )
-        {
-          for( unsigned int i = 0; i < numTopologies / 2; ++i )
-            types_[ i ].makeNone( dimension );
-        }
-
-        if( dimension >= 3 )
-        {
-          const unsigned int d = (dimension >= 2 ? dimension-2 : 0);
-          types_[ 0 ].makeSimplex( dimension );
-          types_[ (1 << d) ] = GeometryType( GeometryType::prism, dimension );
-          types_[ (1 << d) - 1 ] = GeometryType( GeometryType::pyramid, dimension );
-          types_[ (1 << (d+1)) - 1 ].makeCube( dimension );
-        }
-        else if( dimension == 2 )
-        {
-          types_[ 0 ].makeSimplex( dimension );
-          types_[ 1 ].makeCube( dimension );
-        }
-        else
-          types_[ 0 ] = GeometryType( linetype, dimension );
-      }
 
       static const DuneGeometryTypeProvider &instance ()
       {
