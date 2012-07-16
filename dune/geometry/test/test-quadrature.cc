@@ -72,7 +72,7 @@ ctype analyticSolution (Dune::GeometryType t, int p, int x) {
 
   DUNE_THROW(Dune::NotImplemented, __func__ << " for " << t);
   return exact;
-};
+}
 
 template <class ctype, int dim>
 void checkQuadrature(Dune::GeometryType t)
