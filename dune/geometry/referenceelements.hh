@@ -260,6 +260,8 @@ namespace Dune
     };
 
   public:
+    using Base::type;
+
     /** \brief Collection of types depending on the codimension */
     template< int codim >
     struct Codim
