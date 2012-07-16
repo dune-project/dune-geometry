@@ -264,8 +264,44 @@ namespace Dune
       }
     };
 
-  }
 
-}
+
+    // checkInside
+    // -----------
+
+    template< class ct, unsigned int dim >
+    struct CheckInside
+    {
+      bool apply ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance, ct factor )
+      {
+        const ct xn = x[ dim-1 ];
+        const ct cxn = factor - xn;
+
+        const unsigned int bTopologyId = baseTopologyId( topologyId, dim );
+        const ct bFactor = (isPrism( topologyId, dim ) ? factor : cxn);
+
+        return (xn > -tolerance) && (cxn > -tolerance)
+               && CheckInside< ct, dim-1 >::apply( bTopologyId, x, tolerance, bFactor );
+      }
+    };
+
+    template< class ct >
+    struct CheckInside< ct, 0 >
+    {
+      bool apply ( unsigned int topologyId, const FieldVector< ct, 0 > &x, ct tolerance, ct factor )
+      {
+        return true;
+      }
+    };
+
+    template< class ct, unsigned int dim >
+    inline bool checkInside ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance )
+    {
+      return CheckInside< ct, dim >::apply( topologyId, x, tolerance, ct( 1 ) );
+    }
+
+  } // namespace GenericGeometry
+
+} // namespace Dune
 
 #endif // DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEDOMAIN_HH
