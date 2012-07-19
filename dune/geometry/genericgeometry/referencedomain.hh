@@ -269,26 +269,28 @@ namespace Dune
     // checkInside
     // -----------
 
-    template< class ct, unsigned int dim >
+    template< class ct, unsigned int mydim >
     struct CheckInside
     {
-      bool apply ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance, ct factor )
+      template< int dim >
+      static bool apply ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance, ct factor )
       {
-        const ct xn = x[ dim-1 ];
+        const ct xn = x[ mydim-1 ];
         const ct cxn = factor - xn;
 
-        const unsigned int bTopologyId = baseTopologyId( topologyId, dim );
-        const ct bFactor = (isPrism( topologyId, dim ) ? factor : cxn);
+        const unsigned int bTopologyId = baseTopologyId( topologyId, mydim );
+        const ct bFactor = (isPrism( topologyId, mydim ) ? factor : cxn);
 
         return (xn > -tolerance) && (cxn > -tolerance)
-               && CheckInside< ct, dim-1 >::apply( bTopologyId, x, tolerance, bFactor );
+               && CheckInside< ct, mydim-1 >::apply( bTopologyId, x, tolerance, bFactor );
       }
     };
 
     template< class ct >
     struct CheckInside< ct, 0 >
     {
-      bool apply ( unsigned int topologyId, const FieldVector< ct, 0 > &x, ct tolerance, ct factor )
+      template< int dim >
+      static bool apply ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance, ct factor )
       {
         return true;
       }
