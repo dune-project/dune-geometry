@@ -34,7 +34,7 @@ int main () try
 
   type.makeLine();
 
-  const GenericReferenceElement<double,1>& referenceLine = GenericReferenceElements<double, 1>::general(type);
+  const ReferenceElement<double,1>& referenceLine = ReferenceElements<double, 1>::general(type);
 
   // size(int c)
   testcmp(referenceLine.size(0),1);
@@ -60,7 +60,7 @@ int main () try
 
   type.makeTriangle();
 
-  const GenericReferenceElement<double,2>& referenceTriangle = GenericReferenceElements<double, 2>::general(type);
+  const ReferenceElement<double,2>& referenceTriangle = ReferenceElements<double, 2>::general(type);
 
   // size(int c)
   testcmp(referenceTriangle.size(0),1);
@@ -125,7 +125,7 @@ int main () try
 
   type.makeQuadrilateral();
 
-  const GenericReferenceElement<double,2>& referenceQuad = GenericReferenceElements<double, 2>::general(type);
+  const ReferenceElement<double,2>& referenceQuad = ReferenceElements<double, 2>::general(type);
 
   // size(int c)
   testcmp(referenceQuad.size(0),1);
@@ -201,7 +201,7 @@ int main () try
 
   type.makeTetrahedron();
 
-  const GenericReferenceElement<double,3>& referenceTetra = GenericReferenceElements<double, 3>::general(type);
+  const ReferenceElement<double,3>& referenceTetra = ReferenceElements<double, 3>::general(type);
 
   // size(int c)
   testcmp(referenceTetra.size(0),1);
@@ -250,7 +250,7 @@ int main () try
 
   type.makePyramid();
 
-  const GenericReferenceElement<double,3>& referencePyramid = GenericReferenceElements<double, 3>::general(type);
+  const ReferenceElement<double,3>& referencePyramid = ReferenceElements<double, 3>::general(type);
 
   // size(int c)
   testcmp(referencePyramid.size(0),1);
@@ -312,7 +312,7 @@ int main () try
 
   type.makePrism();
 
-  const GenericReferenceElement<double,3>& referencePrism = GenericReferenceElements<double, 3>::general(type);
+  const ReferenceElement<double,3>& referencePrism = ReferenceElements<double, 3>::general(type);
 
   // size(int c)
   testcmp(referencePrism.size(0),1);
@@ -373,7 +373,7 @@ int main () try
 
   type.makeHexahedron();
 
-  const GenericReferenceElement<double,3>& referenceHexa = GenericReferenceElements<double, 3>::general(type);
+  const ReferenceElement<double,3>& referenceHexa = ReferenceElements<double, 3>::general(type);
 
   // size(int c)
   testcmp(referenceHexa.size(0),1);
