@@ -12,8 +12,8 @@ static const int dim = 5;
 int main ( int argc, char **argv )
 {
   const Dune::GeometryType gt( Dune::GeometryType::cube, dim );
-  const Dune::GenericReferenceElement< ctype, dim > &refElement
-    = Dune::GenericReferenceElements< ctype, dim >::general( gt );
+  const Dune::ReferenceElement< ctype, dim > &refElement
+    = Dune::ReferenceElements< ctype, dim >::general( gt );
 
   std::cout << "number of vertices: " << refElement.size( dim ) << std::endl;
 

@@ -11,6 +11,8 @@
 #include <dune/geometry/genericgeometry/hybridmapping.hh>
 #include <dune/geometry/genericgeometry/mappingprovider.hh>
 
+#include <dune/geometry/genericreferenceelements.hh>
+
 namespace Dune
 {
 
