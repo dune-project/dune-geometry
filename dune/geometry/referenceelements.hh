@@ -403,7 +403,7 @@ namespace Dune
      * This class is to be called in a static ForLoop.
      * \todo Merge this code into the dynamic one
      */
-    template< class Topology, unsigned int codim, unsigned int i >
+    template< class Topology>
     void initialize ()
     {
       typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
@@ -420,18 +420,21 @@ namespace Dune
     }
 
     /** \brief Initialize the members of the class */
-    void initialize ( unsigned int topologyId, int codim, unsigned int i )
+    template <class Topology>
+    void initialize ( int codim, unsigned int i )
     {
-      const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
+      // Determine the geometry type
+      const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, dim, codim, i );
       type_ = GeometryType( subId, dim-codim );
 
+      // Determine the subentity numbering
       for( int subcodim = 0; subcodim <= dim-codim; ++subcodim )
       {
         const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
 
         numbering_[ codim+subcodim ].resize( size );
         for( unsigned int j = 0; j < size; ++j )
-          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, subcodim, j );
+          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( Topology::id, dim, codim, i, subcodim, j );
       }
     }
 
@@ -506,26 +509,17 @@ namespace Dune
     template< int codim >
     struct Codim
     {
-      template< int i >
-      struct SubTopology
-      {
-        static void apply ( std::vector< SubEntityInfo > &info )
-        {
-          info[ i ].template initialize< Topology, codim, i >();
-        }
-      };
-
       static void
       apply ( std::vector< SubEntityInfo > (&info)[ dim+1 ],
               MappingsTable &mappings )
       {
         const unsigned int size = GenericGeometry::Size< Topology, codim >::value;
         info[ codim ].resize( size );
-        // The static loop should be removed eventually.
-        // For a transitional period it is still here.
-        Dune::ForLoop< SubTopology, 0, size-1 >::apply( info[ codim ] );
-        for (size_t i=0; i<size; i++)
-          info[ codim ][ i ].initialize(Topology::id,codim,i);
+
+        for (size_t i=0; i<size; i++) {
+          info[ codim ][ i ].template initialize< Topology >();
+          info[ codim ][ i ].template initialize< Topology >(codim,i);
+        }
 
         if( codim > 0 )
         {
