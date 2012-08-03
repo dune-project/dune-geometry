@@ -398,14 +398,11 @@ namespace Dune
       return type_;
     }
 
-    /** \brief Initialize the baryCenter_ member of the class
-     *
-     * This class is to be called in a static ForLoop.
-     * \todo Merge this code into the dynamic one
-     */
-    template< class Topology>
-    void initialize ()
+    /** \brief Initialize the members of the class */
+    template <class Topology>
+    void initialize ( int codim, unsigned int i )
     {
+      // Compute the element barycenter
       typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
 
       baryCenter_ = ctype( 0 );
@@ -417,12 +414,7 @@ namespace Dune
         baryCenter_ += corner;
       }
       baryCenter_ *= ctype( 1 ) / ctype( numCorners );
-    }
 
-    /** \brief Initialize the members of the class */
-    template <class Topology>
-    void initialize ( int codim, unsigned int i )
-    {
       // Determine the geometry type
       const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, dim, codim, i );
       type_ = GeometryType( subId, dim-codim );
@@ -516,10 +508,8 @@ namespace Dune
         const unsigned int size = GenericGeometry::Size< Topology, codim >::value;
         info[ codim ].resize( size );
 
-        for (size_t i=0; i<size; i++) {
-          info[ codim ][ i ].template initialize< Topology >();
+        for (size_t i=0; i<size; i++)
           info[ codim ][ i ].template initialize< Topology >(codim,i);
-        }
 
         if( codim > 0 )
         {
