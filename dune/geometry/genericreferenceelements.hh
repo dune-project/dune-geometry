@@ -373,7 +373,6 @@ namespace Dune
       template< int subcodim > struct SubCodim;
     };
 
-    int codim_;
     std::vector< int > numbering_[ dim+1 ];
     FieldVector< ctype, dim > baryCenter_;
     GeometryType type_;
@@ -381,13 +380,13 @@ namespace Dune
   public:
     int size ( int cc ) const
     {
-      assert( (cc >= codim_) && (cc <= dim) );
+      assert( cc <= dim );
       return numbering_[ cc ].size();
     }
 
     int number ( int ii, int cc ) const
     {
-      assert( (cc >= codim_) && (cc <= dim) );
+      assert( cc <= dim );
       return numbering_[ cc ][ ii ];
     }
 
@@ -406,8 +405,6 @@ namespace Dune
     {
       typedef Initialize< Topology, codim > Init;
       typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
-
-      codim_ = codim;
 
       const unsigned int iVariable = i;
       Dune::ForLoop< Init::template SubCodim, 0, dim-codim >::apply( iVariable, numbering_ );
