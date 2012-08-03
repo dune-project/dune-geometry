@@ -421,7 +421,6 @@ namespace Dune
 
       typedef typename GenericGeometry::SubTopology< Topology, codim, i >::type SubTopology;
       type_ = GeometryType( SubTopology::id, SubTopology::dimension );
-      // type_ = GenericGeometry::DuneGeometryType< SubTopology, GeometryType::simplex >::type();
     }
   };
 
