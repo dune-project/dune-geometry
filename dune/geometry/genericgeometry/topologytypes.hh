@@ -3,6 +3,7 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_TOPOLOGYTYPES_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_TOPOLOGYTYPES_HH
 
+#include <cassert>
 #include <string>
 
 #include <dune/common/static_assert.hh>
@@ -13,6 +14,13 @@ namespace Dune
 
   namespace GenericGeometry
   {
+
+    enum TopologyConstruction { pyramidConstruction = 0, prismConstruction = 1 };
+
+
+
+    // Basic Topology Types
+    // --------------------
 
     struct Point
     {
@@ -34,7 +42,7 @@ namespace Dune
       static const unsigned int dimension = BaseTopology :: dimension + 1;
       static const unsigned int numCorners = 2 * BaseTopology :: numCorners;
 
-      static const unsigned int id = BaseTopology :: id + (1 << (dimension-1));
+      static const unsigned int id = BaseTopology::id | ((unsigned int)prismConstruction << (dimension-1));
 
       static std :: string name ()
       {
@@ -50,7 +58,7 @@ namespace Dune
       static const unsigned int dimension = BaseTopology :: dimension + 1;
       static const unsigned int numCorners = BaseTopology :: numCorners + 1;
 
-      static const unsigned int id = BaseTopology :: id;
+      static const unsigned int id = BaseTopology::id | ((unsigned int)pyramidConstruction << (dimension-1));
 
       static std :: string name ()
       {
@@ -109,6 +117,93 @@ namespace Dune
       static const bool value
         = (IsGeneralizedPrism< BaseTopology >::value || IsSimplex< BaseTopology >::value);
     };
+
+
+
+    // Dynamic Topology Properties
+    // ---------------------------
+
+    /** \brief obtain the number of topologies of a given dimension
+     *
+     *  \note Valid topology ids are 0,...,numTopologies(dim)-1.
+     *
+     *  \param[in]  dim  dimension
+     *
+     *  \returns number of topologies for the dimension
+     */
+    inline unsigned int numTopologies ( int dim )
+    {
+      return (1u << dim);
+    }
+
+    /** \brief check whether a pyramid construction was used to create a given
+     *         codimension
+     *
+     *  \param[in]  topologyId  id of the topology
+     *  \param[in]  dim         dimension of the topology
+     *  \param[in]  codim       codimension for which the information is desired
+     *                          (defaults to 0)
+     *
+     *  \returns true, if a pyramid construction was used to generate the
+     *           codimension the topology.
+     */
+    inline bool isPyramid ( unsigned int topologyId, int dim, int codim = 0 )
+    {
+      assert( (dim > 0) && (topologyId < numTopologies( dim )) );
+      assert( (0 <= codim) && (codim < dim) );
+      return (((topologyId & ~1) & (1u << (dim-codim-1))) == 0);
+    }
+
+    /** \brief check whether a prism construction was used to create a given
+     *         codimension
+     *
+     *  \param[in]  topologyId  id of the topology
+     *  \param[in]  dim         dimension of the topology
+     *  \param[in]  codim       codimension for which the information is desired
+     *                          (defaults to 0)
+     *
+     *  \returns true, if a prism construction was used to generate the
+     *           codimension the topology.
+     */
+    inline bool isPrism ( unsigned int topologyId, int dim, int codim = 0 )
+    {
+      assert( (dim > 0) && (topologyId < numTopologies( dim )) );
+      assert( (0 <= codim) && (codim < dim) );
+      return (( (topologyId | 1) & (1u << (dim-codim-1))) != 0);
+    }
+
+    /** \brief check whether a specific topology construction was used to create a
+     *         given codimension
+     *
+     *  \param[in]  construction  construction to check for
+     *  \param[in]  topologyId    id of the topology
+     *  \param[in]  dim           dimension of the topology
+     *  \param[in]  codim         codimension for which the information is desired
+     *                            (defaults to 0)
+     *
+     *  \returns true, if construction was used to generate the codimension the
+     *           topology.
+     */
+    inline bool isTopology ( TopologyConstruction construction, unsigned int topologyId, int dim, int codim = 0 )
+    {
+      assert( (dim > 0) && (topologyId < numTopologies( dim )) );
+      assert( (0 <= codim) && (codim <= dim) );
+      return (codim >= (dim-1)) || (((topologyId >> (dim-codim-1)) & 1) == (unsigned int)construction);
+    }
+
+    /** \brief obtain the base topology of a given codimension
+     *
+     *  \param[in]  topologyId    id of the topology
+     *  \param[in]  dim           dimension of the topology
+     *  \param[in]  codim         codimension for which the information is desired
+     *                            (defaults to 1)
+     */
+    inline unsigned int baseTopologyId ( unsigned int topologyId, int dim, int codim = 1 )
+    {
+      assert( (dim >= 0) && (topologyId < numTopologies( dim )) );
+      assert( (0 <= codim) && (codim <= dim) );
+      return topologyId & ((1u << (dim-codim)) - 1);
+    }
 
 
 
