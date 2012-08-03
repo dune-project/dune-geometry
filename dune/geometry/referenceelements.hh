@@ -4,6 +4,7 @@
 #define DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 
 #include <dune/common/forloop.hh>
+#include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/genericgeometry/subtopologies.hh>
@@ -155,16 +156,37 @@ namespace Dune
   template< int dim >
   struct ReferenceElement< void, dim >::SubEntityInfo
   {
+    SubEntityInfo () : numbering_( nullptr ) {}
+    ~SubEntityInfo () { delete[] numbering_; }
+
+    SubEntityInfo ( const SubEntityInfo &other )
+      : type_( other.type_ )
+    {
+      std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
+      numbering_ = new unsigned int[ offset_[ dim+1 ] ];
+      std::copy( other.numbering_, other.numbering_ + offset_[ dim+1 ], numbering_ );
+    }
+
+    const SubEntityInfo &operator= ( const SubEntityInfo &other )
+    {
+      type_ = other.type_;
+      std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
+
+      delete[] numbering_;
+      numbering_ = new unsigned int[ offset_[ dim+1 ] ];
+      std::copy( other.numbering_, other.numbering_ + offset_[ dim+1 ], numbering_ );
+    }
+
     int size ( int cc ) const
     {
       assert( (cc >= codim()) && (cc <= dim) );
-      return numbering_[ cc ].size();
+      return (offset_[ cc+1 ] - offset_[ cc ]);
     }
 
     int number ( int ii, int cc ) const
     {
       assert( (ii >= 0) && (ii < size( cc )) );
-      return numbering_[ cc ][ ii ];
+      return numbering_[ offset_[ cc ] + ii ];
     }
 
     const GeometryType &type () const { return type_; }
@@ -174,20 +196,27 @@ namespace Dune
       const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
       type_ = GeometryType( subId, dim-codim );
 
-      for( int subcodim = 0; subcodim <= dim-codim; ++subcodim )
-      {
-        const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
+      // compute offsets
+      for( int cc = 0; cc <= codim; ++cc )
+        offset_[ cc ] = 0;
+      for( int cc = codim; cc <= dim; ++cc )
+        offset_[ cc+1 ] = offset_[ cc ] + GenericGeometry::size( subId, dim-codim, cc-codim );
 
-        numbering_[ codim+subcodim ].resize( size );
-        for( unsigned int j = 0; j < size; ++j )
-          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, subcodim, j );
+      // compute subnumbering
+      delete[] numbering_;
+      numbering_ = new unsigned int[ offset_[ dim+1 ] ];
+      for( int cc = codim; cc <= dim; ++cc )
+      {
+        for( unsigned int ii = 0; ii < offset_[ cc+1 ] - offset_[ cc ]; ++ii )
+          numbering_[ offset_[ cc ] + ii ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, cc-codim, ii );
       }
     }
 
   private:
     int codim () const { return dim - type().dim(); }
 
-    std::vector< unsigned int > numbering_[ dim+1 ];
+    unsigned int *numbering_;
+    unsigned int offset_[ dim+2 ];
     GeometryType type_;
   };
 
