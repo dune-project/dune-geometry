@@ -730,8 +730,8 @@ namespace Dune
       unsigned int offsets_[ dimension+2 ];
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_SUBTOPOLOGIES_HH
