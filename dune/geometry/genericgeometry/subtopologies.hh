@@ -125,12 +125,41 @@ namespace Dune
       enum { value = m+1 };
     };
 
-
+    /** \brief Statically compute the number of subentities of a given codimension */
     template< class Topology, unsigned int codim >
     struct Size
     {
       enum { value = SizeImpl< Topology, Topology :: dimension, codim > :: value };
     };
+
+
+
+    /** \brief Compute the number of subentities of a given codimension */
+    inline unsigned int size ( unsigned int topologyId, int dim, int codim )
+    {
+      assert( (dim >= 0) && (topologyId < numTopologies( dim )) );
+      assert( (0 <= codim) && (codim <= dim) );
+
+      if( codim > 0 )
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+        const unsigned int m = size( baseId, dim-1, codim-1 );
+
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 0);
+          return n + 2*m;
+        }
+        else
+        {
+          assert( isPyramid( topologyId, dim ) );
+          const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 1);
+          return m+n;
+        }
+      }
+      else
+        return 1;
+    }
 
 
 
@@ -261,6 +290,46 @@ namespace Dune
     {
       typedef typename SubTopologyImpl< Topology, Topology :: dimension, codim, i > :: type type;
     };
+
+
+
+    /** \brief Compute the topology id of a given subentity
+     *
+     * \param codim Codimension of the subentity that we are interested in
+     * \param i Number of the subentity that we are interested in
+     */
+    inline unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i )
+    {
+      assert( i < size( topologyId, dim, codim ) );
+      const int mydim = dim - codim;
+
+      if( codim > 0 )
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+        const unsigned int m = size( baseId, dim-1, codim-1 );
+
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int n = (codim < dim ? size( baseId, dim-1, codim ) : 0);
+          if( i < n )
+            return subTopologyId( baseId, dim-1, codim, i ) | ((unsigned int)prismConstruction << (mydim - 1));
+          else
+            return subTopologyId( baseId, dim-1, codim-1, (i < n+m ? i-n : i-(n+m)) );
+        }
+        else
+        {
+          assert( isPyramid( topologyId, dim ) );
+          if( i < m )
+            return subTopologyId( baseId, dim-1, codim-1, i );
+          else if( codim < dim )
+            return subTopologyId( baseId, dim-1, codim, i-m ) | ((unsigned int)pyramidConstruction << (mydim - 1));
+          else
+            return 0u;
+        }
+      }
+      else
+        return topologyId;
+    }
 
 
 
@@ -501,6 +570,73 @@ namespace Dune
 
 
 
+    // subTopologyNumber
+    // -----------------
+
+    inline unsigned int
+    subTopologyNumber ( unsigned int topologyId, int dim, int codim, unsigned int i, int subcodim, unsigned int j )
+    {
+      assert( (codim >= 0) && (subcodim >= 0) && (codim + subcodim <= dim) );
+      assert( i < size( topologyId, dim, codim ) );
+      assert( j < size( subTopologyId( topologyId, dim, codim, i ), dim-codim, subcodim ) );
+
+      if( codim == 0 )
+        return j;
+      else if( subcodim == 0 )   // if codim == dim, then subcodim must be zero
+        return i;
+      else
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+
+        const unsigned int m = size( baseId, dim-1, codim-1 );
+        const unsigned int n = size( baseId, dim-1, codim );
+
+        const unsigned int mb = size( baseId, dim-1, codim+subcodim-1 );
+        const unsigned int nb = (codim + subcodim < dim ? size( baseId, dim-1, codim+subcodim ) : 0);
+
+        if( isPrism( topologyId, dim ) )
+        {
+          if( i < n )
+          {
+            const unsigned int subId = subTopologyId( baseId, dim-1, codim, i );
+
+            const unsigned int ns = (codim + subcodim < dim ? size( subId, dim-codim-1, subcodim ) : 0);
+            if( j < ns )
+              return subTopologyNumber( baseId, dim-1, codim, i, subcodim, j );
+            else
+            {
+              const unsigned int ms = size( subId, dim-codim-1, subcodim-1 );
+              const unsigned int ss = (j < ns+ms ? 0 : 1);
+              return subTopologyNumber( baseId, dim-1, codim, i, subcodim-1, j-(ns+ss*ms) ) + (nb+ss*mb);
+            }
+          }
+          else
+          {
+            const unsigned int s = (i < n+m ? 0 : 1);
+            return subTopologyNumber( baseId, dim-1, codim-1, i -(n+s*m), subcodim, j ) + (nb+s*mb);
+          }
+        }
+        else
+        {
+          assert( isPyramid( topologyId, dim ) );
+
+          if( i < m )
+            return subTopologyNumber( baseId, dim-1, codim-1, i, subcodim, j );
+          else
+          {
+            const unsigned int subId = subTopologyId( baseId, dim-1, codim, i-m );
+            const unsigned int ms = size( subId, dim-codim-1, subcodim-1 );
+            if( j < ms )
+              return subTopologyNumber( baseId, dim-1, codim, i-m, subcodim-1, j );
+            else
+              return (codim+subcodim < dim ? subTopologyNumber( baseId, dim-1, codim, i-m, subcodim, j-ms ) : 0) + mb;
+          }
+        }
+      }
+    }
+
+
+
     // SubTopologyNumbering
     // --------------------
 
@@ -594,8 +730,8 @@ namespace Dune
       unsigned int offsets_[ dimension+2 ];
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_SUBTOPOLOGIES_HH
