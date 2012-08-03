@@ -125,7 +125,7 @@ namespace Dune
       enum { value = m+1 };
     };
 
-
+    /** \brief statically compute the number of subentities of a given codimension */
     template< class Topology, unsigned int codim >
     struct Size
     {
@@ -137,6 +137,7 @@ namespace Dune
     // size
     // ----
 
+    /** \brief compute the number of subentities of a given codimension */
     inline unsigned int size ( unsigned int topologyId, int dim, int codim )
     {
       assert( (dim >= 0) && (topologyId < numTopologies( dim )) );
@@ -298,6 +299,11 @@ namespace Dune
     // subTopologyId
     // -------------
 
+    /** \brief compute the topology id of a given subentity
+     *
+     *  \param codim  codimension of the subentity that we are interested in
+     *  \param i      number of the subentity that we are interested in
+     */
     inline unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i )
     {
       assert( i < size( topologyId, dim, codim ) );

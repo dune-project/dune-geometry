@@ -655,7 +655,7 @@ namespace Dune
   // ReferenceElements
   // -----------------
 
-  /** \brief Class providing access to the singletons of the generic
+  /** \brief Class providing access to the singletons of the
    *  reference elements. Special methods are available for
    *  simplex and cube elements of any dimension.
    *  The method general can be used to obtain the reference element
@@ -668,20 +668,20 @@ namespace Dune
   {
     typedef typename ReferenceElementContainer< ctype, dim >::const_iterator Iterator;
 
-    //! get general generic reference elements
+    //! get general reference elements
     static const ReferenceElement< ctype, dim > &
     general ( const GeometryType &type )
     {
       return container() ( type );
     }
 
-    //! get simplex generic reference elements
+    //! get simplex reference elements
     static const ReferenceElement< ctype, dim > &simplex ()
     {
       return container().simplex();
     }
 
-    //! get hypercube generic reference elements
+    //! get hypercube reference elements
     static const ReferenceElement< ctype, dim > &cube ()
     {
       return container().cube();
