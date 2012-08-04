@@ -3,6 +3,7 @@ DIMENSION = 3
 
 check_PROGRAMS = testsubtopologies testbasicgeometry testmatrix
 TESTS = testsubtopologies testbasicgeometry
+EXTRA_DIST = checkgeometry.hh
 
 AM_CPPFLAGS = @AM_CPPFLAGS@ $(ALL_PKG_CPPFLAGS) $(DUNEMPICPPFLAGS)
 AM_LDFLAGS = @AM_LDFLAGS@ $(ALL_PKG_LDFLAGS) $(DUNEMPILIBS)
