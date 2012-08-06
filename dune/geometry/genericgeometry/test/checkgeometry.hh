@@ -55,11 +55,11 @@ namespace Dune
 
     GeometryType type = geometry.type();
 
-    const GenericReferenceElement< ctype, mydim > &refElement = GenericReferenceElements< ctype, mydim >::general(type);
+    const ReferenceElement< ctype, mydim > &refElement = ReferenceElements< ctype, mydim >::general(type);
 
     // Test whether the return value of the method 'center' corresponds to the center of the
     // reference element.  That is the current definition of the method.
-    const FieldVector<ctype, coorddim> center = geometry.global(refElement.position(0,0));
+    const FieldVector< ctype, coorddim > center = geometry.global( refElement.position( 0, 0 ) );
     if( std::abs( (geometry.center() - center).two_norm() ) > 1e-8 )
       DUNE_THROW(Exception, "center() is not consistent with global(refElem.position(0,0)).");
 
