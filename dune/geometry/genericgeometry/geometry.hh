@@ -133,13 +133,12 @@ namespace Dune
      *      local coordinates can be used in the construction of the local
      *      geometries, or (for conform intersections) the traces can be used,
      *      passing an identity mapping as codimension zero geometry.
-     *      The GenericGeometry::GenericReferenceElement provides these
-     *      mappings directly via the template method
-     *      GenericGeometry::GenericReferenceElement::mapping.
+     *      The ReferenceElement provides these mappings directly via the template
+     *      method ReferenceElement::mapping.
      *      The return value of this method can be directly used to construct
      *      a GenericGeometry::Geometry instance:
      *      \code
-            typedef GenericReferenceElementContainer<ctype,myGridDim> RefElementContType;
+            typedef ReferenceElementContainer<ctype,myGridDim> RefElementContType;
             RefElementContType refElemCont;
             const RefElementContType::value_type& refElem=refElemCont(insideGeometryType);
             GenericGeometry::Geometry<myGridDim-1,myGridDim,MyGrid>(refElem.mapping(numberInSelf()));

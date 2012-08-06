@@ -146,9 +146,6 @@ namespace Dune
       /** \brief check whether a point lies within the reference element
        *
        *  \param[in]  x  local coordinate of point to check
-       *
-       *  \note Historically, this method was part of the geometry interface.
-       *        It is still required for the GenericReferenceElement.
        */
       virtual bool checkInside ( const LocalCoordinate &x ) const = 0;
 
@@ -419,9 +416,6 @@ namespace Dune
       /** \brief check whether a point lies within the reference element
        *
        *  \param[in]  local  local coordinate of point to check
-       *
-       *  \note Historically, this method was part of the geometry interface.
-       *        It is still required for the GenericReferenceElement.
        */
       bool checkInside ( const LocalCoordinate &local ) const { return mapping_.checkInside( local ); }
 
