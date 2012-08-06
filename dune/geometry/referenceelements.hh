@@ -206,10 +206,7 @@ namespace Dune
       delete[] numbering_;
       numbering_ = new unsigned int[ offset_[ dim+1 ] ];
       for( int cc = codim; cc <= dim; ++cc )
-      {
-        for( unsigned int ii = 0; ii < offset_[ cc+1 ] - offset_[ cc ]; ++ii )
-          numbering_[ offset_[ cc ] + ii ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, cc-codim, ii );
-      }
+        GenericGeometry::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
     }
 
   private:
