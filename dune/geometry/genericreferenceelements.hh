@@ -432,11 +432,10 @@ namespace Dune
         const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
 
         numbering_[ codim+subcodim ].resize( size );
-        for( unsigned int j = 0; j < size; ++j )
-          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, subcodim, j );
+        unsigned int *const begin = &(numbering_[ codim+subcodim ][ 0 ]);
+        GenericGeometry::subTopologyNumbering( topologyId, dim, codim, i, subcodim, begin, begin+size );
       }
     }
-
   };
 
 
