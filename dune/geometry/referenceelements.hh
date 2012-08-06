@@ -367,11 +367,6 @@ namespace Dune
   template< class ctype, int dim >
   class ReferenceElement< ctype, dim >::SubEntityInfo
   {
-    template< class Topology, int codim > struct Initialize
-    {
-      template< int subcodim > struct SubCodim;
-    };
-
     unsigned int *numbering_;
     unsigned int offset_[ dim+2 ];
     FieldVector< ctype, dim > baryCenter_;
@@ -498,24 +493,6 @@ namespace Dune
 
   private:
     FieldVector< ctype, dim > coords_[ size ];
-  };
-
-
-  template< class ctype, int dim >
-  template< class Topology, int codim >
-  template< int subcodim >
-  struct ReferenceElement< ctype, dim >::SubEntityInfo::Initialize< Topology, codim >::SubCodim
-  {
-    typedef GenericGeometry::SubTopologySize< Topology, codim, subcodim > SubSize;
-    typedef GenericGeometry::GenericSubTopologyNumbering< Topology, codim, subcodim > SubNumbering;
-
-    static void apply ( unsigned int i, std::vector< int > (&numbering)[ dim+1 ] )
-    {
-      const unsigned int size = SubSize::size( i );
-      numbering[ codim+subcodim ].resize( size );
-      for( unsigned int j = 0; j < size; ++j )
-        numbering[ codim+subcodim ][ j ] = SubNumbering::number( i, j );
-    }
   };
 
 
