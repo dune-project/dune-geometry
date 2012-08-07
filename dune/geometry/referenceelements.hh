@@ -373,36 +373,42 @@ namespace Dune
     GeometryType type_;
 
   public:
-    SubEntityInfo () : numbering_( nullptr ) {}
-    ~SubEntityInfo () { delete[] numbering_; }
+    SubEntityInfo () : numbering_( nullptr )
+    {
+      std::fill( offset_, offset_ + (dim+2), 0 );
+    }
 
     SubEntityInfo ( const SubEntityInfo &other )
       : type_( other.type_ )
     {
       std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
-      numbering_ = new unsigned int[ offset_[ dim+1 ] ];
-      std::copy( other.numbering_, other.numbering_ + offset_[ dim+1 ], numbering_ );
+      numbering_ = allocate();
+      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
     }
+
+    ~SubEntityInfo () { deallocate( numbering_ ); }
 
     const SubEntityInfo &operator= ( const SubEntityInfo &other )
     {
       type_ = other.type_;
       std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
 
-      delete[] numbering_;
-      numbering_ = new unsigned int[ offset_[ dim+1 ] ];
-      std::copy( other.numbering_, other.numbering_ + offset_[ dim+1 ], numbering_ );
+      deallocate( numbering_ );
+      numbering_ = allocate();
+      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
+
+      return *this;
     }
 
     int size ( int cc ) const
     {
-      assert( cc <= dim );
+      assert( (cc >= codim()) && (cc <= dim) );
       return (offset_[ cc+1 ] - offset_[ cc ]);
     }
 
     int number ( int ii, int cc ) const
     {
-      assert( cc <= dim );
+      assert( (ii >= 0) && (ii < size( cc )) );
       return numbering_[ offset_[ cc ] + ii ];
     }
 
@@ -445,8 +451,8 @@ namespace Dune
         offset_[ cc+1 ] = offset_[ cc ] + GenericGeometry::size( subId, dim-codim, cc-codim );
 
       // compute subnumbering
-      delete[] numbering_;
-      numbering_ = new unsigned int[ offset_[ dim+1 ] ];
+      deallocate( numbering_ );
+      numbering_ = allocate();
       for( int cc = codim; cc <= dim; ++cc )
       {
         for( unsigned int ii = 0; ii < offset_[ cc+1 ] - offset_[ cc ]; ++ii )
@@ -454,6 +460,12 @@ namespace Dune
       }
     }
 
+  protected:
+    int codim () const { return dim - type().dim(); }
+
+    unsigned int *allocate () { return (capacity() != 0 ? new unsigned int[ capacity() ] : nullptr); }
+    void deallocate ( unsigned int *ptr ) { delete[] ptr; }
+    unsigned int capacity () const { return offset_[ dim+1 ]; }
   };
 
 
