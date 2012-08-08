@@ -269,37 +269,23 @@ namespace Dune
     // checkInside
     // -----------
 
-    template< class ct, unsigned int mydim >
-    struct CheckInside
+    template< class ct, unsigned int cdim >
+    inline bool
+    checkInside ( unsigned int topologyId, int dim, const FieldVector< ct, cdim > &x, ct tolerance, ct factor = ct( 1 ) )
     {
-      template< int dim >
-      static bool apply ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance, ct factor )
+      assert( (dim >= 0) && (dim <= cdim) );
+      assert( topologyId < numTopologies( dim ) );
+
+      if( dim > 0 )
       {
-        const ct xn = x[ mydim-1 ];
-        const ct cxn = factor - xn;
-
-        const unsigned int bTopologyId = baseTopologyId( topologyId, mydim );
-        const ct bFactor = (isPrism( topologyId, mydim ) ? factor : cxn);
-
-        return (xn > -tolerance) && (cxn > -tolerance)
-               && CheckInside< ct, mydim-1 >::apply( bTopologyId, x, tolerance, bFactor );
+        const ct baseFactor = (isPrism( topologyId, dim ) ? factor : factor - x[ dim-1 ]);
+        if( (x[ dim-1 ] > -tolerance) && (factor - x[ dim-1 ] > -tolerance) )
+          return checkInside( baseTopologyId( topologyId, dim ), dim-1, x, tolerance, baseFactor );
+        else
+          return false;
       }
-    };
-
-    template< class ct >
-    struct CheckInside< ct, 0 >
-    {
-      template< int dim >
-      static bool apply ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance, ct factor )
-      {
+      else
         return true;
-      }
-    };
-
-    template< class ct, unsigned int dim >
-    inline bool checkInside ( unsigned int topologyId, const FieldVector< ct, dim > &x, ct tolerance )
-    {
-      return CheckInside< ct, dim >::apply( topologyId, x, tolerance, ct( 1 ) );
     }
 
 
