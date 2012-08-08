@@ -426,19 +426,6 @@ namespace Dune
     template <class Topology>
     void initialize ( int codim, unsigned int i )
     {
-      // Compute the element barycenter
-      typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
-
-      baryCenter_ = ctype( 0 );
-      static const unsigned int numCorners = size( dim );
-      for( unsigned int j = 0; j < numCorners; ++j )
-      {
-        FieldVector< ctype, dim > corner;
-        RefDomain::corner( number( j, dim ), corner );
-        baryCenter_ += corner;
-      }
-      baryCenter_ *= ctype( 1 ) / ctype( numCorners );
-
       // Determine the geometry type
       const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, dim, codim, i );
       type_ = GeometryType( subId, dim-codim );
@@ -458,6 +445,19 @@ namespace Dune
         for( unsigned int ii = 0; ii < offset_[ cc+1 ] - offset_[ cc ]; ++ii )
           numbering_[ offset_[ cc ] + ii ] = GenericGeometry::subTopologyNumber( Topology::id, dim, codim, i, cc-codim, ii );
       }
+
+      // Compute the element barycenter
+      typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
+
+      baryCenter_ = ctype( 0 );
+      const unsigned int numCorners = size( dim );
+      for( unsigned int j = 0; j < numCorners; ++j )
+      {
+        FieldVector< ctype, dim > corner;
+        RefDomain::corner( number( j, dim ), corner );
+        baryCenter_ += corner;
+      }
+      baryCenter_ *= ctype( 1 ) / ctype( numCorners );
     }
 
   protected:
