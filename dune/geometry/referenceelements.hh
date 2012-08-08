@@ -332,7 +332,7 @@ namespace Dune
      */
     bool checkInside ( const FieldVector< ctype, dim > &local ) const
     {
-      return GenericGeometry::template checkInside< ctype, dim >( type().id(), local, 1e-12 );
+      return GenericGeometry::checkInside( type().id(), dim, local, 1e-12 );
     }
 
     /** \brief check if a local coordinate is in the reference element of
@@ -352,7 +352,7 @@ namespace Dune
     template< int codim >
     bool checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
-      return GenericGeometry::template checkInside< ctype, dim-codim >( type( i, codim ).id(), local, 1e-12 );
+      return GenericGeometry::checkInside( type( i, codim ).id(), dim-codim, local, 1e-12 );
     }
 
     /** \brief map a local coordinate on subentity (i,codim) into the reference
