@@ -339,6 +339,118 @@ namespace Dune
       return ct( 1 ) / ct( referenceVolumeInverse( topologyId, dim ) );
     }
 
+
+
+    // origins
+    // -------
+
+    template< class ct, int cdim >
+    inline unsigned int
+    origins ( unsigned int topologyId, int dim, int codim, FieldVector< ct, cdim > *orgs )
+    {
+      assert( (dim >= 0) && (dim <= cdim) );
+      assert( topologyId < numTopologies( dim ) );
+      assert( (codim >= 0) && (codim <= dim) );
+
+      if( codim > 0 )
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int n = (codim < dim ? origins( baseId, dim-1, codim, orgs ) : 0);
+          const unsigned int m = origins( baseId, dim-1, codim-1, orgs+n );
+          for( unsigned int i = 0; i < m; ++i )
+          {
+            orgs[ n+m+i ] = orgs[ n+i ];
+            orgs[ n+m+i ][ dim-1 ] = ct( 1 );
+          }
+          return n+2*m;
+        }
+        else
+        {
+          const unsigned int m = origins( baseId, dim-1, codim-1, orgs );
+          if( codim == dim )
+          {
+            orgs[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
+            orgs[ m ][ dim-1 ] = ct( 1 );
+            return m+1;
+          }
+          else
+            return m+origins( baseId, dim-1, codim-1, orgs+m );
+        }
+      }
+      else
+      {
+        orgs[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
+        return 1;
+      }
+    }
+
+
+
+    // integrationNormals
+    // ------------------
+
+    template< class ct, int cdim >
+    inline unsigned int
+    integrationNormals ( unsigned int topologyId, int dim, const FieldVector< ct, cdim > *orgs,
+                         FieldVector< ct, cdim > *normals )
+    {
+      assert( (dim > 0) && (dim <= cdim) );
+      assert( topologyId < numTopologies( dim ) );
+
+      if( dim > 1 )
+      {
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int numBaseFaces
+            = integrationNormals( baseTopologyId( topologyId, dim ), dim-1, orgs, normals );
+
+          for( unsigned int i = 0; i < 2; ++i )
+          {
+            normals[ numBaseFaces+i ] = FieldVector< ct, cdim >( ct( 0 ) );
+            normals[ numBaseFaces+i ][ dim-1 ] = ct( 2*i-1 );
+          }
+
+          return numBaseFaces+2;
+        }
+        else
+        {
+          normals[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
+          normals[ 0 ][ dim-1 ] = ct( -1 );
+
+          const unsigned int numBaseFaces
+            = integrationNormals( baseTopologyId( topologyId, dim ), dim-1, orgs+1, normals+1 );
+          for( unsigned int i = 1; i <= numBaseFaces; ++i )
+            normals[ i ][ dim-1 ] = normals[ i ]*orgs[ i ];
+
+          return numBaseFaces+1;
+        }
+      }
+      else
+      {
+        for( unsigned int i = 0; i < 2; ++i )
+        {
+          normals[ i ] = FieldVector< ct, cdim >( ct( 0 ) );
+          normals[ i ][ 0 ] = ct( 2*i-1 );
+        }
+
+        return 2;
+      }
+    }
+
+    template< class ct, int cdim >
+    inline unsigned int
+    integrationNormals ( unsigned int topologyId, int dim, FieldVector< ct, cdim > *normals )
+    {
+      FieldVector< ct, cdim > *orgs = new FieldVector< ct, cdim >[ size( topologyId, dim, dim-1 ) ];
+      origins( topologyId, dim, 1, orgs );
+      const unsigned int numFaces = integrationNormals( topologyId, dim, orgs, normals );
+      assert( numFaces == size( topologyId, dim, dim-1 ) );
+      delete[] orgs;
+      return numFaces;
+    }
+
   } // namespace GenericGeometry
 
 } // namespace Dune
