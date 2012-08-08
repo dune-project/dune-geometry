@@ -352,6 +352,19 @@ namespace Dune
       return ReferenceCorners< ct, dim >::apply( topologyId, corners );
     }
 
+
+
+    // referenceVolume
+    // ---------------
+
+    unsigned long referenceVolumeInverse ( unsigned int topologyId, int dim );
+
+    template< class ct >
+    inline ct referenceVolume ( unsigned int topologyId, int dim )
+    {
+      return ct( 1 ) / ct( referenceVolumeInverse( topologyId, dim ) );
+    }
+
   } // namespace GenericGeometry
 
 } // namespace Dune

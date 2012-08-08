@@ -489,7 +489,7 @@ namespace Dune
       }
 
       // compute reference element volume
-      volume_ = ReferenceDomain::template volume< ctype >();
+      volume_ = GenericGeometry::template referenceVolume< ctype >( topologyId, dim );
 
       // compute normals
       volumeNormals_.resize( ReferenceDomain::numNormals );
