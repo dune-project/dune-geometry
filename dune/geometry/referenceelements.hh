@@ -471,7 +471,7 @@ namespace Dune
       // compute corners
       const unsigned int numVertices = Base::size( dim );
       baryCenters_[ dim ].resize( numVertices );
-      GenericGeometry::referenceCorners( topologyId, &(baryCenters_[ dim ][ 0 ]) );
+      GenericGeometry::referenceCorners( topologyId, dim, &(baryCenters_[ dim ][ 0 ]) );
 
       // compute barycenters
       for( int codim = 0; codim < dim; ++codim )

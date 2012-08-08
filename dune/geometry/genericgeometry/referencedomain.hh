@@ -307,49 +307,37 @@ namespace Dune
     // referenceCorners
     // ----------------
 
-    template< class ct, unsigned int mydim >
-    struct ReferenceCorners
+    template< class ct, int cdim >
+    inline unsigned int
+    referenceCorners ( unsigned int topologyId, int dim, FieldVector< ct, cdim > *corners )
     {
-      template< int dim >
-      static unsigned int
-      apply ( unsigned int topologyId, FieldVector< ct, dim > *corners )
+      assert( (dim >= 0) && (dim <= cdim) );
+      assert( topologyId < numTopologies( dim ) );
+
+      if( dim > 0 )
       {
         const unsigned int nBaseCorners
-          = ReferenceCorners< ct, mydim-1 >::apply( baseTopologyId( topologyId, mydim ), corners );
-        assert( nBaseCorners == size( baseTopologyId( topologyId, mydim ), mydim, mydim ) );
-        if( isPrism( topologyId, mydim ) )
+          = referenceCorners( baseTopologyId( topologyId, dim ), dim-1, corners );
+        assert( nBaseCorners == size( baseTopologyId( topologyId, dim ), dim, dim ) );
+        if( isPrism( topologyId, dim ) )
         {
           std::copy( corners, corners + nBaseCorners, corners + nBaseCorners );
           for( unsigned int i = 0; i < nBaseCorners; ++i )
-            corners[ i+nBaseCorners ][ mydim-1 ] = ct( 1 );
+            corners[ i+nBaseCorners ][ dim-1 ] = ct( 1 );
           return 2*nBaseCorners;
         }
         else
         {
-          corners[ nBaseCorners ] = FieldVector< ct, dim >( ct( 0 ) );
-          corners[ nBaseCorners ][ mydim-1 ] = ct( 1 );
+          corners[ nBaseCorners ] = FieldVector< ct, cdim >( ct( 0 ) );
+          corners[ nBaseCorners ][ dim-1 ] = ct( 1 );
           return nBaseCorners+1;
         }
       }
-    };
-
-    template< class ct >
-    struct ReferenceCorners< ct, 0 >
-    {
-      template< int dim >
-      static unsigned int
-      apply ( unsigned int topologyId, FieldVector< ct, dim > *corners )
+      else
       {
-        *corners = FieldVector< ct, dim >( ct( 0 ) );
+        *corners = FieldVector< ct, cdim >( ct( 0 ) );
         return 1;
       }
-    };
-
-    template< class ct, int dim >
-    inline unsigned int
-    referenceCorners ( unsigned int topologyId, FieldVector< ct, dim > *corners )
-    {
-      return ReferenceCorners< ct, dim >::apply( topologyId, corners );
     }
 
 
