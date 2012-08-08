@@ -302,6 +302,56 @@ namespace Dune
       return CheckInside< ct, dim >::apply( topologyId, x, tolerance, ct( 1 ) );
     }
 
+
+
+    // referenceCorners
+    // ----------------
+
+    template< class ct, unsigned int mydim >
+    struct ReferenceCorners
+    {
+      template< int dim >
+      static unsigned int
+      apply ( unsigned int topologyId, FieldVector< ct, dim > *corners )
+      {
+        const unsigned int nBaseCorners
+          = ReferenceCorners< ct, mydim-1 >::apply( baseTopologyId( topologyId, mydim ), corners );
+        assert( nBaseCorners == size( baseTopologyId( topologyId, mydim ), mydim, mydim ) );
+        if( isPrism( topologyId, mydim ) )
+        {
+          std::copy( corners, corners + nBaseCorners, corners + nBaseCorners );
+          for( unsigned int i = 0; i < nBaseCorners; ++i )
+            corners[ i+nBaseCorners ][ mydim-1 ] = ct( 1 );
+          return 2*nBaseCorners;
+        }
+        else
+        {
+          corners[ nBaseCorners ] = FieldVector< ct, dim >( ct( 0 ) );
+          corners[ nBaseCorners ][ mydim-1 ] = ct( 1 );
+          return nBaseCorners+1;
+        }
+      }
+    };
+
+    template< class ct >
+    struct ReferenceCorners< ct, 0 >
+    {
+      template< int dim >
+      static unsigned int
+      apply ( unsigned int topologyId, FieldVector< ct, dim > *corners )
+      {
+        *corners = FieldVector< ct, dim >( ct( 0 ) );
+        return 1;
+      }
+    };
+
+    template< class ct, int dim >
+    inline unsigned int
+    referenceCorners ( unsigned int topologyId, FieldVector< ct, dim > *corners )
+    {
+      return ReferenceCorners< ct, dim >::apply( topologyId, corners );
+    }
+
   } // namespace GenericGeometry
 
 } // namespace Dune

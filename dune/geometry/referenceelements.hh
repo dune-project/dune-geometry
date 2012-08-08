@@ -465,13 +465,13 @@ namespace Dune
                           "Cannot initialize reference element for different dimension." );
       typedef GenericGeometry::ReferenceDomain< Topology > ReferenceDomain;
 
-      Base::template initializeTopology( Topology::id );
+      const unsigned int topologyId = Topology::id;
+      Base::template initializeTopology( topologyId );
 
       // compute corners
       const unsigned int numVertices = Base::size( dim );
       baryCenters_[ dim ].resize( numVertices );
-      for( unsigned int i = 0; i < numVertices; ++i )
-        ReferenceDomain::corner( i, baryCenters_[ dim ][ i ] );
+      GenericGeometry::referenceCorners( topologyId, &(baryCenters_[ dim ][ 0 ]) );
 
       // compute barycenters
       for( int codim = 0; codim < dim; ++codim )
