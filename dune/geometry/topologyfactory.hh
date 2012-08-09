@@ -3,6 +3,7 @@
 #ifndef DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 #define DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 
+#include <algorithm>
 #include <cassert>
 #include <vector>
 #include <map>
@@ -150,7 +151,11 @@ namespace Dune
     {
       typename Storage::iterator it = storage_.find( key );
       if( it == storage_.end() )
-        it = storage_.insert( std::make_pair( key, Array( nullptr ) ) ).first;
+      {
+        Array a;
+        std::fill( a.begin(), a.end(), nullptr );
+        it = storage_.insert( std::make_pair( key, a ) ).first;
+      }
       return it->second[ topologyId ];
     }
 
