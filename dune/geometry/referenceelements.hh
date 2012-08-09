@@ -5,6 +5,7 @@
 
 #include <limits>
 
+#include <dune/common/container/array.hh>
 #include <dune/common/forloop.hh>
 #include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
@@ -159,13 +160,13 @@ namespace Dune
     SubEntityInfo ()
       : numbering_( nullptr )
     {
-      std::fill( offset_, offset_ + (dim+2), 0 );
+      std::fill( offset_.begin(), offset_.end(), 0 );
     }
 
     SubEntityInfo ( const SubEntityInfo &other )
-      : type_( other.type_ )
+      : offset_( other.offset_ ),
+        type_( other.type_ )
     {
-      std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
       numbering_ = allocate();
       std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
     }
@@ -175,7 +176,7 @@ namespace Dune
     const SubEntityInfo &operator= ( const SubEntityInfo &other )
     {
       type_ = other.type_;
-      std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
+      offset_ = other.offset_;
 
       deallocate( numbering_ );
       numbering_ = allocate();
@@ -225,7 +226,7 @@ namespace Dune
 
   private:
     unsigned int *numbering_;
-    unsigned int offset_[ dim+2 ];
+    array< unsigned int, dim+2 > offset_;
     GeometryType type_;
   };
 
