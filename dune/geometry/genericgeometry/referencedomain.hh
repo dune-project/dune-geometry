@@ -304,7 +304,7 @@ namespace Dune
       {
         const unsigned int nBaseCorners
           = referenceCorners( baseTopologyId( topologyId, dim ), dim-1, corners );
-        assert( nBaseCorners == size( baseTopologyId( topologyId, dim ), dim, dim ) );
+        assert( nBaseCorners == size( baseTopologyId( topologyId, dim ), dim-1, dim-1 ) );
         if( isPrism( topologyId, dim ) )
         {
           std::copy( corners, corners + nBaseCorners, corners + nBaseCorners );
@@ -341,12 +341,12 @@ namespace Dune
 
 
 
-    // origins
-    // -------
+    // referenceOrigins
+    // ----------------
 
     template< class ct, int cdim >
     inline unsigned int
-    origins ( unsigned int topologyId, int dim, int codim, FieldVector< ct, cdim > *orgs )
+    referenceOrigins ( unsigned int topologyId, int dim, int codim, FieldVector< ct, cdim > *origins )
     {
       assert( (dim >= 0) && (dim <= cdim) );
       assert( topologyId < numTopologies( dim ) );
@@ -357,59 +357,61 @@ namespace Dune
         const unsigned int baseId = baseTopologyId( topologyId, dim );
         if( isPrism( topologyId, dim ) )
         {
-          const unsigned int n = (codim < dim ? origins( baseId, dim-1, codim, orgs ) : 0);
-          const unsigned int m = origins( baseId, dim-1, codim-1, orgs+n );
+          const unsigned int n = (codim < dim ? referenceOrigins( baseId, dim-1, codim, origins ) : 0);
+          const unsigned int m = referenceOrigins( baseId, dim-1, codim-1, origins+n );
           for( unsigned int i = 0; i < m; ++i )
           {
-            orgs[ n+m+i ] = orgs[ n+i ];
-            orgs[ n+m+i ][ dim-1 ] = ct( 1 );
+            origins[ n+m+i ] = origins[ n+i ];
+            origins[ n+m+i ][ dim-1 ] = ct( 1 );
           }
           return n+2*m;
         }
         else
         {
-          const unsigned int m = origins( baseId, dim-1, codim-1, orgs );
+          const unsigned int m = referenceOrigins( baseId, dim-1, codim-1, origins );
           if( codim == dim )
           {
-            orgs[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
-            orgs[ m ][ dim-1 ] = ct( 1 );
+            origins[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
+            origins[ m ][ dim-1 ] = ct( 1 );
             return m+1;
           }
           else
-            return m+origins( baseId, dim-1, codim-1, orgs+m );
+            return m+referenceOrigins( baseId, dim-1, codim, origins+m );
         }
       }
       else
       {
-        orgs[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
+        origins[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
         return 1;
       }
     }
 
 
 
-    // integrationNormals
-    // ------------------
+    // referenceIntegrationOuterNormals
+    // --------------------------------
 
     template< class ct, int cdim >
     inline unsigned int
-    integrationNormals ( unsigned int topologyId, int dim, const FieldVector< ct, cdim > *orgs,
-                         FieldVector< ct, cdim > *normals )
+    referenceIntegrationOuterNormals ( unsigned int topologyId, int dim,
+                                       const FieldVector< ct, cdim > *origins,
+                                       FieldVector< ct, cdim > *normals )
     {
       assert( (dim > 0) && (dim <= cdim) );
       assert( topologyId < numTopologies( dim ) );
 
       if( dim > 1 )
       {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
         if( isPrism( topologyId, dim ) )
         {
           const unsigned int numBaseFaces
-            = integrationNormals( baseTopologyId( topologyId, dim ), dim-1, orgs, normals );
+            = referenceIntegrationOuterNormals( baseId, dim-1, origins, normals );
 
           for( unsigned int i = 0; i < 2; ++i )
           {
             normals[ numBaseFaces+i ] = FieldVector< ct, cdim >( ct( 0 ) );
-            normals[ numBaseFaces+i ][ dim-1 ] = ct( 2*i-1 );
+            normals[ numBaseFaces+i ][ dim-1 ] = ct( 2*int( i )-1 );
           }
 
           return numBaseFaces+2;
@@ -420,9 +422,9 @@ namespace Dune
           normals[ 0 ][ dim-1 ] = ct( -1 );
 
           const unsigned int numBaseFaces
-            = integrationNormals( baseTopologyId( topologyId, dim ), dim-1, orgs+1, normals+1 );
+            = referenceIntegrationOuterNormals( baseId, dim-1, origins+1, normals+1 );
           for( unsigned int i = 1; i <= numBaseFaces; ++i )
-            normals[ i ][ dim-1 ] = normals[ i ]*orgs[ i ];
+            normals[ i ][ dim-1 ] = normals[ i ]*origins[ i ];
 
           return numBaseFaces+1;
         }
@@ -432,7 +434,7 @@ namespace Dune
         for( unsigned int i = 0; i < 2; ++i )
         {
           normals[ i ] = FieldVector< ct, cdim >( ct( 0 ) );
-          normals[ i ][ 0 ] = ct( 2*i-1 );
+          normals[ i ][ 0 ] = ct( 2*int( i )-1 );
         }
 
         return 2;
@@ -441,13 +443,21 @@ namespace Dune
 
     template< class ct, int cdim >
     inline unsigned int
-    integrationNormals ( unsigned int topologyId, int dim, FieldVector< ct, cdim > *normals )
+    referenceIntegrationOuterNormals ( unsigned int topologyId, int dim,
+                                       FieldVector< ct, cdim > *normals )
     {
-      FieldVector< ct, cdim > *orgs = new FieldVector< ct, cdim >[ size( topologyId, dim, dim-1 ) ];
-      origins( topologyId, dim, 1, orgs );
-      const unsigned int numFaces = integrationNormals( topologyId, dim, orgs, normals );
-      assert( numFaces == size( topologyId, dim, dim-1 ) );
-      delete[] orgs;
+      assert( (dim > 0) && (dim <= cdim) );
+
+      FieldVector< ct, cdim > *origins
+        = new FieldVector< ct, cdim >[ size( topologyId, dim, 1 ) ];
+      referenceOrigins( topologyId, dim, 1, origins );
+
+      const unsigned int numFaces
+        = referenceIntegrationOuterNormals( topologyId, dim, origins, normals );
+      assert( numFaces == size( topologyId, dim, 1 ) );
+
+      delete[] origins;
+
       return numFaces;
     }
 

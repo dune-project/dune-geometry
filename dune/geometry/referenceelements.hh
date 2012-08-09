@@ -439,17 +439,23 @@ namespace Dune
       return volume_;
     }
 
-    /** \brief obtain the volume outer normal of the reference element
+    /** \brief obtain the integration outer normal of the reference element
      *
-     *  The volume outer normal is the outer normal whose length coincides
-     *  with the face's volume.
+     *  The integration outer normal is the outer normal whose length coincides
+     *  with the face's integration element.
      *
      *  \param[in]  face  index of the face, whose normal is desired
      */
-    const FieldVector< ctype, dim > &volumeOuterNormal ( int face ) const
+    const FieldVector< ctype, dim > &integrationOuterNormal ( int face ) const
     {
-      assert( (face >= 0) && (face < int( volumeNormals_.size())) );
-      return volumeNormals_[ face ];
+      assert( (face >= 0) && (face < int( integrationNormals_.size() )) );
+      return integrationNormals_[ face ];
+    }
+
+    const FieldVector< ctype, dim > &volumeOuterNormal ( int face ) const
+    DUNE_DEPRECATED_MSG( "Method volumeOuterNormal has been renamed to integrationOuterNormal." )
+    {
+      return integrationOuterNormal( face );
     }
 
     /** \brief initialize the reference element
@@ -463,7 +469,6 @@ namespace Dune
     {
       dune_static_assert( (Topology::dimension == dim),
                           "Cannot initialize reference element for different dimension." );
-      typedef GenericGeometry::ReferenceDomain< Topology > ReferenceDomain;
 
       const unsigned int topologyId = Topology::id;
       Base::template initializeTopology( topologyId );
@@ -491,10 +496,12 @@ namespace Dune
       // compute reference element volume
       volume_ = GenericGeometry::template referenceVolume< ctype >( topologyId, dim );
 
-      // compute normals
-      volumeNormals_.resize( ReferenceDomain::numNormals );
-      for( unsigned int i = 0; i < ReferenceDomain::numNormals; ++i )
-        ReferenceDomain::integrationOuterNormal( i ,volumeNormals_[ i ] );
+      // compute integration outer normals
+      if( dim > 0 )
+      {
+        integrationNormals_.resize( Base::size( 1 ) );
+        GenericGeometry::referenceIntegrationOuterNormals( topologyId, dim, &(integrationNormals_[ 0 ]) );
+      }
 
       // set up mappings
       typedef GenericGeometry::VirtualMapping< Topology, GeometryTraits > VirtualMapping;
@@ -520,7 +527,7 @@ namespace Dune
     ctype volume_;
 
     std::vector< FieldVector< ctype, dim > > baryCenters_[ dim+1 ];
-    std::vector< FieldVector< ctype, dim > > volumeNormals_;
+    std::vector< FieldVector< ctype, dim > > integrationNormals_;
 
     /** \brief Stores all subentities of all codimensions */
     MappingsTable mappings_;
