@@ -280,7 +280,7 @@ namespace Dune
       {
         const ct baseFactor = (isPrism( topologyId, dim ) ? factor : factor - x[ dim-1 ]);
         if( (x[ dim-1 ] > -tolerance) && (factor - x[ dim-1 ] > -tolerance) )
-          return checkInside( baseTopologyId( topologyId, dim ), dim-1, x, tolerance, baseFactor );
+          return checkInside< ct, cdim >( baseTopologyId( topologyId, dim ), dim-1, x, tolerance, baseFactor );
         else
           return false;
       }

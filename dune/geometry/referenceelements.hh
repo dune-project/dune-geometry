@@ -3,6 +3,8 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 
+#include <limits>
+
 #include <dune/common/forloop.hh>
 #include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
@@ -332,7 +334,8 @@ namespace Dune
      */
     bool checkInside ( const FieldVector< ctype, dim > &local ) const
     {
-      return GenericGeometry::checkInside( type().id(), dim, local, 1e-12 );
+      const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
+      return GenericGeometry::template checkInside< ctype, dim >( type().id(), dim, local, tolerance );
     }
 
     /** \brief check if a local coordinate is in the reference element of
@@ -352,7 +355,8 @@ namespace Dune
     template< int codim >
     bool checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
-      return GenericGeometry::checkInside( type( i, codim ).id(), dim-codim, local, 1e-12 );
+      const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
+      return GenericGeometry::template checkInside< ctype, dim >( type( i, codim ).id(), dim-codim, local, tolerance );
     }
 
     /** \brief map a local coordinate on subentity (i,codim) into the reference
