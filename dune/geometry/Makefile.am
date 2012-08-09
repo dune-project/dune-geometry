@@ -8,6 +8,6 @@ geometryinclude_HEADERS =			\
 	type.hh					\
 	typeindex.hh
 
-SUBDIRS = quadraturerules genericgeometry test
+SUBDIRS = quadraturerules genericgeometry mapping test
 
 include $(top_srcdir)/am/global-rules
