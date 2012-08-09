@@ -3,6 +3,7 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 
+#include <algorithm>
 #include <limits>
 
 #include <dune/common/container/array.hh>
