@@ -3,7 +3,10 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEDOMAIN_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_REFERENCEDOMAIN_HH
 
+#include <algorithm>
+
 #include <dune/common/container/array.hh>
+#include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
 
@@ -382,6 +385,70 @@ namespace Dune
       else
       {
         origins[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
+        return 1;
+      }
+    }
+
+
+
+    // referenceEmbeddings
+    // -------------------
+
+    template< class ct, int cdim, int mydim >
+    inline unsigned int
+    referenceEmbeddings ( unsigned int topologyId, int dim, int codim,
+                          FieldVector< ct, cdim > *origins,
+                          FieldMatrix< ct, mydim, cdim > *jacobianTransposeds )
+    {
+      assert( (0 <= codim) && (codim <= dim) && (dim <= cdim) );
+      assert( (dim - codim <= mydim) && (mydim <= cdim) );
+      assert( topologyId < numTopologies( dim ) );
+
+      if( codim > 0 )
+      {
+        const unsigned int baseId = baseTopologyId( topologyId, dim );
+        if( isPrism( topologyId, dim ) )
+        {
+          const unsigned int n = (codim < dim ? referenceEmbeddings( baseId, dim-1, codim, origins, jacobianTransposeds ) : 0);
+          for( unsigned int i = 0; i < n; ++i )
+            jacobianTransposeds[ i ][ dim-codim-1 ][ dim-1 ] = ct( 1 );
+
+          const unsigned int m = referenceEmbeddings( baseId, dim-1, codim-1, origins+n, jacobianTransposeds+n );
+          std::copy( origins+n, origins+n+m, origins+n+m );
+          std::copy( jacobianTransposeds+n, jacobianTransposeds+n+m, jacobianTransposeds+n+m );
+          for( unsigned int i = 0; i < m; ++i )
+            origins[ n+m+i ][ dim-1 ] = ct( 1 );
+
+          return n+2*m;
+        }
+        else
+        {
+          const unsigned int m = referenceEmbeddings( baseId, dim-1, codim-1, origins, jacobianTransposeds );
+          if( codim == dim )
+          {
+            origins[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
+            origins[ m ][ dim-1 ] = ct( 1 );
+            return m+1;
+          }
+          else
+          {
+            const unsigned int n = referenceEmbeddings( baseId, dim-1, codim, origins+m, jacobianTransposeds+m );
+            for( unsigned int i = 0; i < n; ++i )
+            {
+              for( int k = 0; k < dim-1; ++k )
+                jacobianTransposeds[ m+i ][ dim-codim-1 ][ k ] = -origins[ m+i ][ k ];
+              jacobianTransposeds[ m+i ][ dim-codim-1 ][ dim-1 ] = ct( 1 );
+            }
+            return m+n;
+          }
+        }
+      }
+      else
+      {
+        origins[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
+        jacobianTransposeds[ 0 ] = FieldMatrix< ct, mydim, cdim >( ct( 0 ) );
+        for( int k = 0; k < dim; ++k )
+          jacobianTransposeds[ 0 ][ k ][ k ] = ct( 1 );
         return 1;
       }
     }
