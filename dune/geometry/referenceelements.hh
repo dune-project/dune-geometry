@@ -11,10 +11,9 @@
 #include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
 
+#include <dune/geometry/mapping/affinemapping.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
-#include <dune/geometry/genericgeometry/hybridmapping.hh>
-#include <dune/geometry/genericgeometry/mappingprovider.hh>
 
 namespace Dune
 {
@@ -27,6 +26,9 @@ namespace Dune
 
   template< class ctype, int dim >
   class ReferenceElementContainer;
+
+  template< class ctype, int dim >
+  class ReferenceElements;
 
 
 
@@ -266,40 +268,7 @@ namespace Dune
 
     ReferenceElement () {}
 
-    ~ReferenceElement ()
-    {
-      ForLoop< Destroy, 0, dim >::apply( mappings_ );
-      integral_constant< int, 0 > codim0Variable;
-      if( mappings_[ codim0Variable ].size() )
-        delete mappings_[ codim0Variable ][ 0 ];
-    }
-
-    template< class Topology > class CornerStorage;
-    template< int codim > struct Create;
-    template< int codim > struct Destroy;
-
-    struct GeometryTraits
-      : public GenericGeometry::DefaultGeometryTraits< ctype, dim, dim >
-    {
-      typedef GenericGeometry::DefaultGeometryTraits< ctype, dim, dim > Base;
-
-      typedef typename Base::CoordTraits CoordTraits;
-
-      template< class Topology >
-      struct Mapping
-      {
-        typedef GenericGeometry::CornerMapping< CoordTraits, Topology, dim, CornerStorage< Topology >, true > type;
-      };
-
-      struct Caching
-      {
-        static const GenericGeometry::EvaluationType evaluateJacobianTransposed = GenericGeometry::PreCompute;
-        static const GenericGeometry::EvaluationType evaluateJacobianInverseTransposed = GenericGeometry::PreCompute;
-        static const GenericGeometry::EvaluationType evaluateIntegrationElement = GenericGeometry::PreCompute;
-        static const GenericGeometry::EvaluationType evaluateNormal = GenericGeometry::PreCompute;
-      };
-
-    };
+    template< int codim > struct CreateMappings;
 
   public:
     using Base::type;
@@ -309,7 +278,7 @@ namespace Dune
     struct Codim
     {
       //! type of mapping embedding a subentity into the reference element
-      typedef GenericGeometry::HybridMapping< dim-codim, GeometryTraits > Mapping;
+      typedef AffineMapping< ctype, dim-codim, dim > Mapping;
     };
 
     /** \brief position of the barycenter of entity (i,c)
@@ -510,20 +479,14 @@ namespace Dune
       }
 
       // set up mappings
-      typedef GenericGeometry::VirtualMapping< Topology, GeometryTraits > VirtualMapping;
-
-      integral_constant< int, 0 > codim0Variable;
-      mappings_[ codim0Variable ].resize( 1 );
-      mappings_[ codim0Variable ][ 0 ]  = new VirtualMapping( codim0Variable );
-
-      Dune::ForLoop< Create, 0, dim >::apply( static_cast< Base & >( *this ), mappings_ );
+      Dune::ForLoop< CreateMappings, 0, dim >::apply( *this, mappings_ );
     }
 
   private:
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
     struct MappingArray
-      : public std::vector< typename Codim< codim >::Mapping * >
+      : public std::vector< typename Codim< codim >::Mapping >
     {};
 
     /** \brief Type to store all subentities of all codimensions */
@@ -541,98 +504,39 @@ namespace Dune
 
 
 
-  // ReferenceElement::CornerStorage
-  // -------------------------------
-
-  template< class ctype, int dim >
-  template< class Topology >
-  class ReferenceElement< ctype, dim >::CornerStorage
-  {
-    typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
-
-  public:
-    static const unsigned int size = Topology::numCorners;
-
-    template< class SubTopology >
-    struct SubStorage
-    {
-      typedef CornerStorage< SubTopology > type;
-    };
-
-    explicit CornerStorage ( const integral_constant< int, 0 > & )
-    {
-      for( unsigned int i = 0; i < size; ++i )
-        RefDomain::corner( i, coords_[ i ] );
-    }
-
-    template< class Mapping, unsigned int codim >
-    explicit
-    CornerStorage ( const GenericGeometry::SubMappingCoords< Mapping, codim > &coords )
-    {
-      for( unsigned int i = 0; i < size; ++i )
-        coords_[ i ] = coords[ i ];
-    }
-
-    const FieldVector< ctype, dim > &operator[] ( unsigned int i ) const
-    {
-      return coords_[ i ];
-    }
-
-  private:
-    FieldVector< ctype, dim > coords_[ size ];
-  };
-
-
-
-  // ReferenceElement::Create
-  // ------------------------
+  // ReferenceElement::CreateMappings
+  // --------------------------------
 
   template< class ctype, int dim >
   template< int codim >
-  struct ReferenceElement< ctype, dim >::Create
+  struct ReferenceElement< ctype, dim >::CreateMappings
   {
-    static void apply ( const ReferenceElement< void, dim > &refElement, MappingsTable &mappings )
+    template< int cc >
+    static const ReferenceElement< ctype, dim-cc > &
+    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, integral_constant< int, cc > )
     {
-      if( codim > 0 )
-      {
-        integral_constant< int, 0 > codim0Variable;
-        const typename Codim< 0 >::Mapping &refMapping = *(mappings[ codim0Variable ][ 0 ]);
-
-        typedef typename GenericGeometry::MappingProvider< typename Codim< 0 >::Mapping, codim > MappingProvider;
-        integral_constant< int, codim > codimVariable;
-
-        const unsigned int size = refElement.size( codim );
-        mappings[ codimVariable ].resize( size );
-        for( unsigned int i = 0; i < size; ++i )
-        {
-          char *storage = new char[ MappingProvider::maxMappingSize ];
-          mappings[ codimVariable ][ i ] = refMapping.template trace< codim >( i, storage );
-        }
-      }
+      return ReferenceElements< ctype, dim-cc >::general( refElement.type( i, cc ) );
     }
-  };
 
-
-
-  // ReferenceElement::Destroy
-  // -------------------------
-
-  template< class ctype, int dim >
-  template< int codim >
-  struct ReferenceElement< ctype, dim >::Destroy
-  {
-    static void apply ( MappingsTable &mappings )
+    static const ReferenceElement< ctype, dim > &
+    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, integral_constant< int, 0 > )
     {
-      if( codim > 0 )
+      return refElement;
+    }
+
+    static void apply ( const ReferenceElement< ctype, dim > &refElement, MappingsTable &mappings )
+    {
+      const int size = refElement.size( codim );
+      std::vector< FieldVector< ctype, dim > > origins( size );
+      std::vector< FieldMatrix< ctype, dim - codim, dim > > jacobianTransposeds( size );
+      GenericGeometry::referenceEmbeddings( refElement.type().id(), dim, codim, &(origins[ 0 ]), &(jacobianTransposeds[ 0 ]) );
+
+      integral_constant< int, codim > codimVariable;
+      mappings[ codimVariable ].reserve( size );
+      for( int i = 0; i < size; ++i )
       {
-        integral_constant< int, codim > codimVariable;
-        for( size_t i = 0; i < mappings[ codimVariable ].size(); ++i )
-        {
-          typedef typename Codim< codim >::Mapping Mapping;
-          mappings[ codimVariable ][ i ]->~Mapping();
-          char *storage = (char *)mappings[ codimVariable ][ i ];
-          delete[]( storage );
-        }
+        typename Codim< codim >::Mapping mapping( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
+        mappings[ codimVariable ].push_back( mapping );
       }
     }
   };

@@ -90,6 +90,7 @@ namespace Dune
       ctype integrationElement;
     };
 
+  public:
     AffineMapping ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
                     const JacobianTransposed &jt, const UserData &userData = UserData() )
       : storage_( refElement, origin, jt, userData )
