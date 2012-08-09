@@ -133,20 +133,6 @@ namespace Dune
       }
     }
 
-    /** \brief initialize the reference element
-     *
-     *  \tparam  Topology  topology of the desired reference element
-     *
-     *  \note The dimension of the topology must match dim.
-     */
-    template< class Topology >
-    void initializeTopology ()
-    {
-      dune_static_assert( (Topology::dimension == dim),
-                          "Cannot initialize reference element for different dimension." );
-      initializeTopology( Topology::id );
-    }
-
   private:
     std::vector< SubEntityInfo > info_[ dim+1 ];
   };
@@ -435,18 +421,11 @@ namespace Dune
 
     /** \brief initialize the reference element
      *
-     *  \tparam  Topology  topology of the desired reference element
-     *
-     *  \note The dimension of the topology must match dim.
+     *  \param[in]  topologyId  topology id for the desired reference element
      */
-    template< class Topology >
-    void initializeTopology ()
+    void initializeTopology ( unsigned int topologyId )
     {
-      dune_static_assert( (Topology::dimension == dim),
-                          "Cannot initialize reference element for different dimension." );
-
-      const unsigned int topologyId = Topology::id;
-      Base::template initializeTopology( topologyId );
+      Base::initializeTopology( topologyId );
 
       // compute corners
       const unsigned int numVertices = Base::size( dim );
@@ -557,7 +536,8 @@ namespace Dune
 
     ReferenceElementContainer ()
     {
-      ForLoop< Builder, 0, numTopologies-1 >::apply( values_ );
+      for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
+        values_[ topologyId ].initializeTopology( topologyId );
     }
 
     const value_type &operator() ( const GeometryType &type ) const
@@ -590,16 +570,6 @@ namespace Dune
     const_iterator end () const { return values_ + numTopologies; }
 
   private:
-    template< int topologyId >
-    struct Builder
-    {
-      static void apply ( value_type (&values)[ numTopologies ] )
-      {
-        typedef typename GenericGeometry::Topology< topologyId, dim >::type Topology;
-        values[ topologyId ].template initializeTopology< Topology >();
-      }
-    };
-
     value_type values_[ numTopologies ];
   };
 
