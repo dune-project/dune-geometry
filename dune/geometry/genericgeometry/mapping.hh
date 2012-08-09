@@ -35,30 +35,30 @@ namespace Dune
 
     public:
       typedef Topo Topology;
-      typedef MappingTraits< CoordTraits, Topology :: dimension, dimW > Traits;
+      typedef MappingTraits< CoordTraits, Topology::dimension, dimW > Traits;
 
-      static const unsigned int dimension = Traits :: dimension;
-      static const unsigned int dimWorld = Traits :: dimWorld;
+      static const unsigned int dimension = Traits::dimension;
+      static const unsigned int dimWorld = Traits::dimWorld;
 
-      typedef typename Traits :: FieldType FieldType;
-      typedef typename Traits :: LocalCoordinate LocalCoordinate;
-      typedef typename Traits :: GlobalCoordinate GlobalCoordinate;
-      typedef typename Traits :: JacobianType JacobianType;
-      typedef typename Traits :: JacobianTransposedType JacobianTransposedType;
+      typedef typename Traits::FieldType FieldType;
+      typedef typename Traits::LocalCoordinate LocalCoordinate;
+      typedef typename Traits::GlobalCoordinate GlobalCoordinate;
+      typedef typename Traits::JacobianType JacobianType;
+      typedef typename Traits::JacobianTransposedType JacobianTransposedType;
 
-      typedef typename Traits :: MatrixHelper MatrixHelper;
+      typedef typename Traits::MatrixHelper MatrixHelper;
 
-      typedef GenericGeometry :: ReferenceElement< Topology, FieldType > ReferenceElement;
+      typedef GenericGeometry::ReferenceElement< Topology, FieldType > ReferenceElement;
 
       template< unsigned int codim, unsigned int i >
       struct SubTopology
       {
-        typedef typename GenericGeometry :: SubTopology< Topo, codim, i > :: type Topology;
-        typedef typename Implementation :: template SubTopology< codim, i > :: Trace TraceImpl;
+        typedef typename GenericGeometry::SubTopology< Topo, codim, i >::type Topology;
+        typedef typename Implementation::template SubTopology< codim, i >::Trace TraceImpl;
         typedef Mapping< CoordTraits, Topology, dimWorld, TraceImpl > Trace;
       };
 
-      static const bool alwaysAffine = Implementation :: alwaysAffine;
+      static const bool alwaysAffine = Implementation::alwaysAffine;
 
     protected:
       Implementation impl_;
@@ -112,14 +112,14 @@ namespace Dune
       {
         JacobianTransposedType JT;
         jacobianTransposed( x, JT );
-        return MatrixHelper :: template rightInvA< dimension, dimWorld >( JT, JTInv );
+        return MatrixHelper::template rightInvA< dimension, dimWorld >( JT, JTInv );
       }
 
       FieldType integrationElement ( const LocalCoordinate &x ) const
       {
         JacobianTransposedType JT;
         jacobianTransposed( x, JT );
-        return MatrixHelper :: template sqrtDetAAT< dimension, dimWorld >( JT );
+        return MatrixHelper::template sqrtDetAAT< dimension, dimWorld >( JT );
       }
 
       const Implementation &implementation () const
@@ -128,14 +128,14 @@ namespace Dune
       }
 
       template< unsigned int codim, unsigned int i >
-      typename SubTopology< codim, i > :: Trace trace () const
+      typename SubTopology< codim, i >::Trace trace () const
       {
         return impl_.template trace< codim, i >();
       }
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_MAPPING_HH
