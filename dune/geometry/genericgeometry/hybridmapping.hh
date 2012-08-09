@@ -113,13 +113,16 @@ namespace Dune
 
       /** \brief is this mapping affine? */
       virtual bool affine () const = 0;
+
       /** \brief obtain the name of the reference element */
       virtual Dune::GeometryType type () const = 0;
 
       /** \brief obtain number of corners of the corresponding reference element */
       virtual int numCorners () const = 0;
+
       /** \brief obtain coordinates of the i-th corner */
       virtual GlobalCoordinate corner ( int i ) const = 0;
+
       /** \brief obtain the centroid of the mapping's image */
       virtual GlobalCoordinate center () const = 0;
 
@@ -164,6 +167,7 @@ namespace Dune
        *        are required.
        */
       virtual FieldType integrationElement ( const LocalCoordinate &x ) const = 0;
+
       /** \brief obtain the volume of the mapping's image
        *
        *  \note The current implementation just returns
@@ -184,6 +188,7 @@ namespace Dune
        *        JacobianTransposed, destroying the previous value.
        */
       virtual const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &x ) const = 0;
+
       /** \brief obtain the transposed of the Jacobian's inverse
        *
        *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
@@ -383,13 +388,16 @@ namespace Dune
 
       /** \brief is this mapping affine? */
       bool affine () const { return mapping_.affine(); }
+
       /** \brief obtain the name of the reference element */
       Dune::GeometryType type () const { return mapping_.type(); }
 
       /** \brief obtain number of corners of the corresponding reference element */
       int numCorners () const { return mapping_.numCorners(); }
+
       /** \brief obtain coordinates of the i-th corner */
       GlobalCoordinate corner ( int i ) const { return mapping_.corner( i ); }
+
       /** \brief obtain the centroid of the mapping's image */
       GlobalCoordinate center () const { return mapping_.center(); }
 
@@ -400,6 +408,7 @@ namespace Dune
        *  \returns corresponding global coordinate
        */
       GlobalCoordinate global ( const LocalCoordinate &local ) const { return mapping_.global( local ); }
+
       /** \brief evaluate the inverse mapping
        *
        *  \param[in]  global  global coorindate to map
@@ -434,6 +443,7 @@ namespace Dune
        *        are required.
        */
       FieldType integrationElement ( const LocalCoordinate &local ) const { return mapping_.integrationElement( local ); }
+
       /** \brief obtain the volume of the mapping's image
        *
        *  \note The current implementation just returns
@@ -454,6 +464,7 @@ namespace Dune
        *        JacobianTransposed, destroying the previous value.
        */
       const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const { return mapping_.jacobianTransposed( local ); }
+
       /** \brief obtain the transposed of the Jacobian's inverse
        *
        *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
