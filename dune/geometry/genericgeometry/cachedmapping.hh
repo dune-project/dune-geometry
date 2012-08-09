@@ -295,8 +295,6 @@ namespace Dune
       GlobalCoordinate corner ( int i ) const { return mapping().corner( i ); }
       GlobalCoordinate center () const { return global( ReferenceElement::baryCenter() ); }
 
-      static bool checkInside ( const LocalCoordinate &x ) { return ReferenceElement::checkInside( x ); }
-
       GlobalCoordinate global ( const LocalCoordinate &x ) const
       {
         GlobalCoordinate y;

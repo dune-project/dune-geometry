@@ -146,12 +146,6 @@ namespace Dune
        */
       virtual LocalCoordinate local ( const GlobalCoordinate &y ) const = 0;
 
-      /** \brief check whether a point lies within the reference element
-       *
-       *  \param[in]  x  local coordinate of point to check
-       */
-      virtual bool checkInside ( const LocalCoordinate &x ) const = 0;
-
       /** \brief obtain the integration element
        *
        *  If the Jacobian of the mapping is denoted by $J(x)$, the integration
@@ -313,8 +307,6 @@ namespace Dune
       virtual GlobalCoordinate global ( const LocalCoordinate &local ) const { return mapping_.global( local ); }
       virtual LocalCoordinate local ( const GlobalCoordinate &global ) const { return mapping_.local( global ); }
 
-      virtual bool checkInside ( const LocalCoordinate &local ) const { return mapping_.checkInside( local ); }
-
       virtual FieldType integrationElement ( const LocalCoordinate &local ) const { return mapping_.integrationElement( local ); }
       virtual FieldType volume () const { return mapping_.volume(); }
 
@@ -421,12 +413,6 @@ namespace Dune
        *  \endcode
        */
       LocalCoordinate local ( const GlobalCoordinate &global ) const { return mapping_.local( global ); }
-
-      /** \brief check whether a point lies within the reference element
-       *
-       *  \param[in]  local  local coordinate of point to check
-       */
-      bool checkInside ( const LocalCoordinate &local ) const { return mapping_.checkInside( local ); }
 
       /** \brief obtain the integration element
        *
