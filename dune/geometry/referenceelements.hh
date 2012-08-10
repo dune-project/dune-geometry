@@ -388,10 +388,10 @@ namespace Dune
      *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
      */
     template< int codim >
-    typename Codim< codim >::Mapping &mapping( int i ) const
+    const typename Codim< codim >::Mapping &mapping( int i ) const
     {
       integral_constant< int, codim > codimVariable;
-      return *(mappings_[ codimVariable ][ i ]);
+      return mappings_[ codimVariable ][ i ];
     }
 
     /** \brief obtain the volume of the reference element */
