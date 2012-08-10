@@ -400,15 +400,14 @@ namespace Dune
       return type_;
     }
 
-    /** \brief Initialize the baryCenter_ member of the class
-     *
-     * This class is to be called in a static ForLoop.
-     * \todo Merge this code into the dynamic one
-     */
     template< class Topology, unsigned int codim, unsigned int i >
     void initialize ()
     {
+      typedef Initialize< Topology, codim > Init;
       typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
+
+      const unsigned int iVariable = i;
+      Dune::ForLoop< Init::template SubCodim, 0, dim-codim >::apply( iVariable, numbering_ );
 
       baryCenter_ = ctype( 0 );
       static const unsigned int numCorners = size( dim );
@@ -419,24 +418,10 @@ namespace Dune
         baryCenter_ += corner;
       }
       baryCenter_ *= ctype( 1 ) / ctype( numCorners );
+
+      typedef typename GenericGeometry::SubTopology< Topology, codim, i >::type SubTopology;
+      type_ = GeometryType( SubTopology::id, SubTopology::dimension );
     }
-
-    /** \brief Initialize the members of the class */
-    void initialize ( unsigned int topologyId, int codim, unsigned int i )
-    {
-      const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
-      type_ = GeometryType( subId, dim-codim );
-
-      for( int subcodim = 0; subcodim <= dim-codim; ++subcodim )
-      {
-        const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
-
-        numbering_[ codim+subcodim ].resize( size );
-        for( unsigned int j = 0; j < size; ++j )
-          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( topologyId, dim, codim, i, subcodim, j );
-      }
-    }
-
   };
 
 
@@ -523,11 +508,7 @@ namespace Dune
       {
         const unsigned int size = GenericGeometry::Size< Topology, codim >::value;
         info[ codim ].resize( size );
-        // The static loop should be removed eventually.
-        // For a transitional period it is still here.
         Dune::ForLoop< SubTopology, 0, size-1 >::apply( info[ codim ] );
-        for (size_t i=0; i<size; i++)
-          info[ codim ][ i ].initialize(Topology::id,codim,i);
 
         if( codim > 0 )
         {

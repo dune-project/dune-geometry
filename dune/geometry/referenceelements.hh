@@ -4,6 +4,7 @@
 #define DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 
 #include <dune/common/forloop.hh>
+#include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/genericgeometry/subtopologies.hh>
@@ -366,26 +367,49 @@ namespace Dune
   template< class ctype, int dim >
   class ReferenceElement< ctype, dim >::SubEntityInfo
   {
-    template< class Topology, int codim > struct Initialize
-    {
-      template< int subcodim > struct SubCodim;
-    };
-
-    std::vector< int > numbering_[ dim+1 ];
+    unsigned int *numbering_;
+    unsigned int offset_[ dim+2 ];
     FieldVector< ctype, dim > baryCenter_;
     GeometryType type_;
 
   public:
+    SubEntityInfo () : numbering_( nullptr )
+    {
+      std::fill( offset_, offset_ + (dim+2), 0 );
+    }
+
+    SubEntityInfo ( const SubEntityInfo &other )
+      : type_( other.type_ )
+    {
+      std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
+      numbering_ = allocate();
+      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
+    }
+
+    ~SubEntityInfo () { deallocate( numbering_ ); }
+
+    const SubEntityInfo &operator= ( const SubEntityInfo &other )
+    {
+      type_ = other.type_;
+      std::copy( other.offset_, other.offset_ + (dim+2), offset_ );
+
+      deallocate( numbering_ );
+      numbering_ = allocate();
+      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
+
+      return *this;
+    }
+
     int size ( int cc ) const
     {
-      assert( cc <= dim );
-      return numbering_[ cc ].size();
+      assert( (cc >= codim()) && (cc <= dim) );
+      return (offset_[ cc+1 ] - offset_[ cc ]);
     }
 
     int number ( int ii, int cc ) const
     {
-      assert( cc <= dim );
-      return numbering_[ cc ][ ii ];
+      assert( (ii >= 0) && (ii < size( cc )) );
+      return numbering_[ offset_[ cc ] + ii ];
     }
 
     const FieldVector< ctype, dim > &position () const
@@ -402,11 +426,31 @@ namespace Dune
     template <class Topology>
     void initialize ( int codim, unsigned int i )
     {
+      // Determine the geometry type
+      const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, dim, codim, i );
+      type_ = GeometryType( subId, dim-codim );
+
+      // Determine the subentity numbering
+      // compute offsets
+      for( int cc = 0; cc <= codim; ++cc )
+        offset_[ cc ] = 0;
+      for( int cc = codim; cc <= dim; ++cc )
+        offset_[ cc+1 ] = offset_[ cc ] + GenericGeometry::size( subId, dim-codim, cc-codim );
+
+      // compute subnumbering
+      deallocate( numbering_ );
+      numbering_ = allocate();
+      for( int cc = codim; cc <= dim; ++cc )
+      {
+        for( unsigned int ii = 0; ii < offset_[ cc+1 ] - offset_[ cc ]; ++ii )
+          numbering_[ offset_[ cc ] + ii ] = GenericGeometry::subTopologyNumber( Topology::id, dim, codim, i, cc-codim, ii );
+      }
+
       // Compute the element barycenter
       typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
 
       baryCenter_ = ctype( 0 );
-      static const unsigned int numCorners = size( dim );
+      const unsigned int numCorners = size( dim );
       for( unsigned int j = 0; j < numCorners; ++j )
       {
         FieldVector< ctype, dim > corner;
@@ -414,22 +458,14 @@ namespace Dune
         baryCenter_ += corner;
       }
       baryCenter_ *= ctype( 1 ) / ctype( numCorners );
-
-      // Determine the geometry type
-      const unsigned int subId = GenericGeometry::subTopologyId( Topology::id, dim, codim, i );
-      type_ = GeometryType( subId, dim-codim );
-
-      // Determine the subentity numbering
-      for( int subcodim = 0; subcodim <= dim-codim; ++subcodim )
-      {
-        const unsigned int size = GenericGeometry::size( subId, dim-codim, subcodim );
-
-        numbering_[ codim+subcodim ].resize( size );
-        for( unsigned int j = 0; j < size; ++j )
-          numbering_[ codim+subcodim ][ j ] = GenericGeometry::subTopologyNumber( Topology::id, dim, codim, i, subcodim, j );
-      }
     }
 
+  protected:
+    int codim () const { return dim - type().dim(); }
+
+    unsigned int *allocate () { return (capacity() != 0 ? new unsigned int[ capacity() ] : nullptr); }
+    void deallocate ( unsigned int *ptr ) { delete[] ptr; }
+    unsigned int capacity () const { return offset_[ dim+1 ]; }
   };
 
 
@@ -469,24 +505,6 @@ namespace Dune
 
   private:
     FieldVector< ctype, dim > coords_[ size ];
-  };
-
-
-  template< class ctype, int dim >
-  template< class Topology, int codim >
-  template< int subcodim >
-  struct ReferenceElement< ctype, dim >::SubEntityInfo::Initialize< Topology, codim >::SubCodim
-  {
-    typedef GenericGeometry::SubTopologySize< Topology, codim, subcodim > SubSize;
-    typedef GenericGeometry::GenericSubTopologyNumbering< Topology, codim, subcodim > SubNumbering;
-
-    static void apply ( unsigned int i, std::vector< int > (&numbering)[ dim+1 ] )
-    {
-      const unsigned int size = SubSize::size( i );
-      numbering[ codim+subcodim ].resize( size );
-      for( unsigned int j = 0; j < size; ++j )
-        numbering[ codim+subcodim ][ j ] = SubNumbering::number( i, j );
-    }
   };
 
 
