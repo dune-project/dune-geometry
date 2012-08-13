@@ -15,6 +15,6 @@ add_subdirectory("dune")
 add_subdirectory("doc")
 add_subdirectory("lib")
 
-export(TARGETS quadraturerules FILE DuneGeometryTargets.cmake)
+export(TARGETS dunegeometry FILE DuneGeometryTargets.cmake)
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)
