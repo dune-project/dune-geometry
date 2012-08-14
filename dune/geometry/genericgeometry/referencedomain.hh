@@ -272,7 +272,7 @@ namespace Dune
     // checkInside
     // -----------
 
-    template< class ct, unsigned int cdim >
+    template< class ct, int cdim >
     inline bool
     checkInside ( unsigned int topologyId, int dim, const FieldVector< ct, cdim > &x, ct tolerance, ct factor = ct( 1 ) )
     {
