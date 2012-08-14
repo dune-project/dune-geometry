@@ -6,7 +6,8 @@ geometryinclude_HEADERS =			\
 	referenceelements.hh			\
 	topologyfactory.hh			\
 	type.hh					\
-	typeindex.hh
+	typeindex.hh				\
+	typemap.hh
 
 SUBDIRS = quadraturerules genericgeometry mapping test
 
