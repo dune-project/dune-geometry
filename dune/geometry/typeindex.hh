@@ -9,6 +9,7 @@
  *        vector
  */
 
+#include <cassert>
 #include <cstddef>
 
 #include "type.hh"
@@ -140,20 +141,17 @@ namespace Dune
   struct GeometryTypeIndex;
 
   template< int mindim, int maxdim >
-  class GeometryTypeMapBase< int mindim, int maxdim, false >
+  class GeometryTypeIndex< mindim, maxdim, false >
   {
     static const std::size_t begin_offset = (std::size_t( 1 ) << mindim) / std::size_t( 2 );
     static const std::size_t end_offset = (std::size_t( 1 ) << maxdim);
 
   public:
-    static const int min_dimension = mindim;
-    static const int max_dimension = maxdim;
-
     static const std::size_t size = end_offset - begin_offset;
 
     static std::size_t index ( const GeometryType &gt )
     {
-      assert( (gt.dim() >= min_dimension) && (gt.dim() <= max_dimension) );
+      assert( (gt.dim() >= mindim) && (gt.dim() <= maxdim) );
       assert( !gt.isNone() );
       const std::size_t offset = (std::size_t( 1 ) << gt.dim()) / 2;
       return (offset - begin_offset) + (std::size_t( gt.id() ) >> 1);
@@ -161,21 +159,18 @@ namespace Dune
   };
 
   template< int mindim, int maxdim >
-  class GeometryTypeIndex< int mindim, int maxdim, true >
+  class GeometryTypeIndex< mindim, maxdim, true >
   {
     typedef GeometryTypeIndex< mindim, maxdim, false > BasicIndex;
 
   public:
-    static const int min_dimension = mindim;
-    static const int max_dimension = maxdim;
-
-    static const std::size_t size = BasicIndex::size + (max_dimension - min_dimension);;
+    static const std::size_t size = BasicIndex::size + std::size_t( maxdim - mindim );
 
     static std::size_t index ( const GeometryType &gt )
     {
-      assert( (gt.dim() >= min_dimension) && (gt.dim() <= max_dimension) );
+      assert( (gt.dim() >= mindim) && (gt.dim() <= maxdim) );
       if( gt.isNone() )
-        return BasicIndex::size + (gt.dim() - min_dimension);
+        return BasicIndex::size + std::size_t( gt.dim() - mindim );
       else
         return BasicIndex::index( gt );
     }
