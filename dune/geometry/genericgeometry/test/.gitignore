@@ -1,6 +1,9 @@
+testbasicgeometry
+testmatrix
+testsimplexify
+testsubtopologies
+
 Makefile
 Makefile.in
+
 .deps
-testmatrix
-testsubtopologies
-testbasicgeometry
