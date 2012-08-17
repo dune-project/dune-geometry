@@ -141,7 +141,7 @@ namespace Dune
        *  It specifies the topological type of all elements in the grid.
        *  Here's an example:
        *  \code
-       *  static const unsigned int topologyId = SimplexTopology< dimGrid >::type::id;
+       *  static const unsigned int topologyId = SimplexTopology< dim_of_reference_element >::type::id;
        *  \endcode
        */
       static const bool hybrid = true;
