@@ -30,7 +30,7 @@ namespace Dune
 
       template< class CoordVector >
       static Mapping*
-      construct ( const unsigned int topologyId, const CoordVector &coords, char *mappingStorage )
+      construct ( const unsigned int topologyId, const CoordVector &coords, void *mappingStorage )
       {
         assert( (topologyId >> 1) == (Topology::id >> 1) );
         return new( mappingStorage ) Mapping( coords );
@@ -78,7 +78,7 @@ namespace Dune
 
       template< class CoordVector >
       static Mapping*
-      construct ( const unsigned int topologyId, const CoordVector &coords, char *mappingStorage )
+      construct ( const unsigned int topologyId, const CoordVector &coords, void *mappingStorage )
       {
         static ConstructorTable< CoordVector > construct;
         return construct[ topologyId ]( coords, mappingStorage );
@@ -99,7 +99,7 @@ namespace Dune
     template< class CoordVector >
     class VirtualMappingFactory< dim, GeometryTraits >::ConstructorTable
     {
-      typedef Mapping* (*Construct)( const CoordVector &coords, char *mappingStorage );
+      typedef Mapping* (*Construct)( const CoordVector &coords, void *mappingStorage );
 
       template< int i >
       struct Builder;
@@ -119,7 +119,7 @@ namespace Dune
     private:
       template< class Topology >
       static Mapping*
-      construct ( const CoordVector &coords, char *mappingStorage )
+      construct ( const CoordVector &coords, void *mappingStorage )
       {
         typedef VirtualMapping< Topology, GeometryTraits > VMapping;
         return new( mappingStorage ) VMapping( coords );
