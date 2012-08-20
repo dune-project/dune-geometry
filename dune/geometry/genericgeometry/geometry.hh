@@ -7,7 +7,7 @@
 #include <dune/common/typetraits.hh>
 #include <dune/common/nullptr.hh>
 
-#include <dune/geometry/genericgeometry/mappingprovider.hh>
+#include <dune/geometry/genericgeometry/hybridmappingfactory.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
 
 namespace Dune
@@ -277,22 +277,22 @@ namespace Dune
       template< bool >
       struct Hybrid
       {
-        typedef HybridMapping< dimGrid, Traits > Mapping;
+        typedef VirtualMappingFactory< mydimension, Traits > MappingFactory;
       };
 
       template< bool >
       struct NonHybrid
       {
-        typedef typename GenericGeometry::Topology< Traits::topologyId, dimGrid >::type Topology;
-        typedef GenericGeometry::NonHybridMapping< Topology, Traits > Mapping;
+        static const int topologyId = Traits::template hasSingleGeometryType< mydimension >::topologyId;
+        typedef typename GenericGeometry::Topology< topologyId, mydimension >::type Topology;
+        typedef GenericGeometry::NonHybridMappingFactory< Topology, Traits > MappingFactory;
       };
 
-      typedef typename SelectType< Traits::hybrid, Hybrid< true >, NonHybrid< false > >::Type::Mapping
-      ElementMapping;
-      typedef GenericGeometry::MappingProvider< ElementMapping, dimGrid - mydimension > MappingProvider;
+      static const bool hybrid = !Traits::template hasSingleGeometryType< mydimension >::v;
 
     protected:
-      typedef typename MappingProvider::Mapping Mapping;
+      typedef typename SelectType< hybrid, Hybrid< true >, NonHybrid< false > >::Type::MappingFactory MappingFactory;
+      typedef typename MappingFactory::Mapping Mapping;
 
     public:
       /** \brief Type used for Jacobian matrices
@@ -321,7 +321,7 @@ namespace Dune
       template< class CoordVector >
       BasicGeometry ( const GeometryType &type, const CoordVector &coords )
       {
-        mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
+        mapping_ = MappingFactory::construct( type.id(), coords, mappingStorage_ );
       }
 
       /** \brief obtain a geometry for a subentity
@@ -457,7 +457,7 @@ namespace Dune
        * We don't know its type, but we don't want to do classical
        * dynamic polymorphism, because heap allocation is expensive.
        */
-      char mappingStorage_[ MappingProvider::maxMappingSize ];
+      char mappingStorage_[ MappingFactory::maxMappingSize ];
     };
 
 

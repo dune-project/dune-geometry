@@ -67,13 +67,6 @@ namespace Dune
       JacobianTransposedType;
 
       typedef GenericGeometry :: MatrixHelper< CoordTraits > MatrixHelper;
-
-      template< unsigned int codim >
-      struct Codim
-      {
-        typedef GenericGeometry :: MappingTraits< CoordTraits, dimension - codim, dimWorld >
-        MappingTraits;
-      };
     };
 
 
@@ -122,31 +115,33 @@ namespace Dune
       //! types needed in matrix-vector operations
       typedef DuneCoordTraits< ctype > CoordTraits;
 
-      //! dimension of the grid
-      static const int dimGrid = dimG;
       //! dimension of the world
       static const int dimWorld = dimW;
 
-      /** \brief may the grid contain elements of different type?
+      /** \brief will there be only one geometry type for a dimension?
        *
-       *  If the elements (entities of codimension 0) may differ in topology
-       *  type, the grid is called hybrid (and this parameter must be set
-       *  to true). In this case, all methods of the geometry implementation
-       *  are virtual (but no other branching for topology type is used).
+       *  If multiple geometry types are requested for a dimension, all methods
+       *  of the geometry implementation are virtual (but no other branching for
+       *  the geometry type is used).
        *
-       *  If the grid is non-hybrid, <em>hybrid</em> can be set to false.
-       *  In this case, virtual methods are not necessary and, hence, the
-       *  geometries are a little faster.
+       *  If there is only a single geometry type for a certain dimension,
+       *  <em>hasSingleGeometryType::v</em> can be set to true.
+       *  In this case, virtual methods are not necessary and the geometries
+       *  are a little faster.
        *
-       *  If <em>hybrid</em> is set to false, an additional parameter
-       *  <em>topologyId</em> is required.
-       *  It specifies the topological type of all elements in the grid.
+       *  If <em>hasSingleGeometryType::v</em> is set to true, an additional
+       *  parameter <em>topologyId</em> is required.
        *  Here's an example:
        *  \code
-       *  static const unsigned int topologyId = SimplexTopology< dimGrid >::type::id;
+       *  static const unsigned int topologyId = SimplexTopology< dim >::type::id;
        *  \endcode
        */
-      static const bool hybrid = true;
+      template< int dim >
+      struct hasSingleGeometryType
+      {
+        static const bool v = false;
+        static const unsigned int topologyId = ~0u;
+      };
 
       /** \brief specifies the reference mapping to be used
        *
