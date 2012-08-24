@@ -8,7 +8,7 @@
 #include <cstring>
 
 #include <dune/common/forloop.hh>
-#include <dune/common/mpihelper.hh>
+#include <dune/common/parallel/mpihelper.hh>
 
 #include "../topologytypes.hh"
 #include "../conversion.hh"

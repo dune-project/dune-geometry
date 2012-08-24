@@ -16,7 +16,7 @@
 
 #include <dune/common/exceptions.hh>
 #include <dune/common/ios_state.hh>
-#include <dune/common/mpihelper.hh>
+#include <dune/common/parallel/mpihelper.hh>
 
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometry.hh>
