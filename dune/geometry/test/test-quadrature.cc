@@ -194,63 +194,65 @@ void checkWeights(Dune::GeometryType t)
 }
 
 int main ()
+try
 {
-  try {
-    Dune::GeometryType cube0d( Dune::GenericGeometry::CubeTopology< 0 > ::type::id, 0 );
-    Dune::GeometryType cube1d( Dune::GenericGeometry::CubeTopology< 1 > ::type::id, 1 );
-    Dune::GeometryType cube2d( Dune::GenericGeometry::CubeTopology< 2 > ::type::id, 2 );
-    Dune::GeometryType cube3d( Dune::GenericGeometry::CubeTopology< 3 > ::type::id, 3 );
-    //Dune::GeometryType cube4d( Dune::GenericGeometry::CubeTopology< 4 > ::type::id );
-    //Dune::GeometryType cube5d( Dune::GenericGeometry::CubeTopology< 5 > ::type::id );
-    //Dune::GeometryType cube6d( Dune::GenericGeometry::CubeTopology< 6 > ::type::id );
+  Dune::GeometryType cube0d( Dune::GenericGeometry::CubeTopology< 0 >::type::id, 0 );
+  Dune::GeometryType cube1d( Dune::GenericGeometry::CubeTopology< 1 >::type::id, 1 );
+  Dune::GeometryType cube2d( Dune::GenericGeometry::CubeTopology< 2 >::type::id, 2 );
+  Dune::GeometryType cube3d( Dune::GenericGeometry::CubeTopology< 3 >::type::id, 3 );
+  Dune::GeometryType cube4d( Dune::GenericGeometry::CubeTopology< 4 >::type::id, 4 );
+  Dune::GeometryType cube5d( Dune::GenericGeometry::CubeTopology< 5 >::type::id, 5 );
+  Dune::GeometryType cube6d( Dune::GenericGeometry::CubeTopology< 6 >::type::id, 6 );
 
-    Dune::GeometryType simplex0d( Dune::GenericGeometry::SimplexTopology< 0 > ::type::id, 0 );
-    Dune::GeometryType simplex1d( Dune::GenericGeometry::SimplexTopology< 1 > ::type::id, 1 );
-    Dune::GeometryType simplex2d( Dune::GenericGeometry::SimplexTopology< 2 > ::type::id, 2 );
-    Dune::GeometryType simplex3d( Dune::GenericGeometry::SimplexTopology< 3 > ::type::id, 3 );
+  Dune::GeometryType simplex0d( Dune::GenericGeometry::SimplexTopology< 0 >::type::id, 0 );
+  Dune::GeometryType simplex1d( Dune::GenericGeometry::SimplexTopology< 1 >::type::id, 1 );
+  Dune::GeometryType simplex2d( Dune::GenericGeometry::SimplexTopology< 2 >::type::id, 2 );
+  Dune::GeometryType simplex3d( Dune::GenericGeometry::SimplexTopology< 3 >::type::id, 3 );
 
-    Dune::GeometryType prism3d( Dune::GenericGeometry::PrismTopology< 3 > ::type::id, 3 );
-    Dune::GeometryType pyramid3d( Dune::GenericGeometry::PyramidTopology< 3 > ::type::id, 3 );
+  Dune::GeometryType prism3d( Dune::GenericGeometry::PrismTopology< 3 >::type::id, 3 );
+  Dune::GeometryType pyramid3d( Dune::GenericGeometry::PyramidTopology< 3 >::type::id, 3 );
 
-    checkWeights<double, 0>(cube0d);
-    checkWeights<double, 1>(cube1d);
-    checkWeights<double, 2>(cube2d);
-    checkWeights<double, 3>(cube3d);
-    // checkWeights<double, 4>(cube4d);
-    // checkWeights<double, 5>(cube5d);
-    // checkWeights<double, 6>(cube6d);
+  checkWeights< double, 0 >( cube0d );
+  checkWeights< double, 1 >( cube1d );
+  checkWeights< double, 2 >( cube2d );
+  checkWeights< double, 3 >( cube3d );
+  //checkWeights< double, 4 >( cube4d );
+  //checkWeights< double, 5 >( cube5d );
+  //checkWeights< double, 6 >( cube6d );
 
-    checkWeights<double, 0>(simplex0d);
-    checkWeights<double, 1>(simplex1d);
-    checkWeights<double, 2>(simplex2d);
-    checkWeights<double, 3>(simplex3d);
+  checkWeights< double, 0 >( simplex0d );
+  checkWeights< double, 1 >( simplex1d );
+  checkWeights< double, 2 >( simplex2d );
+  checkWeights< double, 3 >( simplex3d );
 
-    checkWeights<double, 3>(prism3d);
-    checkWeights<double, 3>(pyramid3d);
+  checkWeights< double, 3 >( prism3d );
+  checkWeights< double, 3 >( pyramid3d );
 
-    checkQuadrature<double, 0>(cube0d);
-    checkQuadrature<double, 1>(cube1d);
-    checkQuadrature<double, 2>(cube2d);
-    checkQuadrature<double, 3>(cube3d);
-    // checkQuadrature<double, 4>(cube4d);
-    // checkQuadrature<double, 5>(cube5d);
-    // checkQuadrature<double, 6>(cube6d);
+  checkQuadrature< double, 0 >( cube0d );
+  checkQuadrature< double, 1 >( cube1d );
+  checkQuadrature< double, 2 >( cube2d );
+  checkQuadrature< double, 3 >( cube3d );
+  //checkQuadrature< double, 4 >( cube4d );
+  //checkQuadrature< double, 5 >( cube5d );
+  //checkQuadrature< double, 6 >( cube6d );
 
-    checkQuadrature<double, 0>(simplex0d);
-    checkQuadrature<double, 1>(simplex1d);
-    checkQuadrature<double, 2>(simplex2d);
-    checkQuadrature<double, 3>(simplex3d);
-    checkQuadrature<double, 3>(prism3d);
-    checkQuadrature<double, 3>(pyramid3d);
-  }
-  catch (Dune::Exception &e) {
-    std::cerr << e << std::endl;
-    return 1;
-  }
-  catch (...) {
-    std::cerr << "Generic exception!" << std::endl;
-    return 1;
-  }
+  checkQuadrature< double, 0 >( simplex0d );
+  checkQuadrature< double, 1 >( simplex1d );
+  checkQuadrature< double, 2 >( simplex2d );
+  checkQuadrature< double, 3 >( simplex3d );
+
+  checkQuadrature< double, 3 >( prism3d );
+  checkQuadrature< double, 3 >( pyramid3d );
 
   return success ? 0 : 1;
+}
+catch( const Dune::Exception &e )
+{
+  std::cerr << e << std::endl;
+  return 1;
+}
+catch( ... )
+{
+  std::cerr << "Generic exception!" << std::endl;
+  return 1;
 }
