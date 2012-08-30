@@ -111,7 +111,8 @@ namespace Dune
      *        <em>Traits</em> argument of BasicGeometry.
      *
      * \tparam ctype Type used for coordinate coefficients
-     * \tparam dimG Dimension of the grid \note will be ignored!
+     * \tparam dimG Dimension of the grid \note This template parameter exists
+     * for backward-compatibility only.  It is not used anywhere.
      * \tparam dimW Dimension of the range space of this geometry
      * \tparam alwaysAffine Set to true if geometry is always affine (enables a few optimizations)
      */
@@ -121,8 +122,6 @@ namespace Dune
       //! types needed in matrix-vector operations
       typedef DuneCoordTraits< ctype > CoordTraits;
 
-      //! dimension of the grid
-      static const int dimGrid = dimG;
       //! dimension of the world
       static const int dimWorld = dimW;
 
@@ -142,7 +141,7 @@ namespace Dune
        *  It specifies the topological type of all elements in the grid.
        *  Here's an example:
        *  \code
-       *  static const unsigned int topologyId = SimplexTopology< dimGrid >::type::id;
+       *  static const unsigned int topologyId = SimplexTopology< dim_of_reference_element >::type::id;
        *  \endcode
        */
       static const bool hybrid = true;
@@ -211,12 +210,11 @@ namespace Dune
      *  can be used (via subclassing) to provide the necessary information. It
      *  contains exactly the fields that are necessary:
      *  \code
-     *  template< class ctype, int dimG, int dimW >
+     *  template< class ctype, int dimW >
      *  struct DefaultGeometryTraits
      *  {
      *    typedef DuneCoordTraits< ctype > CoordTraits;
      *
-     *    static const int dimGrid = dimG;
      *    static const int dimWorld = dimW;
      *
      *    //   hybrid   [ true if Codim 0 is hybrid ]
@@ -273,12 +271,11 @@ namespace Dune
      *  can be used (via subclassing) to provide the necessary information. It
      *  contains exactly the fields that are necessary:
      *  \code
-     *  template< class ctype, int dimG, int dimW >
+     *  template< class ctype, int dimW >
      *  struct DefaultGeometryTraits
      *  {
      *    typedef DuneCoordTraits< ctype > CoordTraits;
      *
-     *    static const int dimGrid = dimG;
      *    static const int dimWorld = dimW;
      *
      *    //   hybrid   [ true if Codim 0 is hybrid ]

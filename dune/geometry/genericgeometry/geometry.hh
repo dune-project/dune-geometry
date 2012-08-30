@@ -175,22 +175,27 @@ namespace Dune
      *  This class is provides a generic implementation of a DUNE geometry.
      *
      *  Parameters shared by all codimensions are summarized in one class
-     *  parameter called Traits. The following default implementation can be
-     *  used (via subclassing) to provide the necessary information. It contains
-     *  exactly the required fields:
+     *  parameter called Traits. As a default traits class, the class
+     *  DefaultGeometryTraits can be used.  Alternatively, the user can
+     *  provide hand-written traits classes (which may, if that helps,
+     *  derive from DefaultGeometryTraits).  Such classes have to provide
+     *  the following fields:
      *  \code
-     *  template< class ctype, int dimG, int dimW >
-     *  struct DefaultGeometryTraits
+     *  template< My_Template_Parameters >
+     *  struct MyGeometryTraits
      *  {
+     *    // ctype is the type used for coordinate coefficients
      *    typedef DuneCoordTraits< ctype > CoordTraits;
      *
-     *    static const int dimGrid = dimG;
-     *    static const int dimWorld = dimW;
+     *    // Dimension of the space the geometry maps into
+     *    static const int dimWorld = ...;
      *
-     *    //   hybrid   [ true if Codim 0 is hybrid ]
-     *    static const bool hybrid = true;
-     *    //   topologyId [ for Codim 0, needed for (hybrid=false) ]
-     *    // static const unsigned int topologyId = SimplexTopology< dimGrid >::type::id;
+     *    //   hybrid   [ true if reference element type is a run-time parameter ]
+     *    static const bool hybrid = ...;
+     *
+     *    //   topologyId [ reference element type, only needed if it is not a run-time parameter ]
+     *    // In this example: a dim-dimensional simplex
+     *    // static const unsigned int topologyId = SimplexTopology< dim >::type::id;
      *
      *    // explained below
      *    template< class Topology >
@@ -199,7 +204,7 @@ namespace Dune
      *      typedef CornerMapping< CoordTraits, Topology, dimWorld > type;
      *    };
      *
-     *    // explained below
+     *    // Caching behavior
      *    struct Caching
      *    {
      *      static const EvaluationType evaluateJacobianTransposed = ComputeOnDemand;
@@ -245,8 +250,6 @@ namespace Dune
     class BasicGeometry
     {
       typedef typename Traits :: CoordTraits CoordTraits;
-
-      static const int dimGrid = Traits :: dimGrid;
 
       /** \brief Be friend with other instantiations of the same class */
       template< int, class > friend class BasicGeometry;
