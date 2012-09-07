@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 
-#include <dune/common/container/array.hh>
+#include <dune/common/array.hh>
 #include <dune/common/nullptr.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>

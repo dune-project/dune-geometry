@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-#include <dune/common/container/array.hh>
+#include <dune/common/array.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>

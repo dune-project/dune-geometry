@@ -3,7 +3,7 @@
 #ifndef DUNE_GEOMETRY_TYPEMAP_HH
 #define DUNE_GEOMETRY_TYPEMAP_HH
 
-#include <dune/common/container/array.hh>
+#include <dune/common/array.hh>
 
 #include <dune/geometry/type.hh>
 #include <dune/geometry/typeindex.hh>

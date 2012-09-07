@@ -10,7 +10,7 @@
 #include <limits>
 
 #include <dune/common/gmpfield.hh>
-#include <dune/common/parallel/mpihelper.hh>
+#include <dune/common/mpihelper.hh>
 
 #include "../matrixhelper.hh"
 #include "../geometrytraits.hh"
