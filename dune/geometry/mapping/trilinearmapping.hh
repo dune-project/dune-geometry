@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_BILINEARMAPPING_HH
-#define DUNE_GEOMETRY_BILINEARMAPPING_HH
+#ifndef DUNE_GEOMETRY_TRILINEARMAPPING_HH
+#define DUNE_GEOMETRY_TRILINEARMAPPING_HH
 
 #include <limits>
 
@@ -16,11 +16,11 @@
 namespace Dune
 {
 
-  // BilinearMappingTraits
-  // ---------------------
+  // TrilinearMappingTraits
+  // ----------------------
 
   template< class ct >
-  struct BilinearMappingTraits
+  struct TrilinearMappingTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
@@ -31,18 +31,18 @@ namespace Dune
 
 
 
-  // BilinearMapping
-  // ---------------
+  // TrilinearMapping
+  // ----------------
 
-  template< class ct, int cdim, class Traits = BilinearMappingTraits< ct > >
-  class BilinearMapping
+  template< class ct, int cdim, class Traits = TrilinearMappingTraits< ct > >
+  class TrilinearMapping
   {
-    typedef BilinearMapping< ct, cdim, Traits > This;
+    typedef TrilinearMapping< ct, cdim, Traits > This;
 
   public:
     typedef ct ctype;
 
-    static const int mydimension= 2;
+    static const int mydimension= 3;
     static const int coorddimension = cdim;
 
     typedef typename Traits::UserData UserData;
@@ -66,20 +66,35 @@ namespace Dune
       Storage ( const CoordVector &coordVector, const UserData &userData )
         : UserData( userData )
       {
-        for( int i = 0; i < 4; ++i )
-          coefficients[ i ] = coordVector[ i ];
-        coefficients[ 1 ] -= coefficients[ 0 ];
-        coefficients[ 3 ] -= coefficients[ 2 ];
-        coefficients[ 2 ] -= coefficients[ 0 ];
-        coefficients[ 3 ] -= coefficients[ 1 ];
+        coefficients[ 0 ] = coordVector[ 0 ];
+        coefficients[ 1 ] = coordVector[ 1 ];
+        coefficients[ 2 ] = coordVector[ 2 ];
+        coefficients[ 3 ] = coordVector[ 4 ];
+        coefficients[ 4 ] = coordVector[ 3 ];
+        coefficients[ 5 ] = coordVector[ 6 ];
+        coefficients[ 6 ] = coordVector[ 5 ];
+        coefficients[ 7 ] = coordVector[ 7 ];
+
+        coefficients[ 4 ] -= coefficients[ 2 ];
+        coefficients[ 5 ] -= coefficients[ 3 ];
+        coefficients[ 6 ] -= coefficients[ 1 ];
+
+        coefficients[ 7 ] -= coefficients[ 0 ];
+
+        for( int i = 0; i < 3; ++i )
+        {
+          coefficients[ 7 ] -= coefficients[ i+4 ];
+          coefficients[ i+1 ] -= coefficients[ 0 ];
+          coefficients[ i+4 ] -= coefficients[ i+1 ];
+        }
       }
 
-      GlobalCoordinate coefficients[ 4 ];
+      GlobalCoordinate coefficients[ 8 ];
     };
 
   public:
     template< class CoordVector >
-    BilinearMapping ( const CoordVector &coordVector, const UserData &userData = UserData() )
+    TrilinearMapping ( const CoordVector &coordVector, const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {}
 
@@ -120,9 +135,11 @@ namespace Dune
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
       GlobalCoordinate global( storage().coefficients[ 0 ] );
-      for( int i = 0; i < 2; ++i )
+      for( int i = 0; i < mydimension; ++i )
         global.axpy( local[ i ], storage().coefficients[ i+1 ] );
-      global.axpy( local[ 0 ]*local[ 1 ], storage().coefficients[ 3 ] );
+      for( int i = 0; i < mydimension; ++i )
+        global.axpy( local[ i ]*local[ (i+1)%mydimension ], storage().coefficients[ i+4 ] );
+      global.axpy( local[ 0 ]*local[ 1 ]*local[ 2 ], storage().coefficients[ 7 ] );
       return global;
     }
 
@@ -240,7 +257,9 @@ namespace Dune
     GlobalCoordinate derivative ( int i, const LocalCoordinate &local ) const
     {
       GlobalCoordinate derivative = storage().coefficients[ i+1 ];
-      derivative.axpy( local[ 1-i ], storage().coefficients[ 3 ] );
+      jacobianTransposed_[ i ].axpy( local[ (i+1)%3 ], storage().coefficients[ i+4 ] );
+      jacobianTransposed_[ i ].axpy( local[ (i+2)%3 ], storage().coefficients[ ((i+2)%3)+4 ] );
+      jacobianTransposed_[ i ].axpy( local[ (i+1)%3 ]*local[ (i+2)%3 ], storage().coefficients[ 7 ] );
       return derivative;
     }
 
@@ -252,4 +271,4 @@ namespace Dune
 
 } // namespace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_BILINEARMAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_TRILINEARMAPPING_HH
