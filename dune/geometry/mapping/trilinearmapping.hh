@@ -3,6 +3,7 @@
 #ifndef DUNE_GEOMETRY_TRILINEARMAPPING_HH
 #define DUNE_GEOMETRY_TRILINEARMAPPING_HH
 
+#include <cassert>
 #include <limits>
 
 #include <dune/common/fmatrix.hh>
@@ -15,6 +16,14 @@
 
 namespace Dune
 {
+
+  // External Forward Declarations
+  // -----------------------------
+
+  template< class ctype, int dim >
+  class ReferenceElement;
+
+
 
   // TrilinearMappingTraits
   // ----------------------
@@ -55,6 +64,9 @@ namespace Dune
 
     // for compatibility, export the type JacobianInverseTransposed as Jacobian
     typedef JacobianInverseTransposed Jacobian;
+
+    //! type of reference element
+    typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
 
   private:
     typedef typename Traits::MatrixHelper MatrixHelper;
@@ -97,6 +109,22 @@ namespace Dune
     TrilinearMapping ( const CoordVector &coordVector, const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {}
+
+    template< class CoordVector >
+    TrilinearMapping ( const ReferenceElement &refElement, const CoordVector &coordVector,
+                       const UserData &userData = UserData() )
+      : storage_( coordVector, userData )
+    {
+      assert( refElement.type().isCube() );
+    }
+
+    template< class CoordVector >
+    TrilinearMapping ( Dune::GeometryType gt, const CoordVector &coordVector,
+                       const UserData &userData = UserData() )
+      : storage_( coordVector, userData )
+    {
+      assert( (gt.dim() == mydimension) && gt.isCube() );
+    }
 
     /** \brief is this mapping affine? */
     bool affine () const

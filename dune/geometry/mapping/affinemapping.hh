@@ -83,6 +83,18 @@ namespace Dune
         integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
       }
 
+      template< class CoordVector >
+      Storage ( const ReferenceElement &refEl, const CoordVector &coordVector,
+                const UserData &userData )
+        : UserData( userData ),
+          refElement( &refEl ),
+          origin( coordVector[ 0 ] )
+      {
+        for( int i = 0; i < mydimension; ++i )
+          jacobianTransposed[ i ] = coordVector[ i+1 ] - origin;
+        integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
+      }
+
       const ReferenceElement *refElement;
       GlobalCoordinate origin;
       JacobianTransposed jacobianTransposed;
@@ -99,6 +111,18 @@ namespace Dune
     AffineMapping ( Dune::GeometryType gt, const GlobalCoordinate &origin,
                     const JacobianTransposed &jt, const UserData &userData = UserData() )
       : storage_( ReferenceElements::general( gt ), origin, jt, userData )
+    {}
+
+    template< class CoordVector >
+    AffineMapping ( const ReferenceElement &refElement, const CoordVector &coordVector,
+                    const UserData &userData = UserData() )
+      : storage_( refElement, coordVector, userData )
+    {}
+
+    template< class CoordVector >
+    AffineMapping ( Dune::GeometryType gt, const CoordVector &coordVector,
+                    const UserData &userData = UserData() )
+      : storage_( ReferenceElements::general( gt ), coordVector, userData )
     {}
 
     /** \brief is this mapping affine? */
