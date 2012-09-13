@@ -101,7 +101,10 @@ namespace Dune
     /** \brief is this mapping affine? */
     bool affine () const
     {
-      return (storage().coefficients[ 3 ].one_norm() < Traits::tolerance());
+      ctype sum( 0 );
+      for( int i = 4; i < 8; ++i )
+        sum += storage().coefficients[ i ].one_norm();
+      return (sum < Traits::tolerance());
     }
 
     /** \brief obtain the name of the reference element */
