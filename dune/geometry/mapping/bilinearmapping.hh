@@ -1,7 +1,9 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_AFFINEMAPPING_HH
-#define DUNE_GEOMETRY_AFFINEMAPPING_HH
+#ifndef DUNE_GEOMETRY_BILINEARMAPPING_HH
+#define DUNE_GEOMETRY_BILINEARMAPPING_HH
+
+#include <limits>
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
@@ -9,46 +11,38 @@
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
 #include <dune/geometry/genericgeometry/matrixhelper.hh>
+#include <dune/geometry/genericgeometry/topologytypes.hh>
 
 namespace Dune
 {
 
-  // External Forward Declarations
-  // -----------------------------
-
-  template< class ctype, int dim >
-  class ReferenceElement;
-
-  template< class ctype, int dim >
-  class ReferenceElements;
-
-
-
-  // AffineMappingTraits
-  // -------------------
+  // BilinearMappingTraits
+  // ---------------------
 
   template< class ct >
-  struct AffineMappingTraits
+  struct BilinearMappingTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
+
+    static ct tolerance () { return 16 * std::numeric_limits< ct >::epsilon(); }
 
     struct UserData {};
   };
 
 
 
-  // AffineMapping
-  // -------------
+  // BilinearMapping
+  // ---------------
 
-  template< class ct, int mydim, int cdim, class Traits = AffineMappingTraits< ct > >
-  class AffineMapping
+  template< class ct, int cdim, class Traits = BilinearMappingTraits< ct > >
+  class BilinearMapping
   {
-    typedef AffineMapping< ct, mydim, cdim, Traits > This;
+    typedef BilinearMapping< ct, cdim, Traits > This;
 
   public:
     typedef ct ctype;
 
-    static const int mydimension= mydim;
+    static const int mydimension= 2;
     static const int coorddimension = cdim;
 
     typedef typename Traits::UserData UserData;
@@ -62,62 +56,60 @@ namespace Dune
     // for compatibility, export the type JacobianInverseTransposed as Jacobian
     typedef JacobianInverseTransposed Jacobian;
 
-    //! type of reference element
-    typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
-
   private:
-    typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
-
     typedef typename Traits::MatrixHelper MatrixHelper;
 
     struct Storage
       : public UserData
     {
-      Storage ( const ReferenceElement &refEl, const GlobalCoordinate &org,
-                const JacobianTransposed &jt, const UserData &userData )
-        : UserData( userData ),
-          refElement( &refEl ),
-          origin( org ),
-          jacobianTransposed( jt )
+      template< class CoordVector >
+      Storage ( const CoordVector &coordVector, const UserData &userData )
+        : UserData( userData )
       {
-        integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
+        for( int i = 0; i < 4; ++i )
+          coefficients[ i ] = coordVector[ i ];
+        coefficients[ 1 ] -= coefficients[ 0 ];
+        coefficients[ 3 ] -= coefficients[ 2 ];
+        coefficients[ 2 ] -= coefficients[ 0 ];
+        coefficients[ 3 ] -= coefficients[ 1 ];
       }
 
-      const ReferenceElement *refElement;
-      GlobalCoordinate origin;
-      JacobianTransposed jacobianTransposed;
-      JacobianInverseTransposed jacobianInverseTransposed;
-      ctype integrationElement;
+      GlobalCoordinate coefficients[ 4 ];
     };
 
   public:
-    AffineMapping ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
-                    const JacobianTransposed &jt, const UserData &userData = UserData() )
-      : storage_( refElement, origin, jt, userData )
-    {}
-
-    AffineMapping ( Dune::GeometryType gt, const GlobalCoordinate &origin,
-                    const JacobianTransposed &jt, const UserData &userData = UserData() )
-      : storage_( ReferenceElements::general( gt ), origin, jt, userData )
+    template< class CoordVector >
+    BilinearMapping ( const CoordVector &coordVector, const UserData &userData = UserData() )
+      : storage_( coordVector, userData )
     {}
 
     /** \brief is this mapping affine? */
-    bool affine () const { return true; }
+    bool affine () const
+    {
+      return (storage().coefficients[ 3 ].one_norm() < Traits::tolerance());
+    }
 
     /** \brief obtain the name of the reference element */
-    Dune::GeometryType type () const { return refElement().type(); }
+    Dune::GeometryType type () const
+    {
+      typedef typename GenericGeometry::CubeTopology< mydimension >::type Topology;
+      return Dune::GeometryType( Topology() );
+    }
 
     /** \brief obtain number of corners of the corresponding reference element */
-    int numCorners () const { return refElement().size( mydimension ); }
+    int numCorners () const { return (1 << mydimension); }
 
     /** \brief obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const
     {
-      return global( refElement().position( i, mydimension ) );
+      LocalCoordinate local;
+      for( int j = 0; j < mydimension; ++j )
+        local[ i ] = ctype( (i >> j) & 1 );
+      return global( local );
     }
 
     /** \brief obtain the centroid of the mapping's image */
-    GlobalCoordinate center () const { return global( refElement().position( 0, 0 ) ); }
+    GlobalCoordinate center () const { return global( localBaryCenter() ); }
 
     /** \brief evaluate the mapping
      *
@@ -127,8 +119,10 @@ namespace Dune
      */
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
-      GlobalCoordinate global( storage().origin );
-      storage().jacobianTransposed.umtv( local, global );
+      GlobalCoordinate global( storage().coefficients[ 0 ] );
+      global.axpy( local[ 0 ], storage().coefficients[ 1 ] );
+      global.axpy( local[ 1 ], storage().coefficients[ 2 ] );
+      global.axpy( local[ 0 ]*local[ 1 ], storage().coefficients[ 3 ] );
       return global;
     }
 
@@ -145,9 +139,28 @@ namespace Dune
      */
     LocalCoordinate local ( const GlobalCoordinate &global ) const
     {
-      LocalCoordinate local;
-      storage().jacobianInverseTransposed.mtv( global - storage().origin, local );
-      return local;
+      LocalCoordinate local( localBaryCenter() );
+      GlobalCoordinate dglobal = (*this).global( local ) - global;
+
+      const ctype tolerance = Traits::tolerance();
+      ctype step;
+      do {
+        step = ctype( 0 );
+        for( int j = 0; j < mydimension; ++j )
+        {
+          GlobalCoordinate direction = storage().coefficients[ j+1 ];
+          direction.axpy( local[ 1-j ], storage().coefficients[ 3 ] );
+          const ctype dd = direction*direction;
+          if( dd < tolerance*tolerance )
+            continue;
+
+          const ctype alpha = -(dglobal*direction) / dd;
+          dglobal.axpy( alpha, direction );
+          local[ j ] += alpha;
+          step += std::abs( alpha );
+        }
+      }
+      while( step > tolerance );
     }
 
     /** \brief obtain the integration element
@@ -166,7 +179,7 @@ namespace Dune
      */
     ctype integrationElement ( const LocalCoordinate &local ) const
     {
-      return storage().integrationElement;
+      return MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransosed( local ) );
     }
 
     /** \brief obtain the volume of the mapping's image
@@ -179,7 +192,7 @@ namespace Dune
      */
     ctype volume () const
     {
-      return storage().integrationElement * refElement().volume();
+      return integrationElement( localBaryCenter() );
     }
 
     /** \brief obtain the transposed of the Jacobian
@@ -193,7 +206,12 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianTranposed;
+      for( int i = 0; i < mydimension; ++i )
+      {
+        jacobianTransposed_[ i ] = storage().coefficients[ i+1 ];
+        jacobianTransposed_[ i ].axpy( local[ 1-i ], storage().coefficients[ 3 ] );
+      }
+      return jacobianTransposed_;
     }
 
     /** \brief obtain the transposed of the Jacobian's inverse
@@ -204,7 +222,8 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianInverseTransposed;
+      MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed(), jacobianInverseTransposed_ );
+      return jacobianInverseTransposed_;
     }
 
     const UserData &userData () const { return storage_; }
@@ -214,12 +233,19 @@ namespace Dune
     const Storage &storage () const { return storage_; }
     Storage &storage () { return storage_; }
 
-    const ReferenceElement &refElement () const { return *storage().refElement; }
+    LocalCoordinate localBaryCenter () const
+    {
+      LocalCoordinate local;
+      local[ 0 ] = local[ 1 ] = ctype( 1 ) / ctype( 2 );
+      return local;
+    }
 
   private:
     Storage storage_;
+    mutable JacobianTransposed jacobianTransposed_;
+    mutable JacobianInverseTransposed jacobianInverseTransposed_;
   };
 
 } // namespace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_AFFINEMAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_BILINEARMAPPING_HH

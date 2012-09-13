@@ -1,4 +1,4 @@
 mappingincludedir = $(includedir)/dune/geometry/mapping
-mappinginclude_HEADERS = affinemapping.hh
+mappinginclude_HEADERS = affinemapping.hh bilinearmapping.hh
 
 include $(top_srcdir)/am/global-rules
