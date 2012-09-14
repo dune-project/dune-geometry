@@ -157,7 +157,7 @@ namespace Dune
     {
       assert( (dim > 0) && (topologyId < numTopologies( dim )) );
       assert( (0 <= codim) && (codim < dim) );
-      return (((topologyId & ~1) & (1u << (dim-codim-1))) == 0);
+      return (((topologyId & ~1u) & (1u << (dim-codim-1))) == 0);
     }
 
     /** \brief check whether a prism construction was used to create a given
@@ -175,7 +175,7 @@ namespace Dune
     {
       assert( (dim > 0) && (topologyId < numTopologies( dim )) );
       assert( (0 <= codim) && (codim < dim) );
-      return (( (topologyId | 1) & (1u << (dim-codim-1))) != 0);
+      return (( (topologyId | 1u) & (1u << (dim-codim-1))) != 0);
     }
 
     /** \brief check whether a specific topology construction was used to create a
@@ -197,6 +197,19 @@ namespace Dune
       return (codim >= (dim-1)) || (((topologyId >> (dim-codim-1)) & 1) == (unsigned int)construction);
     }
 
+    /** \brief check whether a topology is a simplex
+     *
+     *  \param[in]  topologyId    id of the topology
+     *  \param[in]  dim           dimension of the topology
+     *
+     *  \returns true, if the given topology is a simplex.
+     */
+    inline bool isSimplex ( unsigned int topologyId, int dim )
+    {
+      assert( (dim > 0) && (topologyId < numTopologies( dim )) );
+      return ((topologyId & ~1u) == 0);
+    }
+
     /** \brief obtain the base topology of a given codimension
      *
      *  \param[in]  topologyId    id of the topology
@@ -208,7 +221,7 @@ namespace Dune
     {
       assert( (dim >= 0) && (topologyId < numTopologies( dim )) );
       assert( (0 <= codim) && (codim <= dim) );
-      return topologyId & ((1u << (dim-codim)) - 1);
+      return topologyId & ((1u << (dim-codim)) - 1u);
     }
 
 
@@ -402,8 +415,8 @@ namespace Dune
       }
     };
 
-  }
+  } // namespace GenericGeometry
 
-}
+} // namespace Dune
 
 #endif // DUNE_GEOMETRY_GENERICGEOMETRY_TOPOLOGYTYPES_HH
