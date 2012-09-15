@@ -246,7 +246,7 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
     {
-      MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed(), jacobianInverseTransposed_ );
+      MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed( local ), jacobianInverseTransposed_ );
       return jacobianInverseTransposed_;
     }
 
