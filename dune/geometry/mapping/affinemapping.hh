@@ -188,24 +188,13 @@ namespace Dune
      *  \param[in]  local  local coordinate to evaluate the integration element in
      *
      *  \returns the integration element \f$\mu(x)\f$.
-     *
-     *  \note For affine mappings, it is more efficient to call
-     *        jacobianInverseTransposed before integrationElement, if both
-     *        are required.
      */
     ctype integrationElement ( const LocalCoordinate &local ) const
     {
       return storage().integrationElement;
     }
 
-    /** \brief obtain the volume of the mapping's image
-     *
-     *  \note The current implementation just returns
-     *  \code
-     *  integrationElement( baryCenter() ) * ReferenceElement::volume()
-     *  \endcode
-     *  which is wrong for n-linear surface maps and other nonlinear maps.
-     */
+    /** \brief obtain the volume of the mapping's image */
     ctype volume () const
     {
       return storage().integrationElement * refElement().volume();
