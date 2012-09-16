@@ -1,4 +1,4 @@
-GEOMETRYTYPE = cube
+TOPOLOGY = CubeTopology
 DIMENSION = 3
 
 check_PROGRAMS = testsubtopologies testbasicgeometry testmatrix testsimplexify
@@ -12,7 +12,7 @@ AM_LDFLAGS = @AM_LDFLAGS@ $(ALL_PKG_LDFLAGS) $(DUNEMPILIBS)
 LDADD = $(ALL_PKG_LIBS) @LDADD@ $(DUNEMPILDFLAGS)
 
 testsubtopologies_SOURCES = testsubtopologies.cc
-testsubtopologies_CPPFLAGS = $(AM_CPPFLAGS) -DGEOMETRYTYPE=$(GEOMETRYTYPE) -DDIMENSION=$(DIMENSION)
+testsubtopologies_CPPFLAGS = $(AM_CPPFLAGS) -DTOPOLOGY=$(TOPOLOGY) -DDIMENSION=$(DIMENSION)
 
 testbasicgeometry_SOURCES = testbasicgeometry.cc
 

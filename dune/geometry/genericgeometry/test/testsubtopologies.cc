@@ -11,20 +11,17 @@
 #include <dune/common/mpihelper.hh>
 
 #include "../topologytypes.hh"
-#include "../conversion.hh"
 #include "../subtopologies.hh"
 
-#ifndef GEOMETRYTYPE
-#error "GEOMETRYTYPE must be one of 'simplex', 'cube', 'prism', 'pyramid'"
+#ifndef TOPOLOGY
+#error "TOPOLOGY must be one of 'SimplexTopology', 'CubeTopology', 'PrismTopology', 'PyramidTopology'"
 #endif
 
 #ifndef DIMENSION
 #error "DIMENSION not selected."
 #endif
 
-typedef Dune :: GenericGeometry :: Convert
-< Dune :: GeometryType :: GEOMETRYTYPE, DIMENSION > :: type
-Topology;
+typedef Dune::GenericGeometry::TOPOLOGY< DIMENSION >::type Topology;
 
 bool verbose = false;
 unsigned int errors = 0;
