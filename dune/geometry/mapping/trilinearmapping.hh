@@ -143,7 +143,7 @@ namespace Dune
     }
 
     /** \brief obtain number of corners of the corresponding reference element */
-    int numCorners () const { return (1 << mydimension); }
+    int corners () const { return (1 << mydimension); }
 
     /** \brief obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const

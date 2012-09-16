@@ -131,11 +131,6 @@ namespace Dune
     /** \brief obtain the name of the reference element */
     Dune::GeometryType type () const { return refElement().type(); }
 
-    // Note: for compatibility with HybridMapping
-    /** \brief obtain number of corners of the corresponding reference element */
-    int numCorners () const { return refElement().size( mydimension ); }
-
-    // Note: for compatibility with Geometry
     /** \brief obtain number of corners of the corresponding reference element */
     int corners () const { return refElement().size( mydimension ); }
 
