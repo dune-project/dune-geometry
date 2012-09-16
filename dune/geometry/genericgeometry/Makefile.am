@@ -1,5 +1,5 @@
 genericgeometrydir = $(includedir)/dune/geometry/genericgeometry
-genericgeometry_HEADERS = cachedmapping.hh  codimtable.hh  conversion.hh \
+genericgeometry_HEADERS = cachedmapping.hh  codimtable.hh \
                           cornermapping.hh  geometrytraits.hh \
                           geometry.hh  hybridmapping.hh  hybridmappingfactory.hh \
                           mapping.hh  matrixhelper.hh  maximum.hh \
