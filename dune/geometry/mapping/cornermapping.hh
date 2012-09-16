@@ -96,7 +96,7 @@ namespace Dune
       {}
 
       const ReferenceElement *refElement;
-      typename Traits::template CornerStorage< mydimension, coorddimension > corners;
+      typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners;
     };
 
   public:
@@ -163,7 +163,7 @@ namespace Dune
     LocalCoordinate local ( const GlobalCoordinate &global ) const
     {
       const ctype tolerance = Traits::tolerance();
-      LocalCoordinate x = refElement.position( 0, 0 );
+      LocalCoordinate x = refElement().position( 0, 0 );
       LocalCoordinate dx;
       do
       {
@@ -191,7 +191,7 @@ namespace Dune
      */
     ctype integrationElement ( const LocalCoordinate &local ) const
     {
-      return MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransosed( local ) );
+      return MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransposed( local ) );
     }
 
     /** \brief obtain the volume of the mapping's image
@@ -288,7 +288,7 @@ namespace Dune
     using Base::mydimension;
     using Base::coorddimension;
 
-    typedef typename Base::LocalCoordintae LocalCoordinate;
+    typedef typename Base::LocalCoordinate LocalCoordinate;
     typedef typename Base::GlobalCoordinate GlobalCoordinate;
 
     typedef typename Base::JacobianTransposed JacobianTransposed;
@@ -448,12 +448,12 @@ namespace Dune
     using Base::jacobianInverseTransposed_;
 
   private:
-    ctype integrationElement_;
+    mutable ctype integrationElement_;
 
-    bool affine_ : 1;
+    mutable bool affine_ : 1;
 
-    bool jacobianInverseTransposedComputed_ : 1;
-    bool integrationElementComputed_ : 1;
+    mutable bool jacobianInverseTransposedComputed_ : 1;
+    mutable bool integrationElementComputed_ : 1;
   };
 
 
@@ -507,7 +507,7 @@ namespace Dune
     {
       const GlobalCoordinate &origin = storage().corners[ offset++ ];
       for( int i = 0; i < coorddimension; ++i )
-        y[ i ] = (add ? global[ i ] + rf*origin[ i ] : rf*origin[ i ]);
+        y[ i ] = (add ? y[ i ] + rf*origin[ i ] : rf*origin[ i ]);
     }
   }
 
