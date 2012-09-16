@@ -210,7 +210,6 @@ namespace Dune
      *      static const EvaluationType evaluateJacobianTransposed = ComputeOnDemand;
      *      static const EvaluationType evaluateJacobianInverseTransposed = ComputeOnDemand;
      *      static const EvaluationType evaluateIntegrationElement = ComputeOnDemand;
-     *      static const EvaluationType evaluateNormal = ComputeOnDemand;
      *    };
      *  };
      *  \endcode
