@@ -78,10 +78,11 @@ namespace Dune
     //! type of reference element
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
 
+  protected:
+    typedef typename Traits::MatrixHelper MatrixHelper;
+
   private:
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
-
-    typedef typename Traits::MatrixHelper MatrixHelper;
 
     struct Storage
       : public UserData
@@ -92,9 +93,7 @@ namespace Dune
         : UserData( userData ),
           refElement( &refEl ),
           corners( cornerStorage )
-      {
-        assert( corners.size() == std::size_t( refElement.size( mydimension ) ) );
-      }
+      {}
 
       const ReferenceElement *refElement;
       typename Traits::template CornerStorage< mydimension, coorddimension > corners;
@@ -134,7 +133,8 @@ namespace Dune
     /** \brief obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const
     {
-      return global( refElement().position( i, mydimension ) );
+      assert( (i >= 0) && (i < corners()) );
+      return storage().corners[ i ];
     }
 
     /** \brief obtain the centroid of the mapping's image */
@@ -261,10 +261,204 @@ namespace Dune
 
     bool affine ( unsigned int topologyId, int dim, std::size_t &offset, JacobianTransposed &jt ) const;
 
-  private:
-    Storage storage_;
+  protected:
     mutable JacobianTransposed jacobianTransposed_;
     mutable JacobianInverseTransposed jacobianInverseTransposed_;
+
+  private:
+    Storage storage_;
+  };
+
+
+
+  // CachedCornerMapping
+  // -------------------
+
+  template< class ct, int mydim, int cdim, class Traits = CornerMappingTraits< ct > >
+  class CachedCornerMapping
+    : public CornerMapping< ct, mydim, cdim, Traits >
+  {
+    typedef CachedCornerMapping< ct, mydim, cdim, Traits > This;
+    typedef CornerMapping< ct, mydim, cdim, Traits > Base;
+
+  protected:
+    typedef typename Base::MatrixHelper MatrixHelper;
+
+  public:
+    typedef typename Base::ReferenceElement ReferenceElement;
+    typedef typename Base::UserData UserData;
+
+    typedef typename Base::ctype ctype;
+
+    using Base::mydimension;
+    using Base::coorddimension;
+
+    typedef typename Base::LocalCoordintae LocalCoordinate;
+    typedef typename Base::GlobalCoordinate GlobalCoordinate;
+
+    typedef typename Base::JacobianTransposed JacobianTransposed;
+    typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
+
+    template< class CornerStorage >
+    CachedCornerMapping ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
+                          const UserData &userData = UserData() )
+      : Base( refElement, cornerStorage, userData ),
+        affine_( Base::affine() ),
+        jacobianInverseTransposedComputed_( false ),
+        integrationElementComputed_( false )
+    {}
+
+    template< class CornerStorage >
+    CachedCornerMapping ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
+                          const UserData &userData = UserData() )
+      : Base( gt, cornerStorage, userData ),
+        affine_( Base::affine() ),
+        jacobianInverseTransposedComputed_( false ),
+        integrationElementComputed_( false )
+    {}
+
+    /** \brief is this mapping affine? */
+    bool affine () const { return affine_; }
+
+    using Base::corner;
+
+    /** \brief obtain the centroid of the mapping's image */
+    GlobalCoordinate center () const { return global( refElement().position( 0, 0 ) ); }
+
+    /** \brief evaluate the mapping
+     *
+     *  \param[in]  local  local coordinate to map
+     *
+     *  \returns corresponding global coordinate
+     */
+    GlobalCoordinate global ( const LocalCoordinate &local ) const
+    {
+      if( affine() )
+      {
+        GlobalCoordinate global( corner( 0 ) );
+        jacobianTransposed_.umtv( local, global );
+        return global;
+      }
+      else
+        return Base::global( local );
+    }
+
+    /** \brief evaluate the inverse mapping
+     *
+     *  \param[in]  global  global coorindate to map
+     *
+     *  \return corresponding local coordinate
+     *
+     *  \note The returned local coordinate y minimizes
+     *  \code
+     *  (global( x ) - y).two_norm()
+     *  \endcode
+     */
+    LocalCoordinate local ( const GlobalCoordinate &global ) const
+    {
+      if( affine() )
+      {
+        LocalCoordinate local;
+        if( jacobianInverseTransposedComputed_ )
+          jacobianInverseTransposed_.mtv( global - corner( 0 ), local );
+        else
+          MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed_, global - corner( 0 ), local );
+        return local;
+      }
+      else
+        return Base::local( global );
+    }
+
+    /** \brief obtain the integration element
+     *
+     *  If the Jacobian of the mapping is denoted by $J(x)$, the integration
+     *  integration element \f$\mu(x)\f$ is given by
+     *  \f[ \mu(x) = \sqrt{|\det (J^T(x) J(x))|}.\f]
+     *
+     *  \param[in]  local  local coordinate to evaluate the integration element in
+     *
+     *  \returns the integration element \f$\mu(x)\f$.
+     *
+     *  \note For affine mappings, it is more efficient to call
+     *        jacobianInverseTransposed before integrationElement, if both
+     *        are required.
+     */
+    ctype integrationElement ( const LocalCoordinate &local ) const
+    {
+      if( affine() )
+      {
+        if( !integrationElementComputed_ )
+        {
+          integrationElement_ = MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransposed_ );
+          integrationElementComputed_ = true;
+        }
+        return integrationElement_;
+      }
+      else
+        return Base::integrationElement( local );
+    }
+
+    /** \brief obtain the volume of the mapping's image */
+    ctype volume () const
+    {
+      if( affine() )
+        return integrationElement( refElement().position( 0, 0 ) ) * refElement().volume();
+      else
+        return Base::volume();
+    }
+
+    /** \brief obtain the transposed of the Jacobian
+     *
+     *  \param[in]  local  local coordinate to evaluate Jacobian in
+     *
+     *  \returns a reference to the transposed of the Jacobian
+     *
+     *  \note The returned reference is reused on the next call to
+     *        JacobianTransposed, destroying the previous value.
+     */
+    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
+    {
+      if( affine() )
+        return jacobianTransposed_;
+      else
+        return Base::jacobianTransposed( local );
+    }
+
+    /** \brief obtain the transposed of the Jacobian's inverse
+     *
+     *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
+     *  the Jacobian by \f$J(x)\f$, the following condition holds:
+     *  \f[J^{-1}(x) J(x) = I.\f]
+     */
+    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
+    {
+      if( affine() )
+      {
+        if( !jacobianInverseTransposedComputed_ )
+        {
+          integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed( local ), jacobianInverseTransposed_ );
+          integrationElementComputed_ = true;
+          jacobianInverseTransposedComputed_ = true;
+        }
+        return jacobianInverseTransposed_;
+      }
+      else
+        return Base::jacobianInverseTransposed( local );
+    }
+
+  protected:
+    using Base::refElement;
+
+    using Base::jacobianTransposed_;
+    using Base::jacobianInverseTransposed_;
+
+  private:
+    ctype integrationElement_;
+
+    bool affine_ : 1;
+
+    bool jacobianInverseTransposedComputed_ : 1;
+    bool integrationElementComputed_ : 1;
   };
 
 
