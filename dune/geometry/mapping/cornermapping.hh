@@ -268,16 +268,14 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   class CornerMapping< ct, mydim, cdim, Traits >::JacobianInverseTransposed
+    : public FieldMatrix< ctype, coorddimension, mydimension >
   {
-    typedef FieldMatrix< ctype, coorddimension, mydimension > Matrix;
+    typedef FieldMatrix< ctype, coorddimension, mydimension > Base;
 
   public:
-    static const int rows = Matrix::rows;
-    static const int cols = Matrix::cols;
-
     void setup ( const JacobianTransposed &jt )
     {
-      detInv_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jt, matrix_ );
+      detInv_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jt, static_cast< Base & >( *this ) );
     }
 
     void setupDeterminant ( const JacobianTransposed &jt )
@@ -285,31 +283,10 @@ namespace Dune
       detInv_ = MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jt );
     }
 
-    operator const Matrix & () const { return matrix_; }
-
-    template< class X, class Y >
-    void mv ( const X &x, Y &y ) const { matrix_.mv( x, y ); }
-
-    template< class X, class Y >
-    void mtv ( const X &x, Y &y ) const { matrix_.mtv( x, y ); }
-
-    template< class X, class Y >
-    void umv ( const X &x, Y &y ) const { matrix_.umv( x, y ); }
-
-    template< class X, class Y >
-    void umtv ( const X &x, Y &y ) const { matrix_.umtv( x, y ); }
-
-    template< class X, class Y >
-    void mmv ( const X &x, Y &y ) const { matrix_.mmv( x, y ); }
-
-    template< class X, class Y >
-    void mmtv ( const X &x, Y &y ) const { matrix_.mmtv( x, y ); }
-
     ctype det () const { return ctype( 1 ) / detInv_; }
     ctype detInv () const { return detInv_; }
 
   private:
-    Matrix matrix_;
     ctype detInv_;
   };
 
