@@ -45,6 +45,25 @@ namespace Dune
       typedef std::vector< FieldVector< ct, cdim > > Type;
     };
 
+    /** \brief will there be only one geometry type for a dimension?
+     *
+     *  If there is only a single geometry type for a certain dimension,
+     *  <em>hasSingleGeometryType::v</em> can be set to true.
+     *
+     *  If <em>hasSingleGeometryType::v</em> is set to true, an additional
+     *  parameter <em>topologyId</em> is required.
+     *  Here's an example:
+     *  \code
+     *  static const unsigned int topologyId = SimplexTopology< dim >::type::id;
+     *  \endcode
+     */
+    template< int dim >
+    struct hasSingleGeometryType
+    {
+      static const bool v = false;
+      static const unsigned int topologyId = ~0u;
+    };
+
     struct UserData {};
   };
 
@@ -117,11 +136,11 @@ namespace Dune
     bool affine () const
     {
       std::size_t offset = 0;
-      return affine( type().id(), mydimension, offset, jacobianTransposed_ );
+      return affine( topologyId(), mydimension, offset, jacobianTransposed_ );
     }
 
     /** \brief obtain the name of the reference element */
-    Dune::GeometryType type () const { return refElement().type(); }
+    Dune::GeometryType type () const { return GeometryType( topologyId(), mydimension ); }
 
     /** \brief obtain number of corners of the corresponding reference element */
     int corners () const { return refElement().size( mydimension ); }
@@ -146,7 +165,7 @@ namespace Dune
     {
       std::size_t offset = 0;
       GlobalCoordinate y;
-      global< false >( type().id(), mydimension, offset, ctype( 1 ), local, ctype( 1 ), y );
+      global< false >( topologyId(), mydimension, offset, ctype( 1 ), local, ctype( 1 ), y );
       return y;
     }
 
@@ -220,7 +239,7 @@ namespace Dune
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
       std::size_t offset = 0;
-      jacobianTransposed< false >( type().id(), mydimension, offset, ctype( 1 ), local, ctype( 1 ), jacobianTransposed_ );
+      jacobianTransposed< false >( topologyId(), mydimension, offset, ctype( 1 ), local, ctype( 1 ), jacobianTransposed_ );
       return jacobianTransposed_;
     }
 
@@ -240,6 +259,14 @@ namespace Dune
     Storage &storage () { return storage_; }
 
     const ReferenceElement &refElement () const { return *storage().refElement; }
+
+    unsigned int topologyId () const
+    {
+      if( Traits::template hasSingleGeometryType< mydimension >::v )
+        return Traits::template hasSingleGeometryType< mydimension >::topologyId;
+      else
+        return refElement().type().id();
+    }
 
     template< bool add >
     void global ( unsigned int topologyId, int dim, std::size_t &offset,
