@@ -540,14 +540,6 @@ namespace Dune
         // apply xn times mapping for top
         global< true >( baseId, dim-1, offset, df, x, rf*xn, y );
       }
-      else if( GenericGeometry::isSimplex( topologyId, dim ) )
-      {
-        const GlobalCoordinate &origin = storage().corners[ offset ];
-        // apply mapping for bottom
-        global< add >( baseId, dim-1, offset, df, x, rf, y );
-        // apply xn times the difference between the tip and the origin
-        y.axpy( rf*xn, storage().corners[ offset++ ] - origin );
-      }
       else
       {
         assert( GenericGeometry::isPyramid( topologyId, dim ) );
@@ -594,21 +586,6 @@ namespace Dune
         // compute last row as difference between top value and bottom value
         global< add >( baseId, dim-1, offset, df, x, -rf, jt[ dim-1 ] );
         global< true >( baseId, dim-1, offset, df, x, rf, jt[ dim-1 ] );
-      }
-      else if( GenericGeometry::isSimplex( topologyId, dim ) )
-      {
-        const GlobalCoordinate &origin = storage().corners[ offset ];
-        // apply Jacobian for bottom
-        jacobianTransposed< add >( baseId, dim-1, offset, df, x, rf, jt );
-        // compute last row as the difference between the tip and the origin
-        const GlobalCoordinate &tip = storage().corners[ offset++ ];
-        if( add )
-          jt[ dim-1 ].axpy( rf, tip - origin );
-        else
-        {
-          for( int i = 0; i < coorddimension; ++i )
-            jt[ dim-1 ][ i ] = rf * (tip[ i ] - origin[ i ]);
-        }
       }
       else
       {
