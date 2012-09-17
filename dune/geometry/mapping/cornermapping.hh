@@ -70,7 +70,9 @@ namespace Dune
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
-    typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
+    //typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
+
+    struct JacobianInverseTransposed;
 
     // for compatibility, export the type JacobianInverseTransposed as Jacobian
     typedef JacobianInverseTransposed Jacobian;
@@ -229,11 +231,7 @@ namespace Dune
      *  the Jacobian by \f$J(x)\f$, the following condition holds:
      *  \f[J^{-1}(x) J(x) = I.\f]
      */
-    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
-    {
-      MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed( local ), jacobianInverseTransposed_ );
-      return jacobianInverseTransposed_;
-    }
+    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const;
 
     const UserData &userData () const { return storage_; }
     UserData &userData () { return storage_; }
@@ -262,6 +260,55 @@ namespace Dune
 
   private:
     Storage storage_;
+  };
+
+
+
+  // CornerMapping::JacobianInverseTransposed
+  // ----------------------------------------
+
+  template< class ct, int mydim, int cdim, class Traits >
+  class CornerMapping< ct, mydim, cdim, Traits >::JacobianInverseTransposed
+  {
+    typedef FieldMatrix< ctype, coorddimension, mydimension > Matrix;
+
+  public:
+    static const int rows = Matrix::rows;
+    static const int cols = Matrix::cols;
+
+    ctype setup ( const JacobianTransposed &jt )
+    {
+      const ctype detInv
+        = MatrixHelper::template rightInvA< mydimension, coorddimension >( jt, matrix_ );
+      det_ = ctype( 1 ) / detInv;
+      return detInv;
+    }
+
+    operator const Matrix & () const { return matrix_; }
+
+    template< class X, class Y >
+    void mv ( const X &x, Y &y ) const { matrix_.mv( x, y ); }
+
+    template< class X, class Y >
+    void mtv ( const X &x, Y &y ) const { matrix_.mtv( x, y ); }
+
+    template< class X, class Y >
+    void umv ( const X &x, Y &y ) const { matrix_.umv( x, y ); }
+
+    template< class X, class Y >
+    void umtv ( const X &x, Y &y ) const { matrix_.umtv( x, y ); }
+
+    template< class X, class Y >
+    void mmv ( const X &x, Y &y ) const { matrix_.mmv( x, y ); }
+
+    template< class X, class Y >
+    void mmtv ( const X &x, Y &y ) const { matrix_.mmtv( x, y ); }
+
+    ctype det () const { return det_; }
+
+  private:
+    Matrix matrix_;
+    ctype det_;
   };
 
 
@@ -431,9 +478,9 @@ namespace Dune
       {
         if( !jacobianInverseTransposedComputed_ )
         {
-          integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed( local ), jacobianInverseTransposed_ );
-          integrationElementComputed_ = true;
+          integrationElement_ = jacobianInverseTransposed_.setup( jacobianTransposed_ );
           jacobianInverseTransposedComputed_ = true;
+          integrationElementComputed_ = true;
         }
         return jacobianInverseTransposed_;
       }
@@ -460,6 +507,16 @@ namespace Dune
 
   // Implementation of CornerMapping
   // -------------------------------
+
+  template< class ct, int mydim, int cdim, class Traits >
+  inline const typename CornerMapping< ct, mydim, cdim, Traits >::JacobianInverseTransposed &
+  CornerMapping< ct, mydim, cdim, Traits >
+  ::jacobianInverseTransposed ( const LocalCoordinate &local ) const
+  {
+    jacobianInverseTransposed_.setup( jacobianTransposed( local ) );
+    return jacobianInverseTransposed_;
+  }
+
 
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
