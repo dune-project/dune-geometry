@@ -70,9 +70,8 @@ namespace Dune
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
-    //typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
 
-    struct JacobianInverseTransposed;
+    class JacobianInverseTransposed;
 
     // for compatibility, export the type JacobianInverseTransposed as Jacobian
     typedef JacobianInverseTransposed Jacobian;
@@ -276,12 +275,14 @@ namespace Dune
     static const int rows = Matrix::rows;
     static const int cols = Matrix::cols;
 
-    ctype setup ( const JacobianTransposed &jt )
+    void setup ( const JacobianTransposed &jt )
     {
-      const ctype detInv
-        = MatrixHelper::template rightInvA< mydimension, coorddimension >( jt, matrix_ );
-      det_ = ctype( 1 ) / detInv;
-      return detInv;
+      detInv_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jt, matrix_ );
+    }
+
+    void setupDeterminant ( const JacobianTransposed &jt )
+    {
+      detInv_ = MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jt );
     }
 
     operator const Matrix & () const { return matrix_; }
@@ -304,11 +305,12 @@ namespace Dune
     template< class X, class Y >
     void mmtv ( const X &x, Y &y ) const { matrix_.mmtv( x, y ); }
 
-    ctype det () const { return det_; }
+    ctype det () const { return ctype( 1 ) / detInv_; }
+    ctype detInv () const { return detInv_; }
 
   private:
     Matrix matrix_;
-    ctype det_;
+    ctype detInv_;
   };
 
 
@@ -431,10 +433,10 @@ namespace Dune
       {
         if( !integrationElementComputed_ )
         {
-          integrationElement_ = MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransposed_ );
+          jacobianInverseTransposed_.setupDeterminant( jacobianTransposed_ );
           integrationElementComputed_ = true;
         }
-        return integrationElement_;
+        return jacobianInverseTransposed_.detInv();
       }
       else
         return Base::integrationElement( local );
@@ -478,7 +480,7 @@ namespace Dune
       {
         if( !jacobianInverseTransposedComputed_ )
         {
-          integrationElement_ = jacobianInverseTransposed_.setup( jacobianTransposed_ );
+          jacobianInverseTransposed_.setup( jacobianTransposed_ );
           jacobianInverseTransposedComputed_ = true;
           integrationElementComputed_ = true;
         }
@@ -495,8 +497,6 @@ namespace Dune
     using Base::jacobianInverseTransposed_;
 
   private:
-    mutable ctype integrationElement_;
-
     mutable bool affine_ : 1;
 
     mutable bool jacobianInverseTransposedComputed_ : 1;
