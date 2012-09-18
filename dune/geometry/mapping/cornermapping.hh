@@ -119,6 +119,8 @@ namespace Dune
       typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners;
     };
 
+    typedef typename Traits::template CornerStorage< mydimension, coorddimension >::Type::const_iterator CornerIterator;
+
   public:
     template< class CornerStorage >
     CornerMapping ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
@@ -135,8 +137,8 @@ namespace Dune
     /** \brief is this mapping affine? */
     bool affine () const
     {
-      std::size_t offset = 0;
-      return affine( topologyId(), mydimension, offset, jacobianTransposed_ );
+      CornerIterator cit = storage().corners.begin();
+      return affine( topologyId(), mydimension, cit, jacobianTransposed_ );
     }
 
     /** \brief obtain the name of the reference element */
@@ -163,9 +165,9 @@ namespace Dune
      */
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
-      std::size_t offset = 0;
+      CornerIterator cit = storage().corners.begin();
       GlobalCoordinate y;
-      global< false >( topologyId(), mydimension, offset, ctype( 1 ), local, ctype( 1 ), y );
+      global< false >( topologyId(), mydimension, cit, ctype( 1 ), local, ctype( 1 ), y );
       return y;
     }
 
@@ -238,8 +240,8 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
-      std::size_t offset = 0;
-      jacobianTransposed< false >( topologyId(), mydimension, offset, ctype( 1 ), local, ctype( 1 ), jacobianTransposed_ );
+      CornerIterator cit = storage().corners.begin();
+      jacobianTransposed< false >( topologyId(), mydimension, cit, ctype( 1 ), local, ctype( 1 ), jacobianTransposed_ );
       return jacobianTransposed_;
     }
 
@@ -269,16 +271,16 @@ namespace Dune
     }
 
     template< bool add >
-    void global ( unsigned int topologyId, int dim, std::size_t &offset,
+    void global ( unsigned int topologyId, int dim, CornerIterator &cit,
                   const ctype &df, const LocalCoordinate &x,
                   const ctype &rf, GlobalCoordinate &y ) const;
 
     template< bool add >
-    void jacobianTransposed ( unsigned int topologyId, int dim, std::size_t &offset,
+    void jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
                               const ctype &df, const LocalCoordinate &x,
                               const ctype &rf, JacobianTransposed &jt ) const;
 
-    bool affine ( unsigned int topologyId, int dim, std::size_t &offset, JacobianTransposed &jt ) const;
+    bool affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt ) const;
 
   protected:
     mutable JacobianTransposed jacobianTransposed_;
@@ -525,7 +527,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
   inline void CornerMapping< ct, mydim, cdim, Traits >
-  ::global ( unsigned int topologyId, int dim, std::size_t &offset,
+  ::global ( unsigned int topologyId, int dim, CornerIterator &cit,
              const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y ) const
   {
@@ -540,25 +542,27 @@ namespace Dune
       if( GenericGeometry::isPrism( topologyId, dim ) )
       {
         // apply (1-xn) times mapping for bottom
-        global< add >( baseId, dim-1, offset, df, x, rf*cxn, y );
+        global< add >( baseId, dim-1, cit, df, x, rf*cxn, y );
         // apply xn times mapping for top
-        global< true >( baseId, dim-1, offset, df, x, rf*xn, y );
+        global< true >( baseId, dim-1, cit, df, x, rf*xn, y );
       }
       else
       {
         assert( GenericGeometry::isPyramid( topologyId, dim ) );
         // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
         if( cxn > Traits::tolerance() )
-          global< add >( baseId, dim-1, offset, df/cxn, x, rf*cxn, y );
+          global< add >( baseId, dim-1, cit, df/cxn, x, rf*cxn, y );
         else
-          global< add >( baseId, dim-1, offset, df, x, ctype( 0 ), y );
+          global< add >( baseId, dim-1, cit, df, x, ctype( 0 ), y );
         // apply xn times the tip
-        y.axpy( rf*xn, storage().corners[ offset++ ] );
+        y.axpy( rf*xn, *cit );
+        ++cit;
       }
     }
     else
     {
-      const GlobalCoordinate &origin = storage().corners[ offset++ ];
+      const GlobalCoordinate &origin = *cit;
+      ++cit;
       for( int i = 0; i < coorddimension; ++i )
         y[ i ] = (add ? y[ i ] + rf*origin[ i ] : rf*origin[ i ]);
     }
@@ -568,7 +572,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
   inline void CornerMapping< ct, mydim, cdim, Traits >
-  ::jacobianTransposed ( unsigned int topologyId, int dim, std::size_t &offset,
+  ::jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
                          const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, JacobianTransposed &jt ) const
   {
@@ -582,50 +586,51 @@ namespace Dune
 
       if( GenericGeometry::isPrism( topologyId, dim ) )
       {
-        std::size_t it = offset;
+        CornerIterator cit2 = cit;
         // apply (1-xn) times Jacobian for bottom
-        jacobianTransposed< add >( baseId, dim-1, it, df, x, rf*cxn, jt );
+        jacobianTransposed< add >( baseId, dim-1, cit2, df, x, rf*cxn, jt );
         // apply xn times Jacobian for top
-        jacobianTransposed< true >( baseId, dim-1, it, df, x, rf*xn, jt );
+        jacobianTransposed< true >( baseId, dim-1, cit2, df, x, rf*xn, jt );
         // compute last row as difference between top value and bottom value
-        global< add >( baseId, dim-1, offset, df, x, -rf, jt[ dim-1 ] );
-        global< true >( baseId, dim-1, offset, df, x, rf, jt[ dim-1 ] );
+        global< add >( baseId, dim-1, cit, df, x, -rf, jt[ dim-1 ] );
+        global< true >( baseId, dim-1, cit, df, x, rf, jt[ dim-1 ] );
       }
       else
       {
         assert( GenericGeometry::isPyramid( topologyId, dim ) );
-        std::size_t it = offset;
+        CornerIterator cit2 = cit;
         // apply Jacobian for bottom (with argument x/(1-xn))
-        jacobianTransposed< add >( baseId, dim-1, it, df/cxn, x, rf, jt );
+        jacobianTransposed< add >( baseId, dim-1, cit2, df/cxn, x, rf, jt );
         // compute last row
-        global< add >( baseId, dim-1, offset, df/cxn, x, -rf, jt[ dim-1 ] );
-        jt[ dim-1 ].axpy( rf, storage().corners[ offset++ ] );
+        global< add >( baseId, dim-1, cit, df/cxn, x, -rf, jt[ dim-1 ] );
+        jt[ dim-1 ].axpy( rf, *cit );
+        ++cit;
         for( int j = 0; j < dim-1; ++j )
           jt[ dim-1 ].axpy( rf*df*x[ j ], jt[ j ] );
       }
     }
     else
-      ++offset;
+      ++cit;
   }
 
 
   template< class ct, int mydim, int cdim, class Traits >
   inline bool CornerMapping< ct, mydim, cdim, Traits >
-  ::affine ( unsigned int topologyId, int dim, std::size_t &offset, JacobianTransposed &jt ) const
+  ::affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt ) const
   {
     if( dim > 0 )
     {
       const unsigned int baseId = GenericGeometry::baseTopologyId( topologyId, dim );
 
-      const GlobalCoordinate &orgBottom = storage().corners[ offset ];
-      if( !affine( baseId, dim-1, offset, jt ) )
+      const GlobalCoordinate &orgBottom = *cit;
+      if( !affine( baseId, dim-1, cit, jt ) )
         return false;
-      const GlobalCoordinate &orgTop = storage().corners[ offset ];
+      const GlobalCoordinate &orgTop = *cit;
 
       if( GenericGeometry::isPrism( topologyId, dim ) )
       {
         JacobianTransposed jtTop;
-        if( !affine( baseId, dim-1, offset, jtTop ) )
+        if( !affine( baseId, dim-1, cit, jtTop ) )
           return false;
 
         // check whether both jacobians are identical
@@ -638,7 +643,7 @@ namespace Dune
       jt[ dim-1 ] = orgTop - orgBottom;
     }
     else
-      ++offset;
+      ++cit;
     return true;
   }
 
