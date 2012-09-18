@@ -271,16 +271,16 @@ namespace Dune
     }
 
     template< bool add >
-    void global ( unsigned int topologyId, int dim, CornerIterator &cit,
-                  const ctype &df, const LocalCoordinate &x,
-                  const ctype &rf, GlobalCoordinate &y ) const;
+    static void global ( unsigned int topologyId, int dim, CornerIterator &cit,
+                         const ctype &df, const LocalCoordinate &x,
+                         const ctype &rf, GlobalCoordinate &y );
 
     template< bool add >
-    void jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
-                              const ctype &df, const LocalCoordinate &x,
-                              const ctype &rf, JacobianTransposed &jt ) const;
+    static void jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
+                                     const ctype &df, const LocalCoordinate &x,
+                                     const ctype &rf, JacobianTransposed &jt );
 
-    bool affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt ) const;
+    static bool affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt );
 
   protected:
     mutable JacobianTransposed jacobianTransposed_;
@@ -529,7 +529,7 @@ namespace Dune
   inline void CornerMapping< ct, mydim, cdim, Traits >
   ::global ( unsigned int topologyId, int dim, CornerIterator &cit,
              const ctype &df, const LocalCoordinate &x,
-             const ctype &rf, GlobalCoordinate &y ) const
+             const ctype &rf, GlobalCoordinate &y )
   {
     if( dim > 0 )
     {
@@ -574,7 +574,7 @@ namespace Dune
   inline void CornerMapping< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
                          const ctype &df, const LocalCoordinate &x,
-                         const ctype &rf, JacobianTransposed &jt ) const
+                         const ctype &rf, JacobianTransposed &jt )
   {
     if( dim > 0 )
     {
@@ -616,7 +616,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   inline bool CornerMapping< ct, mydim, cdim, Traits >
-  ::affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt ) const
+  ::affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt )
   {
     if( dim > 0 )
     {
