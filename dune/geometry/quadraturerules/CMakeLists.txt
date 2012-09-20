@@ -12,6 +12,7 @@ dune_add_library("dunegeometry"
   jacobi_1_0.cc
   jacobi_2_0.cc
   quadraturerules.cc
+  ADD_LIBS dunecommon
 )
 
 
