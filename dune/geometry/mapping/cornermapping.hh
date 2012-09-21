@@ -533,27 +533,25 @@ namespace Dune
   {
     if( dim > 0 )
     {
-      const unsigned int baseId = GenericGeometry::baseTopologyId( topologyId, dim );
-
       const ctype xn = df*x[ dim-1 ];
       const ctype cxn = ctype( 1 ) - xn;
       assert( (xn > -Traits::tolerance()) && (cxn > -Traits::tolerance()) );
 
-      if( GenericGeometry::isPrism( topologyId, dim ) )
+      if( GenericGeometry::isPrism( topologyId, mydim, mydim-dim ) )
       {
         // apply (1-xn) times mapping for bottom
-        global< add >( baseId, dim-1, cit, df, x, rf*cxn, y );
+        global< add >( topologyId, dim-1, cit, df, x, rf*cxn, y );
         // apply xn times mapping for top
-        global< true >( baseId, dim-1, cit, df, x, rf*xn, y );
+        global< true >( topologyId, dim-1, cit, df, x, rf*xn, y );
       }
       else
       {
-        assert( GenericGeometry::isPyramid( topologyId, dim ) );
+        assert( GenericGeometry::isPyramid( topologyId, mydim, mydim-dim ) );
         // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
         if( cxn > Traits::tolerance() )
-          global< add >( baseId, dim-1, cit, df/cxn, x, rf*cxn, y );
+          global< add >( topologyId, dim-1, cit, df/cxn, x, rf*cxn, y );
         else
-          global< add >( baseId, dim-1, cit, df, x, ctype( 0 ), y );
+          global< add >( topologyId, dim-1, cit, df, x, ctype( 0 ), y );
         // apply xn times the tip
         y.axpy( rf*xn, *cit );
         ++cit;
@@ -578,31 +576,29 @@ namespace Dune
   {
     if( dim > 0 )
     {
-      const unsigned int baseId = GenericGeometry::baseTopologyId( topologyId, dim );
-
       const ctype xn = df*x[ dim-1 ];
       const ctype cxn = ctype( 1 ) - xn;
       assert( (xn > -Traits::tolerance()) && (cxn > -Traits::tolerance()) );
 
-      if( GenericGeometry::isPrism( topologyId, dim ) )
+      if( GenericGeometry::isPrism( topologyId, mydim, mydim-dim ) )
       {
         CornerIterator cit2 = cit;
         // apply (1-xn) times Jacobian for bottom
-        jacobianTransposed< add >( baseId, dim-1, cit2, df, x, rf*cxn, jt );
+        jacobianTransposed< add >( topologyId, dim-1, cit2, df, x, rf*cxn, jt );
         // apply xn times Jacobian for top
-        jacobianTransposed< true >( baseId, dim-1, cit2, df, x, rf*xn, jt );
+        jacobianTransposed< true >( topologyId, dim-1, cit2, df, x, rf*xn, jt );
         // compute last row as difference between top value and bottom value
-        global< add >( baseId, dim-1, cit, df, x, -rf, jt[ dim-1 ] );
-        global< true >( baseId, dim-1, cit, df, x, rf, jt[ dim-1 ] );
+        global< add >( topologyId, dim-1, cit, df, x, -rf, jt[ dim-1 ] );
+        global< true >( topologyId, dim-1, cit, df, x, rf, jt[ dim-1 ] );
       }
       else
       {
-        assert( GenericGeometry::isPyramid( topologyId, dim ) );
+        assert( GenericGeometry::isPyramid( topologyId, mydim, mydim-dim ) );
         CornerIterator cit2 = cit;
         // apply Jacobian for bottom (with argument x/(1-xn))
-        jacobianTransposed< add >( baseId, dim-1, cit2, df/cxn, x, rf, jt );
+        jacobianTransposed< add >( topologyId, dim-1, cit2, df/cxn, x, rf, jt );
         // compute last row
-        global< add >( baseId, dim-1, cit, df/cxn, x, -rf, jt[ dim-1 ] );
+        global< add >( topologyId, dim-1, cit, df/cxn, x, -rf, jt[ dim-1 ] );
         jt[ dim-1 ].axpy( rf, *cit );
         ++cit;
         for( int j = 0; j < dim-1; ++j )
@@ -620,17 +616,15 @@ namespace Dune
   {
     if( dim > 0 )
     {
-      const unsigned int baseId = GenericGeometry::baseTopologyId( topologyId, dim );
-
       const GlobalCoordinate &orgBottom = *cit;
-      if( !affine( baseId, dim-1, cit, jt ) )
+      if( !affine( topologyId, dim-1, cit, jt ) )
         return false;
       const GlobalCoordinate &orgTop = *cit;
 
-      if( GenericGeometry::isPrism( topologyId, dim ) )
+      if( GenericGeometry::isPrism( topologyId, mydim, mydim-dim ) )
       {
         JacobianTransposed jtTop;
-        if( !affine( baseId, dim-1, cit, jtTop ) )
+        if( !affine( topologyId, dim-1, cit, jtTop ) )
           return false;
 
         // check whether both jacobians are identical
