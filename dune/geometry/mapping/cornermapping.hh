@@ -9,6 +9,7 @@
 //#include <dune/common/array.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/typetraits.hh>
 
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
@@ -98,11 +99,16 @@ namespace Dune
     //! type of reference element
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
 
+  private:
+    static const bool hasSingleGeometryType = Traits::template hasSingleGeometryType< mydimension >::v;
+
   protected:
     typedef typename Traits::MatrixHelper MatrixHelper;
+    typedef typename SelectType< hasSingleGeometryType, integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::Type TopologyId;
 
   private:
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
+
 
     struct Storage
       : public UserData
@@ -262,27 +268,27 @@ namespace Dune
 
     const ReferenceElement &refElement () const { return *storage().refElement; }
 
-    unsigned int topologyId () const
+    TopologyId topologyId () const
     {
-      if( Traits::template hasSingleGeometryType< mydimension >::v )
-        return Traits::template hasSingleGeometryType< mydimension >::topologyId;
-      else
-        return refElement().type().id();
+      return topologyId( integral_constant< bool, hasSingleGeometryType >() );
     }
 
     template< bool add >
-    static void global ( unsigned int topologyId, int dim, CornerIterator &cit,
+    static void global ( TopologyId topologyId, int dim, CornerIterator &cit,
                          const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, GlobalCoordinate &y );
 
     template< bool add >
-    static void jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
+    static void jacobianTransposed ( TopologyId topologyId, int dim, CornerIterator &cit,
                                      const ctype &df, const LocalCoordinate &x,
                                      const ctype &rf, JacobianTransposed &jt );
 
-    static bool affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt );
+    static bool affine ( TopologyId topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt );
 
   protected:
+    TopologyId topologyId ( integral_constant< bool, true > ) const { return TopologyId(); }
+    unsigned int topologyId ( integral_constant< bool, false > ) const { return refElement().type().id(); }
+
     mutable JacobianTransposed jacobianTransposed_;
     mutable JacobianInverseTransposed jacobianInverseTransposed_;
 
@@ -527,7 +533,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
   inline void CornerMapping< ct, mydim, cdim, Traits >
-  ::global ( unsigned int topologyId, int dim, CornerIterator &cit,
+  ::global ( TopologyId topologyId, int dim, CornerIterator &cit,
              const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
   {
@@ -570,7 +576,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
   inline void CornerMapping< ct, mydim, cdim, Traits >
-  ::jacobianTransposed ( unsigned int topologyId, int dim, CornerIterator &cit,
+  ::jacobianTransposed ( TopologyId topologyId, int dim, CornerIterator &cit,
                          const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, JacobianTransposed &jt )
   {
@@ -612,7 +618,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   inline bool CornerMapping< ct, mydim, cdim, Traits >
-  ::affine ( unsigned int topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt )
+  ::affine ( TopologyId topologyId, int dim, CornerIterator &cit, JacobianTransposed &jt )
   {
     if( dim > 0 )
     {
