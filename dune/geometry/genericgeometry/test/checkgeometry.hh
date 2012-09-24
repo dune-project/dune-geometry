@@ -51,6 +51,12 @@ namespace Dune
     // vector type used for image points
     typedef typename TestGeometry::GlobalCoordinate GlobalCoordinate;
 
+    // Matrix-like type for the return value of the jacobianTransposed method
+    typedef typename TestGeometry::JacobianTransposed JacobianTransposed;
+
+    // Matrix-like type for the return value of the jacobianInverseTransposed method
+    typedef typename TestGeometry::JacobianInverseTransposed JacobianInverseTransposed;
+
     ////////////////////////////////////////////////////////////////////////
 
     GeometryType type = geometry.type();
@@ -101,11 +107,45 @@ namespace Dune
 
       // Test whether the methods 'jacobianTransposed' and 'jacobianInverseTransposed'
       // return matrices that are inverse to each other.
-      const FieldMatrix< ctype, mydim, coorddim > &jt = geometry.jacobianTransposed( x );
-      const FieldMatrix< ctype, coorddim, mydim > &jit = geometry.jacobianInverseTransposed( x );
+      const JacobianTransposed         &jt = geometry.jacobianTransposed( x );
+      const JacobianInverseTransposed &jit = geometry.jacobianInverseTransposed( x );
+
+      // Transform to FieldMatrix, so we can have coefficent access and other goodies
+      // We need some black magic for the transformation, because there is no
+      // official easy way yet.
+      // The following code does the transformation by multiplying jt and jit from
+      // the right by identity matrices.  That way, only the mv method is used.
+      FieldMatrix< ctype, mydim, coorddim > jtAsFieldMatrix;
+      for (int j=0; j<coorddim; j++) {
+
+        FieldVector<ctype,coorddim> idColumn(0);
+        idColumn[j] = 1;
+
+        FieldVector<ctype,mydim> column;
+        jt.mv(idColumn,column);
+
+        for (int k=0; k<mydim; k++)
+          jtAsFieldMatrix[k][j] = column[k];
+
+      }
+
+      FieldMatrix< ctype, coorddim, mydim > jitAsFieldMatrix;
+      for (int j=0; j<mydim; j++) {
+
+        FieldVector<ctype,mydim> idColumn(0);
+        idColumn[j] = 1;
+
+        FieldVector<ctype,coorddim> column;
+        jit.mv(idColumn,column);
+
+        for (int k=0; k<coorddim; k++)
+          jitAsFieldMatrix[k][j] = column[k];
+
+      }
+
 
       FieldMatrix< ctype, mydim, mydim > id;
-      FMatrixHelp::multMatrix( jt, jit, id );
+      FMatrixHelp::multMatrix( jtAsFieldMatrix, jitAsFieldMatrix, id );
       bool isId = true;
       for( int j = 0; j < mydim; ++j )
         for( int k = 0; k < mydim; ++k )
@@ -130,7 +170,8 @@ namespace Dune
       for( int i = 0; i < mydim; ++i )
         for( int j = 0; j < mydim; ++j )
           for( int k = 0; k < coorddim; ++k )
-            jtj[ i ][ j ] += jt[ i ][ k ] * jt[ j ][ k ];
+            jtj[ i ][ j ] += jtAsFieldMatrix[ i ][ k ] * jtAsFieldMatrix[ j ][ k ];
+
       if( std::abs( std::sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > 1e-8 ) {
         std::cerr << "Error: integrationElement is not consistent with jacobianTransposed." << std::endl;
         pass = false;
