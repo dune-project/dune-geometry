@@ -4,6 +4,7 @@
 #define DUNE_GEOMETRY_CORNERMAPPING_HH
 
 #include <cassert>
+#include <limits>
 #include <vector>
 
 //#include <dune/common/array.hh>
@@ -669,7 +670,6 @@ namespace Dune
     ++cit;
     return true;
   }
-
 
 } // namespace Dune
 
