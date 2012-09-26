@@ -143,15 +143,6 @@ namespace Dune
             const RefElementContType::value_type& refElem=refElemCont(insideGeometryType);
             GenericGeometry::Geometry<myGridDim-1,myGridDim,MyGrid>(refElem.mapping(numberInSelf()));
      *      \endcode
-     *    - integrationOuterNormal(): the generic geometry implementation provides a method
-     *      to compute the integration outer normals, so that the following code
-     *      fragment can be used:
-            \code
-               typedef typename Grid :: template Codim< 0 > :: Geometry Geometry;
-               const Geometry &geo = inside()->geometry();
-               FieldVector< ctype, dimension > x( intersectionSelfLocal().global( local ) );
-               return Grid :: getRealImplementation( geo ).normal( numberInSelf(), x );
-            \endcode
      *    .
      *  - To add geometries for subentitiies of codim>0
      *    given a entity en of codimension zero and the subentity number subNr :
