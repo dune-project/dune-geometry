@@ -2,6 +2,7 @@ Makefile
 Makefile.in
 .deps
 
+test-axisalignedcubegeometry
 test-genericquadrature
 test-quadrature
 test-referenceelements
