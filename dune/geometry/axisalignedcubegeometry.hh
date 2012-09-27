@@ -13,6 +13,7 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/diagonalmatrix.hh>
+#include <dune/common/unused.hh>
 
 #include <dune/geometry/type.hh>
 
