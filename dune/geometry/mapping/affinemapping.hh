@@ -65,9 +65,10 @@ namespace Dune
     //! type of reference element
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
 
-  private:
+  protected:
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
+  private:
     typedef typename Traits::MatrixHelper MatrixHelper;
 
     struct Storage

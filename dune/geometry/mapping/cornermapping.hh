@@ -107,10 +107,9 @@ namespace Dune
     typedef typename Traits::MatrixHelper MatrixHelper;
     typedef typename SelectType< hasSingleGeometryType, integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::Type TopologyId;
 
-  private:
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
-
+  private:
     struct Storage
       : public UserData
     {
