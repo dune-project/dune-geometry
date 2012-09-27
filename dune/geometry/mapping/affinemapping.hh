@@ -207,7 +207,7 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianTranposed;
+      return storage().jacobianTransposed;
     }
 
     /** \brief obtain the transposed of the Jacobian's inverse
