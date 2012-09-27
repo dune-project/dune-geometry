@@ -1,5 +1,5 @@
 # which tests to run
-TESTS = test-quadrature test-genericquadrature test-referenceelements $(TESTPROGS)
+TESTS = test-axisalignedcubegeometry test-quadrature test-genericquadrature test-referenceelements $(TESTPROGS)
 
 # programs just to build when "make check" is used
 check_PROGRAMS = $(TESTS)
@@ -8,6 +8,8 @@ check_PROGRAMS = $(TESTS)
 #AM_CXXFLAGS = @AM_CXXFLAGS@ -fprofile-arcs -ftest-coverage
 
 # define the programs
+test_axisalignedcubegeometry_SOURCES = test-axisalignedcubegeometry.cc
+
 test_referenceelements_SOURCES = test-referenceelements.cc
 
 test_quadrature_SOURCES = test-quadrature.cc
