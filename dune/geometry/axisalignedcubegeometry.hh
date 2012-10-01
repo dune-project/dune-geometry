@@ -120,6 +120,16 @@ namespace Dune {
           upper_[i] = lower_[i];
     }
 
+    /** \brief Copy constructor */
+    AxisAlignedCubeGeometry& operator=(const AxisAlignedCubeGeometry& other)
+    {
+      lower_                     = other.lower_;
+      upper_                     = other.upper_;
+      axes_                      = other.axes_;
+      jacobianTransposed_        = other.jacobianTransposed_;
+      jacobianInverseTransposed_ = other.jacobianInverseTransposed_;
+    }
+
     /** \brief Type of the cube.  Here: a hypercube of the correct dimension */
     GeometryType type() const
     {
@@ -266,7 +276,7 @@ namespace Dune {
 
     Dune::FieldVector<ctype,coorddim> upper_;
 
-    const std::bitset<coorddim> axes_;
+    std::bitset<coorddim> axes_;
 
     // Storage so method jacobianTransposed can return a const reference
     mutable JacobianTransposed jacobianTransposed_;
