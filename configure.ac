@@ -28,7 +28,6 @@ AC_CONFIG_FILES([
   dune/geometry/test/Makefile
   dune/geometry/genericgeometry/Makefile
   dune/geometry/genericgeometry/test/Makefile
-  dune/geometry/mapping/Makefile
   dune/geometry/quadraturerules/Makefile
   m4/Makefile
   dune-geometry.pc

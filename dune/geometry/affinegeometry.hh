@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_AFFINEMAPPING_HH
-#define DUNE_GEOMETRY_AFFINEMAPPING_HH
+#ifndef DUNE_GEOMETRY_AFFINEGEOMETRY_HH
+#define DUNE_GEOMETRY_AFFINEGEOMETRY_HH
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
@@ -24,11 +24,11 @@ namespace Dune
 
 
 
-  // AffineMappingTraits
-  // -------------------
+  // AffineGeometryTraits
+  // --------------------
 
   template< class ct >
-  struct AffineMappingTraits
+  struct AffineGeometryTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
@@ -37,13 +37,13 @@ namespace Dune
 
 
 
-  // AffineMapping
-  // -------------
+  // AffineGeometry
+  // --------------
 
-  template< class ct, int mydim, int cdim, class Traits = AffineMappingTraits< ct > >
-  class AffineMapping
+  template< class ct, int mydim, int cdim, class Traits = AffineGeometryTraits< ct > >
+  class AffineGeometry
   {
-    typedef AffineMapping< ct, mydim, cdim, Traits > This;
+    typedef AffineGeometry< ct, mydim, cdim, Traits > This;
 
   public:
     typedef ct ctype;
@@ -104,25 +104,25 @@ namespace Dune
     };
 
   public:
-    AffineMapping ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
-                    const JacobianTransposed &jt, const UserData &userData = UserData() )
+    AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
+                     const JacobianTransposed &jt, const UserData &userData = UserData() )
       : storage_( refElement, origin, jt, userData )
     {}
 
-    AffineMapping ( Dune::GeometryType gt, const GlobalCoordinate &origin,
-                    const JacobianTransposed &jt, const UserData &userData = UserData() )
+    AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
+                     const JacobianTransposed &jt, const UserData &userData = UserData() )
       : storage_( ReferenceElements::general( gt ), origin, jt, userData )
     {}
 
     template< class CoordVector >
-    AffineMapping ( const ReferenceElement &refElement, const CoordVector &coordVector,
-                    const UserData &userData = UserData() )
+    AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector,
+                     const UserData &userData = UserData() )
       : storage_( refElement, coordVector, userData )
     {}
 
     template< class CoordVector >
-    AffineMapping ( Dune::GeometryType gt, const CoordVector &coordVector,
-                    const UserData &userData = UserData() )
+    AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector,
+                     const UserData &userData = UserData() )
       : storage_( ReferenceElements::general( gt ), coordVector, userData )
     {}
 
@@ -236,4 +236,4 @@ namespace Dune
 
 } // namespace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_AFFINEMAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_AFFINEGEOMETRY_HH

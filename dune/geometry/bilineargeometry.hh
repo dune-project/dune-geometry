@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_BILINEARMAPPING_HH
-#define DUNE_GEOMETRY_BILINEARMAPPING_HH
+#ifndef DUNE_GEOMETRY_BILINEARGEOMETRY_HH
+#define DUNE_GEOMETRY_BILINEARGEOMETRY_HH
 
 #include <cassert>
 #include <limits>
@@ -25,11 +25,11 @@ namespace Dune
 
 
 
-  // BilinearMappingTraits
-  // ---------------------
+  // BilinearGeometryTraits
+  // ----------------------
 
   template< class ct >
-  struct BilinearMappingTraits
+  struct BilinearGeometryTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
@@ -40,13 +40,13 @@ namespace Dune
 
 
 
-  // BilinearMapping
-  // ---------------
+  // BilinearGeometry
+  // ----------------
 
-  template< class ct, int cdim, class Traits = BilinearMappingTraits< ct > >
-  class BilinearMapping
+  template< class ct, int cdim, class Traits = BilinearGeometryTraits< ct > >
+  class BilinearGeometry
   {
-    typedef BilinearMapping< ct, cdim, Traits > This;
+    typedef BilinearGeometry< ct, cdim, Traits > This;
 
   public:
     typedef ct ctype;
@@ -91,21 +91,21 @@ namespace Dune
 
   public:
     template< class CoordVector >
-    BilinearMapping ( const CoordVector &coordVector, const UserData &userData = UserData() )
+    BilinearGeometry ( const CoordVector &coordVector, const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {}
 
     template< class CoordVector >
-    BilinearMapping ( const ReferenceElement &refElement, const CoordVector &coordVector,
-                      const UserData &userData = UserData() )
+    BilinearGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector,
+                       const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {
       assert( refElement.type().isCube() );
     }
 
     template< class CoordVector >
-    BilinearMapping ( Dune::GeometryType gt, const CoordVector &coordVector,
-                      const UserData &userData = UserData() )
+    BilinearGeometry ( Dune::GeometryType gt, const CoordVector &coordVector,
+                       const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {
       assert( (gt.dim() == mydimension) && gt.isCube() );
@@ -280,4 +280,4 @@ namespace Dune
 
 } // namespace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_BILINEARMAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_BILINEARGEOMETRY_HH

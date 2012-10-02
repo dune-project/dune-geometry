@@ -11,7 +11,7 @@
 #include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
 
-#include <dune/geometry/mapping/affinemapping.hh>
+#include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
 
@@ -254,7 +254,7 @@ namespace Dune
 
     ReferenceElement () {}
 
-    template< int codim > struct CreateMappings;
+    template< int codim > struct CreateGeometries;
 
   public:
     using Base::type;
@@ -264,7 +264,7 @@ namespace Dune
     struct Codim
     {
       //! type of mapping embedding a subentity into the reference element
-      typedef AffineMapping< ctype, dim-codim, dim > Mapping;
+      typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
     };
 
     /** \brief position of the barycenter of entity (i,c)
@@ -334,7 +334,7 @@ namespace Dune
      *
      *  \note This method is just an alias for
      *  \code
-     *  mapping< codim >( i ).global( local );
+     *  geometry< codim >( i ).global( local );
      *  \endcode
      */
     template< int codim >
@@ -344,7 +344,7 @@ namespace Dune
       if( c != codim )
         DUNE_THROW( Exception, "Local Coordinate Type does not correspond to codimension c." );
       assert( c == codim );
-      return mapping< codim >( i ).global( local );
+      return geometry< codim >( i ).global( local );
     }
 
     /** \brief map a local coordinate on subentity (i,codim) into the reference
@@ -362,36 +362,32 @@ namespace Dune
      *
      *  \note This method is just an alias for
      *  \code
-     *  mapping< codim >( i ).global( local );
+     *  geometry< codim >( i ).global( local );
      *  \endcode
      */
     template< int codim >
     FieldVector< ctype, dim >
     global ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
-      return mapping< codim >( i ).global( local );
+      return geometry< codim >( i ).global( local );
     }
 
     /** \brief obtain the embedding of subentity (i,codim) into the reference
      *         element
      *
      *  Denote by E the i-th subentity of codimension codim of the current
-     *  reference element. This method returns a
-     *  \ref Dune::GenericGeometry::HybridMapping HybridMapping that maps
-     *  the reference element of E into the current reference element.
-     *
-     *  This method can be used in a GenericGeometry to represent subentities
-     *  of the current reference element.
+     *  reference element. This method returns a \ref Dune::AffineGeometry
+     *  that maps the reference element of E into the current reference element.
      *
      *  \tparam     codim  codimension of subentity E
      *
      *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
      */
     template< int codim >
-    const typename Codim< codim >::Mapping &mapping( int i ) const
+    const typename Codim< codim >::Geometry &geometry( int i ) const
     {
       integral_constant< int, codim > codimVariable;
-      return mappings_[ codimVariable ][ i ];
+      return geometries_[ codimVariable ][ i ];
     }
 
     /** \brief obtain the volume of the reference element */
@@ -457,19 +453,19 @@ namespace Dune
         GenericGeometry::referenceIntegrationOuterNormals( topologyId, dim, &(integrationNormals_[ 0 ]) );
       }
 
-      // set up mappings
-      Dune::ForLoop< CreateMappings, 0, dim >::apply( *this, mappings_ );
+      // set up geometries
+      Dune::ForLoop< CreateGeometries, 0, dim >::apply( *this, geometries_ );
     }
 
   private:
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
-    struct MappingArray
-      : public std::vector< typename Codim< codim >::Mapping >
+    struct GeometryArray
+      : public std::vector< typename Codim< codim >::Geometry >
     {};
 
     /** \brief Type to store all subentities of all codimensions */
-    typedef GenericGeometry::CodimTable< MappingArray, dim > MappingsTable;
+    typedef GenericGeometry::CodimTable< GeometryArray, dim > GeometryTable;
 
     /** \brief The reference element volume */
     ctype volume_;
@@ -478,17 +474,17 @@ namespace Dune
     std::vector< FieldVector< ctype, dim > > integrationNormals_;
 
     /** \brief Stores all subentities of all codimensions */
-    MappingsTable mappings_;
+    GeometryTable geometries_;
   };
 
 
 
-  // ReferenceElement::CreateMappings
-  // --------------------------------
+  // ReferenceElement::CreateGeometries
+  // ----------------------------------
 
   template< class ctype, int dim >
   template< int codim >
-  struct ReferenceElement< ctype, dim >::CreateMappings
+  struct ReferenceElement< ctype, dim >::CreateGeometries
   {
     template< int cc >
     static const ReferenceElement< ctype, dim-cc > &
@@ -503,7 +499,7 @@ namespace Dune
       return refElement;
     }
 
-    static void apply ( const ReferenceElement< ctype, dim > &refElement, MappingsTable &mappings )
+    static void apply ( const ReferenceElement< ctype, dim > &refElement, GeometryTable &geometries )
     {
       const int size = refElement.size( codim );
       std::vector< FieldVector< ctype, dim > > origins( size );
@@ -511,11 +507,11 @@ namespace Dune
       GenericGeometry::referenceEmbeddings( refElement.type().id(), dim, codim, &(origins[ 0 ]), &(jacobianTransposeds[ 0 ]) );
 
       integral_constant< int, codim > codimVariable;
-      mappings[ codimVariable ].reserve( size );
+      geometries[ codimVariable ].reserve( size );
       for( int i = 0; i < size; ++i )
       {
-        typename Codim< codim >::Mapping mapping( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
-        mappings[ codimVariable ].push_back( mapping );
+        typename Codim< codim >::Geometry geometry( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
+        geometries[ codimVariable ].push_back( geometry );
       }
     }
   };

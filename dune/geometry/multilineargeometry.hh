@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_CORNERMAPPING_HH
-#define DUNE_GEOMETRY_CORNERMAPPING_HH
+#ifndef DUNE_GEOMETRY_MULTILINEARGEOMETRY_HH
+#define DUNE_GEOMETRY_MULTILINEARGEOMETRY_HH
 
 #include <cassert>
 #include <limits>
@@ -30,11 +30,11 @@ namespace Dune
 
 
 
-  // CornerMappingTraits
-  // -------------------
+  // MultiLinearGeometryTraits
+  // -------------------------
 
   template< class ct >
-  struct CornerMappingTraits
+  struct MultiLinearGeometryTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
@@ -71,13 +71,13 @@ namespace Dune
 
 
 
-  // CornerMapping
-  // -------------
+  // MultiLinearGeometry
+  // -------------------
 
-  template< class ct, int mydim, int cdim, class Traits = CornerMappingTraits< ct > >
-  class CornerMapping
+  template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
+  class MultiLinearGeometry
   {
-    typedef CornerMapping< ct, mydim, cdim, Traits > This;
+    typedef MultiLinearGeometry< ct, mydim, cdim, Traits > This;
 
   public:
     typedef ct ctype;
@@ -129,14 +129,14 @@ namespace Dune
 
   public:
     template< class CornerStorage >
-    CornerMapping ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
-                    const UserData &userData = UserData() )
+    MultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
+                          const UserData &userData = UserData() )
       : storage_( refElement, cornerStorage, userData )
     {}
 
     template< class CornerStorage >
-    CornerMapping ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
-                    const UserData &userData = UserData() )
+    MultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
+                          const UserData &userData = UserData() )
       : storage_( ReferenceElements::general( gt ), cornerStorage, userData )
     {}
 
@@ -308,11 +308,11 @@ namespace Dune
 
 
 
-  // CornerMapping::JacobianInverseTransposed
-  // ----------------------------------------
+  // MultiLinearGeometry::JacobianInverseTransposed
+  // ----------------------------------------------
 
   template< class ct, int mydim, int cdim, class Traits >
-  class CornerMapping< ct, mydim, cdim, Traits >::JacobianInverseTransposed
+  class MultiLinearGeometry< ct, mydim, cdim, Traits >::JacobianInverseTransposed
     : public FieldMatrix< ctype, coorddimension, mydimension >
   {
     typedef FieldMatrix< ctype, coorddimension, mydimension > Base;
@@ -337,15 +337,15 @@ namespace Dune
 
 
 
-  // CachedCornerMapping
-  // -------------------
+  // CachedMultiLinearGeometry
+  // -------------------------
 
-  template< class ct, int mydim, int cdim, class Traits = CornerMappingTraits< ct > >
-  class CachedCornerMapping
-    : public CornerMapping< ct, mydim, cdim, Traits >
+  template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
+  class CachedMultiLinearGeometry
+    : public MultiLinearGeometry< ct, mydim, cdim, Traits >
   {
-    typedef CachedCornerMapping< ct, mydim, cdim, Traits > This;
-    typedef CornerMapping< ct, mydim, cdim, Traits > Base;
+    typedef CachedMultiLinearGeometry< ct, mydim, cdim, Traits > This;
+    typedef MultiLinearGeometry< ct, mydim, cdim, Traits > Base;
 
   protected:
     typedef typename Base::MatrixHelper MatrixHelper;
@@ -366,8 +366,8 @@ namespace Dune
     typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
 
     template< class CornerStorage >
-    CachedCornerMapping ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
-                          const UserData &userData = UserData() )
+    CachedMultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
+                                const UserData &userData = UserData() )
       : Base( refElement, cornerStorage, userData ),
         affine_( Base::affine() ),
         jacobianInverseTransposedComputed_( false ),
@@ -375,8 +375,8 @@ namespace Dune
     {}
 
     template< class CornerStorage >
-    CachedCornerMapping ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
-                          const UserData &userData = UserData() )
+    CachedMultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
+                                const UserData &userData = UserData() )
       : Base( gt, cornerStorage, userData ),
         affine_( Base::affine() ),
         jacobianInverseTransposedComputed_( false ),
@@ -527,12 +527,12 @@ namespace Dune
 
 
 
-  // Implementation of CornerMapping
-  // -------------------------------
+  // Implementation of MultiLinearGeometry
+  // -------------------------------------
 
   template< class ct, int mydim, int cdim, class Traits >
-  inline const typename CornerMapping< ct, mydim, cdim, Traits >::JacobianInverseTransposed &
-  CornerMapping< ct, mydim, cdim, Traits >
+  inline const typename MultiLinearGeometry< ct, mydim, cdim, Traits >::JacobianInverseTransposed &
+  MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianInverseTransposed ( const LocalCoordinate &local ) const
   {
     jacobianInverseTransposed_.setup( jacobianTransposed( local ) );
@@ -542,7 +542,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, int dim >
-  inline void CornerMapping< ct, mydim, cdim, Traits >
+  inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::global ( TopologyId topologyId, integral_constant< int, dim >,
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
@@ -574,7 +574,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
-  inline void CornerMapping< ct, mydim, cdim, Traits >
+  inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::global ( TopologyId topologyId, integral_constant< int, 0 >,
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
@@ -588,7 +588,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, int dim >
-  inline void CornerMapping< ct, mydim, cdim, Traits >
+  inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( TopologyId topologyId, integral_constant< int, dim >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, JacobianTransposed &jt )
@@ -625,7 +625,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
-  inline void CornerMapping< ct, mydim, cdim, Traits >
+  inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( TopologyId topologyId, integral_constant< int, 0 >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, JacobianTransposed &jt )
@@ -637,7 +637,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   template< int dim >
-  inline bool CornerMapping< ct, mydim, cdim, Traits >
+  inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::affine ( TopologyId topologyId, integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt )
   {
     const GlobalCoordinate &orgBottom = *cit;
@@ -663,7 +663,7 @@ namespace Dune
   }
 
   template< class ct, int mydim, int cdim, class Traits >
-  inline bool CornerMapping< ct, mydim, cdim, Traits >
+  inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::affine ( TopologyId topologyId, integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt )
   {
     ++cit;
@@ -672,4 +672,4 @@ namespace Dune
 
 } // namespace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_CORNERMAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_MULTILINEARGEOMETRY_HH

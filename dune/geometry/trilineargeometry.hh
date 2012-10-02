@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_TRILINEARMAPPING_HH
-#define DUNE_GEOMETRY_TRILINEARMAPPING_HH
+#ifndef DUNE_GEOMETRY_TRILINEARGEOMETRY_HH
+#define DUNE_GEOMETRY_TRILINEARGEOMETRY_HH
 
 #include <cassert>
 #include <limits>
@@ -25,11 +25,11 @@ namespace Dune
 
 
 
-  // TrilinearMappingTraits
-  // ----------------------
+  // TrilinearGeometryTraits
+  // -----------------------
 
   template< class ct >
-  struct TrilinearMappingTraits
+  struct TrilinearGeometryTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
@@ -40,13 +40,13 @@ namespace Dune
 
 
 
-  // TrilinearMapping
-  // ----------------
+  // TrilinearGeometry
+  // -----------------
 
-  template< class ct, int cdim, class Traits = TrilinearMappingTraits< ct > >
-  class TrilinearMapping
+  template< class ct, int cdim, class Traits = TrilinearGeometryTraits< ct > >
+  class TrilinearGeometry
   {
-    typedef TrilinearMapping< ct, cdim, Traits > This;
+    typedef TrilinearGeometry< ct, cdim, Traits > This;
 
   public:
     typedef ct ctype;
@@ -106,21 +106,21 @@ namespace Dune
 
   public:
     template< class CoordVector >
-    TrilinearMapping ( const CoordVector &coordVector, const UserData &userData = UserData() )
+    TrilinearGeometry ( const CoordVector &coordVector, const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {}
 
     template< class CoordVector >
-    TrilinearMapping ( const ReferenceElement &refElement, const CoordVector &coordVector,
-                       const UserData &userData = UserData() )
+    TrilinearGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector,
+                        const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {
       assert( refElement.type().isCube() );
     }
 
     template< class CoordVector >
-    TrilinearMapping ( Dune::GeometryType gt, const CoordVector &coordVector,
-                       const UserData &userData = UserData() )
+    TrilinearGeometry ( Dune::GeometryType gt, const CoordVector &coordVector,
+                        const UserData &userData = UserData() )
       : storage_( coordVector, userData )
     {
       assert( (gt.dim() == mydimension) && gt.isCube() );
@@ -302,4 +302,4 @@ namespace Dune
 
 } // namespace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_TRILINEARMAPPING_HH
+#endif // #ifndef DUNE_GEOMETRY_TRILINEARGEOMETRY_HH
