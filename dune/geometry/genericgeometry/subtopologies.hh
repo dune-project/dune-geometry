@@ -295,6 +295,8 @@ namespace Dune
 
     /** \brief Compute the topology id of a given subentity
      *
+     * \param topologyId Topology id of entity
+     * \param dim Dimension of entity
      * \param codim Codimension of the subentity that we are interested in
      * \param i Number of the subentity that we are interested in
      */
