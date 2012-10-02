@@ -33,11 +33,39 @@ namespace Dune
   // MultiLinearGeometryTraits
   // -------------------------
 
+  /** \brief default traits class for MultiLinearGeometry
+   *
+   *  The MultiLinearGeometry (and CachedMultiLinearGeometry) allow tweaking
+   *  some implementation details through a traits class.
+   *
+   *  This structure provides the default values.
+   *
+   *  \tparam  ct  coordinate type
+   */
   template< class ct >
   struct MultiLinearGeometryTraits
   {
+    /** \brief helper structure containing some matrix routines
+     *
+     *  This helper allows exchanging the matrix inversion algorithms.
+     *  It must provide the following static methods:
+       \code
+       template< int m, int n >
+       static ctype sqrtDetAAT ( const FieldMatrix< ctype, m, n > &A );
+
+       template< int m, int n >
+       static ctype rightInvA ( const FieldMatrix< ctype, m, n > &A,
+                               FieldMatrix< ctype, n, m > &ret );
+
+       template< int m, int n >
+       static void xTRightInvA ( const FieldMatrix< ctype, m, n > &A,
+                                const FieldVector< ctype, n > &x,
+                                FieldVector< ctype, m > &y );
+       \endcode
+     */
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
+    /** \brief tolerance to numerical algorithms */
     static ct tolerance () { return 16 * std::numeric_limits< ct >::epsilon(); }
 
     template< int mydim, int cdim >
@@ -66,6 +94,7 @@ namespace Dune
       static const unsigned int topologyId = ~0u;
     };
 
+    /** \brief type of user data */
     struct UserData {};
   };
 
