@@ -104,7 +104,7 @@ namespace Dune {
      *
      *  \param lower Coordinates for the lower left corner.
      *  \param upper Coordinates for the upper right corner.
-     *  \param axes Each bit set to 'true' here corresponds to a local coordinate axes.
+     *  \param axes Each bit set to 'true' here corresponds to a local coordinate axis.
      *         In other words, precisely 'dim' bits must be set here.
      */
     AxisAlignedCubeGeometry(const Dune::FieldVector<ctype,coorddim> lower,
