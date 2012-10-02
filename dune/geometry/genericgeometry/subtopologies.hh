@@ -277,8 +277,10 @@ namespace Dune
 
     /** \brief compute the topology id of a given subentity
      *
-     *  \param codim  codimension of the subentity that we are interested in
-     *  \param i      number of the subentity that we are interested in
+     *  \param topologyId  topology id of the entity
+     *  \param dim         dimension of the entity
+     *  \param codim       codimension of the subentity that we are interested in
+     *  \param i           number of the subentity that we are interested in
      */
     unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i );
 
