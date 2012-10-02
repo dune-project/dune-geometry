@@ -122,7 +122,7 @@ namespace Dune {
           upper_[i] = lower_[i];
     }
 
-    /** \brief Copy constructor */
+    /** \brief Assignment operator */
     AxisAlignedCubeGeometry& operator=(const AxisAlignedCubeGeometry& other)
     {
       lower_                     = other.lower_;
@@ -130,6 +130,7 @@ namespace Dune {
       axes_                      = other.axes_;
       jacobianTransposed_        = other.jacobianTransposed_;
       jacobianInverseTransposed_ = other.jacobianInverseTransposed_;
+      return *this;
     }
 
     /** \brief Type of the cube.  Here: a hypercube of the correct dimension */
