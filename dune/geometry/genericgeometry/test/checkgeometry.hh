@@ -100,7 +100,8 @@ namespace Dune
       const typename TestGeometry::LocalCoordinate &x = quadrature[ i ].position();
 
       // Test whether the methods 'local' and 'global' are inverse to each other
-      if ( (x - geometry.local( geometry.global( x ) )).two_norm() > 1e-8 ) {
+      if ( (x - geometry.local( geometry.global( x ) )).two_norm() > std::sqrt( std::numeric_limits< ctype >::epsilon() ) )
+      {
         std::cerr << "Error: global and local are not inverse to each other." << std::endl;
         pass = false;
       }
