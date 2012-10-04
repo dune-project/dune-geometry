@@ -84,7 +84,8 @@ namespace Dune
      *  By default, a fixed size array of FieldVector is used.
      *
      *  Apart from being copy constructable and assignable, the corner storage
-     *  must provide a type const_iterator and a constant begin / end pair.
+     *  must provide a constant input iterator, i.e., it must define a type
+     *  const_iterator and a pair of constant begin / end methods.
      *
      *  \tparam  mydim  geometry dimension
      *  \tparam  cdim   coordinate dimension
