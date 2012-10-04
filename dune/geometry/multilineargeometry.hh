@@ -93,7 +93,7 @@ namespace Dune
     template< int mydim, int cdim >
     struct CornerStorage
     {
-      std::vector< FieldVector< ct, cdim > > Type;
+      typedef std::vector< FieldVector< ct, cdim > > Type;
     };
 
     /** \brief will there be only one geometry type for a dimension?
