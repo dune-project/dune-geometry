@@ -65,7 +65,7 @@ namespace Dune
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
     /** \brief tolerance to numerical algorithms */
-    static ct tolerance () { return 16 * std::numeric_limits< ct >::epsilon(); }
+    static ct tolerance () { return ct( 16 ) * std::numeric_limits< ct >::epsilon(); }
 
     /** \brief template specifying the storage for the corners
      *
@@ -720,7 +720,7 @@ namespace Dune
       jt[ dim-1 ].axpy( rf, *cit );
       ++cit;
       for( int j = 0; j < dim-1; ++j )
-        jt[ dim-1 ].axpy( rf*df*x[ j ], jt[ j ] );
+        jt[ dim-1 ].axpy( rf*(df/cxn)*x[ j ], jt[ j ] );
     }
   }
 
