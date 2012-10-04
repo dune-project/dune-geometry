@@ -5,8 +5,8 @@
 
 #include <cassert>
 #include <limits>
+#include <vector>
 
-#include <dune/common/array.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
@@ -81,7 +81,7 @@ namespace Dune
        typedef std::vector< FieldVector< ctype, cdim > > Type;
        };
        \endcode
-     *  By default, a fixed size array of FieldVector is used.
+     *  By default, a std::vector of FieldVector is used.
      *
      *  Apart from being copy constructable and assignable, the corner storage
      *  must provide a constant input iterator, i.e., it must define a type
@@ -93,7 +93,7 @@ namespace Dune
     template< int mydim, int cdim >
     struct CornerStorage
     {
-      typedef array< FieldVector< ct, cdim >, (1 << mydim) > Type;
+      std::vector< FieldVector< ct, cdim > > Type;
     };
 
     /** \brief will there be only one geometry type for a dimension?
