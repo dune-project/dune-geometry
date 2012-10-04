@@ -5,9 +5,8 @@
 
 #include <cassert>
 #include <limits>
-#include <vector>
 
-//#include <dune/common/array.hh>
+#include <dune/common/array.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
@@ -68,17 +67,39 @@ namespace Dune
     /** \brief tolerance to numerical algorithms */
     static ct tolerance () { return 16 * std::numeric_limits< ct >::epsilon(); }
 
+    /** \brief template specifying the storage for the corners
+     *
+     *  Internally, the MultiLinearGeometry needs to store the corners of the
+     *  geometry.
+     *
+     *  The corner storage may be chosen depending on geometry dimension and
+     *  coordinate dimension. It is required to contain a type named Type, e.g.,
+       \code
+       template< int mydim, int cdim >
+       struct CornerStorage
+       {
+       typedef std::vector< FieldVector< ctype, cdim > > Type;
+       };
+       \endcode
+     *  By default, a fixed size array of FieldVector is used.
+     *
+     *  Apart from being copy constructable and assignable, the corner storage
+     *  must provide a type const_iterator and a constant begin / end pair.
+     *
+     *  \tparam  mydim  geometry dimension
+     *  \tparam  cdim   coordinate dimension
+     */
     template< int mydim, int cdim >
     struct CornerStorage
     {
-      //typedef array< FieldVector< ct, cdim >, 1 << mydim > Type;
-      typedef std::vector< FieldVector< ct, cdim > > Type;
+      typedef array< FieldVector< ct, cdim >, (1 << mydim) > Type;
     };
 
     /** \brief will there be only one geometry type for a dimension?
      *
      *  If there is only a single geometry type for a certain dimension,
      *  <em>hasSingleGeometryType::v</em> can be set to true.
+     *  Supporting only one geometry type might yield a gain in performance.
      *
      *  If <em>hasSingleGeometryType::v</em> is set to true, an additional
      *  parameter <em>topologyId</em> is required.
@@ -103,24 +124,52 @@ namespace Dune
   // MultiLinearGeometry
   // -------------------
 
+  /** \brief generic geometry implementation based on corner coordinates
+   *
+   *  Based on the recursive definition of the reference elements, the
+   *  MultiLinearGeometry provides a generic implementation of a geometry given
+   *  the corner coordinates.
+   *
+   *  The geometric mapping is multilinear in the classical sense only in the
+   *  case of cubes; for simplices it is linear.
+   *  The name is still justified, because the mapping satisfies the important
+   *  property of begin linear along edges.
+   *
+   *  \tparam  ct      coordinate type
+   *  \tparam  mydim   geometry dimension
+   *  \tparam  cdim    coordinate dimension
+   *  \tparam  Traits  traits allowing to tweak some implementation details
+   *                   (optional)
+   *
+   *  The requirements on the traits are documented along with their default,
+   *  MultiLinearGeometryTraits.
+   */
   template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
   class MultiLinearGeometry
   {
     typedef MultiLinearGeometry< ct, mydim, cdim, Traits > This;
 
   public:
+    //! coordinate type
     typedef ct ctype;
 
+    //! geometry dimension
     static const int mydimension= mydim;
+    //! coordinate dimension
     static const int coorddimension = cdim;
 
+    /** \brief type of user data */
     typedef typename Traits::UserData UserData;
 
+    //! type of local coordinates
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
+    //! type of global coordinates
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
+    //! type of jacobian transposed
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
 
+    //! type of jacobian inverse transposed
     class JacobianInverseTransposed;
 
     // for compatibility, export the type JacobianInverseTransposed as Jacobian
@@ -157,12 +206,32 @@ namespace Dune
     typedef typename Traits::template CornerStorage< mydimension, coorddimension >::Type::const_iterator CornerIterator;
 
   public:
+    /** \brief constructor
+     *
+     *  \param[in]  refElement     reference element for the geometry
+     *  \param[in]  cornerStorage  corner storage to store internally
+     *  \param[in]  userData       user data to store (optional, if default constructable)
+     *
+     *  \note The type of cornerStorage is actually a template argument.
+     *        It is only required that the internal corner storage can be
+     *        constructed from this object.
+     */
     template< class CornerStorage >
     MultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
                           const UserData &userData = UserData() )
       : storage_( refElement, cornerStorage, userData )
     {}
 
+    /** \brief constructor
+     *
+     *  \param[in]  gt             geometry type
+     *  \param[in]  cornerStorage  corner storage to store internally
+     *  \param[in]  userData       user data to store (optional, if default constructable)
+     *
+     *  \note The type of cornerStorage is actually a template argument.
+     *        It is only required that the internal corner storage can be
+     *        constructed from this object.
+     */
     template< class CornerStorage >
     MultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
                           const UserData &userData = UserData() )
@@ -288,7 +357,9 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const;
 
+    /** \brief read-only access to the internal user data */
     const UserData &userData () const { return storage_; }
+    /** \brief read-write access to the internal user data */
     UserData &userData () { return storage_; }
 
   protected:
