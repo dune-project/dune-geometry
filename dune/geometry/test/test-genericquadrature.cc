@@ -117,6 +117,29 @@ void checkQuadrature(const Quadrature &quad)
   }
 }
 
+template< class Quadrature >
+void checkPoints ( const Quadrature &quad )
+{
+  typedef typename Quadrature::Field ctype;
+  const unsigned int dim = Quadrature::dimension;
+
+  const Dune::ReferenceElement< ctype, dim > &refElement
+    = Dune::ReferenceElements< ctype, dim >::general( quad.type() );
+
+  typename Quadrature::Iterator qend = quad.end();
+  for( typename Quadrature::Iterator qit = quad.begin(); qit != qend; ++qit )
+  {
+    if( refElement.checkInside( qit->position() ) )
+      continue;
+
+    std::cerr << "Error: Quadrature for " << quad.type()
+              << " and order " << quad.order()
+              << " has a point outside the reference element "
+              << "( " << qit->position() << " )." << std::endl;
+    success = false;
+  }
+}
+
 template<class Quadrature>
 void checkWeights(const Quadrature &quad)
 {
@@ -125,13 +148,11 @@ void checkWeights(const Quadrature &quad)
   const unsigned int p = quad.order();
   const Dune::GeometryType& t = quad.type();
   typedef typename Quadrature::Iterator QuadIterator;
-  double volume = 0;
-  QuadIterator qp = quad.begin();
-  QuadIterator qend = quad.end();
-  for (; qp!=qend; ++qp)
-  {
-    volume += qp->weight();
-  }
+
+  ctype volume( 0 );
+  typename Quadrature::Iterator qend = quad.end();
+  for( typename Quadrature::Iterator qit = quad.begin(); qit != qend; ++qit )
+    volume += qit->weight();
 
   const ctype refVolume = Dune::ReferenceElements< ctype, dim >::general( t ).volume();
   if (std::abs(volume - refVolume) > 4*dim*(p ? p : 1)*std::numeric_limits< ctype >::epsilon())
@@ -144,32 +165,39 @@ void checkWeights(const Quadrature &quad)
   }
 }
 
-template<class CF, int dim>
-void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
+template< class CF, int dim >
+void doCheck( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
 {
   typedef Dune::GenericGeometry::GaussPoints<CF> OneDPoints;
   typedef Dune::GenericGeometry::GenericQuadratureFactory<dim,double,OneDPoints> QuadratureProvider;
   typedef typename QuadratureProvider::Object Quadrature;
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
-    const Quadrature &quad = *QuadratureProvider::create(Dune::GeometryType(btype,dim),p);
-    checkWeights(quad);
-    checkQuadrature(quad);
-    QuadratureProvider::release(&quad);
+    const Quadrature *pQuad = QuadratureProvider::create( Dune::GeometryType( btype, dim ), p );
+    assert( pQuad );
+    checkPoints( *pQuad );
+    checkWeights( *pQuad );
+    checkQuadrature( *pQuad );
+    QuadratureProvider::release( pQuad );
   }
-  if (dim>0 && (dim>2 ||
-                btype==Dune::GeometryType::cube ||
-                btype==Dune::GeometryType::simplex) )
-    check<CF,(dim==0) ? 0 : dim-1>(btype,maxOrder);
+}
+
+template<class CF, int dim>
+void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
+{
+  doCheck< CF, dim >( btype, maxOrder );
+  if( (dim > 0) && ((dim > 2) || (btype == Dune::GeometryType::cube) || (btype==Dune::GeometryType::simplex)) )
+    check< CF, (dim == 0 ? 0 : dim-1) >( btype, maxOrder );
 }
 
 int main ()
 {
-  try {
-    check<double,4>(Dune::GeometryType::cube,30);
-    check<double,4>(Dune::GeometryType::simplex,55);
-    check<double,4>(Dune::GeometryType::prism,55);
-    check<double,3>(Dune::GeometryType::pyramid,55);
+  try
+  {
+    check< double, 4 >( Dune::GeometryType::cube, 30 );
+    check< double, 4 >( Dune::GeometryType::simplex, 55 );
+    doCheck< double, 3 >( Dune::GeometryType::prism, 55 );
+    doCheck< double, 3 >( Dune::GeometryType::pyramid, 55 );
   }
   catch( const Dune::Exception &e )
   {
