@@ -21,7 +21,7 @@ namespace Dune {
   //! algorithm to reduce vertex order information
   /**
    * \code
-   *#include <dune/geometry/generalvertexorder.hh>
+   * #include <dune/geometry/generalvertexorder.hh>
    * \endcode
    *
    * \param inBegin Start of the range of ids to reduce.
