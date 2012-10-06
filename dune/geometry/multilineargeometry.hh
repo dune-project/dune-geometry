@@ -760,6 +760,8 @@ namespace Dune
       if( norm >= Traits::tolerance() )
         return false;
     }
+    else
+      ++cit;
     jt[ dim-1 ] = orgTop - orgBottom;
     return true;
   }
