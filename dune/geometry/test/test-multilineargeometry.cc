@@ -60,25 +60,27 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     pass = false;
   }
 
-  if( std::abs( geometry.integrationElement( localCenter ) - std::abs( detA ) ) > epsilon )
+  const ctype integrationElement = geometry.integrationElement( localCenter );
+  if( std::abs( integrationElement - std::abs( detA ) ) > epsilon )
   {
-    std::cerr << "Error: Wrong integration element ("
-              << geometry.integrationElement( localCenter )
+    std::cerr << "Error: Wrong integration element (" << integrationElement
               << ", should be " << std::abs( detA )
-              << "." << std::endl;
+              << ")." << std::endl;
     pass = false;
   }
-  if( geometry.volume() != refElement.volume()*std::abs( detA ) )
+  const ctype volume = geometry.volume();
+  if( std::abs( volume - refElement.volume()*std::abs( detA ) ) > epsilon )
   {
-    std::cerr << "Error: Wrong volume (" << geometry.volume()
-              << ", should be " << refElement.volume()*std::abs( detA )
-              << "." << std::endl;
+    std::cerr << "Error: Wrong volume (" << volume
+              << ", should be " << (refElement.volume()*std::abs( detA ))
+              << ")." << std::endl;
     pass = false;
   }
 
-  if( (geometry.center() - map( A, B, refElement.position( 0, 0 ) )).two_norm() > epsilon )
+  const Dune::FieldVector< ctype, cdim > center = geometry.center();
+  if( (center - map( A, B, refElement.position( 0, 0 ) )).two_norm() > epsilon )
   {
-    std::cerr << "Error: wrong barycenter (" << geometry.center() << ")." << std::endl;
+    std::cerr << "Error: wrong barycenter (" << center << ")." << std::endl;
     pass = false;
   }
 
@@ -98,7 +100,8 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   Dune::FieldMatrix< ctype, mydim, mydim > A;
   Dune::FieldMatrix< ctype, cdim, cdim > B;
 
-  std::cout << ">>> Checking reference mapping (topologyId = " << gt.id() << ")" << std::endl;
+  std::cout << ">>> Checking geometry (topologyId = " << gt.id() << ", mydim = " << mydim << ", cdim = " << cdim << ")" << std::endl;
+  std::cout << ">>> Checking reference mapping" << std::endl;
   A = ctype( 0 );
   for( int i = 0; i < mydim; ++i )
     A[ i ][ i ] = ctype( 1 );
@@ -107,7 +110,7 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
     B[ i ][ i ] = ctype( 1 );
   pass &= testMultiLinearGeometry( refElement, A, B );
 
-  std::cout << ">>> Checking scaled reference mapping (topologyId = " << gt.id() << ")" << std::endl;
+  std::cout << ">>> Checking scaled reference mapping" << std::endl;
   A = ctype( 0 );
   for( int i = 0; i < mydim; ++i )
     A[ i ][ i ] = ctype( 42 );
