@@ -186,7 +186,7 @@ template<class CF, int dim>
 void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
 {
   doCheck< CF, dim >( btype, maxOrder );
-  if( (dim > 0) && ((dim > 2) || (btype == Dune::GeometryType::cube) || (btype==Dune::GeometryType::simplex)) )
+  if( dim > 0 )
     check< CF, (dim == 0 ? 0 : dim-1) >( btype, maxOrder );
 }
 
