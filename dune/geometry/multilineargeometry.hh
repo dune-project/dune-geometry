@@ -384,14 +384,14 @@ namespace Dune
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, GlobalCoordinate &y );
 
-    template< bool add, int dim >
+    template< bool add, int rows, int dim >
     static void jacobianTransposed ( TopologyId topologyId, integral_constant< int, dim >,
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
-                                     const ctype &rf, JacobianTransposed &jt );
-    template< bool add >
+                                     const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
+    template< bool add, int rows >
     static void jacobianTransposed ( TopologyId topologyId, integral_constant< int, 0 >,
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
-                                     const ctype &rf, JacobianTransposed &jt );
+                                     const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
 
     template< int dim >
     static bool affine ( TopologyId topologyId, integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt );
@@ -689,19 +689,21 @@ namespace Dune
 
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< bool add, int dim >
+  template< bool add, int rows, int dim >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( TopologyId topologyId, integral_constant< int, dim >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
-                         const ctype &rf, JacobianTransposed &jt )
+                         const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt )
   {
+    assert( rows >= dim );
+
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
     assert( (xn > -Traits::tolerance()) && (cxn > -Traits::tolerance()) );
 
+    CornerIterator cit2( cit );
     if( GenericGeometry::isPrism( topologyId, mydimension, mydimension-dim ) )
     {
-      CornerIterator cit2 = cit;
       // apply (1-xn) times Jacobian for bottom
       jacobianTransposed< add >( topologyId, integral_constant< int, dim-1 >(), cit2, df, x, rf*cxn, jt );
       // apply xn times Jacobian for top
@@ -713,24 +715,36 @@ namespace Dune
     else
     {
       assert( GenericGeometry::isPyramid( topologyId, mydimension, mydimension-dim ) );
-      CornerIterator cit2 = cit;
-      // apply Jacobian for bottom (with argument x/(1-xn))
-      jacobianTransposed< add >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt );
-      // compute last row
+      // initialize last row
       global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df/cxn, x, -rf, jt[ dim-1 ] );
       jt[ dim-1 ].axpy( rf, *cit );
       ++cit;
-      for( int j = 0; j < dim-1; ++j )
-        jt[ dim-1 ].axpy( rf*(df/cxn)*x[ j ], jt[ j ] );
+      // apply Jacobian for bottom (with argument x/(1-xn)) and correct last row
+      if( add )
+      {
+        FieldMatrix< ctype, dim-1, coorddimension > jt2;
+        jacobianTransposed< true >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt2 );
+        for( int j = 0; j < dim-1; ++j )
+        {
+          jt[ j ] += jt2[ j ];
+          jt[ dim-1 ].axpy( (df/cxn)*x[ j ], jt2[ j ] );
+        }
+      }
+      else
+      {
+        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt );
+        for( int j = 0; j < dim-1; ++j )
+          jt[ dim-1 ].axpy( (df/cxn)*x[ j ], jt[ j ] );
+      }
     }
   }
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< bool add >
+  template< bool add, int rows >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( TopologyId topologyId, integral_constant< int, 0 >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
-                         const ctype &rf, JacobianTransposed &jt )
+                         const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt )
   {
     ++cit;
   }
