@@ -48,19 +48,19 @@ namespace Dune
      *
      *  This helper allows exchanging the matrix inversion algorithms.
      *  It must provide the following static methods:
-       \code
-       template< int m, int n >
-       static ctype sqrtDetAAT ( const FieldMatrix< ctype, m, n > &A );
-
-       template< int m, int n >
-       static ctype rightInvA ( const FieldMatrix< ctype, m, n > &A,
-                               FieldMatrix< ctype, n, m > &ret );
-
-       template< int m, int n >
-       static void xTRightInvA ( const FieldMatrix< ctype, m, n > &A,
-                                const FieldVector< ctype, n > &x,
-                                FieldVector< ctype, m > &y );
-       \endcode
+     *  \code
+     *  template< int m, int n >
+     *  static ctype sqrtDetAAT ( const FieldMatrix< ctype, m, n > &A );
+     *
+     *  template< int m, int n >
+     *  static ctype rightInvA ( const FieldMatrix< ctype, m, n > &A,
+     *                           FieldMatrix< ctype, n, m > &ret );
+     *
+     *  template< int m, int n >
+     *  static void xTRightInvA ( const FieldMatrix< ctype, m, n > &A,
+     *                            const FieldVector< ctype, n > &x,
+     *                            FieldVector< ctype, m > &y );
+     *  \endcode
      */
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
@@ -74,13 +74,13 @@ namespace Dune
      *
      *  The corner storage may be chosen depending on geometry dimension and
      *  coordinate dimension. It is required to contain a type named Type, e.g.,
-       \code
-       template< int mydim, int cdim >
-       struct CornerStorage
-       {
-       typedef std::vector< FieldVector< ctype, cdim > > Type;
-       };
-       \endcode
+     *  \code
+     *  template< int mydim, int cdim >
+     *  struct CornerStorage
+     *  {
+     *    typedef std::vector< FieldVector< ctype, cdim > > Type;
+     *  };
+     *  \endcode
      *  By default, a std::vector of FieldVector is used.
      *
      *  Apart from being copy constructable and assignable, the corner storage
