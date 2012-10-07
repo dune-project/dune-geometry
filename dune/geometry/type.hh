@@ -208,6 +208,52 @@ namespace Dune
       topologyId_  = 0;
     }
 
+    /** \brief Construct the correct geometry type given the dimension and the number of vertices
+     *  \note This code only is only implemented up to dimension 3
+     */
+    void makeFromVertices(unsigned int dim, unsigned int vertices)
+    {
+      switch (dim)
+      {
+      case 0 :
+        makeVertex();
+        return;
+      case 1 :
+        makeLine();
+        return;
+      case 2 :
+        switch (vertices) {
+        case 3 :
+          makeSimplex(2);
+          return;
+        case 4 :
+          makeCube(2);
+          return;
+        default :
+          DUNE_THROW(NotImplemented, "2d elements with " << vertices << " corners are not supported!");
+        }
+      case 3 :
+        switch (vertices) {
+        case 4 :
+          makeSimplex(2);
+          return;
+        case 5 :
+          makePyramid();
+          return;
+        case 6 :
+          makePrism();
+          return;
+        case 8 :
+          makeCube(3);
+          return;
+        default :
+          DUNE_THROW(NotImplemented, "3d elements with " << vertices << " corners are not supported!");
+        }
+      default :
+        DUNE_THROW(NotImplemented, "makeFromVertices only implemented up to 3d");
+      }
+    }
+
     /*@}*/
 
 
