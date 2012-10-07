@@ -58,7 +58,7 @@ namespace Dune
       : topologyId_(0), dim_(0), none_(true)
     {}
 
-    /** \brief Constructor */
+    /** \brief Constructor, using the basic type and the dimension */
     GeometryType(BasicType basicType, unsigned int dim)
       : topologyId_(0), dim_(dim), none_(false)
     {
@@ -95,7 +95,11 @@ namespace Dune
       }
     }
 
-    /** \brief Constructor */
+    /** \brief Constructor, using the topologyId (integer) and the dimension
+     * \note the topologyId is a binary encoded representation of
+     *       the TypologyType, users are encouraged to use the
+     *       GeometryType(TopologyType t) constructor.
+     */
     GeometryType(unsigned int topologyId, unsigned int dim)
       : topologyId_(topologyId), dim_(dim), none_(false)
     {}
