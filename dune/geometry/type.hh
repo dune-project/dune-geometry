@@ -58,7 +58,7 @@ namespace Dune
       : topologyId_(0), dim_(0), none_(true)
     {}
 
-    /** \brief Constructor */
+    /** \brief Constructor, using the basic type and the dimension */
     GeometryType(BasicType basicType, unsigned int dim)
       : topologyId_(0), dim_(dim), none_(false)
     {
@@ -95,7 +95,11 @@ namespace Dune
       }
     }
 
-    /** \brief Constructor */
+    /** \brief Constructor, using the topologyId (integer) and the dimension
+     * \note the topologyId is a binary encoded representation of
+     *       the TypologyType, users are encouraged to use the
+     *       GeometryType(TopologyType t) constructor.
+     */
     GeometryType(unsigned int topologyId, unsigned int dim)
       : topologyId_(topologyId), dim_(dim), none_(false)
     {}
@@ -202,6 +206,53 @@ namespace Dune
       none_ = true;
       dim_ = dim;
       topologyId_  = 0;
+    }
+
+    /** \brief Construct the correct geometry type given the dimension and the number of vertices
+     *  \note This code only works up to dimension 3.
+     *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedral.
+     */
+    void makeFromVertices(unsigned int dim, unsigned int vertices)
+    {
+      switch (dim)
+      {
+      case 0 :
+        makeVertex();
+        return;
+      case 1 :
+        makeLine();
+        return;
+      case 2 :
+        switch (vertices) {
+        case 3 :
+          makeSimplex(2);
+          return;
+        case 4 :
+          makeCube(2);
+          return;
+        default :
+          DUNE_THROW(NotImplemented, "2d elements with " << vertices << " corners are not supported!");
+        }
+      case 3 :
+        switch (vertices) {
+        case 4 :
+          makeSimplex(2);
+          return;
+        case 5 :
+          makePyramid();
+          return;
+        case 6 :
+          makePrism();
+          return;
+        case 8 :
+          makeCube(3);
+          return;
+        default :
+          DUNE_THROW(NotImplemented, "3d elements with " << vertices << " corners are not supported!");
+        }
+      default :
+        DUNE_THROW(NotImplemented, "makeFromVertices only implemented up to 3d");
+      }
     }
 
     /*@}*/

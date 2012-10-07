@@ -1,5 +1,12 @@
 # which tests to run
-TESTS = test-axisalignedcubegeometry test-multilineargeometry test-quadrature test-genericquadrature test-referenceelements test-high-dim-refelements $(TESTPROGS)
+TESTS = \
+	test-axisalignedcubegeometry \
+	test-geometrytype \
+	test-high-dim-refelements \
+	test-multilineargeometry \
+	test-quadrature \
+	test-genericquadrature \
+	test-referenceelements
 
 # programs just to build when "make check" is used
 check_PROGRAMS = $(TESTS)
@@ -10,11 +17,13 @@ check_PROGRAMS = $(TESTS)
 # define the programs
 test_axisalignedcubegeometry_SOURCES = test-axisalignedcubegeometry.cc
 
+test_geometrytype_SOURCES = test-geometrytype.cc
+
+test_high_dim_refelements_SOURCES = test-high-dim-refelements.cc
+
 test_multilineargeometry_SOURCES = test-multilineargeometry.cc
 
 test_referenceelements_SOURCES = test-referenceelements.cc
-
-test_high_dim_refelements_SOURCES = test-high-dim-refelements.cc
 
 test_quadrature_SOURCES = test-quadrature.cc
 
