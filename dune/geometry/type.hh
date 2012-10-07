@@ -209,7 +209,8 @@ namespace Dune
     }
 
     /** \brief Construct the correct geometry type given the dimension and the number of vertices
-     *  \note This code only is only implemented up to dimension 3
+     *  \note This code only works up to dimension 3.
+     *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedral.
      */
     void makeFromVertices(unsigned int dim, unsigned int vertices)
     {
