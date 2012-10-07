@@ -10,7 +10,6 @@ libdunegeometry_la_SOURCES =
 # (see the automake manual, section "Libtool Convenience Libraries")
 nodist_EXTRA_libdunegeometry_la_SOURCES = dummy.cc
 sourcescheck_DUMMY = dummy.cc
-libdunegeometry_la_LIBADD = ../dune/geometry/genericgeometry/libgenericgeometry.la \
-                            ../dune/geometry/quadraturerules/libquadraturerules.la
+libdunegeometry_la_LIBADD = ../dune/geometry/libgeometry.la
 
 include $(top_srcdir)/am/global-rules

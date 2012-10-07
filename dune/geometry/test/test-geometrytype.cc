@@ -9,6 +9,8 @@
 #include <vector>
 
 #include <dune/geometry/type.hh>
+#include <dune/geometry/genericgeometry/topologytypes.hh>
+#include <dune/geometry/genericgeometry/subtopologies.hh>
 
 std::string convBase(unsigned long v, long base)
 {
@@ -27,39 +29,23 @@ std::string convBase(unsigned long v, long base)
   return result;
 }
 
-void guessTopologyId(unsigned int dim, unsigned int vertices,
-                     unsigned int v, unsigned int id, unsigned int d,
-                     std::vector<unsigned int> & ids)
-{
-  if (d == dim)
-  {
-    if (v == vertices)
-      ids.push_back(id);
-    return;
-  }
-  // if (v > vertices-dim+d)
-  //     return;
-  // try simplex
-  guessTopologyId(dim,vertices,v+1,id,d+1,ids);
-  // try cube
-  guessTopologyId(dim,vertices,v*2,id+(1<<d),d+1,ids);
-}
-
 unsigned int guessTopologyId(unsigned int dim, unsigned int vertices)
 {
-  std::vector<unsigned int> ids;
-  if (dim == 0 || dim == 1)
-    return 0;
-  if (vertices < dim+1 || vertices > 1<<dim)
-    DUNE_THROW(Dune::Exception, "IMPOSSIBLE");
-  guessTopologyId(dim,vertices,2,1,1,ids);
-  if (ids.size() == 0)
-    DUNE_THROW(Dune::Exception, "Impossible setting");
-  for (size_t i=0; i<ids.size(); i++)
-    std::cout << "possibility " << i << "\t" << convBase(ids[i],2) << std::endl;
-  if (ids.size() > 1)
-    DUNE_THROW(Dune::Exception, "Too many options");
-  return ids[0];
+  if( (vertices < dim+1) || (vertices > (1u << dim)) )
+    DUNE_THROW( Dune::Exception, "IMPOSSIBLE" );
+  std::vector< unsigned int > ids;
+  for( unsigned int id = 0; id < Dune::GenericGeometry::numTopologies( dim ); id += 2u )
+  {
+    if( Dune::GenericGeometry::size( id, dim, dim ) == vertices )
+      ids.push_back( id );
+  }
+  if( ids.empty() )
+    DUNE_THROW( Dune::Exception, "Impossible setting" );
+  for( size_t i = 0; i < ids.size(); ++i )
+    std::cout << "possibility " << i << "\t" << convBase( ids[ i ], 2 ) << std::endl;
+  if( ids.size() > 1 )
+    DUNE_THROW( Dune::Exception, "Too many options" );
+  return ids[ 0 ];
 }
 
 void testGuess(unsigned int dim, unsigned int vertices)

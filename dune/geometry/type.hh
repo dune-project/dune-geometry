@@ -41,7 +41,9 @@ namespace Dune
       b0101 = 5,
       b0111 = 7
     };
+
   private:
+    static const unsigned int topologyIdFromVertices[ 5 ][ 16 ];
 
     /** \brief Topology Id element */
     unsigned int topologyId_;
@@ -212,47 +214,22 @@ namespace Dune
      *  \note This code only works up to dimension 3.
      *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedral.
      */
-    void makeFromVertices(unsigned int dim, unsigned int vertices)
+    void makeFromVertices ( unsigned int dim, unsigned int vertices )
     {
-      switch (dim)
+      if( dim < 5 )
       {
-      case 0 :
-        makeVertex();
-        return;
-      case 1 :
-        makeLine();
-        return;
-      case 2 :
-        switch (vertices) {
-        case 3 :
-          makeSimplex(2);
-          return;
-        case 4 :
-          makeCube(2);
-          return;
-        default :
-          DUNE_THROW(NotImplemented, "2d elements with " << vertices << " corners are not supported!");
+        const unsigned int topologyId = ((vertices-1) < 16 ? topologyIdFromVertices[ dim ][ vertices-1 ] : ~0u);
+        if( topologyId != ~0u )
+        {
+          none_ = false;
+          dim_ = dim;
+          topologyId_ = topologyId;
         }
-      case 3 :
-        switch (vertices) {
-        case 4 :
-          makeSimplex(2);
-          return;
-        case 5 :
-          makePyramid();
-          return;
-        case 6 :
-          makePrism();
-          return;
-        case 8 :
-          makeCube(3);
-          return;
-        default :
-          DUNE_THROW(NotImplemented, "3d elements with " << vertices << " corners are not supported!");
-        }
-      default :
-        DUNE_THROW(NotImplemented, "makeFromVertices only implemented up to 3d");
+        else
+          DUNE_THROW( NotImplemented, dim << "d elements with " << vertices << " corners are not supported." );
       }
+      else
+        DUNE_THROW( NotImplemented, "makeFromVertices only implemented up to 4d (for 5d the number of vertices is no longer unique)." );
     }
 
     /*@}*/

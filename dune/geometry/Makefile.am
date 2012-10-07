@@ -16,4 +16,11 @@ geometryinclude_HEADERS =			\
 
 SUBDIRS = quadraturerules genericgeometry test
 
+noinst_LTLIBRARIES = libgeometry.la
+libgeometry_la_SOURCES = type.cc
+libgeometry_la_LIBADD = \
+	quadraturerules/libquadraturerules.la \
+	genericgeometry/libgenericgeometry.la \
+	$(DUNE_LIBS)
+
 include $(top_srcdir)/am/global-rules
