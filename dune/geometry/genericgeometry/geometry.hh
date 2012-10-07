@@ -327,9 +327,9 @@ namespace Dune
        *  \note the geometry type is guessed from the number of vertices, thus this will only work up to dim 3
        */
       template< class CoordVector >
-      BasicGeometry ( unsigned int dim, const CoordVector &coords )
+      BasicGeometry ( const CoordVector &coords )
       {
-        GeometryType type; type.makeFromVertices(dim,coords.size());
+        GeometryType type; type.makeFromVertices(mydim,coords.size());
         mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
       }
 
