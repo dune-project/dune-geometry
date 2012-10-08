@@ -84,6 +84,21 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     pass = false;
   }
 
+  const Dune::FieldMatrix< ctype, mydim, cdim > JT = geometry.jacobianTransposed( localCenter );
+  for( int i = 0; i < mydim; ++i )
+  {
+    Dune::FieldVector< ctype, mydim > e( ctype( 0 ) );
+    e[ i ] = ctype( 1 );
+    const Dune::FieldVector< ctype, cdim > t = map( A, B, e );
+    if( (t - JT[ i ]).two_norm() > epsilon )
+    {
+      std::cerr << "Error: wrong jacobianTransposed[ " << i << " ] (" << JT[ i ]
+                << ", should be " << t << ")." << std::endl;
+      pass = false;
+    }
+
+  }
+
   pass &= checkGeometry( geometry );
 
   return pass;
@@ -93,8 +108,6 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
 template< class ctype, int mydim, int cdim >
 static bool testMultiLinearGeometry ( Dune::GeometryType gt )
 {
-  bool pass = true;
-
   const Dune::ReferenceElement< ctype, mydim > &refElement = Dune::ReferenceElements< ctype, mydim >::general( gt );
 
   Dune::FieldMatrix< ctype, mydim, mydim > A;
@@ -108,7 +121,8 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   B = ctype( 0 );
   for( int i = 0; i < cdim; ++i )
     B[ i ][ i ] = ctype( 1 );
-  pass &= testMultiLinearGeometry( refElement, A, B );
+  const bool passId = testMultiLinearGeometry( refElement, A, B );
+  std::cout << ">>> " << (passId ? "passed" : "failed") << std::endl;
 
   std::cout << ">>> Checking scaled reference mapping" << std::endl;
   A = ctype( 0 );
@@ -117,9 +131,10 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   B = ctype( 0 );
   for( int i = 0; i < cdim; ++i )
     B[ i ][ i ] = ctype( 1 );
-  pass &= testMultiLinearGeometry( refElement, A, B );
+  const bool passScaledId = testMultiLinearGeometry( refElement, A, B );
+  std::cout << ">>> " << (passScaledId ? "passed" : "failed") << std::endl;
 
-  return pass;
+  return passId && passScaledId;
 }
 
 
@@ -198,8 +213,10 @@ int main ( int argc, char **argv )
 {
   bool pass = true;
 
+  std::cout << ">>> Checking ctype = double" << std::endl;
   pass &= testMultiLinearGeometry< double >();
-  //  pass &= testMultiLinearGeometry< float >();
+  //std::cout << ">>> Checking ctype = float" << std::endl;
+  //pass &= testMultiLinearGeometry< float >();
 
   return (pass ? 0 : 1);
 }

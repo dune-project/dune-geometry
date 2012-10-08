@@ -723,7 +723,7 @@ namespace Dune
       if( add )
       {
         FieldMatrix< ctype, dim-1, coorddimension > jt2;
-        jacobianTransposed< true >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt2 );
+        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt2 );
         for( int j = 0; j < dim-1; ++j )
         {
           jt[ j ] += jt2[ j ];

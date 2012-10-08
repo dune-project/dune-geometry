@@ -428,6 +428,7 @@ namespace Dune
           {
             origins[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
             origins[ m ][ dim-1 ] = ct( 1 );
+            jacobianTransposeds[ m ] = FieldMatrix< ct, mydim, cdim >( ct( 0 ) );
             return m+1;
           }
           else
