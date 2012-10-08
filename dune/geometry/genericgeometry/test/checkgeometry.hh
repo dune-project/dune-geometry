@@ -57,6 +57,8 @@ namespace Dune
     // Matrix-like type for the return value of the jacobianInverseTransposed method
     typedef typename TestGeometry::JacobianInverseTransposed JacobianInverseTransposed;
 
+    const ctype tolerance = std::sqrt( std::numeric_limits< ctype >::epsilon() );
+
     ////////////////////////////////////////////////////////////////////////
 
     GeometryType type = geometry.type();
@@ -66,7 +68,7 @@ namespace Dune
     // Test whether the return value of the method 'center' corresponds to the center of the
     // reference element.  That is the current definition of the method.
     const FieldVector< ctype, coorddim > center = geometry.global( refElement.position( 0, 0 ) );
-    if( std::abs( (geometry.center() - center).two_norm() ) > 1e-8 )
+    if( std::abs( (geometry.center() - center).two_norm() ) > tolerance )
       DUNE_THROW(Exception, "center() is not consistent with global(refElem.position(0,0)).");
 
     ////////////////////////////////////////////////////////////////////////
@@ -78,7 +80,8 @@ namespace Dune
     {
       for( int i = 0; i < geometry.corners(); ++i )
       {
-        if( (geometry.corner( i ) - geometry.global( refElement.position( i, mydim ) )).two_norm() > 1e-8 ) {
+        if( (geometry.corner( i ) - geometry.global( refElement.position( i, mydim ) )).two_norm() > tolerance )
+        {
           std::cerr << "Error: Methods corner and global are inconsistent." << std::endl;
           pass = false;
         }
@@ -100,7 +103,7 @@ namespace Dune
       const typename TestGeometry::LocalCoordinate &x = quadrature[ i ].position();
 
       // Test whether the methods 'local' and 'global' are inverse to each other
-      if ( (x - geometry.local( geometry.global( x ) )).two_norm() > std::sqrt( std::numeric_limits< ctype >::epsilon() ) )
+      if( (x - geometry.local( geometry.global( x ) )).two_norm() > tolerance )
       {
         std::cerr << "Error: global and local are not inverse to each other." << std::endl;
         pass = false;
@@ -150,7 +153,7 @@ namespace Dune
       bool isId = true;
       for( int j = 0; j < mydim; ++j )
         for( int k = 0; k < mydim; ++k )
-          isId &= (std::abs( id[ j ][ k ] - (j == k ? 1 : 0) ) < 1e-8);
+          isId &= (std::abs( id[ j ][ k ] - (j == k ? 1 : 0) ) < tolerance);
       if( !isId)
       {
         std::cerr << "Error: jacobianTransposed and jacobianInverseTransposed are not inverse to each other." << std::endl;
@@ -173,15 +176,19 @@ namespace Dune
           for( int k = 0; k < coorddim; ++k )
             jtj[ i ][ j ] += jtAsFieldMatrix[ i ][ k ] * jtAsFieldMatrix[ j ][ k ];
 
-      if( std::abs( std::sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > 1e-8 ) {
+      if( std::abs( std::sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > tolerance )
+      {
         std::cerr << "Error: integrationElement is not consistent with jacobianTransposed." << std::endl;
         pass = false;
       }
-      if (geometry.affine())
-        if( std::abs( geometry.volume() - refElement.volume()*geometry.integrationElement( x ) ) > 1e-8 ) {
+      if( geometry.affine() )
+      {
+        if( std::abs( geometry.volume() - refElement.volume()*geometry.integrationElement( x ) ) > tolerance )
+        {
           std::cerr << "Error: volume is not consistent with jacobianTransposed." << std::endl;
           pass = false;
         }
+      }
     }
     QuadratureFactory::release( &quadrature );
 
