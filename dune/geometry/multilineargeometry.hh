@@ -326,7 +326,7 @@ namespace Dune
      *
      *  \note The current implementation just returns
      *  \code
-     *  integrationElement( baryCenter() ) * ReferenceElement::volume()
+     *  integrationElement( refElement().position( 0, 0 ) ) * refElement().volume()
      *  \endcode
      *  which is wrong for n-linear surface maps and other nonlinear maps.
      */
