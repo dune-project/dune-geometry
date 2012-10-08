@@ -320,8 +320,9 @@ namespace Dune
       template< class CoordVector >
       BasicGeometry ( const CoordVector &coords )
       {
-        GeometryType type; type.makeFromVertices(mydim,coords.size());
-        mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
+        GeometryType type;
+        type.makeFromVertices( mydim, coords.size() );
+        mapping_ = MappingFactory::construct( type.id(), coords, mappingStorage_ );
       }
 
       /** \brief obtain a geometry for a subentity
