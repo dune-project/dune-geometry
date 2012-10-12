@@ -4,8 +4,8 @@ geometryinclude_HEADERS =			\
         axisalignedcubegeometry.hh              \
 	bilineargeometry.hh			\
 	generalvertexorder.hh			\
-	multilineargeometry.hh			\
 	mockgeometry.hh				\
+	multilineargeometry.hh			\
 	quadraturerules.hh			\
 	referenceelements.hh			\
 	topologyfactory.hh			\
