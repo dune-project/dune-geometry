@@ -4,6 +4,7 @@ geometryinclude_HEADERS =			\
 	generalvertexorder.hh			\
 	genericreferenceelements.hh		\
 	mockgeometry.hh				\
+	multilineargeometry.hh			\
 	quadraturerules.hh			\
 	referenceelements.hh			\
 	topologyfactory.hh			\

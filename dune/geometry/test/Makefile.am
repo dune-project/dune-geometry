@@ -2,6 +2,7 @@
 TESTS = \
 	test-axisalignedcubegeometry \
 	test-geometrytype \
+	test-multilineargeometry \
 	test-quadrature \
 	test-genericquadrature \
 	test-referenceelements
@@ -16,6 +17,8 @@ check_PROGRAMS = $(TESTS)
 test_axisalignedcubegeometry_SOURCES = test-axisalignedcubegeometry.cc
 
 test_geometrytype_SOURCES = test-geometrytype.cc
+
+test_multilineargeometry_SOURCES = test-multilineargeometry.cc
 
 test_referenceelements_SOURCES = test-referenceelements.cc
 
