@@ -450,9 +450,18 @@ namespace Dune
 
 
 
-  // CachedMultiLinearGeometry
-  // -------------------------
-
+  /** \brief Implement a MultiLinearGeometry with additional caching
+   *
+   * This class implements the same interface and functionality as MultiLinearGeometry.
+   * However, it additionally implements caching for various results.
+   *
+   *  \tparam  ct      coordinate type
+   *  \tparam  mydim   geometry dimension
+   *  \tparam  cdim    coordinate dimension
+   *  \tparam  Traits  traits allowing to tweak some implementation details
+   *                   (optional)
+   *
+   */
   template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
   class CachedMultiLinearGeometry
     : public MultiLinearGeometry< ct, mydim, cdim, Traits >
