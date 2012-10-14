@@ -116,7 +116,10 @@ namespace Dune
       static const unsigned int topologyId = ~0u;
     };
 
-    /** \brief type of user data */
+    /** \brief type of user data
+
+        This is used by GeometryGrid to implement reference-counted geometries.
+     */
     struct UserData {};
   };
 
@@ -144,6 +147,9 @@ namespace Dune
    *
    *  The requirements on the traits are documented along with their default,
    *  MultiLinearGeometryTraits.
+   *
+   *  As an additional feature, this class allows to attach arbitrary user data
+   *  to each object.  This is used in GeometryGrid to implement reference counting.
    */
   template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
   class MultiLinearGeometry
@@ -159,7 +165,10 @@ namespace Dune
     //! coordinate dimension
     static const int coorddimension = cdim;
 
-    /** \brief type of user data */
+    /** \brief type of user data
+
+        For example, GeometryGrid uses this to implement reference counting.
+     */
     typedef typename Traits::UserData UserData;
 
     //! type of local coordinates
@@ -173,7 +182,9 @@ namespace Dune
     //! type of jacobian inverse transposed
     class JacobianInverseTransposed;
 
-    // for compatibility, export the type JacobianInverseTransposed as Jacobian
+    /** \brief For backward-compatibility, export the type JacobianInverseTransposed as Jacobian
+     *  \deprecated This typedef will be removed after the release of dune 2.3
+     */
     typedef JacobianInverseTransposed Jacobian;
 
     //! type of reference element
@@ -442,6 +453,18 @@ namespace Dune
   // CachedMultiLinearGeometry
   // -------------------------
 
+  /** \brief Implement a MultiLinearGeometry with additional caching
+   *
+   * This class implements the same interface and functionality as MultiLinearGeometry.
+   * However, it additionally implements caching for various results.
+   *
+   *  \tparam  ct      coordinate type
+   *  \tparam  mydim   geometry dimension
+   *  \tparam  cdim    coordinate dimension
+   *  \tparam  Traits  traits allowing to tweak some implementation details
+   *                   (optional)
+   *
+   */
   template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
   class CachedMultiLinearGeometry
     : public MultiLinearGeometry< ct, mydim, cdim, Traits >
