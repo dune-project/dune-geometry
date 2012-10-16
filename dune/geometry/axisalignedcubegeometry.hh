@@ -164,32 +164,14 @@ namespace Dune {
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
     const JacobianTransposed& jacobianTransposed(DUNE_UNUSED const LocalCoordinate& local) const
     {
-      if (dim == coorddim) {         // fast case --> diagonal matrix
-        for (size_t i=0; i<dim; i++)
-          reinterpret_cast<DiagonalMatrix<ctype,dim>&>(jacobianTransposed_).diagonal()[i] = upper_[i] - lower_[i];
-      } else {             // slow case --> dense matrix
-        size_t lc = 0;
-        for (size_t i=0; i<coorddim; i++)
-          if (axes_[i])
-            jacobianTransposed_[lc++][i] = upper_[i] - lower_[i];
-      }
-
+      jacobianTransposed( jacobianTransposed_ );
       return jacobianTransposed_;
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
     const JacobianInverseTransposed& jacobianInverseTransposed(DUNE_UNUSED const LocalCoordinate& local) const
     {
-      if (dim == coorddim) {         // fast case --> diagonal matrix
-        for (size_t i=0; i<dim; i++)
-          reinterpret_cast<DiagonalMatrix<ctype,dim>&>(jacobianInverseTransposed_).diagonal()[i] = 1.0 / (upper_[i] - lower_[i]);
-      } else {          // slow case --> dense matrix
-        size_t lc = 0;
-        for (size_t i=0; i<coorddim; i++)
-          if (axes_[i])
-            jacobianInverseTransposed_[i][lc++] = 1.0 / (upper_[i] - lower_[i]);
-      }
-
+      jacobianInverseTransposed( jacobianInverseTransposed_ );
       return jacobianInverseTransposed_;
     }
 
@@ -263,6 +245,37 @@ namespace Dune {
     }
 
   private:
+    // jacobianTransposed: fast case --> diagonal matrix
+    void jacobianTransposed ( DiagonalMatrix<ctype,dim> &jacobianTransposed ) const
+    {
+      for (size_t i=0; i<dim; i++)
+        jacobianTransposed.diagonal()[i] = upper_[i] - lower_[i];
+    }
+
+    // jacobianTransposed: slow case --> dense matrix
+    void jacobianTransposed ( FieldMatrix<ctype,dim,coorddim> &jacobianTransposed ) const
+    {
+      size_t lc = 0;
+      for (size_t i=0; i<coorddim; i++)
+        if (axes_[i])
+          jacobianTransposed[lc++][i] = upper_[i] - lower_[i];
+    }
+
+    // jacobianInverseTransposed: fast case --> diagonal matrix
+    void jacobianInverseTransposed ( DiagonalMatrix<ctype,dim> &jacobianInverseTransposed ) const
+    {
+      for (size_t i=0; i<dim; i++)
+        jacobianInverseTransposed.diagonal()[i] = 1.0 / (upper_[i] - lower_[i]);
+    }
+
+    // jacobianInverseTransposed: slow case --> dense matrix
+    void jacobianInverseTransposed ( FieldMatrix<ctype,coorddim,dim> &jacobianInverseTransposed ) const
+    {
+      size_t lc = 0;
+      for (size_t i=0; i<coorddim; i++)
+        if (axes_[i])
+          jacobianInverseTransposed[i][lc++] = 1.0 / (upper_[i] - lower_[i]);
+    }
 
     Dune::FieldVector<ctype,coorddim> lower_;
 
