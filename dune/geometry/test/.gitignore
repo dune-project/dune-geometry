@@ -1,9 +1,9 @@
 Makefile
 Makefile.in
 .deps
-
 test-axisalignedcubegeometry
 test-genericquadrature
 test-multilineargeometry
 test-quadrature
 test-referenceelements
+test-geometrytype
