@@ -4,7 +4,6 @@ geometryinclude_HEADERS =			\
         axisalignedcubegeometry.hh              \
 	bilineargeometry.hh			\
 	generalvertexorder.hh			\
-	mockgeometry.hh				\
 	multilineargeometry.hh			\
 	quadraturerules.hh			\
 	referenceelements.hh			\
