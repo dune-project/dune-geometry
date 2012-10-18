@@ -311,7 +311,7 @@ namespace Dune
         MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
         x -= dx;
         assert( refElement().checkInside( x ) );
-      } while( dx.two_norm2() > tolerance*tolerance );
+      } while( dx.two_norm2() > tolerance );
       return x;
     }
 
