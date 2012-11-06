@@ -320,6 +320,7 @@ namespace Dune
       template< class CoordVector >
       BasicGeometry ( const GeometryType &type, const CoordVector &coords )
       {
+        assert(type.dim() == mydim);
         mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
       }
 
