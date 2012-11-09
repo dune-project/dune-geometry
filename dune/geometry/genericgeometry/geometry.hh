@@ -311,6 +311,7 @@ namespace Dune
       template< class CoordVector >
       BasicGeometry ( const GeometryType &type, const CoordVector &coords )
       {
+        assert(type.dim() == mydim);
         mapping_ = MappingFactory::construct( type.id(), coords, mappingStorage_ );
       }
 

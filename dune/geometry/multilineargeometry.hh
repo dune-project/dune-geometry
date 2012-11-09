@@ -290,7 +290,7 @@ namespace Dune
 
     /** \brief evaluate the inverse mapping
      *
-     *  \param[in]  global  global coorindate to map
+     *  \param[in]  global  global coordinate to map
      *
      *  \return corresponding local coordinate
      *
@@ -537,7 +537,7 @@ namespace Dune
 
     /** \brief evaluate the inverse mapping
      *
-     *  \param[in]  global  global coorindate to map
+     *  \param[in]  global  global coordinate to map
      *
      *  \return corresponding local coordinate
      *
