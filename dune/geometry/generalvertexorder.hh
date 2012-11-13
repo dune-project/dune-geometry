@@ -18,8 +18,9 @@
 
 namespace Dune {
 
-  //! algorithm to reduce vertex order information
   /**
+   * \brief Algorithm to reduce vertex order information
+   *
    * \code
    * #include <dune/geometry/generalvertexorder.hh>
    * \endcode
