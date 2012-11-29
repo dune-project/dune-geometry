@@ -48,7 +48,7 @@ namespace Dune {
   template <class CoordType, unsigned int dim, unsigned int coorddim>
   class AxisAlignedCubeGeometry
   {
-
+    typedef AxisAlignedCubeGeometry< CoordType, dim, coorddim > This;
 
   public:
 
@@ -95,9 +95,7 @@ namespace Dune {
                             const Dune::FieldVector<ctype,coorddim> upper)
       : lower_(lower),
         upper_(upper),
-        axes_((1<<coorddim)-1),     // all 'true', but is never actually used
-        jacobianTransposed_(0),
-        jacobianInverseTransposed_(0)
+        axes_((1<<coorddim)-1)     // all 'true', but is never actually used
     {}
 
     /** \brief Constructor from a lower left and an upper right corner
@@ -112,14 +110,37 @@ namespace Dune {
                             const std::bitset<coorddim>& axes)
       : lower_(lower),
         upper_(upper),
-        axes_(axes),
-        jacobianTransposed_(0),
-        jacobianInverseTransposed_(0)
+        axes_(axes)
     {
       assert(axes.count()==dim);
       for (size_t i=0; i<coorddim; i++)
         if (not axes_[i])
           upper_[i] = lower_[i];
+    }
+
+    /** \brief Constructor from a single point only
+
+        \note Only for dim==0
+     */
+    AxisAlignedCubeGeometry(const Dune::FieldVector<ctype,coorddim> lower)
+      : lower_(lower)
+    {
+      assert( dim == 0 );
+    }
+
+    AxisAlignedCubeGeometry ( const This &other )
+      : lower_( other.lower_ ),
+        upper_( other.upper_ ),
+        axes_( other.axes_ )
+    {}
+
+    /** \brief Assignment operator */
+    const AxisAlignedCubeGeometry &operator= ( const This &other )
+    {
+      lower_ = other.lower_;
+      upper_ = other.upper_;
+      axes_ = other.axes_;
+      return *this;
     }
 
     /** \brief Type of the cube.  Here: a hypercube of the correct dimension */
@@ -135,6 +156,8 @@ namespace Dune {
       if (dim == coorddim) {        // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = lower_[i] + local[i]*(upper_[i] - lower_[i]);
+      } if (dim == 0) {              // a vertex -- the other fast case
+        result = lower_;          // hope for named-return-type-optimization
       } else {          // slow case
         size_t lc=0;
         for (size_t i=0; i<coorddim; i++)
@@ -152,7 +175,7 @@ namespace Dune {
       if (dim == coorddim) {        // fast case
         for (size_t i=0; i<dim; i++)
           result[i] = (global[i] - lower_[i]) / (upper_[i] - lower_[i]);
-      } else {          // slow case
+      } else if (dim != 0) {          // slow case
         size_t lc=0;
         for (size_t i=0; i<coorddim; i++)
           if (axes_[i])
@@ -187,9 +210,13 @@ namespace Dune {
     GlobalCoordinate center() const
     {
       GlobalCoordinate result;
-      // Since lower_==upper_ for unused coordinates, this always does the right thing
-      for (size_t i=0; i<coorddim; i++)
-        result[i] = 0.5 * (lower_[i] + upper_[i]);
+      if (dim==0)
+        result = lower_;
+      else {
+        // Since lower_==upper_ for unused coordinates, this always does the right thing
+        for (size_t i=0; i<coorddim; i++)
+          result[i] = 0.5 * (lower_[i] + upper_[i]);
+      }
       return result;
     }
 
@@ -206,6 +233,8 @@ namespace Dune {
       if (dim == coorddim) {         // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = (k & (1<<i)) ? upper_[i] : lower_[i];
+      } if (dim == 0) {         // vertex
+        result = lower_;            // rely on named return-type optimization
       } else {                // slow case
         unsigned int mask = 1;
 
@@ -230,7 +259,8 @@ namespace Dune {
       if (dim == coorddim) {         // fast case
         for (size_t i=0; i<dim; i++)
           vol *= upper_[i] - lower_[i];
-      } else {         // slow case
+        // do nothing if dim == 0
+      } else if (dim != 0) {         // slow case
         for (size_t i=0; i<coorddim; i++)
           if (axes_[i])
             vol *= upper_[i] - lower_[i];
