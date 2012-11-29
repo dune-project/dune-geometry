@@ -122,6 +122,16 @@ namespace Dune {
           upper_[i] = lower_[i];
     }
 
+    /** \brief Constructor from a single point only
+
+        \note Only for dim==0
+     */
+    AxisAlignedCubeGeometry(const Dune::FieldVector<ctype,coorddim> lower)
+      : lower_(lower),
+        jacobianTransposed_(0),
+        jacobianInverseTransposed_(0)
+    {}
+
     /** \brief Assignment operator */
     AxisAlignedCubeGeometry& operator=(const AxisAlignedCubeGeometry& other)
     {
@@ -146,6 +156,8 @@ namespace Dune {
       if (dim == coorddim) {        // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = lower_[i] + local[i]*(upper_[i] - lower_[i]);
+      } if (dim == 0) {              // a vertex -- the other fast case
+        result = lower_;          // hope for named-return-type-optimization
       } else {          // slow case
         size_t lc=0;
         for (size_t i=0; i<coorddim; i++)
@@ -163,7 +175,7 @@ namespace Dune {
       if (dim == coorddim) {        // fast case
         for (size_t i=0; i<dim; i++)
           result[i] = (global[i] - lower_[i]) / (upper_[i] - lower_[i]);
-      } else {          // slow case
+      } else if (dim != 0) {          // slow case
         size_t lc=0;
         for (size_t i=0; i<coorddim; i++)
           if (axes_[i])
@@ -198,9 +210,13 @@ namespace Dune {
     GlobalCoordinate center() const
     {
       GlobalCoordinate result;
-      // Since lower_==upper_ for unused coordinates, this always does the right thing
-      for (size_t i=0; i<coorddim; i++)
-        result[i] = 0.5 * (lower_[i] + upper_[i]);
+      if (dim==0)
+        result = lower_;
+      else {
+        // Since lower_==upper_ for unused coordinates, this always does the right thing
+        for (size_t i=0; i<coorddim; i++)
+          result[i] = 0.5 * (lower_[i] + upper_[i]);
+      }
       return result;
     }
 
@@ -217,6 +233,8 @@ namespace Dune {
       if (dim == coorddim) {         // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = (k & (1<<i)) ? upper_[i] : lower_[i];
+      } if (dim == 0) {         // vertex
+        result = lower_;            // rely on named return-type optimization
       } else {                // slow case
         unsigned int mask = 1;
 
@@ -241,7 +259,8 @@ namespace Dune {
       if (dim == coorddim) {         // fast case
         for (size_t i=0; i<dim; i++)
           vol *= upper_[i] - lower_[i];
-      } else {         // slow case
+        // do nothing if dim == 0
+      } else if (dim != 0) {         // slow case
         for (size_t i=0; i<coorddim; i++)
           if (axes_[i])
             vol *= upper_[i] - lower_[i];
