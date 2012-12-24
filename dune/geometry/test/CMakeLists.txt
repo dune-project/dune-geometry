@@ -1,16 +1,22 @@
 set(TESTS
-  test-axisalignedcubegeometry
-  test-genericquadrature
-  test-quadrature
-  test-referenceelements)
+  test_axisalignedcubegeometry
+  test_geometrytype
+  test_genericquadrature
+  test_multilineargeometry
+  test_quadrature
+  test_referenceelements)
 
-add_executable(test-axisalignedcubegeometry test-axisalignedcubegeometry.cc)
-target_link_libraries(test-axisalignedcubegeometry dunecommon dunegeometry)
-add_executable(test-referenceelements "test-referenceelements.cc")
-add_executable(test-quadrature "test-quadrature.cc")
-target_link_libraries(test-quadrature dunecommon dunegeometry)
-add_executable(test-genericquadrature "test-genericquadrature.cc")
-target_link_libraries(test-genericquadrature dunecommon dunegeometry)
+add_executable(test_axisalignedcubegeometry test-axisalignedcubegeometry.cc)
+target_link_libraries(test_axisalignedcubegeometry dunecommon dunegeometry)
+add_executable(test_geometrytype "test-geometrytype.cc")
+target_link_libraries(test_geometrytype dunecommon dunegeometry)
+add_executable(test_referenceelements "test-referenceelements.cc")
+add_executable(test_quadrature "test-quadrature.cc")
+target_link_libraries(test_quadrature dunecommon dunegeometry)
+add_executable(test_genericquadrature "test-genericquadrature.cc")
+target_link_libraries(test_genericquadrature dunecommon dunegeometry)
+add_executable(test_multilineargeometry test-multilineargeometry.cc)
+target_link_libraries(test_multilineargeometry dunecommon dunegeometry)
 
 # We do not want want to build the tests during make all,
 # but just build them on demand

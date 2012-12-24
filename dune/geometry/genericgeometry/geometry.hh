@@ -320,6 +320,17 @@ namespace Dune
       template< class CoordVector >
       BasicGeometry ( const GeometryType &type, const CoordVector &coords )
       {
+        assert(type.dim() == mydim);
+        mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
+      }
+
+      /** \brief Constructor using a vector of corner coordinates and the dimension
+       *  \note the geometry type is guessed from the number of vertices, thus this will only work up to dim 3
+       */
+      template< class CoordVector >
+      BasicGeometry ( const CoordVector &coords )
+      {
+        GeometryType type; type.makeFromVertices(mydim,coords.size());
         mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
       }
 

@@ -6,6 +6,7 @@
 
 #include <cstddef>
 
+#include <dune/common/deprecated.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometry.hh>
@@ -48,14 +49,17 @@ namespace Dune {
     typedef FieldMatrix<ctype, mydim, coorddim> JacobianTransposed;
 
     //! Default constructor.
+    DUNE_DEPRECATED_MSG( "MockGeometry is deprecated; use MultiLinearGeometry instead." )
     MockGeometry() {}
     //! Constructor using a GeometryType and a list of corner coordinates.
     template<class CoordVector>
+    DUNE_DEPRECATED_MSG( "MockGeometry is deprecated; use MultiLinearGeometry instead." )
     MockGeometry(const GeometryType &type, const CoordVector &coords) :
       Base(type, coords)
     { }
     //! obtain a geometry for a subentity
     template<int fatherdim>
+    DUNE_DEPRECATED_MSG( "MockGeometry is deprecated; use MultiLinearGeometry instead." )
     MockGeometry(const MockGeometry<ctype, fatherdim, coorddim> &father,
                  int i) :
       Base(static_cast<const GenericGeometry::BasicGeometry<
