@@ -12,7 +12,7 @@ add_executable(testmatrix testmatrix.cc)
 
 set_property(TARGET testsubtopologies APPEND_STRING  PROPERTY COMPILE_FLAGS
 " -DGEOMETRYTYPE=${GEOMETRYTYPE} -DDIMENSION=${DIMENSION}")
-dune_add_gmp_flags(testmatrix)
+add_dune_gmp_flags(testmatrix)
 
 # We do not want want to build the tests during make all,
 # but just build them on demand
