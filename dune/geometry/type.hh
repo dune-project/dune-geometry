@@ -84,10 +84,16 @@ namespace Dune {
       case GeometryType::pyramid :
         if (dim == 3)
           makePyramid();
+        else
+          DUNE_THROW( RangeError,
+                      "Invalid basic geometry type: no pyramids for dimension " << dim << "." );
         break;
       case GeometryType::prism :
         if (dim == 3)
           makePrism();
+        else
+          DUNE_THROW( RangeError,
+                      "Invalid basic geometry type: no prisms for dimension " << dim << "." );
         break;
       case GeometryType::none :
         makeNone(dim);

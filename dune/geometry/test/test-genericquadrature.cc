@@ -73,7 +73,7 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
     DUNE_THROW(Dune::NotImplemented, __func__ << " for " << t);
   };
   return exact;
-};
+}
 
 template<class Quadrature>
 void checkQuadrature(const Quadrature &quad)
@@ -162,7 +162,7 @@ void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
     checkQuadrature(quad);
     QuadratureProvider::release(&quad);
   }
-  if (dim>0 && (dim>2 ||
+  if (dim>0 && (dim>3 ||
                 btype==Dune::GeometryType::cube ||
                 btype==Dune::GeometryType::simplex) )
     check<CF,(dim==0) ? 0 : dim-1>(btype,maxOrder);
@@ -173,7 +173,7 @@ int main ()
   try {
     check<double,4>(Dune::GeometryType::cube,30);
     check<double,4>(Dune::GeometryType::simplex,55);
-    check<double,4>(Dune::GeometryType::prism,55);
+    check<double,3>(Dune::GeometryType::prism,55);
     check<double,3>(Dune::GeometryType::pyramid,55);
   }
   catch( const Dune::Exception &e )

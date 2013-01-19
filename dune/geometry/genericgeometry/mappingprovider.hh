@@ -75,7 +75,7 @@ namespace Dune
     public:
       typedef HybridMapping< dim, GeometryTraits > Mapping;
 
-      static const unsigned int maxMappingSize = Maximum< MappingSize, 0, numTopologies-1 >::v;
+      static const unsigned int maxMappingSize = Maximum< MappingSize, 0, ((numTopologies > 0) ? (numTopologies-1) : 0) >::v;
 
       template< class CoordVector >
       static Mapping*
@@ -182,6 +182,7 @@ namespace Dune
     {
       typedef MappingProvider< HybridMapping< dim, GeometryTraits >, codim > This;
 
+      dune_static_assert(dim>=codim, "Codim exceeds dimension");
     public:
       static const unsigned int dimension = dim;
       static const unsigned int codimension = codim;
