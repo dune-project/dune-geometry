@@ -37,7 +37,7 @@ namespace Dune
 
     template< unsigned int dim, class GeometryTraits, unsigned int codim >
     class HybridMappingBase
-      : public virtual HybridMappingBase< dim, GeometryTraits, codim-1 >
+      : public virtual HybridMappingBase< dim, GeometryTraits, static_cast<unsigned int>(codim-1) >
     {
       typedef HybridMapping< dim, GeometryTraits > Mapping;
 
@@ -45,7 +45,7 @@ namespace Dune
       virtual ~HybridMappingBase() {}
 
     protected:
-      using HybridMappingBase< dim, GeometryTraits, codim-1 >::trace;
+      using HybridMappingBase< dim, GeometryTraits, static_cast<unsigned int>(codim-1) >::trace;
 
       virtual HybridMapping< dim - codim, GeometryTraits > *
       trace ( integral_constant< int, codim >, unsigned int i, char *mappingStorage ) const = 0;
@@ -65,7 +65,7 @@ namespace Dune
     };
 
     template< unsigned int dim, class GeometryTraits >
-    class HybridMappingBase< dim, GeometryTraits, -1 >
+    class HybridMappingBase< dim, GeometryTraits, static_cast<unsigned int>(-1) >
     {
       typedef HybridMapping< dim, GeometryTraits > Mapping;
 
