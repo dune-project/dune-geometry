@@ -24,6 +24,7 @@ AC_CONFIG_FILES([
   doc/appl/refelements/Makefile
   doc/doxygen/Makefile
   doc/doxygen/Doxyfile
+  doc/refinement/Makefile
   dune/Makefile
   dune/geometry/Makefile
   dune/geometry/test/Makefile
