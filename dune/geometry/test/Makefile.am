@@ -5,7 +5,8 @@ TESTS = \
 	test-multilineargeometry \
 	test-quadrature \
 	test-genericquadrature \
-	test-referenceelements
+	test-referenceelements \
+	test-refinement
 
 # programs just to build when "make check" is used
 check_PROGRAMS = $(TESTS)
@@ -25,5 +26,7 @@ test_referenceelements_SOURCES = test-referenceelements.cc
 test_quadrature_SOURCES = test-quadrature.cc
 
 test_genericquadrature_SOURCES = test-genericquadrature.cc
+
+test_refinement_SOURCES = test-refinement.cc
 
 include $(top_srcdir)/am/global-rules
