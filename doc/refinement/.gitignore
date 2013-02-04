@@ -1,0 +1,8 @@
+Makefile
+Makefile.in
+refinement.pdf
+refinement.log
+refinement.dvi
+refinement.aux
+*.eps
+*.png

@@ -1,10 +1,10 @@
 
-SUBDIRS = appl doxygen
+if INKSCAPE
+INKSCAPE_SUBDIRS = refinement
+endif INKSCAPE
+SUBDIRS = $(INKSCAPE_SUBDIRS) appl doxygen
 CURDIR = doc
 BASEDIR = ..
-
-# add list of html files to generate from wml
-PAGES=
 
 docdir=$(datadir)/doc/dune-geometry
 

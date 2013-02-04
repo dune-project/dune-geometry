@@ -7,13 +7,16 @@ geometryinclude_HEADERS =			\
 	multilineargeometry.hh			\
 	quadraturerules.hh			\
 	referenceelements.hh			\
+	refinement.hh				\
 	topologyfactory.hh			\
 	trilineargeometry.hh			\
 	type.hh					\
 	typeindex.hh				\
-	typemap.hh
+	typemap.hh				\
+	virtualrefinement.hh			\
+	virtualrefinement.cc
 
-SUBDIRS = quadraturerules genericgeometry test
+SUBDIRS = quadraturerules genericgeometry refinement test
 
 noinst_LTLIBRARIES = libgeometry.la
 libgeometry_la_SOURCES = type.cc

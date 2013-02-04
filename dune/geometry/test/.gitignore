@@ -6,6 +6,7 @@ test-axisalignedcubegeometry
 test-multilineargeometry
 test-genericquadrature
 test-geometrytype
+test-high-dim-refelements
 test-quadrature
 test-referenceelements
-test-high-dim-refelements
+test-refinement
