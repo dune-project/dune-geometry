@@ -722,8 +722,7 @@ namespace Dune {
       RefinementIteratorSpecial<dimension, CoordType, 0>::
       coords() const
       {
-        return global(GenericReferenceElements<CoordType, dimension>
-                      ::simplex().position(0,0));
+        return global( ReferenceElements< CoordType, dimension >::simplex().position( 0, 0 ) );
       }
 
       template<int dimension, class CoordType>
@@ -732,8 +731,8 @@ namespace Dune {
       {
         std::vector<CoordVector> corners(dimension+1);
         CoordVector v;
-        const GenericReferenceElement<CoordType, dimension> &refelem =
-          GenericReferenceElements<CoordType, dimension>::simplex();
+        const ReferenceElement< CoordType, dimension > &refelem
+          = ReferenceElements< CoordType, dimension >::simplex();
         for(int i = 0; i <= dimension; ++i)
           corners[i] = global(refelem.position(i, dimension));
         return Geometry(refelem.type(), corners);
