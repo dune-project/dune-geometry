@@ -1,5 +1,6 @@
 add_subdirectory("quadraturerules")
 add_subdirectory("genericgeometry")
+add_subdirectory("refinement")
 add_subdirectory("test"  EXCLUDE_FROM_ALL)
 
 install(FILES
@@ -10,8 +11,11 @@ install(FILES
 	multilineargeometry.hh
         quadraturerules.hh
         referenceelements.hh
+	refinement.hh
         topologyfactory.hh
         type.hh
         typeindex.hh
+	virtualrefinement.hh
+	virtualrefinement.cc
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry
 )

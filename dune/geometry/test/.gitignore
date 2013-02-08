@@ -7,3 +7,4 @@ test-multilineargeometry
 test-quadrature
 test-referenceelements
 test-geometrytype
+test-refinement

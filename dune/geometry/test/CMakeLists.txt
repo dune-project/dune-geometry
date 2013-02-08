@@ -4,7 +4,8 @@ set(TESTS
   test_genericquadrature
   test_multilineargeometry
   test_quadrature
-  test_referenceelements)
+  test_referenceelements
+  test_refinement)
 
 add_executable(test_axisalignedcubegeometry test-axisalignedcubegeometry.cc)
 target_link_libraries(test_axisalignedcubegeometry dunecommon dunegeometry)
@@ -17,6 +18,8 @@ add_executable(test_genericquadrature "test-genericquadrature.cc")
 target_link_libraries(test_genericquadrature dunecommon dunegeometry)
 add_executable(test_multilineargeometry test-multilineargeometry.cc)
 target_link_libraries(test_multilineargeometry dunecommon dunegeometry)
+add_executable(test_refinement test-refinement.cc)
+target_link_libraries(test_refinement dunecommon dunegeometry)
 
 # We do not want want to build the tests during make all,
 # but just build them on demand
