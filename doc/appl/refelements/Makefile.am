@@ -13,7 +13,7 @@ CURDIR=doc/appl/refelements
 # install docs
 docdir=$(datadir)/doc/dune-geometry/appl/refelements
 if BUILD_DOCS
-EXTRA_DIST= $(EXTRAINSTALL)
+EXTRA_DIST= CMakeLists.txt $(EXTRAINSTALL)
 DOCFILES= $(EXTRAINSTALL)
 endif
 

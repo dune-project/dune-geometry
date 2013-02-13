@@ -13,3 +13,5 @@ sourcescheck_DUMMY = dummy.cc
 libdunegeometry_la_LIBADD = ../dune/geometry/quadraturerules/libquadraturerules.la
 
 include $(top_srcdir)/am/global-rules
+
+EXTRA_DIST = CMakeLists.txt

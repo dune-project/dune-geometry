@@ -14,7 +14,7 @@ CURDIR=doc/appl
 docdir=$(datadir)/doc/dune-geometry/appl
 if BUILD_DOCS
 DOCFILES = $(PAGES)
-EXTRA_DIST = $(PAGES)
+EXTRA_DIST = CMakeLists.txt $(PAGES)
 endif
 
 include $(top_srcdir)/am/webstuff

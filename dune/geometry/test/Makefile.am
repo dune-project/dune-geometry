@@ -30,3 +30,5 @@ test_genericquadrature_SOURCES = test-genericquadrature.cc
 test_refinement_SOURCES = test-refinement.cc
 
 include $(top_srcdir)/am/global-rules
+
+EXTRA_DIST = CMakeLists.txt
