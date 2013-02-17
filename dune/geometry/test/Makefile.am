@@ -1,5 +1,6 @@
 # which tests to run
 TESTS = \
+	test-affinegeometry \
 	test-axisalignedcubegeometry \
 	test-geometrytype \
 	test-multilineargeometry \
@@ -15,6 +16,8 @@ check_PROGRAMS = $(TESTS)
 #AM_CXXFLAGS = @AM_CXXFLAGS@ -fprofile-arcs -ftest-coverage
 
 # define the programs
+test_affinegeometry_SOURCES = test-affinegeometry.cc
+
 test_axisalignedcubegeometry_SOURCES = test-axisalignedcubegeometry.cc
 
 test_geometrytype_SOURCES = test-geometrytype.cc
