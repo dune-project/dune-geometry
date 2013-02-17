@@ -4,7 +4,7 @@ dunemodulelibdir=$(libdir)
 # the dune-cgeometry library
 lib_LTLIBRARIES = libdunegeometry.la
 
-# this is just a renaming of libquadraturerules
+# this is just a renaming of libgeometry
 libdunegeometry_la_SOURCES =
 # This forces automake to use the C++ linker
 # (see the automake manual, section "Libtool Convenience Libraries")
