@@ -57,72 +57,56 @@ namespace Dune
     // Helper class to compute a matrix pseudo inverse
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
-    struct Storage
-    {
-      Storage ( const ReferenceElement &refEl, const GlobalCoordinate &org,
-                const JacobianTransposed &jt )
-        : refElement( &refEl ),
-          origin( org ),
-          jacobianTransposed( jt )
-      {
-        integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
-      }
-
-      template< class CoordVector >
-      Storage ( const ReferenceElement &refEl, const CoordVector &coordVector)
-        : refElement( &refEl ),
-          origin( coordVector[ 0 ] )
-      {
-        for( int i = 0; i < mydimension; ++i )
-          jacobianTransposed[ i ] = coordVector[ i+1 ] - origin;
-        integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
-      }
-
-      const ReferenceElement *refElement;
-      GlobalCoordinate origin;
-      JacobianTransposed jacobianTransposed;
-      JacobianInverseTransposed jacobianInverseTransposed;
-      ctype integrationElement;
-    };
-
   public:
     AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
-      : storage_( refElement, origin, jt )
-    {}
+      : refElement_(refElement), origin_(origin), jacobianTransposed_(jt)
+    {
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
-      : storage_( ReferenceElements::general( gt ), origin, jt )
-    {}
+      : refElement_( ReferenceElements::general( gt ) ), origin_(origin), jacobianTransposed_( jt )
+    {
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     template< class CoordVector >
     AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector )
-      : storage_( refElement, coordVector )
-    {}
+      : refElement_(refElement), origin_(coordVector[0])
+    {
+      for( int i = 0; i < mydimension; ++i )
+        jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     template< class CoordVector >
     AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector )
-      : storage_( ReferenceElements::general( gt ), coordVector )
-    {}
+      : refElement_(ReferenceElements::general( gt )), origin_(coordVector[0] )
+    {
+      for( int i = 0; i < mydimension; ++i )
+        jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     /** \brief is this mapping affine? */
     bool affine () const { return true; }
 
     /** \brief obtain the name of the reference element */
-    Dune::GeometryType type () const { return refElement().type(); }
+    Dune::GeometryType type () const { return refElement_.type(); }
 
     /** \brief obtain number of corners of the corresponding reference element */
-    int corners () const { return refElement().size( mydimension ); }
+    int corners () const { return refElement_.size( mydimension ); }
 
     /** \brief obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const
     {
-      return global( refElement().position( i, mydimension ) );
+      return global( refElement_.position( i, mydimension ) );
     }
 
     /** \brief obtain the centroid of the mapping's image */
-    GlobalCoordinate center () const { return global( refElement().position( 0, 0 ) ); }
+    GlobalCoordinate center () const { return global( refElement_.position( 0, 0 ) ); }
 
     /** \brief evaluate the mapping
      *
@@ -132,14 +116,14 @@ namespace Dune
      */
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
-      GlobalCoordinate global( storage().origin );
-      storage().jacobianTransposed.umtv( local, global );
+      GlobalCoordinate global( origin_ );
+      jacobianTransposed_.umtv( local, global );
       return global;
     }
 
     /** \brief evaluate the inverse mapping
      *
-     *  \param[in]  global  global coorindate to map
+     *  \param[in]  global  global coordinate to map
      *
      *  \return corresponding local coordinate
      *
@@ -151,7 +135,7 @@ namespace Dune
     LocalCoordinate local ( const GlobalCoordinate &global ) const
     {
       LocalCoordinate local;
-      storage().jacobianInverseTransposed.mtv( global - storage().origin, local );
+      jacobianInverseTransposed_.mtv( global - origin_, local );
       return local;
     }
 
@@ -167,13 +151,13 @@ namespace Dune
      */
     ctype integrationElement ( const LocalCoordinate &local ) const
     {
-      return storage().integrationElement;
+      return integrationElement_;
     }
 
     /** \brief obtain the volume of the mapping's image */
     ctype volume () const
     {
-      return storage().integrationElement * refElement().volume();
+      return integrationElement_ * refElement_.volume();
     }
 
     /** \brief obtain the transposed of the Jacobian
@@ -187,7 +171,7 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianTransposed;
+      return jacobianTransposed_;
     }
 
     /** \brief obtain the transposed of the Jacobian's inverse
@@ -198,17 +182,16 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianInverseTransposed;
+      return jacobianInverseTransposed_;
     }
 
-  protected:
-    const Storage &storage () const { return storage_; }
-    Storage &storage () { return storage_; }
-
-    const ReferenceElement &refElement () const { return *storage().refElement; }
-
   private:
-    Storage storage_;
+    const ReferenceElement& refElement_;
+    GlobalCoordinate origin_;
+    JacobianTransposed jacobianTransposed_;
+    JacobianInverseTransposed jacobianInverseTransposed_;
+    ctype integrationElement_;
+
   };
 
 } // namespace Dune
