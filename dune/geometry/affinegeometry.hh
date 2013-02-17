@@ -3,6 +3,10 @@
 #ifndef DUNE_GEOMETRY_AFFINEGEOMETRY_HH
 #define DUNE_GEOMETRY_AFFINEGEOMETRY_HH
 
+/** \file
+ *  \brief An implementation of the Geometry interface for affine geometries
+ */
+
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 
@@ -24,27 +28,40 @@ namespace Dune
 
 
 
-  // AffineGeometry
-  // --------------
-
+  /** \brief Implementation of the Geometry interface for affine geometries
+   * \tparam ct Type used for coordinates
+   * \tparam mydim Dimension of the geometry
+   * \tparam cdim Dimension of the world space
+   */
   template< class ct, int mydim, int cdim>
   class AffineGeometry
   {
     typedef AffineGeometry< ct, mydim, cdim > This;
 
   public:
+
+    /** \brief Type used for coordinates */
     typedef ct ctype;
 
+    /** \brief Dimension of the geometry */
     static const int mydimension= mydim;
+
+    /** \brief Dimension of the world space */
     static const int coorddimension = cdim;
 
+    /** \brief Type for local coordinate vector */
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
+
+    /** \brief Type for coordinate vector in world space */
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
+    /** \brief Type for the transposed Jacobian matrix */
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
+
+    /** \brief Type for the transposed inverse Jacobian matrix */
     typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
 
-    // for compatibility, export the type JacobianInverseTransposed as Jacobian
+    /** \deprecated for compatibility, export the type JacobianInverseTransposed as Jacobian */
     typedef JacobianInverseTransposed Jacobian;
 
     //! type of reference element
@@ -58,6 +75,7 @@ namespace Dune
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
   public:
+    /** \brief Create affine geometry from reference element, one vertex, and the Jacobian matrix */
     AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
       : refElement_(refElement), origin_(origin), jacobianTransposed_(jt)
@@ -65,6 +83,7 @@ namespace Dune
       integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
     }
 
+    /** \brief Create affine geometry from GeometryType, one vertex, and the Jacobian matrix */
     AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
       : refElement_( ReferenceElements::general( gt ) ), origin_(origin), jacobianTransposed_( jt )
@@ -72,6 +91,7 @@ namespace Dune
       integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
     }
 
+    /** \brief Create affine geometry from reference element and a vector of vertex coordinates */
     template< class CoordVector >
     AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector )
       : refElement_(refElement), origin_(coordVector[0])
@@ -81,6 +101,7 @@ namespace Dune
       integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
     }
 
+    /** \brief Create affine geometry from GeometryType and a vector of vertex coordinates */
     template< class CoordVector >
     AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector )
       : refElement_(ReferenceElements::general( gt )), origin_(coordVector[0] )
@@ -90,25 +111,25 @@ namespace Dune
       integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
     }
 
-    /** \brief is this mapping affine? */
+    /** \brief Always true: this is an affine geometry */
     bool affine () const { return true; }
 
-    /** \brief obtain the name of the reference element */
+    /** \brief Obtain the type of the reference element */
     Dune::GeometryType type () const { return refElement_.type(); }
 
-    /** \brief obtain number of corners of the corresponding reference element */
+    /** \brief Obtain number of corners of the corresponding reference element */
     int corners () const { return refElement_.size( mydimension ); }
 
-    /** \brief obtain coordinates of the i-th corner */
+    /** \brief Obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const
     {
       return global( refElement_.position( i, mydimension ) );
     }
 
-    /** \brief obtain the centroid of the mapping's image */
+    /** \brief Obtain the centroid of the mapping's image */
     GlobalCoordinate center () const { return global( refElement_.position( 0, 0 ) ); }
 
-    /** \brief evaluate the mapping
+    /** \brief Evaluate the mapping
      *
      *  \param[in]  local  local coordinate to map
      *
@@ -121,7 +142,7 @@ namespace Dune
       return global;
     }
 
-    /** \brief evaluate the inverse mapping
+    /** \brief Evaluate the inverse mapping
      *
      *  \param[in]  global  global coordinate to map
      *
@@ -139,7 +160,7 @@ namespace Dune
       return local;
     }
 
-    /** \brief obtain the integration element
+    /** \brief Obtain the integration element
      *
      *  If the Jacobian of the mapping is denoted by $J(x)$, the integration
      *  integration element \f$\mu(x)\f$ is given by
@@ -154,27 +175,24 @@ namespace Dune
       return integrationElement_;
     }
 
-    /** \brief obtain the volume of the mapping's image */
+    /** \brief Obtain the volume of the element */
     ctype volume () const
     {
       return integrationElement_ * refElement_.volume();
     }
 
-    /** \brief obtain the transposed of the Jacobian
+    /** \brief Obtain the transposed of the Jacobian
      *
      *  \param[in]  local  local coordinate to evaluate Jacobian in
      *
      *  \returns a reference to the transposed of the Jacobian
-     *
-     *  \note The returned reference is reused on the next call to
-     *        JacobianTransposed, destroying the previous value.
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
       return jacobianTransposed_;
     }
 
-    /** \brief obtain the transposed of the Jacobian's inverse
+    /** \brief Obtain the transposed of the Jacobian's inverse
      *
      *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
      *  the Jacobian by \f$J(x)\f$, the following condition holds:
