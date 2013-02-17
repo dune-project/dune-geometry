@@ -24,24 +24,13 @@ namespace Dune
 
 
 
-  // AffineGeometryTraits
-  // --------------------
-
-  template< class ct >
-  struct AffineGeometryTraits
-  {
-    typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
-  };
-
-
-
   // AffineGeometry
   // --------------
 
-  template< class ct, int mydim, int cdim, class Traits = AffineGeometryTraits< ct > >
+  template< class ct, int mydim, int cdim>
   class AffineGeometry
   {
-    typedef AffineGeometry< ct, mydim, cdim, Traits > This;
+    typedef AffineGeometry< ct, mydim, cdim > This;
 
   public:
     typedef ct ctype;
@@ -65,7 +54,8 @@ namespace Dune
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
   private:
-    typedef typename Traits::MatrixHelper MatrixHelper;
+    // Helper class to compute a matrix pseudo inverse
+    typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
     struct Storage
     {
