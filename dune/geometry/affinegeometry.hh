@@ -36,8 +36,6 @@ namespace Dune
   template< class ct, int mydim, int cdim>
   class AffineGeometry
   {
-    typedef AffineGeometry< ct, mydim, cdim > This;
-
   public:
 
     /** \brief Type used for coordinates */
@@ -64,13 +62,12 @@ namespace Dune
     /** \deprecated for compatibility, export the type JacobianInverseTransposed as Jacobian */
     typedef JacobianInverseTransposed Jacobian;
 
+  private:
     //! type of reference element
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
 
-  protected:
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
-  private:
     // Helper class to compute a matrix pseudo inverse
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
