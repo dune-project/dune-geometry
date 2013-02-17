@@ -276,22 +276,22 @@ namespace Dune
       template< bool >
       struct Hybrid
       {
-        typedef HybridMapping< mydim, Traits > Mapping;
+        typedef VirtualMappingFactory< mydimension, Traits > MappingFactory;
       };
 
       template< bool >
       struct NonHybrid
       {
-        typedef typename GenericGeometry::Topology< Traits::topologyId, mydim >::type Topology;
-        typedef GenericGeometry::NonHybridMapping< Topology, Traits > Mapping;
+        static const int topologyId = Traits::template hasSingleGeometryType< mydimension >::topologyId;
+        typedef typename GenericGeometry::Topology< topologyId, mydimension >::type Topology;
+        typedef GenericGeometry::NonHybridMappingFactory< Topology, Traits > MappingFactory;
       };
 
-      typedef typename SelectType< Traits::hybrid, Hybrid< true >, NonHybrid< false > >::Type::Mapping
-      ElementMapping;
-      typedef GenericGeometry::MappingProvider< ElementMapping, 0 > MappingProvider;
+      static const bool hybrid = !Traits::template hasSingleGeometryType< mydimension >::v;
 
     protected:
-      typedef typename MappingProvider::Mapping Mapping;
+      typedef typename SelectType< hybrid, Hybrid< true >, NonHybrid< false > >::Type::MappingFactory MappingFactory;
+      typedef typename MappingFactory::Mapping Mapping;
 
     public:
       /** \brief Type used for Jacobian matrices
@@ -321,7 +321,7 @@ namespace Dune
       BasicGeometry ( const GeometryType &type, const CoordVector &coords )
       {
         assert(type.dim() == mydim);
-        mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
+        mapping_ = MappingFactory::construct( type.id(), coords, mappingStorage_ );
       }
 
       /** \brief Constructor using a vector of corner coordinates and the dimension
@@ -330,8 +330,9 @@ namespace Dune
       template< class CoordVector >
       BasicGeometry ( const CoordVector &coords )
       {
-        GeometryType type; type.makeFromVertices(mydim,coords.size());
-        mapping_ = MappingProvider::construct( type.id(), coords, mappingStorage_ );
+        GeometryType type;
+        type.makeFromVertices( mydim, coords.size() );
+        mapping_ = MappingFactory::construct( type.id(), coords, mappingStorage_ );
       }
 
       /** \brief obtain a geometry for a subentity
@@ -467,7 +468,7 @@ namespace Dune
        * We don't know its type, but we don't want to do classical
        * dynamic polymorphism, because heap allocation is expensive.
        */
-      char mappingStorage_[ MappingProvider::maxMappingSize ];
+      char mappingStorage_[ MappingFactory::maxMappingSize ];
     };
 
 
