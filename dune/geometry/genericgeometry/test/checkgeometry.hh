@@ -61,7 +61,7 @@ namespace Dune
 
     GeometryType type = geometry.type();
 
-    const GenericReferenceElement< ctype, mydim > &refElement = GenericReferenceElements< ctype, mydim >::general(type);
+    const ReferenceElement< ctype, mydim > &refElement = ReferenceElements< ctype, mydim >::general(type);
 
     // Test whether the return value of the method 'center' corresponds to the center of the
     // reference element.  That is the current definition of the method.
