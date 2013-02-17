@@ -31,8 +31,6 @@ namespace Dune
   struct AffineGeometryTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
-
-    struct UserData {};
   };
 
 
@@ -50,8 +48,6 @@ namespace Dune
 
     static const int mydimension= mydim;
     static const int coorddimension = cdim;
-
-    typedef typename Traits::UserData UserData;
 
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
@@ -72,12 +68,10 @@ namespace Dune
     typedef typename Traits::MatrixHelper MatrixHelper;
 
     struct Storage
-      : public UserData
     {
       Storage ( const ReferenceElement &refEl, const GlobalCoordinate &org,
-                const JacobianTransposed &jt, const UserData &userData )
-        : UserData( userData ),
-          refElement( &refEl ),
+                const JacobianTransposed &jt )
+        : refElement( &refEl ),
           origin( org ),
           jacobianTransposed( jt )
       {
@@ -85,10 +79,8 @@ namespace Dune
       }
 
       template< class CoordVector >
-      Storage ( const ReferenceElement &refEl, const CoordVector &coordVector,
-                const UserData &userData )
-        : UserData( userData ),
-          refElement( &refEl ),
+      Storage ( const ReferenceElement &refEl, const CoordVector &coordVector)
+        : refElement( &refEl ),
           origin( coordVector[ 0 ] )
       {
         for( int i = 0; i < mydimension; ++i )
@@ -105,25 +97,23 @@ namespace Dune
 
   public:
     AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
-                     const JacobianTransposed &jt, const UserData &userData = UserData() )
-      : storage_( refElement, origin, jt, userData )
+                     const JacobianTransposed &jt )
+      : storage_( refElement, origin, jt )
     {}
 
     AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
-                     const JacobianTransposed &jt, const UserData &userData = UserData() )
-      : storage_( ReferenceElements::general( gt ), origin, jt, userData )
+                     const JacobianTransposed &jt )
+      : storage_( ReferenceElements::general( gt ), origin, jt )
     {}
 
     template< class CoordVector >
-    AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector,
-                     const UserData &userData = UserData() )
-      : storage_( refElement, coordVector, userData )
+    AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector )
+      : storage_( refElement, coordVector )
     {}
 
     template< class CoordVector >
-    AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector,
-                     const UserData &userData = UserData() )
-      : storage_( ReferenceElements::general( gt ), coordVector, userData )
+    AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector )
+      : storage_( ReferenceElements::general( gt ), coordVector )
     {}
 
     /** \brief is this mapping affine? */
@@ -220,9 +210,6 @@ namespace Dune
     {
       return storage().jacobianInverseTransposed;
     }
-
-    const UserData &userData () const { return storage_; }
-    UserData &userData () { return storage_; }
 
   protected:
     const Storage &storage () const { return storage_; }
