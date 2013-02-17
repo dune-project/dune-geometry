@@ -25,9 +25,6 @@ namespace Dune
   // -----------------------------
 
   template< class ctype, int dim >
-  class ReferenceElement;
-
-  template< class ctype, int dim >
   class ReferenceElementContainer;
 
   template< class ctype, int dim >
@@ -35,26 +32,48 @@ namespace Dune
 
 
 
-  // ReferenceElement for ctype = void
-  // ---------------------------------
+  /** \class ReferenceElement
+   *  \ingroup GeometryReferenceElements
+   *  \brief This class provides access to geometric and topological
+   *  properties of a reference element. This includes its type,
+   *  the number of subentities, the volume, and a method for checking
+   *  if a point is inside.
+   *  The embedding of each subentity into the reference element is also
+   *  provided.
+   *
+   *  A singleton of this class for a given geometry type can be accessed
+   *  through the ReferenceElements class.
 
-  template< int dim >
-  class ReferenceElement< void, dim >
+   *  \tparam ctype  field type for coordinates
+   *  \tparam dim    dimension of the reference element
+   *
+   */
+  template< class ctype, int dim >
+  class ReferenceElement
   {
-    typedef ReferenceElement< void, dim > This;
+    typedef ReferenceElement< ctype, dim > This;
 
-    friend class ReferenceElementContainer< void, dim >;
+    friend class ReferenceElementContainer< ctype, dim >;
 
     struct SubEntityInfo;
 
     // make copy constructor private
     ReferenceElement ( const This & );
 
-  protected:
     ReferenceElement () {}
-    ~ReferenceElement () {}
+
+    template< int codim > struct CreateGeometries;
 
   public:
+
+    /** \brief Collection of types depending on the codimension */
+    template< int codim >
+    struct Codim
+    {
+      //! type of mapping embedding a subentity into the reference element
+      typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
+    };
+
     /** \brief number of subentities of codimension c
      *
      *  \param[in]  c  codimension whose size is desired
@@ -117,158 +136,6 @@ namespace Dune
 
     /** \brief obtain the type of this reference element */
     const GeometryType &type () const { return type( 0, 0 ); }
-
-    /** \brief initialize the reference element
-     *
-     *  \param[in]  topologyId  topology id for the desired reference element
-     */
-    void initializeTopology ( unsigned int topologyId )
-    {
-      assert( topologyId < GenericGeometry::numTopologies( dim ) );
-
-      // set up subentities
-      for( int codim = 0; codim <= dim; ++codim )
-      {
-        const unsigned int size = GenericGeometry::size( topologyId, dim, codim );
-        info_[ codim ].resize( size );
-        for( unsigned int i = 0; i < size; ++i )
-          info_[ codim ][ i ].initialize( topologyId, codim, i );
-      }
-    }
-
-  private:
-    std::vector< SubEntityInfo > info_[ dim+1 ];
-  };
-
-
-
-  // ReferenceElement::SubEntityInfo
-  // -------------------------------
-
-  /** \brief topological information about the subentities of a reference element */
-  template< int dim >
-  struct ReferenceElement< void, dim >::SubEntityInfo
-  {
-    SubEntityInfo ()
-      : numbering_( nullptr )
-    {
-      std::fill( offset_.begin(), offset_.end(), 0 );
-    }
-
-    SubEntityInfo ( const SubEntityInfo &other )
-      : offset_( other.offset_ ),
-        type_( other.type_ )
-    {
-      numbering_ = allocate();
-      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
-    }
-
-    ~SubEntityInfo () { deallocate( numbering_ ); }
-
-    const SubEntityInfo &operator= ( const SubEntityInfo &other )
-    {
-      type_ = other.type_;
-      offset_ = other.offset_;
-
-      deallocate( numbering_ );
-      numbering_ = allocate();
-      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
-
-      return *this;
-    }
-
-    int size ( int cc ) const
-    {
-      assert( (cc >= codim()) && (cc <= dim) );
-      return (offset_[ cc+1 ] - offset_[ cc ]);
-    }
-
-    int number ( int ii, int cc ) const
-    {
-      assert( (ii >= 0) && (ii < size( cc )) );
-      return numbering_[ offset_[ cc ] + ii ];
-    }
-
-    const GeometryType &type () const { return type_; }
-
-    void initialize ( unsigned int topologyId, int codim, unsigned int i )
-    {
-      const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
-      type_ = GeometryType( subId, dim-codim );
-
-      // compute offsets
-      for( int cc = 0; cc <= codim; ++cc )
-        offset_[ cc ] = 0;
-      for( int cc = codim; cc <= dim; ++cc )
-        offset_[ cc+1 ] = offset_[ cc ] + GenericGeometry::size( subId, dim-codim, cc-codim );
-
-      // compute subnumbering
-      deallocate( numbering_ );
-      numbering_ = allocate();
-      for( int cc = codim; cc <= dim; ++cc )
-        GenericGeometry::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
-    }
-
-  protected:
-    int codim () const { return dim - type().dim(); }
-
-    unsigned int *allocate () { return (capacity() != 0 ? new unsigned int[ capacity() ] : nullptr); }
-    void deallocate ( unsigned int *ptr ) { delete[] ptr; }
-    unsigned int capacity () const { return offset_[ dim+1 ]; }
-
-  private:
-    unsigned int *numbering_;
-    array< unsigned int, dim+2 > offset_;
-    GeometryType type_;
-  };
-
-
-
-  // ReferenceElement
-  // ----------------
-
-  /** \class ReferenceElement
-   *  \ingroup GeometryReferenceElements
-   *  \brief This class provides access to geometric and topological
-   *  properties of a reference element. This includes its type,
-   *  the number of subentities, the volume, and a method for checking
-   *  if a point is inside.
-   *  The embedding of each subentity into the reference element is also
-   *  provided.
-   *
-   *  A singleton of this class for a given geometry type can be accessed
-   *  through the ReferenceElements class.
-
-   *  \tparam ctype  field type for coordinates
-   *  \tparam dim    dimension of the reference element
-   *
-   */
-  template< class ctype, int dim >
-  class ReferenceElement
-    : public ReferenceElement< void, dim >
-  {
-    typedef ReferenceElement< ctype, dim > This;
-    typedef ReferenceElement< void, dim > Base;
-
-    friend class ReferenceElementContainer< ctype, dim >;
-
-    // make copy constructor private
-    ReferenceElement ( const This & );
-
-    ReferenceElement () {}
-
-    template< int codim > struct CreateGeometries;
-
-  public:
-    using Base::type;
-
-    /** \brief Collection of types depending on the codimension */
-    template< int codim >
-    struct Codim
-    {
-      //! type of mapping embedding a subentity into the reference element
-      typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
-    };
 
     /** \brief position of the barycenter of entity (i,c)
      *
@@ -424,24 +291,32 @@ namespace Dune
      */
     void initializeTopology ( unsigned int topologyId )
     {
-      Base::initializeTopology( topologyId );
+      assert( topologyId < GenericGeometry::numTopologies( dim ) );
+
+      // set up subentities
+      for( int codim = 0; codim <= dim; ++codim )
+      {
+        const unsigned int size = GenericGeometry::size( topologyId, dim, codim );
+        info_[ codim ].resize( size );
+        for( unsigned int i = 0; i < size; ++i )
+          info_[ codim ][ i ].initialize( topologyId, codim, i );
+      }
 
       // compute corners
-      const unsigned int numVertices = Base::size( dim );
+      const unsigned int numVertices = size( dim );
       baryCenters_[ dim ].resize( numVertices );
       GenericGeometry::referenceCorners( topologyId, dim, &(baryCenters_[ dim ][ 0 ]) );
 
       // compute barycenters
       for( int codim = 0; codim < dim; ++codim )
       {
-        const unsigned int size = Base::size( codim );
-        baryCenters_[ codim ].resize( size );
-        for( unsigned int i = 0; i < size; ++i )
+        baryCenters_[ codim ].resize( size(codim) );
+        for( unsigned int i = 0; i < size(codim); ++i )
         {
           baryCenters_[ codim ][ i ] = FieldVector< ctype, dim >( ctype( 0 ) );
-          const unsigned int numCorners = Base::size( i, codim, dim );
+          const unsigned int numCorners = size( i, codim, dim );
           for( unsigned int j = 0; j < numCorners; ++j )
-            baryCenters_[ codim ][ i ] += baryCenters_[ dim ][ Base::subEntity( i, codim, j, dim ) ];
+            baryCenters_[ codim ][ i ] += baryCenters_[ dim ][ subEntity( i, codim, j, dim ) ];
           baryCenters_[ codim ][ i ] *= ctype( 1 ) / ctype( numCorners );
         }
       }
@@ -452,7 +327,7 @@ namespace Dune
       // compute integration outer normals
       if( dim > 0 )
       {
-        integrationNormals_.resize( Base::size( 1 ) );
+        integrationNormals_.resize( size( 1 ) );
         GenericGeometry::referenceIntegrationOuterNormals( topologyId, dim, &(integrationNormals_[ 0 ]) );
       }
 
@@ -478,8 +353,86 @@ namespace Dune
 
     /** \brief Stores all subentities of all codimensions */
     GeometryTable geometries_;
+
+    std::vector< SubEntityInfo > info_[ dim+1 ];
   };
 
+  /** \brief topological information about the subentities of a reference element */
+  template< class ctype, int dim >
+  struct ReferenceElement< ctype, dim >::SubEntityInfo
+  {
+    SubEntityInfo ()
+      : numbering_( nullptr )
+    {
+      std::fill( offset_.begin(), offset_.end(), 0 );
+    }
+
+    SubEntityInfo ( const SubEntityInfo &other )
+      : offset_( other.offset_ ),
+        type_( other.type_ )
+    {
+      numbering_ = allocate();
+      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
+    }
+
+    ~SubEntityInfo () { deallocate( numbering_ ); }
+
+    const SubEntityInfo &operator= ( const SubEntityInfo &other )
+    {
+      type_ = other.type_;
+      offset_ = other.offset_;
+
+      deallocate( numbering_ );
+      numbering_ = allocate();
+      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
+
+      return *this;
+    }
+
+    int size ( int cc ) const
+    {
+      assert( (cc >= codim()) && (cc <= dim) );
+      return (offset_[ cc+1 ] - offset_[ cc ]);
+    }
+
+    int number ( int ii, int cc ) const
+    {
+      assert( (ii >= 0) && (ii < size( cc )) );
+      return numbering_[ offset_[ cc ] + ii ];
+    }
+
+    const GeometryType &type () const { return type_; }
+
+    void initialize ( unsigned int topologyId, int codim, unsigned int i )
+    {
+      const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
+      type_ = GeometryType( subId, dim-codim );
+
+      // compute offsets
+      for( int cc = 0; cc <= codim; ++cc )
+        offset_[ cc ] = 0;
+      for( int cc = codim; cc <= dim; ++cc )
+        offset_[ cc+1 ] = offset_[ cc ] + GenericGeometry::size( subId, dim-codim, cc-codim );
+
+      // compute subnumbering
+      deallocate( numbering_ );
+      numbering_ = allocate();
+      for( int cc = codim; cc <= dim; ++cc )
+        GenericGeometry::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
+    }
+
+  protected:
+    int codim () const { return dim - type().dim(); }
+
+    unsigned int *allocate () { return (capacity() != 0 ? new unsigned int[ capacity() ] : nullptr); }
+    void deallocate ( unsigned int *ptr ) { delete[] ptr; }
+    unsigned int capacity () const { return offset_[ dim+1 ]; }
+
+  private:
+    unsigned int *numbering_;
+    array< unsigned int, dim+2 > offset_;
+    GeometryType type_;
+  };
 
 
   template< class ctype, int dim >
