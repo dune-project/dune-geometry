@@ -71,7 +71,7 @@ namespace Dune
     struct Codim
     {
       //! type of mapping embedding a subentity into the reference element
-      typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
+      typedef AffineGeometry< ctype, dim-codim, dim > Mapping;
     };
 
     /** \brief number of subentities of codimension c
@@ -254,7 +254,7 @@ namespace Dune
      *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
      */
     template< int codim >
-    const typename Codim< codim >::Geometry &mapping( int i ) const
+    const typename Codim< codim >::Mapping &mapping( int i ) const
     {
       integral_constant< int, codim > codimVariable;
       return geometries_[ codimVariable ][ i ];
@@ -339,7 +339,7 @@ namespace Dune
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
     struct GeometryArray
-      : public std::vector< typename Codim< codim >::Geometry >
+      : public std::vector< typename Codim< codim >::Mapping >
     {};
 
     /** \brief Type to store all subentities of all codimensions */
@@ -463,7 +463,7 @@ namespace Dune
       geometries[ codimVariable ].reserve( size );
       for( int i = 0; i < size; ++i )
       {
-        typename Codim< codim >::Geometry geometry( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
+        typename Codim< codim >::Mapping geometry( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
         geometries[ codimVariable ].push_back( geometry );
       }
     }
