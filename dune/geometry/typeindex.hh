@@ -74,6 +74,23 @@ namespace Dune
       else
         return gt.id() >> 1;
     }
+
+    //! compute the geometry type for the given local index and dimension
+    static GeometryType type ( std::size_t dim, std::size_t index )
+    {
+      if( index == regular_size( dim ) )
+      {
+        GeometryType gt;
+        gt.makeNone( dim );
+        return gt;
+      }
+      else
+      {
+        // the cast to unsigned makes sure this is interpreted as the topology
+        // ID constructor
+        return GeometryType( unsigned( index << 1 ), dim );
+      }
+    }
   };
 
   //! Compute indices for geometry types, taking the dimension into account
