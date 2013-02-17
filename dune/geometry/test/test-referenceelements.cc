@@ -53,6 +53,8 @@ int main () try
   test(referenceLine.type(0,1).isVertex());
   test(referenceLine.type(1,1).isVertex());
 
+  // test the 'mapping' method
+  referenceLine.mapping< 0 >( 0 ).corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test triangle
@@ -118,6 +120,8 @@ int main () try
   test(referenceTriangle.type(1,2).isVertex());
   test(referenceTriangle.type(2,2).isVertex());
 
+  // test the 'mapping' method
+  referenceTriangle.mapping< 0 >( 0 ).corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test quadrilateral
@@ -195,6 +199,9 @@ int main () try
   test(referenceQuad.type(3,2).isVertex());
 
 
+  // test the 'mapping' method
+  referenceQuad.mapping< 0 >( 0 ).corner(0);
+
   // //////////////////////////////////////////////////////////////////////////
   //   Test tetrahedron
   // //////////////////////////////////////////////////////////////////////////
@@ -243,6 +250,9 @@ int main () try
 
   for (int i=0; i<referenceTetra.size(3); i++)
     test(referenceTetra.type(i,3).isVertex());
+
+  // test the 'mapping' method
+  referenceTetra.mapping< 0 >( 0 ).corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test pyramid
@@ -305,6 +315,8 @@ int main () try
   for (int i=0; i<referencePyramid.size(3); i++)
     test(referencePyramid.type(i,3).isVertex());
 
+  // test the 'mapping' method
+  referencePyramid.mapping< 0 >( 0 ).corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test prism
@@ -367,6 +379,9 @@ int main () try
   for (int i=0; i<referencePrism.size(3); i++)
     test(referencePrism.type(i,3).isVertex());
 
+  // test the 'mapping' method
+  referencePrism.mapping< 0 >( 0 ).corner(0);
+
   // //////////////////////////////////////////////////////////////////////////
   //   Test hexahedron
   // //////////////////////////////////////////////////////////////////////////
@@ -414,6 +429,9 @@ int main () try
 
   for (int i=0; i<referenceHexa.size(3); i++)
     test(referenceHexa.type(i,3).isVertex());
+
+  // test the 'mapping' method
+  referenceHexa.mapping< 0 >( 0 ).corner(0);
 
   return errors>0 ? 1 : 0;
 
