@@ -28,7 +28,7 @@ namespace Dune
   class ReferenceElementContainer;
 
   template< class ctype, int dim >
-  class ReferenceElements;
+  struct ReferenceElements;
 
 
 
