@@ -311,7 +311,7 @@ namespace Dune
       for( int codim = 0; codim < dim; ++codim )
       {
         baryCenters_[ codim ].resize( size(codim) );
-        for( unsigned int i = 0; i < size(codim); ++i )
+        for( int i = 0; i < size( codim ); ++i )
         {
           baryCenters_[ codim ][ i ] = FieldVector< ctype, dim >( ctype( 0 ) );
           const unsigned int numCorners = size( i, codim, dim );
