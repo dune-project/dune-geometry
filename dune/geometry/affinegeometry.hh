@@ -76,7 +76,7 @@ namespace Dune
     /** \brief Create affine geometry from reference element, one vertex, and the Jacobian matrix */
     AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
-      : refElement_(refElement), origin_(origin), jacobianTransposed_(jt)
+      : refElement_(&refElement), origin_(origin), jacobianTransposed_(jt)
     {
       integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
     }
@@ -84,7 +84,7 @@ namespace Dune
     /** \brief Create affine geometry from GeometryType, one vertex, and the Jacobian matrix */
     AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
-      : refElement_( ReferenceElements::general( gt ) ), origin_(origin), jacobianTransposed_( jt )
+      : refElement_( &ReferenceElements::general( gt ) ), origin_(origin), jacobianTransposed_( jt )
     {
       integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
     }
@@ -92,7 +92,7 @@ namespace Dune
     /** \brief Create affine geometry from reference element and a vector of vertex coordinates */
     template< class CoordVector >
     AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector )
-      : refElement_(refElement), origin_(coordVector[0])
+      : refElement_(&refElement), origin_(coordVector[0])
     {
       for( int i = 0; i < mydimension; ++i )
         jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
@@ -102,7 +102,7 @@ namespace Dune
     /** \brief Create affine geometry from GeometryType and a vector of vertex coordinates */
     template< class CoordVector >
     AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector )
-      : refElement_(ReferenceElements::general( gt )), origin_(coordVector[0] )
+      : refElement_(&ReferenceElements::general( gt )), origin_(coordVector[0] )
     {
       for( int i = 0; i < mydimension; ++i )
         jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
@@ -113,19 +113,19 @@ namespace Dune
     bool affine () const { return true; }
 
     /** \brief Obtain the type of the reference element */
-    Dune::GeometryType type () const { return refElement_.type(); }
+    Dune::GeometryType type () const { return refElement_->type(); }
 
     /** \brief Obtain number of corners of the corresponding reference element */
-    int corners () const { return refElement_.size( mydimension ); }
+    int corners () const { return refElement_->size( mydimension ); }
 
     /** \brief Obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const
     {
-      return global( refElement_.position( i, mydimension ) );
+      return global( refElement_->position( i, mydimension ) );
     }
 
     /** \brief Obtain the centroid of the mapping's image */
-    GlobalCoordinate center () const { return global( refElement_.position( 0, 0 ) ); }
+    GlobalCoordinate center () const { return global( refElement_->position( 0, 0 ) ); }
 
     /** \brief Evaluate the mapping
      *
@@ -176,7 +176,7 @@ namespace Dune
     /** \brief Obtain the volume of the element */
     ctype volume () const
     {
-      return integrationElement_ * refElement_.volume();
+      return integrationElement_ * refElement_->volume();
     }
 
     /** \brief Obtain the transposed of the Jacobian
@@ -202,7 +202,7 @@ namespace Dune
     }
 
   private:
-    const ReferenceElement& refElement_;
+    const ReferenceElement* refElement_;
     GlobalCoordinate origin_;
     JacobianTransposed jacobianTransposed_;
     JacobianInverseTransposed jacobianInverseTransposed_;
