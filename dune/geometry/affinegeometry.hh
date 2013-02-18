@@ -5,6 +5,7 @@
 
 /** \file
  *  \brief An implementation of the Geometry interface for affine geometries
+ *  \author Martin Nolte
  */
 
 #include <dune/common/fmatrix.hh>
