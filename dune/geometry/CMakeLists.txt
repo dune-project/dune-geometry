@@ -4,6 +4,7 @@ add_subdirectory("refinement")
 add_subdirectory("test"  EXCLUDE_FROM_ALL)
 
 install(FILES
+        affinegeometry.hh
         axisalignedcubegeometry.hh
         generalvertexorder.hh
         genericreferenceelements.hh

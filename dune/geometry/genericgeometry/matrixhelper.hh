@@ -457,8 +457,7 @@ namespace Dune
         spdInvAx< n >( ata, y );
       }
 
-      // A^{-1}_R = A^T (A A^T)^{-1}
-      // => A A^{-1}_R = I
+      /** \brief Compute right pseudo-inverse of matrix A */
       template< int m, int n >
       static FieldType
       rightInvA ( const typename Traits :: template Matrix< m, n > :: type &A,

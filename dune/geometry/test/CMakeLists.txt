@@ -1,4 +1,5 @@
 set(TESTS
+  test_affinegeometry
   test_axisalignedcubegeometry
   test_geometrytype
   test_genericquadrature
@@ -7,6 +8,8 @@ set(TESTS
   test_referenceelements
   test_refinement)
 
+add_executable(test_affinegeometry test-affinegeometry.cc)
+target_link_libraries(test_affinegeometry dunecommon dunegeometry)
 add_executable(test_axisalignedcubegeometry test-axisalignedcubegeometry.cc)
 target_link_libraries(test_axisalignedcubegeometry dunecommon dunegeometry)
 add_executable(test_geometrytype "test-geometrytype.cc")

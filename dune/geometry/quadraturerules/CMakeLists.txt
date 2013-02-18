@@ -7,12 +7,11 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
 
 #build the library libquadraturerules
-dune_add_library("dunegeometry"
+dune_add_library(quadraturerules OBJECT
   cube.cc
   jacobi_1_0.cc
   jacobi_2_0.cc
   quadraturerules.cc
-  ADD_LIBS dunecommon
 )
 
 
