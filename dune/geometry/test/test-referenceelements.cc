@@ -16,7 +16,8 @@ using namespace Dune;
 #define test(a) if (! (a) ) { std::cerr << __FILE__ << ":" << __LINE__ << ": Test `" # a "' failed" << std::endl; errors++; }
 #define testcmp(a,b) if (! (a == b) ) { std::cerr << __FILE__ << ":" << __LINE__ << ": Test `" # a " == " # b "' failed (got " << a << ")" << std::endl; errors++; }
 
-int main () try
+int main ()
+try
 {
   int errors = 0;
 
@@ -34,7 +35,7 @@ int main () try
 
   type.makeLine();
 
-  const ReferenceElement<double,1>& referenceLine = ReferenceElements<double, 1>::general(type);
+  const ReferenceElement< double, 1 > &referenceLine = ReferenceElements< double, 1 >::general( type );
 
   // size(int c)
   testcmp(referenceLine.size(0),1);
@@ -53,8 +54,9 @@ int main () try
   test(referenceLine.type(0,1).isVertex());
   test(referenceLine.type(1,1).isVertex());
 
-  // test the 'mapping' method
-  referenceLine.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement< double, 1 >::Codim< 0 >::Geometry &referenceLineGeometry = referenceLine.geometry< 0 >( 0 );
+  referenceLineGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test triangle
@@ -62,7 +64,7 @@ int main () try
 
   type.makeTriangle();
 
-  const ReferenceElement<double,2>& referenceTriangle = ReferenceElements<double, 2>::general(type);
+  const ReferenceElement<double,2>& referenceTriangle = ReferenceElements<double, 2>::general( type );
 
   // size(int c)
   testcmp(referenceTriangle.size(0),1);
@@ -120,8 +122,9 @@ int main () try
   test(referenceTriangle.type(1,2).isVertex());
   test(referenceTriangle.type(2,2).isVertex());
 
-  // test the 'mapping' method
-  referenceTriangle.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement<double,2>::Codim< 0 >::Geometry &referenceTriangleGeometry = referenceTriangle.geometry< 0 >( 0 );
+  referenceTriangleGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test quadrilateral
@@ -129,7 +132,7 @@ int main () try
 
   type.makeQuadrilateral();
 
-  const ReferenceElement<double,2>& referenceQuad = ReferenceElements<double, 2>::general(type);
+  const ReferenceElement< double, 2 > &referenceQuad = ReferenceElements< double, 2 >::general( type );
 
   // size(int c)
   testcmp(referenceQuad.size(0),1);
@@ -199,8 +202,9 @@ int main () try
   test(referenceQuad.type(3,2).isVertex());
 
 
-  // test the 'mapping' method
-  referenceQuad.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement< double, 2 >::Codim< 0 >::Geometry &referenceQuadGeometry = referenceQuad.geometry< 0 >( 0 );
+  referenceQuadGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test tetrahedron
@@ -208,7 +212,7 @@ int main () try
 
   type.makeTetrahedron();
 
-  const ReferenceElement<double,3>& referenceTetra = ReferenceElements<double, 3>::general(type);
+  const ReferenceElement< double, 3 > &referenceTetra = ReferenceElements< double, 3 >::general( type );
 
   // size(int c)
   testcmp(referenceTetra.size(0),1);
@@ -222,13 +226,15 @@ int main () try
   testcmp(referenceTetra.size(0,0,2),6);
   testcmp(referenceTetra.size(0,0,3),4);
 
-  for (int i=0; i<referenceTetra.size(1); i++) {
+  for (int i=0; i<referenceTetra.size(1); i++)
+  {
     testcmp(referenceTetra.size(i,1,1),1);
     testcmp(referenceTetra.size(i,1,2),3);
     testcmp(referenceTetra.size(i,1,3),3);
   }
 
-  for (int i=0; i<referenceTetra.size(2); i++) {
+  for (int i=0; i<referenceTetra.size(2); i++)
+  {
     testcmp(referenceTetra.size(i,2,2),1);
     testcmp(referenceTetra.size(i,2,3),2);
   }
@@ -251,8 +257,9 @@ int main () try
   for (int i=0; i<referenceTetra.size(3); i++)
     test(referenceTetra.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  referenceTetra.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referenceTetraGeometry = referenceTetra.geometry< 0 >( 0 );
+  referenceTetraGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test pyramid
@@ -260,7 +267,7 @@ int main () try
 
   type.makePyramid();
 
-  const ReferenceElement<double,3>& referencePyramid = ReferenceElements<double, 3>::general(type);
+  const ReferenceElement< double, 3 > &referencePyramid = ReferenceElements< double, 3 >::general( type );
 
   // size(int c)
   testcmp(referencePyramid.size(0),1);
@@ -290,7 +297,8 @@ int main () try
   testcmp(referencePyramid.size(4,1,2),3);
   testcmp(referencePyramid.size(4,1,3),3);
 
-  for (int i=0; i<referencePyramid.size(2); i++) {
+  for (int i=0; i<referencePyramid.size(2); i++)
+  {
     testcmp(referencePyramid.size(i,2,2),1);
     testcmp(referencePyramid.size(i,2,3),2);
   }
@@ -315,8 +323,9 @@ int main () try
   for (int i=0; i<referencePyramid.size(3); i++)
     test(referencePyramid.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  referencePyramid.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referencePyramidGeometry = referencePyramid.geometry< 0 >( 0 );
+  referencePyramidGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test prism
@@ -324,7 +333,7 @@ int main () try
 
   type.makePrism();
 
-  const ReferenceElement<double,3>& referencePrism = ReferenceElements<double, 3>::general(type);
+  const ReferenceElement< double, 3 > &referencePrism = ReferenceElements< double, 3 >::general( type );
 
   // size(int c)
   testcmp(referencePrism.size(0),1);
@@ -354,7 +363,8 @@ int main () try
   testcmp(referencePrism.size(4,1,2),3);
   testcmp(referencePrism.size(4,1,3),3);
 
-  for (int i=0; i<referencePrism.size(2); i++) {
+  for (int i=0; i<referencePrism.size(2); i++)
+  {
     testcmp(referencePrism.size(i,2,2),1);
     testcmp(referencePrism.size(i,2,3),2);
   }
@@ -379,8 +389,9 @@ int main () try
   for (int i=0; i<referencePrism.size(3); i++)
     test(referencePrism.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  referencePrism.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referencePrismGeometry = referencePrism.geometry< 0 >( 0 );
+  referencePrismGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test hexahedron
@@ -388,7 +399,7 @@ int main () try
 
   type.makeHexahedron();
 
-  const ReferenceElement<double,3>& referenceHexa = ReferenceElements<double, 3>::general(type);
+  const ReferenceElement< double, 3 > &referenceHexa = ReferenceElements< double, 3 >::general( type );
 
   // size(int c)
   testcmp(referenceHexa.size(0),1);
@@ -402,13 +413,15 @@ int main () try
   testcmp(referenceHexa.size(0,0,2),12);
   testcmp(referenceHexa.size(0,0,3),8);
 
-  for (int i=0; i<referenceHexa.size(1); i++) {
+  for (int i=0; i<referenceHexa.size(1); i++)
+  {
     testcmp(referenceHexa.size(i,1,1),1);
     testcmp(referenceHexa.size(i,1,2),4);
     testcmp(referenceHexa.size(i,1,3),4);
   }
 
-  for (int i=0; i<referenceHexa.size(2); i++) {
+  for (int i=0; i<referenceHexa.size(2); i++)
+  {
     testcmp(referenceHexa.size(i,2,2),1);
     testcmp(referenceHexa.size(i,2,3),2);
   }
@@ -430,16 +443,19 @@ int main () try
   for (int i=0; i<referenceHexa.size(3); i++)
     test(referenceHexa.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  referenceHexa.mapping< 0 >( 0 ).corner(0);
+  // test the 'geometry' method
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referenceHexaGeometry = referenceHexa.geometry< 0 >( 0 );
+  referenceHexaGeometry.corner( 0 );
 
   return errors>0 ? 1 : 0;
-
 }
-catch (Exception &e) {
+catch( const Exception &e )
+{
   std::cerr << e << std::endl;
   return 1;
-} catch (...) {
+}
+catch( ... )
+{
   std::cerr << "Generic exception!" << std::endl;
   return 2;
 }

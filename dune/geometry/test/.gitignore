@@ -2,6 +2,7 @@ Makefile
 Makefile.in
 .deps
 
+test-affinegeometry
 test-axisalignedcubegeometry
 test-multilineargeometry
 test-genericquadrature
