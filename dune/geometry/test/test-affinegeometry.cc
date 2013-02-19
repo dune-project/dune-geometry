@@ -7,7 +7,7 @@
 #include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 
-#include <dune/geometry/genericgeometry/test/checkgeometry.hh>
+#include <dune/geometry/test/checkgeometry.hh>
 
 
 template< class ctype, int mydim, int cdim >

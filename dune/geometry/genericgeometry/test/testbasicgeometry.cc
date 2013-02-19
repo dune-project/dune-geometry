@@ -21,7 +21,7 @@
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometry.hh>
 
-#include <dune/geometry/genericgeometry/test/checkgeometry.hh>
+#include <dune/geometry/test/checkgeometry.hh>
 
 
 using namespace Dune;
