@@ -386,7 +386,7 @@ int main () try
 
   // test the 'mapping' method
   const ReferenceElement<double,3>::Codim<0>::Mapping& referencePrismMapping = referencePrism.mapping< 0 >( 0 );
-  referencePrism.mapping< 0 >( 0 ).corner(0);
+  referencePrismMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test hexahedron
