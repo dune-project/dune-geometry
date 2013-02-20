@@ -5,9 +5,9 @@ set(TESTS
 
 add_executable(test-referenceelements "test-referenceelements.cc")
 add_executable(test-quadrature "test-quadrature.cc")
-target_link_libraries(test-quadrature dunecommon quadraturerules)
+target_link_libraries(test-quadrature dunecommon dunegeometry)
 add_executable(test-genericquadrature "test-genericquadrature.cc")
-target_link_libraries(test-genericquadrature dunecommon quadraturerules)
+target_link_libraries(test-genericquadrature dunecommon dunegeometry)
 
 # We do not want want to build the tests during make all,
 # but just build them on demand
