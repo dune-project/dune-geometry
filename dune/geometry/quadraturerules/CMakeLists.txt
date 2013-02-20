@@ -13,6 +13,6 @@ dune_add_library("dunegeometry"
   jacobi_2_0.cc
   quadraturerules.cc
 )
-dune_target_link_libraries("dunegeometry" dunecommon)
+
 
 message(AUTHOR_WARNING "TODO in dune-geometry/dune/geometry/quadraturerules: Distribute jacobian.mac")
