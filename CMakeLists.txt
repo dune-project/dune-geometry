@@ -4,6 +4,10 @@ project("dune-geometry" C CXX)
 # general stuff
 cmake_minimum_required(VERSION 2.8)
 
+#find dune-common and set the module path
+find_package(dune-common)
+list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH})
+message("dune-common_MODULE_PATH=${dune-common_MODULE_PATH}")
 #include the dune macros
 include(DuneMacros)
 
