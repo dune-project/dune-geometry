@@ -1,6 +1,9 @@
 Makefile
 Makefile.in
-config.*
+config.guess
+config.h.in
+config.sub
+config.h
 configure
 dependencies.m4
 aclocal.m4
