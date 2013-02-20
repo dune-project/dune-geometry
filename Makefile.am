@@ -3,7 +3,7 @@
 # we need the module file to be able to build via dunecontrol
 EXTRA_DIST= CMakeLists.txtdune.module
 
-SUBDIRS = m4 cmake dune doc lib
+SUBDIRS = m4 dune doc lib
 
 # don't follow the full GNU-standard
 # we need automake 1.5
