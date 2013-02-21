@@ -13,6 +13,9 @@ TESTS = \
 # programs just to build when "make check" is used
 check_PROGRAMS = $(TESTS)
 
+geometrytestdir =  $(includedir)/dune/geometry/test
+geometrytest_HEADERS = checkgeometry.hh
+
 # output code coverage
 #AM_CXXFLAGS = @AM_CXXFLAGS@ -fprofile-arcs -ftest-coverage
 
