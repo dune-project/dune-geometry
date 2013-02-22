@@ -5,7 +5,7 @@ if(LATEX_USABLE AND INKSCAPE)
   inkscape_generate_eps_from_svg(DPI 180
     OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
     INPUT_DIR ${CMAKE_CURRENT_BINARY_DIR} ${EPS_IMGS})
-  ADD_LATEX_DOCUMENT(refinement.tex FATHER_TARGET doc
+  dune_add_latex_document(refinement.tex FATHER_TARGET doc
     DEFAULT_SAFEPDF
     DEPENDS ${EPS_IMGS})
   set(PDFDOCS ${CMAKE_CURRENT_BINARY_DIR}/refinement.pdf)
