@@ -3,7 +3,6 @@
 quadraturerulesdir = $(includedir)/dune/geometry/quadraturerules
 quadraturerules_HEADERS =			\
 	cube_imp.hh				\
-	gaussquadrature.hh			\
 	genericquadrature.hh			\
 	jacobi_1_0_imp.hh			\
 	jacobi_2_0_imp.hh

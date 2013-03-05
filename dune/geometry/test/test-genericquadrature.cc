@@ -8,7 +8,7 @@
 #include <dune/common/misc.hh>
 
 #include <dune/geometry/referenceelements.hh>
-#include "../quadraturerules/gaussquadrature.hh"
+#include <dune/geometry/quadraturerules/genericquadrature.hh>
 
 bool success = true;
 
@@ -150,8 +150,7 @@ void checkWeights(const QuadratureRule &quad)
 template<class CF, int dim>
 void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
 {
-  typedef Dune::GenericGeometry::GaussPoints<CF> OneDPoints;
-  typedef Dune::GenericGeometry::GenericQuadratureFactory<dim,double,OneDPoints> QuadratureProvider;
+  typedef Dune::GenericGeometry::GenericQuadratureFactory<dim,double> QuadratureProvider;
   typedef typename QuadratureProvider::Object Quadrature;
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
