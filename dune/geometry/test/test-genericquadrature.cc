@@ -158,7 +158,6 @@ void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
     const Quadrature &quad = *QuadratureProvider::create(Dune::GeometryType(btype,dim),p);
     checkWeights(quad);
     checkQuadrature(quad);
-    QuadratureProvider::release(&quad);
   }
   if (dim>0 && (dim>3 ||
                 btype==Dune::GeometryType::cube ||
