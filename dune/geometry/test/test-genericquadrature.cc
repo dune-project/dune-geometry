@@ -73,16 +73,16 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
   return exact;
 }
 
-template<class Quadrature>
-void checkQuadrature(const Quadrature &quad)
+template<class QuadratureRule>
+void checkQuadrature(const QuadratureRule &quad)
 {
   using namespace Dune;
-  typedef typename Quadrature::Field ctype;
-  const unsigned int dim = Quadrature::dimension;
+  typedef typename QuadratureRule::CoordType ctype;
+  const unsigned int dim = QuadratureRule::d;
   const unsigned int p = quad.order();
   const Dune::GeometryType& t = quad.type();
   FieldVector<ctype,dim> integral(0);
-  for (typename Quadrature::Iterator qp=quad.begin(); qp!=quad.end(); ++qp)
+  for (typename QuadratureRule::iterator qp=quad.begin(); qp!=quad.end(); ++qp)
   {
     // pos of integration point
     const FieldVector< ctype, dim > &x = qp->position();
@@ -117,14 +117,14 @@ void checkQuadrature(const Quadrature &quad)
   }
 }
 
-template<class Quadrature>
-void checkWeights(const Quadrature &quad)
+template<class QuadratureRule>
+void checkWeights(const QuadratureRule &quad)
 {
-  typedef typename Quadrature::Field ctype;
-  const unsigned int dim = Quadrature::dimension;
+  typedef typename QuadratureRule::CoordType ctype;
+  const unsigned int dim = QuadratureRule::d;
   const unsigned int p = quad.order();
   const Dune::GeometryType& t = quad.type();
-  typedef typename Quadrature::Iterator QuadIterator;
+  typedef typename QuadratureRule::iterator QuadIterator;
   double volume = 0;
   QuadIterator qp = quad.begin();
   QuadIterator qend = quad.end();
