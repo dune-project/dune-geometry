@@ -4,6 +4,7 @@
 #define DUNE_GEOMETRY_QUADRATURERULES_GENERICQUADRATURE_HH
 
 #include <vector>
+#include <bitset>
 
 #include <dune/common/fvector.hh>
 
@@ -15,95 +16,62 @@
 namespace Dune
 {
 
-  namespace GenericGeometry
+  /**
+   * \brief Generic Quadrature rules using prism and pyramid construction (dynamic implementation)
+   */
+  template< class ctype, int dim >
+  class GenericQuadratureRule
+    : public QuadratureRule< ctype, dim >
   {
+    typedef QuadratureRule<ctype, dim> Base;
+    typedef QuadraturePoint<ctype, dim> QPoint;
+    typedef typename QPoint::Vector Vector;
+    typedef QuadratureRule<ctype,dim-1> BaseQuadrature;
 
-    // GenericQuadrature
-    // -----------------
-
-    /**
-     * @brief extends a 1d quadrature to a generic reference elemenet
-     *
-     * \tparam ctype coordinate type
-     * \tparam Topology the topology of the reference element
-     *
-     * The 1d quadrature must be a std::vector-like container with a constructor
-     * taking an order parameter
-     **/
-    template< class ctype, class Topology >
-    class GenericQuadrature;
-
-    /** \brief Generic Quadrature for Point
-    **/
-    template< class ctype >
-    class GenericQuadrature< ctype, Point >
-      : public QuadratureRule< ctype, 0 >
+  public:
+    GenericQuadratureRule (unsigned int topologyId, unsigned int order, QuadratureType::Enum qt)
+      : Base( GeometryType(topologyId, dim), order )
     {
-      typedef QuadraturePoint< ctype, 0 > QPoint;
-
-    public:
-      typedef Point Topology;
-
-      static const unsigned int dimension = 0;
-      typedef typename QPoint::Vector Vector;
-
-      GenericQuadrature (unsigned int order, QuadratureType::Enum qt)
-        : QuadratureRule<ctype, 0>( GeometryType(Topology::id, dimension), order )
-      {
-        this->push_back( QPoint( Vector(ctype( 0 ) ), 1) );
-      }
-    };
-
-
+      enum { bitSize = sizeof(unsigned int)*8 };
+      std::bitset<bitSize> baseId(topologyId);
+      bool isPrism = baseId[dim-1];
+      baseId.reset(dim-1);
+      GeometryType baseType(baseId.to_ulong(), dim-1);
+      const BaseQuadrature & baseQuad = QuadratureRules<ctype,dim-1>::rule(baseType, order, qt);
+      if (isPrism)
+        create_prism(baseQuad, order, qt);
+      else
+        create_pyramid(baseQuad, order, qt);
+    }
+  private:
     /** \brief Generic Quadrature for Prisms
     **/
-    template< class ctype, class BaseTopology >
-    class GenericQuadrature< ctype, Prism< BaseTopology > >
-      : public QuadratureRule< ctype, Prism< BaseTopology >::dimension >
+    void create_prism(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
-      typedef QuadratureRule< ctype, Prism< BaseTopology >::dimension > Base;
-      typedef QuadraturePoint< ctype, Prism< BaseTopology >::dimension > QPoint;
+      typedef QuadratureRule<ctype,1> OneDQuadrature;
+      GeometryType onedType(GeometryType::cube,1);
+      const OneDQuadrature & onedQuad =
+        QuadratureRules<ctype,1>::rule(onedType, order, qt);
 
-    public:
-      typedef Prism< BaseTopology > Topology;
-
-      static const unsigned int dimension = QPoint::dimension;
-
-      typedef typename QPoint::Vector Vector;
-
-    private:
-      typedef GenericQuadrature< ctype, BaseTopology > BaseQuadrature;
-
-    public:
-      GenericQuadrature (unsigned int order, QuadratureType::Enum qt)
-        : Base( GeometryType(Topology::id, dimension), order )
+      const unsigned int baseQuadSize = baseQuad.size();
+      for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
       {
-        typedef QuadratureRule<ctype,1> OneDQuadrature;
-        GeometryType onedtype(GeometryType::cube,1);
-        const OneDQuadrature & onedQuad =
-          QuadratureRules<ctype,1>::rule(onedtype, order, qt);
-        BaseQuadrature baseQuad( order, qt );
+        const typename QuadraturePoint<ctype, dim-1>::Vector &
+        basePoint = baseQuad[bqi].position( );
+        const ctype &baseWeight = baseQuad[bqi].weight( );
 
-        const unsigned int baseQuadSize = baseQuad.size();
-        for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
+        Vector point;
+        for( unsigned int i = 0; i < dim-1; ++i )
+          point[ i ] = basePoint[ i ];
+
+        const unsigned int onedQuadSize = onedQuad.size();
+        for( unsigned int oqi = 0; oqi < onedQuadSize; ++oqi )
         {
-          const typename BaseQuadrature::Vector &basePoint = baseQuad[bqi].position( );
-          const ctype &baseWeight = baseQuad[bqi].weight( );
-
-          Vector point;
-          for( unsigned int i = 0; i < dimension-1; ++i )
-            point[ i ] = basePoint[ i ];
-
-          const unsigned int onedQuadSize = onedQuad.size();
-          for( unsigned int oqi = 0; oqi < onedQuadSize; ++oqi )
-          {
-            point[ dimension-1 ] = onedQuad[oqi].position()[ 0 ];
-            this->push_back( QPoint(point, baseWeight * onedQuad[oqi].weight()) );
-          }
+          point[ dim-1 ] = onedQuad[oqi].position()[ 0 ];
+          this->push_back( QPoint(point, baseWeight * onedQuad[oqi].weight()) );
         }
       }
-    };
-
+    }
 
     /** \brief Generic Quadrature for Pyramids
      *
@@ -120,127 +88,37 @@ namespace Dune
      *  Question: If the polynomials are created via Duffy Transformation, do we
      *            really need a higher quadrature order?
      */
-    template< class ctype, class BaseTopology >
-    class GenericQuadrature< ctype, Pyramid< BaseTopology > >
-      : public QuadratureRule< ctype, Pyramid< BaseTopology >::dimension >
+    void create_pyramid(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
-      typedef QuadratureRule< ctype, Pyramid< BaseTopology >::dimension > Base;
-      typedef QuadraturePoint< ctype, Prism< BaseTopology >::dimension > QPoint;
+      typedef QuadratureRule<ctype,1> OneDQuadrature;
+      GeometryType onedtype(GeometryType::cube,1);
+      const OneDQuadrature & onedQuad =
+        QuadratureRules<ctype,1>::rule(onedtype, order + dim-1, qt);
 
-    public:
-      typedef Pyramid< BaseTopology > Topology;
-
-      static const unsigned int dimension = QPoint::dimension;
-
-      typedef typename QPoint::Vector Vector;
-
-    private:
-      typedef GenericQuadrature< ctype, BaseTopology > BaseQuadrature;
-
-    public:
-      GenericQuadrature (unsigned int order, QuadratureType::Enum qt)
-        : Base( GeometryType(Topology::id, dimension), order )
+      const unsigned int baseQuadSize = baseQuad.size();
+      for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
       {
-        typedef QuadratureRule<ctype,1> OneDQuadrature;
-        GeometryType onedtype(GeometryType::cube,1);
-        const OneDQuadrature & onedQuad =
-          QuadratureRules<ctype,1>::rule(onedtype, order + dimension-1, qt);
-        BaseQuadrature baseQuad( order, qt );
+        const typename QuadraturePoint<ctype, dim-1>::Vector &
+        basePoint = baseQuad[bqi].position( );
+        const ctype &baseWeight = baseQuad[bqi].weight( );
 
-        const unsigned int baseQuadSize = baseQuad.size();
-        for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
+        const unsigned int onedQuadSize = onedQuad.size();
+        for( unsigned int oqi = 0; oqi < onedQuadSize; ++oqi )
         {
-          const typename BaseQuadrature::Vector &basePoint = baseQuad[bqi].position( );
-          const ctype &baseWeight = baseQuad[bqi].weight( );
+          Vector point;
+          point[ dim-1 ] = onedQuad[oqi].position( )[ 0 ];
+          const ctype scale = ctype( 1 ) - point[ dim-1 ];
+          for( unsigned int i = 0; i < dim-1; ++i )
+            point[ i ] = scale * basePoint[ i ];
 
-          const unsigned int onedQuadSize = onedQuad.size();
-          for( unsigned int oqi = 0; oqi < onedQuadSize; ++oqi )
-          {
-            Vector point;
-            point[ dimension-1 ] = onedQuad[oqi].position( )[ 0 ];
-            const ctype scale = ctype( 1 ) - point[ dimension-1 ];
-            for( unsigned int i = 0; i < dimension-1; ++i )
-              point[ i ] = scale * basePoint[ i ];
-
-            ctype weight = baseWeight * onedQuad[oqi].weight( );
-            for ( unsigned int p = 0; p<dimension-1; ++p)
-              weight *= scale;                    // pow( scale, dimension-1 );
-            this->push_back( QPoint(point, weight) );
-          }
+          ctype weight = baseWeight * onedQuad[oqi].weight( );
+          for ( unsigned int p = 0; p<dim-1; ++p)
+            weight *= scale;                    // pow( scale, dim-1 );
+          this->push_back( QPoint(point, weight) );
         }
       }
-    };
-
-    /**
-     * @brief Factory for the generic quadratures
-     *
-     * This is a Dune::GenericGeometry::TopologyFactory creating
-     * GenericQuadrature from a given 1d quadrature
-     *
-     * \tparam dim dimension of the reference elements contained in the factory
-     * \tparam F field in which weight and point of the quadrature are stored
-     *
-     * Note: the computation of the quadrature points and weights are
-     * carried out in the field type of the 1d quadrature which can differ from F.
-     **/
-    template< int dim, class F >
-    struct GenericQuadratureFactory;
-
-    template< int dim, class F >
-    struct GenericQuadratureFactoryTraits
-    {
-      static const unsigned int dimension = dim;
-      struct Key
-      {
-        unsigned int order;
-        QuadratureType::Enum qt;
-        bool operator < (const Key & other) const
-        {
-          return (other.order < order)
-                 || (other.order == order && int(other.qt) < int(qt));
-        }
-      };
-      typedef const QuadratureRule<F,dim> Object;
-      typedef GenericQuadratureFactory<dim,F> Factory;
-    };
-
-    template< int dim, class F >
-    struct GenericQuadratureFactory :
-      public TopologyFactory< GenericQuadratureFactoryTraits<dim,F> >
-    {
-      static const unsigned int dimension = dim;
-      typedef F Field;
-      typedef GenericQuadratureFactoryTraits<dim,F> Traits;
-
-      typedef typename Traits::Key Key;
-      typedef typename Traits::Object Object;
-
-      template< class Topology >
-      static Object* createObject ( const Key &key )
-      {
-        return new Object( GenericQuadrature< F, Topology >( key.order, key.qt ) );
-      }
-    };
-
-
-    // GenericQuadratureProvider
-    // ---------------------
-
-    /**
-     * @brief Singleton factory for the generic quadratures
-     *
-     * Wrapper for the Dune::GenericGeometry::GenericQuadratureFactory providing
-     * singleton storage.
-     *
-     * \tparam dim dimension of the reference elements contained in the factory
-     * \tparam F field in which weight and point of the quadrature are stored
-     **/
-    template< int dim, class F >
-    struct GenericQuadratureProvider
-      : public TopologySingletonFactory< GenericQuadratureFactory< dim, F > >
-    {};
-
-  }
+    }
+  };
 
 }
 

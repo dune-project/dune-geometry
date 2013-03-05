@@ -985,10 +985,7 @@ namespace Dune {
       {
         return CubeQuadratureRule<ctype,dim>(p);
       }
-      typename GenericGeometry::GenericQuadratureProvider<dim,ctype>::Key key;
-      key.order = p;
-      key.qt = qt;
-      return *GenericGeometry::GenericQuadratureProvider<dim,ctype>::create(t, key);
+      return GenericQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
@@ -1054,10 +1051,7 @@ namespace Dune {
       // {
       //   return PyramidQuadratureRule<ctype,dim>(p);
       // }
-      typename GenericGeometry::GenericQuadratureProvider<dim,ctype>::Key key;
-      key.order = p;
-      key.qt = qt;
-      return *GenericGeometry::GenericQuadratureProvider<dim,ctype>::create(t, key);
+      return GenericQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
