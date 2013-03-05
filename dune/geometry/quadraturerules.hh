@@ -283,12 +283,6 @@ namespace Dune {
 
 namespace Dune {
 
-  /** \brief Jacobi-Gauss quadrature for alpha=1, beta=0
-      \ingroup Quadrature
-   */
-  template<typename ct, int dim>
-  class Jacobi1QuadratureRule;
-
   //! \internal Helper template for the initialization of the quadrature rules
   template<typename ct,
       bool fundamental = std::numeric_limits<ct>::is_specialized>
@@ -312,7 +306,7 @@ namespace Dune {
       \ingroup Quadrature
    */
   template<typename ct>
-  class Jacobi1QuadratureRule<ct,1> :
+  class Jacobi1QuadratureRule1D :
     public QuadratureRule<ct,1>
   {
   public:
@@ -329,12 +323,12 @@ namespace Dune {
     typedef ct CoordType;
 
     /** \todo Please doc me! */
-    typedef Jacobi1QuadratureRule value_type;
+    typedef Jacobi1QuadratureRule1D value_type;
 
-    ~Jacobi1QuadratureRule(){}
+    ~Jacobi1QuadratureRule1D(){}
   private:
     friend class QuadratureRuleFactory<ct,dim>;
-    Jacobi1QuadratureRule (int p)
+    Jacobi1QuadratureRule1D (int p)
       : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
     {
       //! set up quadrature of given order in d dimensions
@@ -353,8 +347,8 @@ namespace Dune {
   };
 
 #ifndef DOXYGEN
-  extern template Jacobi1QuadratureRule<float, 1>::Jacobi1QuadratureRule(int);
-  extern template Jacobi1QuadratureRule<double, 1>::Jacobi1QuadratureRule(int);
+  extern template Jacobi1QuadratureRule1D<float>::Jacobi1QuadratureRule1D(int);
+  extern template Jacobi1QuadratureRule1D<double>::Jacobi1QuadratureRule1D(int);
 #endif // !DOXYGEN
 
 } // namespace Dune
@@ -363,12 +357,6 @@ namespace Dune {
 #include "quadraturerules/jacobi_1_0_imp.hh"
 
 namespace Dune {
-
-  /** \brief Jacobi-Gauss quadrature for alpha=2, beta=0
-      \ingroup Quadrature
-   */
-  template<typename ct, int dim>
-  class Jacobi2QuadratureRule;
 
   //! \internal Helper template for the initialization of the quadrature rules
   template<typename ct,
@@ -393,7 +381,7 @@ namespace Dune {
       \ingroup Quadrature
    */
   template<typename ct>
-  class Jacobi2QuadratureRule<ct,1> :
+  class Jacobi2QuadratureRule1D :
     public QuadratureRule<ct,1>
   {
   public:
@@ -411,12 +399,12 @@ namespace Dune {
     typedef ct CoordType;
 
     /** \todo Please doc me! */
-    typedef Jacobi2QuadratureRule value_type;
+    typedef Jacobi2QuadratureRule1D value_type;
 
-    ~Jacobi2QuadratureRule(){}
+    ~Jacobi2QuadratureRule1D(){}
   private:
     friend class QuadratureRuleFactory<ct,dim>;
-    Jacobi2QuadratureRule (int p)
+    Jacobi2QuadratureRule1D (int p)
       : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
     {
       //! set up quadrature of given order in d dimensions
@@ -436,8 +424,8 @@ namespace Dune {
   };
 
 #ifndef DOXYGEN
-  extern template Jacobi2QuadratureRule<float, 1>::Jacobi2QuadratureRule(int);
-  extern template Jacobi2QuadratureRule<double, 1>::Jacobi2QuadratureRule(int);
+  extern template Jacobi2QuadratureRule1D<float>::Jacobi2QuadratureRule1D(int);
+  extern template Jacobi2QuadratureRule1D<double>::Jacobi2QuadratureRule1D(int);
 #endif // !DOXYGEN
 
 } // namespace Dune
@@ -953,9 +941,9 @@ namespace Dune {
         case QuadratureType::Gauss :
           return CubeQuadratureRule<ctype>(p);
         case QuadratureType::Jacobian_1_0 :
-          return Jacobi1QuadratureRule<ctype,1>(p);
+          return Jacobi1QuadratureRule1D<ctype>(p);
         case QuadratureType::Jacobian_2_0 :
-          return Jacobi2QuadratureRule<ctype,1>(p);
+          return Jacobi2QuadratureRule1D<ctype>(p);
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
