@@ -649,6 +649,21 @@ namespace Dune {
   };
 
   template<typename ctype>
+  class QuadratureRuleFactory<ctype, 2> {
+  private:
+    enum { dim = 2 };
+    friend class QuadratureRules<ctype, dim>;
+    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+    {
+      if (t.isSimplex() && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
+      {
+        return SimplexQuadratureRule<ctype,dim>(p);
+      }
+      return GenericQuadratureRule<ctype,dim>(t.id(), p, qt);
+    }
+  };
+
+  template<typename ctype>
   class QuadratureRuleFactory<ctype, 3> {
   private:
     enum { dim = 3 };

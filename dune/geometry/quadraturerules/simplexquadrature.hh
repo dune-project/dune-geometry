@@ -23,7 +23,7 @@ namespace Dune {
   {
   public:
     /** \brief The highest quadrature order available */
-    enum { highest_order=GaussQuadratureRule1D<ct>::highest_order -1 };
+    enum { highest_order = 12 };
   private:
     friend class QuadratureRuleFactory<ct,2>;
     SimplexQuadratureRule (int p);
@@ -687,39 +687,10 @@ namespace Dune {
   SimplexQuadratureRule<ct,2>::SimplexQuadratureRule(int p) : QuadratureRule<ct,2>(GeometryType(GeometryType::simplex, 2))
   {
     int m;
-    if (p>highest_order)
+    if (p>SimplexQuadraturePoints<2>::highest_order)
       DUNE_THROW(QuadratureOrderOutOfRange,
                  "QuadratureRule for order " << p << " and GeometryType "
                                              << this->type() << " not available");
-
-    if (p>SimplexQuadraturePoints<2>::highest_order)
-    {
-      // Define the quadrature rules...
-      QuadratureRule<ct,1> gauss1D =
-        QuadratureRules<ct,1>::rule(GeometryType::cube, p, QuadratureType::Gauss);
-      QuadratureRule<ct,1> jac1D =
-        QuadratureRules<ct,1>::rule(GeometryType::cube, p+1, QuadratureType::Gauss);  //Jacobian_1_0);
-
-      // Compute the conical product
-      for (typename QuadratureRule<ct,1>::const_iterator
-           gp=gauss1D.begin(); gp!=gauss1D.end(); ++gp)
-      {
-        for (typename QuadratureRule<ct,1>::const_iterator
-             jp=jac1D.begin(); jp!=jac1D.end(); ++jp)
-        {
-          // compute coordinates and weight
-          double weight = 1.0;
-          FieldVector<ct,2> local(0.0);
-          local[0] = jp->position()[0];
-          local[1] = gp->position()[0] * (1. - jp->position()[0]);
-          weight   = gp->weight() * jp->weight() * (1. - jp->position()[0]);
-          // put in container
-          this->push_back(QuadraturePoint<ct,2>(local,weight));
-        }
-      }
-      this->delivered_order = std::min(gauss1D.order(), jac1D.order());
-      return;
-    }
 
     switch(p)
     {
@@ -764,6 +735,7 @@ namespace Dune {
       break;
     default : m=33;
     }
+
     this->delivered_order = SimplexQuadraturePointsSingleton<2>::sqp.order(m);
     FieldVector<ct, 2> local;
     double weight;
