@@ -505,6 +505,8 @@ namespace Dune {
 #define DUNE_INCLUDING_IMPLEMENTATION
 #include "quadraturerules/jacobi_2_0_imp.hh"
 
+#include "quadraturerules/genericquadrature.hh"
+
 namespace Dune {
 
   /************************************************
@@ -983,11 +985,10 @@ namespace Dune {
       {
         return CubeQuadratureRule<ctype,dim>(p);
       }
-      if (t.isSimplex())
-      {
-        return SimplexQuadratureRule<ctype,dim>(p);
-      }
-      DUNE_THROW(Exception, "Unknown GeometryType");
+      typename GenericGeometry::GenericQuadratureProvider<dim,ctype>::Key key;
+      key.order = p;
+      key.qt = qt;
+      return *GenericGeometry::GenericQuadratureProvider<dim,ctype>::create(t, key);
     }
   };
 
@@ -1041,7 +1042,7 @@ namespace Dune {
       {
         return CubeQuadratureRule<ctype,dim>(p);
       }
-      if (t.isSimplex())
+      if (t.isSimplex() && p <= 5)
       {
         return SimplexQuadratureRule<ctype,dim>(p);
       }
@@ -1049,11 +1050,14 @@ namespace Dune {
       {
         return PrismQuadratureRule<ctype,dim>(p);
       }
-      if (t.isPyramid())
-      {
-        return PyramidQuadratureRule<ctype,dim>(p);
-      }
-      DUNE_THROW(Exception, "Unknown GeometryType");
+      // if (t.isPyramid())
+      // {
+      //   return PyramidQuadratureRule<ctype,dim>(p);
+      // }
+      typename GenericGeometry::GenericQuadratureProvider<dim,ctype>::Key key;
+      key.order = p;
+      key.qt = qt;
+      return *GenericGeometry::GenericQuadratureProvider<dim,ctype>::create(t, key);
     }
   };
 

@@ -156,13 +156,20 @@ void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
 {
   typedef Dune::GenericGeometry::GenericQuadratureFactory<dim,double> QuadratureProvider;
   typedef typename QuadratureProvider::Object Quadrature;
+  Dune::GeometryType t(btype,dim);
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
-    typename QuadratureProvider::Key key;
-    key.order = p;
-    key.qt = Dune::QuadratureType::Gauss;
-    const Quadrature &quad =
-      *QuadratureProvider::create(Dune::GeometryType(btype,dim), key);
+    typedef Dune::QuadratureRule<CF, dim> Quad;
+    typedef typename Quad::iterator QuadIterator;
+    const Quad & quad = Dune::QuadratureRules<CF,dim>::rule(t, p, Dune::QuadratureType::Gauss);
+    if (quad.type() != t || unsigned(quad.order()) < p) {
+      std::cerr << "Error: Type mismatch! Requested Quadrature for " << t
+                << " and order=" << p << "." << std::endl
+                << "\tGot Quadrature for " << quad.type() << " and order="
+                << quad.order() << std::endl;
+      success = false;
+      return;
+    }
     checkWeights(quad);
     checkQuadrature(quad);
   }
