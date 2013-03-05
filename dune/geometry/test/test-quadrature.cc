@@ -194,7 +194,7 @@ void check(const Dune::GeometryType::BasicType &btype,
 
 int main (int argc, char** argv)
 {
-  unsigned int maxOrder = 30;
+  unsigned int maxOrder = 45;
   if (argc > 1)
   {
     maxOrder = std::atoi(argv[1]);
