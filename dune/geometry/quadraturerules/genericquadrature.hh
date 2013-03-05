@@ -28,7 +28,8 @@ namespace Dune
     typedef typename QPoint::Vector Vector;
     typedef QuadratureRule<ctype,dim-1> BaseQuadrature;
 
-  public:
+    friend class QuadratureRuleFactory<ctype,dim>;
+
     GenericQuadratureRule (unsigned int topologyId, unsigned int order, QuadratureType::Enum qt)
       : Base( GeometryType(topologyId, dim), order )
     {
@@ -43,9 +44,10 @@ namespace Dune
       else
         create_pyramid(baseQuad, order, qt);
     }
-  private:
-    /** \brief Generic Quadrature for Prisms
-    **/
+
+    /**
+     * \brief Generic Quadrature for Prisms
+     */
     void create_prism(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
       typedef QuadratureRule<ctype,1> OneDQuadrature;
