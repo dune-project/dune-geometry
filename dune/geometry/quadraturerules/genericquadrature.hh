@@ -77,18 +77,6 @@ namespace Dune
         return points_.end();
       }
 
-      //! access the coordinates of a quadrature point
-      const Vector &position ( const unsigned int i ) const
-      {
-        return (*this)[ i ].position();
-      }
-
-      //! access the weight of a quadrature point
-      const Field &weight ( const unsigned int i ) const
-      {
-        return (*this)[ i ].weight();
-      }
-
       //! order of the quadrature
       unsigned int order () const
       {
@@ -117,9 +105,6 @@ namespace Dune
       {
         insert( QuadraturePoint( position, weight ) );
       }
-
-      template< unsigned int d, class QC >
-      friend struct SubQuadratureCreator;
 
     private:
       std::vector< QuadraturePoint > points_;
