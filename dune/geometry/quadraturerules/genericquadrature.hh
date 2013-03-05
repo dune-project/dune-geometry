@@ -48,7 +48,7 @@ namespace Dune
       static const unsigned int dimension = 0;
       typedef typename QPoint::Vector Vector;
 
-      explicit GenericQuadrature ( unsigned int order )
+      GenericQuadrature (unsigned int order, QuadratureType::Enum qt)
         : QuadratureRule<typename OneDQuad::Field, 0>( GeometryType(Topology::id, dimension), order )
       {
         this->push_back( QPoint( Vector(Field( 0 ) ), 1) );
@@ -76,15 +76,17 @@ namespace Dune
       typedef typename QPoint::Vector Vector;
 
     private:
-      typedef OneDQuad OneDQuadrature;
-      typedef GenericQuadrature< BaseTopology, OneDQuadrature > BaseQuadrature;
+      typedef GenericQuadrature< BaseTopology, OneDQuad > BaseQuadrature;
 
     public:
-      explicit GenericQuadrature ( unsigned int order )
+      GenericQuadrature (unsigned int order, QuadratureType::Enum qt)
         : Base( GeometryType(Topology::id, dimension), order )
       {
-        OneDQuadrature onedQuad( OneDQuadrature::minPoints(order) );
-        BaseQuadrature baseQuad( order );
+        typedef QuadratureRule<Field,1> OneDQuadrature;
+        GeometryType onedtype(GeometryType::cube,1);
+        const OneDQuadrature & onedQuad =
+          QuadratureRules<Field,1>::rule(onedtype, order, qt);
+        BaseQuadrature baseQuad( order, qt );
 
         const unsigned int baseQuadSize = baseQuad.size();
         for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
@@ -144,11 +146,11 @@ namespace Dune
       typedef GenericQuadrature< BaseTopology, OneDQuadrature > BaseQuadrature;
 
     public:
-      explicit GenericQuadrature ( unsigned int order )
+      GenericQuadrature (unsigned int order, QuadratureType::Enum qt)
         : Base( GeometryType(Topology::id, dimension), order )
       {
         OneDQuadrature onedQuad( OneDQuadrature::minPoints(order + dimension-1 ) );
-        BaseQuadrature baseQuad( order );
+        BaseQuadrature baseQuad( order, qt );
 
         const unsigned int baseQuadSize = baseQuad.size();
         for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
@@ -195,7 +197,7 @@ namespace Dune
     struct GenericQuadratureFactoryTraits
     {
       static const unsigned int dimension = dim;
-      typedef unsigned int Key;
+      typedef unsigned int order Key;
       typedef const QuadratureRule<F,dim> Object;
       typedef GenericQuadratureFactory<dim,F,OneDQuad> Factory;
     };
@@ -212,9 +214,9 @@ namespace Dune
       typedef typename Traits::Object Object;
 
       template< class Topology >
-      static Object* createObject ( const Key &order )
+      static Object* createObject ( const Key &order, QuadratureType::Enum qt = QuadratureType::Gauss )
       {
-        return new Object( GenericQuadrature< Topology, OneDQuad >( order ) );
+        return new Object( GenericQuadrature< Topology, OneDQuad >( order, qt ) );
       }
     };
 
