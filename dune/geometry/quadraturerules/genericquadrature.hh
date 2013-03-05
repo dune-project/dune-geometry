@@ -194,6 +194,11 @@ namespace Dune
       {
         unsigned int order;
         QuadratureType::Enum qt;
+        bool operator < (const Key & other) const
+        {
+          return (other.order < order)
+                 || (other.order == order && int(other.qt) < int(qt));
+        }
       };
       typedef const QuadratureRule<F,dim> Object;
       typedef GenericQuadratureFactory<dim,F> Factory;
