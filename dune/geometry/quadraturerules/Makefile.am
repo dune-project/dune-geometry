@@ -2,19 +2,20 @@
 
 quadraturerulesdir = $(includedir)/dune/geometry/quadraturerules
 quadraturerules_HEADERS =			\
-	cube_imp.hh				\
+	pointquadrature.hh			\
 	genericquadrature.hh			\
+	gauss_imp.hh				\
 	jacobi_1_0_imp.hh			\
 	jacobi_2_0_imp.hh
 
 headercheck_IGNORE = \
-	cube_imp.hh				\
+	gauss_imp.hh				\
 	jacobi_1_0_imp.hh			\
 	jacobi_2_0_imp.hh
 
 
 noinst_LTLIBRARIES = libquadraturerules.la
-libquadraturerules_la_SOURCES = quadraturerules.cc cube.cc jacobi_1_0.cc jacobi_2_0.cc
+libquadraturerules_la_SOURCES = quadraturerules.cc gauss.cc jacobi_1_0.cc jacobi_2_0.cc
 libquadraturerules_la_LIBADD =			\
 	$(DUNE_LIBS)
 

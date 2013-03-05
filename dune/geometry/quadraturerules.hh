@@ -223,18 +223,17 @@ namespace Dune {
 namespace Dune {
 
   //! \internal Helper template for the initialization of the quadrature rules
-  template<typename ct,
-      bool fundamental = std::numeric_limits<ct>::is_specialized>
-  struct CubeQuadratureInitHelper;
+  template<typename ct, bool fundamental = std::numeric_limits<ct>::is_specialized>
+  struct GaussQuadratureInitHelper;
   template<typename ct>
-  struct CubeQuadratureInitHelper<ct, true> {
+  struct GaussQuadratureInitHelper<ct, true> {
     static void init(int p,
                      std::vector< FieldVector<ct, 1> > & _points,
                      std::vector< ct > & _weight,
                      int & delivered_order);
   };
   template<typename ct>
-  struct CubeQuadratureInitHelper<ct, false> {
+  struct GaussQuadratureInitHelper<ct, false> {
     static void init(int p,
                      std::vector< FieldVector<ct, 1> > & _points,
                      std::vector< ct > & _weight,
@@ -243,7 +242,7 @@ namespace Dune {
 
   //! \brief Gauss quadrature rule in 1D
   template<typename ct>
-  class CubeQuadratureRule :
+  class GaussQuadratureRule1D :
     public QuadratureRule<ct,1>
   {
   public:
@@ -252,19 +251,19 @@ namespace Dune {
     enum { dim=1 };
     enum { highest_order=61 };
     typedef ct CoordType;
-    typedef CubeQuadratureRule value_type;
+    typedef GaussQuadratureRule1D value_type;
 
-    ~CubeQuadratureRule(){}
+    ~GaussQuadratureRule1D(){}
   private:
     friend class QuadratureRuleFactory<ct,dim>;
-    CubeQuadratureRule (int p)
+    GaussQuadratureRule1D (int p)
       : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
     {
       //! set up quadrature of given order in d dimensions
       std::vector< FieldVector<ct, dim> > _points;
       std::vector< ct > _weight;
 
-      CubeQuadratureInitHelper<ct>::init
+      GaussQuadratureInitHelper<ct>::init
         (p, _points, _weight, this->delivered_order);
 
       assert(_points.size() == _weight.size());
@@ -273,13 +272,13 @@ namespace Dune {
     }
   };
 
-  extern template CubeQuadratureRule<float>::CubeQuadratureRule(int);
-  extern template CubeQuadratureRule<double>::CubeQuadratureRule(int);
+  extern template GaussQuadratureRule1D<float>::GaussQuadratureRule1D(int);
+  extern template GaussQuadratureRule1D<double>::GaussQuadratureRule1D(int);
 
 } // namespace Dune
 
 #define DUNE_INCLUDING_IMPLEMENTATION
-#include "quadraturerules/cube_imp.hh"
+#include "quadraturerules/gauss_imp.hh"
 
 namespace Dune {
 
@@ -459,7 +458,7 @@ namespace Dune {
     enum {d=2};
 
     /** \brief The highest quadrature order available */
-    enum { highest_order=CubeQuadratureRule<ct>::highest_order -1 };
+    enum { highest_order=GaussQuadratureRule1D<ct>::highest_order -1 };
 
     /** \brief The type used for coordinates */
     typedef ct CoordType;
@@ -484,7 +483,7 @@ namespace Dune {
     enum {d=3};
 
     /** \brief The highest quadrature order available */
-    enum { highest_order=CubeQuadratureRule<ct>::highest_order -2 };
+    enum { highest_order=GaussQuadratureRule1D<ct>::highest_order -2 };
 
     /** \brief The type used for coordinates */
     typedef ct CoordType;
@@ -655,9 +654,9 @@ namespace Dune {
     enum {
       /* min(Line::order, Triangle::order) */
       highest_order =
-        (int)CubeQuadratureRule<ct>::highest_order
+        (int)GaussQuadratureRule1D<ct>::highest_order
         < (int)SimplexQuadratureRule<ct,2>::highest_order
-        ? (int)CubeQuadratureRule<ct>::highest_order
+        ? (int)GaussQuadratureRule1D<ct>::highest_order
         : (int)SimplexQuadratureRule<ct,2>::highest_order
     };
 
@@ -835,7 +834,7 @@ namespace Dune {
     enum {d=3};
 
     /** \brief The highest quadrature order available */
-    enum {highest_order=CubeQuadratureRule<ct>::highest_order};
+    enum {highest_order=GaussQuadratureRule1D<ct>::highest_order};
 
     /** \brief The type used for coordinates */
     typedef ct CoordType;
@@ -939,7 +938,7 @@ namespace Dune {
       {
         switch (qt) {
         case QuadratureType::Gauss :
-          return CubeQuadratureRule<ctype>(p);
+          return GaussQuadratureRule1D<ctype>(p);
         case QuadratureType::Jacobian_1_0 :
           return Jacobi1QuadratureRule1D<ctype>(p);
         case QuadratureType::Jacobian_2_0 :

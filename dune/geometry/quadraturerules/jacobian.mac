@@ -132,7 +132,7 @@ close(fd)
 
 quad("jacobi_1_0_imp.hh", "Jacobi1", 1, 0, maxp);
 quad("jacobi_2_0_imp.hh", "Jacobi2", 2, 0, maxp);
-quad("cube_imp.hh", "Cube", 0, 0, maxp);
+quad("gauss_imp.hh", "Gauss", 0, 0, maxp);
 
 /*
  * Local variables:
