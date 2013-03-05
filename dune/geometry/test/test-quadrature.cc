@@ -5,8 +5,8 @@
 
 #include <config.h>
 
-#include "../quadraturerules.hh"
 #include <dune/geometry/referenceelements.hh>
+#include <dune/geometry/quadraturerules.hh>
 
 bool success = true;
 
@@ -25,13 +25,13 @@ ctype analyticSolution (Dune::GeometryType t, int p, int x) {
   using Dune::GeometryType;
   ctype exact=0;
 
-  if( t.id() ==  Dune::GenericGeometry::CubeTopology< dim > ::type::id )
+  if (t.isCube())
   {
     exact=1.0/(p+1);
     return exact;
   }
 
-  if( t.id() ==  Dune::GenericGeometry::SimplexTopology< dim > ::type::id )
+  if (t.isSimplex())
   {
     /* 1/(prod(k=1..dim,(p+k)) */
     exact = 1.0;
@@ -40,7 +40,7 @@ ctype analyticSolution (Dune::GeometryType t, int p, int x) {
     return exact;
   }
 
-  if( t.id() ==  Dune::GenericGeometry::PrismTopology< 3 > ::type::id )
+  if (t.isPrism())
   {
     switch(x) {
     case 0 :
@@ -56,7 +56,7 @@ ctype analyticSolution (Dune::GeometryType t, int p, int x) {
     return exact;
   }
 
-  if( t.id() ==  Dune::GenericGeometry::PyramidTopology< 3 > ::type::id )
+  if (t.isPyramid())
   {
     switch(x) {
     case 0 :

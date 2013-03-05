@@ -5,10 +5,8 @@
 
 #include <config.h>
 
-#include <dune/common/misc.hh>
-
 #include <dune/geometry/referenceelements.hh>
-#include <dune/geometry/quadraturerules/genericquadrature.hh>
+#include <dune/geometry/quadraturerules.hh>
 
 bool success = true;
 
@@ -27,19 +25,24 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
 {
   using Dune::GeometryType;
   ctype exact = 0;
+
   if (t.isCube())
   {
     exact=1.0/(p+1);
+    return exact;
   }
-  else if (t.isSimplex())
+
+  if (t.isSimplex())
   {
     /* 1/(prod(k=1..dim,(p+k)) */
     exact = ctype( 1 );
     for( int k = 1; k <= dim; ++k )
       exact *= p+k;
     exact = ctype( 1 ) / exact;
+    return exact;
   }
-  else if (t.isPrism())
+
+  if (t.isPrism())
   {
     const int pdim = (dim > 0 ? dim-1 : 0);
     if( direction < dim-1 )
@@ -52,8 +55,10 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
     }
     else
       exact = ctype( 1 ) / ctype( Dune::Factorial< pdim >::factorial * (p+1));
+    return exact;
   }
-  else if (t.isPyramid())
+
+  if (t.isPyramid())
   {
     switch( direction )
     {
@@ -65,11 +70,10 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
       exact=2.0/((p+1)*(p+2)*(p+3));
       break;
     };
+    return exact;
   }
-  else
-  {
-    DUNE_THROW(Dune::NotImplemented, __func__ << " for " << t);
-  }
+
+  DUNE_THROW(Dune::NotImplemented, __func__ << " for " << t);
   return exact;
 }
 
