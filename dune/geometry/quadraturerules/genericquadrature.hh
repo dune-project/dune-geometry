@@ -197,7 +197,11 @@ namespace Dune
     struct GenericQuadratureFactoryTraits
     {
       static const unsigned int dimension = dim;
-      typedef unsigned int order Key;
+      struct Key
+      {
+        unsigned int order;
+        QuadratureType::Enum qt;
+      };
       typedef const QuadratureRule<F,dim> Object;
       typedef GenericQuadratureFactory<dim,F,OneDQuad> Factory;
     };
@@ -214,9 +218,9 @@ namespace Dune
       typedef typename Traits::Object Object;
 
       template< class Topology >
-      static Object* createObject ( const Key &order, QuadratureType::Enum qt = QuadratureType::Gauss )
+      static Object* createObject ( const Key &key )
       {
-        return new Object( GenericQuadrature< Topology, OneDQuad >( order, qt ) );
+        return new Object( GenericQuadrature< Topology, OneDQuad >( key.order, key.qt ) );
       }
     };
 

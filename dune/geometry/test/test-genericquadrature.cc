@@ -155,7 +155,11 @@ void check( const Dune::GeometryType::BasicType &btype, unsigned int maxOrder )
   typedef typename QuadratureProvider::Object Quadrature;
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
-    const Quadrature &quad = *QuadratureProvider::create(Dune::GeometryType(btype,dim),p);
+    typename QuadratureProvider::Key key;
+    key.order = p;
+    key.qt = Dune::QuadratureType::Gauss;
+    const Quadrature &quad =
+      *QuadratureProvider::create(Dune::GeometryType(btype,dim), key);
     checkWeights(quad);
     checkQuadrature(quad);
   }
