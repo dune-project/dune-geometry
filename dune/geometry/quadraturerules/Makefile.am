@@ -10,6 +10,9 @@ quadraturerules_HEADERS =		\
 	jacobi_2_0_imp.hh
 
 headercheck_IGNORE = 			\
+	pointquadrature.hh			\
+	simplexquadrature.hh		\
+	genericquadrature.hh		\
 	gauss_imp.hh				\
 	jacobi_1_0_imp.hh			\
 	jacobi_2_0_imp.hh
