@@ -3,15 +3,7 @@
 #ifndef DUNE_GEOMETRY_QUADRATURERULES_GENERICQUADRATURE_HH
 #define DUNE_GEOMETRY_QUADRATURERULES_GENERICQUADRATURE_HH
 
-#include <vector>
 #include <bitset>
-
-#include <dune/common/fvector.hh>
-
-#include <dune/geometry/type.hh>
-#include <dune/geometry/topologyfactory.hh>
-#include <dune/geometry/quadraturerules.hh>
-#include <dune/geometry/genericgeometry/topologytypes.hh>
 
 namespace Dune
 {
