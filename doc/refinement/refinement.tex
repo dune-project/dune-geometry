@@ -7,7 +7,7 @@
 \usepackage{paralist}
 \usepackage{graphicx}
 \usepackage{amssymb}
-\usepackage{url}
+\usepackage[hyphens]{url}
 
 \floatstyle{boxed}
 \restylefloat{figure}
@@ -27,7 +27,7 @@
   commentstyle=\itshape}
 
 % This command does two things:
-% #1 ensure that non-keywords ar printed non-bold, even in titles.
+% #1 ensure that non-keywords are printed non-bold, even in titles.
 % #2 fold newlines into spaces before they are given to \lstinline so
 %    I don't need to care where I break my lines in normal text.
 \newcommand{\code}[1]{\textnormal{\lstinline{#1}}}
@@ -77,7 +77,7 @@ modify the grid or the entity itself.  This allows to interpolate
 nonlinear functions into linear pieces.
 
 It can also be used to partition entities of one geometry type into
-subentities of another geometry type, e.g.\ quadrilaterals into
+subentities of another geometry type, e.\,g.\ quadrilaterals into
 triangles.  This is useful if we want to write a grid and associated
 data into a file, but the file format can only deal with one geometry
 type.
@@ -330,7 +330,7 @@ instance of it is ever needed.
 \code{buildRefinement()} is used to actually get an instance of
 any of the wrapper classes.  It receives the geometry type of the
 refined entity and the subelements as runtime arguments and makes a
-big \code{switch()} statement to select the right wrapper class.
+big \code{switch} statement to select the right wrapper class.
 The interface of \code{buildRefinement()} is in listing
 \ref{buildref}.
 
@@ -369,20 +369,20 @@ declarations for \code{class VirtualRefinement} and
 As to the second goal, we put the files which are important to the
 user, namely {\tt refinement.cc} and {\tt virtualrefinement.hh} as
 well as {\tt virtual\-re\-fine\-ment.cc} into the directory {\tt
-  dune/grid/common}, and the files containing implementation details
-into a subdirectory {\tt dune/grid/common/refinement}.
+  dune/geometry}, and the files containing implementation details
+into the subdirectory {\tt dune/geometry/refinement}.
 
 \subsection{Writing a new Refinement Implementation}
 
 The process of writing a new Refinement implementation, consists of
 creating a new file named after the supported geometry types and
-preferably putting it in {\tt dune/grid/common/refinement}.  This file
+preferably putting it in {\tt dune/geometry/refinement}.  This file
 should specialise \code{class Refinement}\footnote{All the current
   implementations use a \code{struct Dune::RefinementImp::Traits} to
   map from \code{geometryType}, \code{coerceTo} and \code{dimension}
   to the matching Refinement implementation.  This is no longer
   necessary since Dune switched to the dimension-independent geometry
-  types ``simplex'' and ``cube'' and \code{class Refinement} can now
+  types \emph{simplex} and \emph{cube} and \code{class Refinement} can now
   be specialised directly.} for the template parameters
 \code{geometryType} and \code{coerceTo} and probably \code{dimension}.
 Implementation details like the iterators should be kept in a
@@ -596,7 +596,7 @@ sub-simplices.
 
 We didn't come up with a way to simply map a subelement of a Kuhn0
 simplex to an index number.  Luckily, the iterator interface only
-requires that we be able to calculate the next subelement.
+requires that we are able to calculate the next subelement.
 
 Each subelement is a Kuhn simplex which triangulates a hypercube.  We
 need to remember the vertex which is the origin of that hypercube and
