@@ -4,6 +4,7 @@ install(FILES
   genericquadrature.hh
   jacobi_1_0_imp.hh
   jacobi_2_0_imp.hh
+  lobattoquadrature.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
 
 #build the library libquadraturerules
