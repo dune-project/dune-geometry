@@ -4,7 +4,7 @@ add_subdirectory("test"  EXCLUDE_FROM_ALL)
 
 install(FILES
         generalvertexorder.hh
-        genericreferenceelements.hh
+        referenceelements.hh
         mockgeometry.hh
         quadraturerules.hh
         topologyfactory.hh
