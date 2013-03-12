@@ -7,7 +7,6 @@ install(FILES
         genericreferenceelements.hh
         mockgeometry.hh
         quadraturerules.hh
-        referenceelements.hh
         topologyfactory.hh
         type.hh
         typeindex.hh
