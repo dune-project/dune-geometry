@@ -6,7 +6,6 @@ TESTS = \
 	test-high-dim-refelements \
 	test-multilineargeometry \
 	test-quadrature \
-	test-genericquadrature \
 	test-referenceelements \
 	test-refinement
 
@@ -33,8 +32,6 @@ test_multilineargeometry_SOURCES = test-multilineargeometry.cc
 test_referenceelements_SOURCES = test-referenceelements.cc
 
 test_quadrature_SOURCES = test-quadrature.cc
-
-test_genericquadrature_SOURCES = test-genericquadrature.cc
 
 test_refinement_SOURCES = test-refinement.cc
 

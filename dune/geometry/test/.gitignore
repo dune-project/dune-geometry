@@ -5,7 +5,6 @@ Makefile.in
 test-affinegeometry
 test-axisalignedcubegeometry
 test-multilineargeometry
-test-genericquadrature
 test-geometrytype
 test-high-dim-refelements
 test-quadrature

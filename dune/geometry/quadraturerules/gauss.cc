@@ -6,7 +6,7 @@
 
 namespace Dune {
 
-  template CubeQuadratureRule<float, 1>::CubeQuadratureRule(int);
-  template CubeQuadratureRule<double, 1>::CubeQuadratureRule(int);
+  template GaussQuadratureRule1D<float>::GaussQuadratureRule1D(int);
+  template GaussQuadratureRule1D<double>::GaussQuadratureRule1D(int);
 
 } // namespace

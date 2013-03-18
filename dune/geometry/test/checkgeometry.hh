@@ -11,7 +11,7 @@
 #include <dune/common/fmatrix.hh>
 
 #include <dune/geometry/referenceelements.hh>
-#include <dune/geometry/quadraturerules/gaussquadrature.hh>
+#include <dune/geometry/quadraturerules.hh>
 #include <dune/geometry/referenceelements.hh>
 
 namespace Dune
@@ -95,9 +95,7 @@ namespace Dune
     ///////////////////////////////////////////////////////////////////////////////
     // Use a quadrature rule as a set of test points and loop over them
     ///////////////////////////////////////////////////////////////////////////////
-    typedef Dune::GenericGeometry::GaussPoints< ctype > Points;
-    typedef Dune::GenericGeometry::GenericQuadratureFactory< mydim, ctype, Points > QuadratureFactory;
-    const typename QuadratureFactory::Object &quadrature = *QuadratureFactory::create( geometry.type(), 2 );
+    const Dune::QuadratureRule<ctype, mydim> & quadrature = Dune::QuadratureRules<ctype, mydim>::rule(geometry.type(), 2);
     for( size_t i = 0; i < quadrature.size(); ++i )
     {
       const typename TestGeometry::LocalCoordinate &x = quadrature[ i ].position();
@@ -190,7 +188,6 @@ namespace Dune
         }
       }
     }
-    QuadratureFactory::release( &quadrature );
 
     return pass;
   }

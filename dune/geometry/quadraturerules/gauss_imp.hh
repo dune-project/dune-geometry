@@ -13,10 +13,10 @@ namespace Dune {
 
   // for fundamental types
   template<typename ct>
-  void CubeQuadratureInitHelper<ct,true>::init(int p,
-                                               std::vector< FieldVector<ct, 1> > & _points,
-                                               std::vector< ct > & _weight,
-                                               int & delivered_order)
+  void GaussQuadratureInitHelper<ct,true>::init(int p,
+                                                std::vector< FieldVector<ct, 1> > & _points,
+                                                std::vector< ct > & _weight,
+                                                int & delivered_order)
   {
     switch(p)
     {
@@ -1267,10 +1267,10 @@ namespace Dune {
 
   // for non-fundamental types: assign numbers as strings
   template<typename ct>
-  void CubeQuadratureInitHelper<ct,false>::init(int p,
-                                                std::vector< FieldVector<ct, 1> > & _points,
-                                                std::vector< ct > & _weight,
-                                                int & delivered_order)
+  void GaussQuadratureInitHelper<ct,false>::init(int p,
+                                                 std::vector< FieldVector<ct, 1> > & _points,
+                                                 std::vector< ct > & _weight,
+                                                 int & delivered_order)
   {
     switch(p)
     {
