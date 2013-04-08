@@ -12,7 +12,7 @@
 #include <ostream>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
-#include <dune/geometry/genericgeometry/test/checkgeometry.hh>
+#include <dune/geometry/test/checkgeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/virtualrefinement.hh>

@@ -15,7 +15,7 @@
 #include <dune/common/ios_state.hh>
 
 #include <dune/geometry/axisalignedcubegeometry.hh>
-#include <dune/geometry/genericgeometry/test/checkgeometry.hh>
+#include <dune/geometry/test/checkgeometry.hh>
 
 
 using namespace Dune;

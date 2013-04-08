@@ -5,12 +5,14 @@ TESTS = \
 	test-geometrytype \
 	test-multilineargeometry \
 	test-quadrature \
-	test-genericquadrature \
 	test-referenceelements \
 	test-refinement
 
 # programs just to build when "make check" is used
 check_PROGRAMS = $(TESTS)
+
+geometrytestdir =  $(includedir)/dune/geometry/test
+geometrytest_HEADERS = checkgeometry.hh
 
 # output code coverage
 #AM_CXXFLAGS = @AM_CXXFLAGS@ -fprofile-arcs -ftest-coverage
@@ -27,8 +29,6 @@ test_multilineargeometry_SOURCES = test-multilineargeometry.cc
 test_referenceelements_SOURCES = test-referenceelements.cc
 
 test_quadrature_SOURCES = test-quadrature.cc
-
-test_genericquadrature_SOURCES = test-genericquadrature.cc
 
 test_refinement_SOURCES = test-refinement.cc
 

@@ -2,7 +2,6 @@ set(TESTS
   test_affinegeometry
   test_axisalignedcubegeometry
   test_geometrytype
-  test_genericquadrature
   test_multilineargeometry
   test_quadrature
   test_referenceelements
@@ -18,8 +17,6 @@ add_executable(test_referenceelements "test-referenceelements.cc")
 target_link_libraries(test_referenceelements dunegeometry)
 add_executable(test_quadrature "test-quadrature.cc")
 target_link_libraries(test_quadrature dunecommon dunegeometry)
-add_executable(test_genericquadrature "test-genericquadrature.cc")
-target_link_libraries(test_genericquadrature dunecommon dunegeometry)
 add_executable(test_multilineargeometry test-multilineargeometry.cc)
 target_link_libraries(test_multilineargeometry dunecommon dunegeometry)
 add_executable(test_refinement test-refinement.cc)
@@ -29,6 +26,10 @@ target_link_libraries(test_refinement dunecommon dunegeometry)
 # but just build them on demand
 add_directory_test_target(_test_target)
 add_dependencies(${_test_target} ${TESTS})
+
+# install th header as done for the auto-tools
+install(FILES checkgeometry.hh
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/test)
 
 foreach(_test ${TESTS})
   add_test(${_test} ${_test})

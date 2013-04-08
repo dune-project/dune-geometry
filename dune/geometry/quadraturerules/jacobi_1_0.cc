@@ -6,7 +6,7 @@
 
 namespace Dune {
 
-  template Jacobi1QuadratureRule<float, 1>::Jacobi1QuadratureRule(int);
-  template Jacobi1QuadratureRule<double, 1>::Jacobi1QuadratureRule(int);
+  template Jacobi1QuadratureRule1D<float>::Jacobi1QuadratureRule1D(int);
+  template Jacobi1QuadratureRule1D<double>::Jacobi1QuadratureRule1D(int);
 
 } // namespace

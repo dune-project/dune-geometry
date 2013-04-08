@@ -5,8 +5,8 @@
 
 #include <config.h>
 
-#include "../quadraturerules.hh"
 #include <dune/geometry/referenceelements.hh>
+#include <dune/geometry/quadraturerules.hh>
 
 bool success = true;
 
@@ -21,44 +21,47 @@ bool success = true;
  */
 
 template <class ctype, int dim>
-ctype analyticSolution (Dune::GeometryType t, int p, int x) {
+ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
+{
   using Dune::GeometryType;
   ctype exact=0;
 
-  if( t.id() ==  Dune::GenericGeometry::CubeTopology< dim > ::type::id )
+  if (t.isCube())
   {
     exact=1.0/(p+1);
     return exact;
   }
 
-  if( t.id() ==  Dune::GenericGeometry::SimplexTopology< dim > ::type::id )
+  if (t.isSimplex())
   {
     /* 1/(prod(k=1..dim,(p+k)) */
-    exact = 1.0;
-    for (int k=1; k<=dim; k++) exact*=(p+k);
-    exact = 1.0/exact;
+    exact = ctype( 1 );
+    for( int k = 1; k <= dim; ++k )
+      exact *= p+k;
+    exact = ctype( 1 ) / exact;
     return exact;
   }
 
-  if( t.id() ==  Dune::GenericGeometry::PrismTopology< 3 > ::type::id )
+  if (t.isPrism())
   {
-    switch(x) {
-    case 0 :
-      exact=1.0/((p+2)*(p+1));
-      break;
-    case 1 :
-      exact=1.0/((p+2)*(p+1));
-      break;
-    case 2 :
-      exact=1.0/(2*(p+1));
-      break;
-    };
+    const int pdim = (dim > 0 ? dim-1 : 0);
+    if( direction < dim-1 )
+    {
+      GeometryType nt( GeometryType::simplex, dim-1 );
+      if( dim > 0 )
+        exact = analyticalSolution< ctype, pdim >( nt, p, direction );
+      else
+        exact = ctype( 1 );
+    }
+    else
+      exact = ctype( 1 ) / ctype( Dune::Factorial< pdim >::factorial * (p+1));
     return exact;
   }
 
-  if( t.id() ==  Dune::GenericGeometry::PyramidTopology< 3 > ::type::id )
+  if (t.isPyramid())
   {
-    switch(x) {
+    switch( direction )
+    {
     case 0 :
     case 1 :
       exact=1.0/((p+3)*(p+1));
@@ -74,75 +77,59 @@ ctype analyticSolution (Dune::GeometryType t, int p, int x) {
   return exact;
 }
 
-template <class ctype, int dim>
-void checkQuadrature(Dune::GeometryType t)
+template<class QuadratureRule>
+void checkQuadrature(const QuadratureRule &quad)
 {
   using namespace Dune;
+  typedef typename QuadratureRule::CoordType ctype;
+  const unsigned int dim = QuadratureRule::d;
+  const unsigned int p = quad.order();
+  const Dune::GeometryType& t = quad.type();
+  FieldVector<ctype,dim> integral(0);
+  for (typename QuadratureRule::iterator qp=quad.begin(); qp!=quad.end(); ++qp)
+  {
+    // pos of integration point
+    const FieldVector< ctype, dim > &x = qp->position();
+    const ctype weight = qp->weight();
 
-  for (int p=0; ; ++p)
-    try {
-      QuadratureRule<ctype,dim> const& qr =
-        QuadratureRules<ctype,dim>::rule(t,p);
-      FieldVector<ctype,dim> integral(0);
-      for (typename QuadratureRule<ctype,dim>::const_iterator
-           qp=qr.begin(); qp!=qr.end(); ++qp)
-      {
-        // pos of integration point
-        FieldVector<ctype,dim> const& x = qp->position();
-        ctype weight = qp->weight();
+    for (unsigned int d=0; d<dim; d++)
+      integral[d] += weight*std::pow(x[d],double(p));
+  }
 
-        for (int d=0; d<dim; d++)
-        {
-          integral[d] += weight*std::pow(x[d],double(p));
-        }
-      }
-
-      ctype maxRelativeError = 0;
-      for (int d=0; d<dim; d++)
-      {
-        ctype exact = analyticSolution<ctype,dim>(t,p,d);
-        ctype relativeError = std::abs(integral[d]-exact) /
-                              (std::abs(integral[d])+std::abs(exact));
-        if (relativeError > maxRelativeError)
-          maxRelativeError = relativeError;
-      }
-      ctype epsilon = std::pow(2.0,double(p))*p*std::numeric_limits<double>::epsilon();
-      if (p==0)
-        epsilon = 2.0*std::numeric_limits<double>::epsilon();
-      if (maxRelativeError > epsilon) {
-        std::cerr << "Error: Quadrature for " << t << " and order=" << p << " failed" << std::endl;
-        for (int d=0; d<dim; d++)
-        {
-          ctype exact = analyticSolution<ctype,dim>(t,p,d);
-          ctype relativeError = std::abs(integral[d]-exact) /
-                                (std::abs(integral[d])+std::abs(exact));
-          std::cerr << "       relative error " << relativeError << " in direction " << d << " (exact = " << exact << " numerical = " << integral[d] << ")" << std::endl;
-        }
-        success = false;
-      }
+  ctype maxRelativeError = 0;
+  for(unsigned int d=0; d<dim; d++)
+  {
+    ctype exact = analyticalSolution<ctype,dim>(t,p,d);
+    ctype relativeError = std::abs(integral[d]-exact) /
+                          (std::abs(integral[d])+std::abs(exact));
+    if (relativeError > maxRelativeError)
+      maxRelativeError = relativeError;
+  }
+  ctype epsilon = std::pow(2.0,double(p))*p*std::numeric_limits<double>::epsilon();
+  if (p==0)
+    epsilon = 2.0*std::numeric_limits<double>::epsilon();
+  if (maxRelativeError > epsilon) {
+    std::cerr << "Error: Quadrature for " << t << " and order=" << p << " failed" << std::endl;
+    for (unsigned int d=0; d<dim; d++)
+    {
+      ctype exact = analyticalSolution<ctype,dim>(t,p,d);
+      ctype relativeError = std::abs(integral[d]-exact) /
+                            (std::abs(integral[d])+std::abs(exact));
+      std::cerr << "       relative error " << relativeError << " in direction " << d << " (exact = " << exact << " numerical = " << integral[d] << ")" << std::endl;
     }
-    catch (Dune::QuadratureOrderOutOfRange & e) {
-      std::cout << "tested integration for " << t << std::endl;
-      break;
-    }
+    success = false;
+  }
 }
 
-template<class ctype, int dim>
-void checkWeights(Dune::GeometryType t, int p)
+template<class QuadratureRule>
+void checkWeights(const QuadratureRule &quad)
 {
+  typedef typename QuadratureRule::CoordType ctype;
+  const unsigned int dim = QuadratureRule::d;
+  const unsigned int p = quad.order();
+  const Dune::GeometryType& t = quad.type();
+  typedef typename QuadratureRule::iterator QuadIterator;
   double volume = 0;
-  // Quadratures
-  typedef Dune::QuadratureRule<ctype, dim> Quad;
-  typedef typename Quad::iterator QuadIterator;
-  const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(t, p);
-  if (quad.type() != t || quad.order() < p) {
-    std::cerr << "Error: Type mismatch! Requested Quadrature for " << t
-              << " and order=" << p << "." << std::endl
-              << "\tGot Quadrature for " << quad.type() << " and order="
-              << quad.order() << std::endl;
-    success = false;
-    return;
-  }
   QuadIterator qp = quad.begin();
   QuadIterator qend = quad.end();
   for (; qp!=qend; ++qp)
@@ -151,7 +138,7 @@ void checkWeights(Dune::GeometryType t, int p)
   }
   if (std::abs(volume -
                Dune::ReferenceElements<ctype, dim>::general(t).volume())
-      > 4*dim*(p ? p : 1)*std::numeric_limits<double>::epsilon())
+      > quad.size()*std::numeric_limits<double>::epsilon())
   {
     std::cerr << "Error: Quadrature for " << t << " and order=" << p
               << " does not sum to volume of RefElem" << std::endl;
@@ -165,88 +152,62 @@ void checkWeights(Dune::GeometryType t, int p)
 }
 
 template<class ctype, int dim>
-void checkWeights(Dune::GeometryType t)
+void check(const Dune::GeometryType::BasicType &btype,
+           unsigned int maxOrder,
+           Dune::QuadratureType::Enum qt = Dune::QuadratureType::Gauss)
 {
-  int maxorder;
-  for (int i=0;; i++)
+  typedef Dune::QuadratureRule<ctype, dim> Quad;
+  typedef typename Quad::iterator QuadIterator;
+  Dune::GeometryType t(btype,dim);
+  // unsigned int maxOrder;
+  // for (int i=0;; i++)
+  // {
+  //   try {
+  //     Dune::QuadratureRules<ctype,dim>::rule(t, i, qt);
+  //   }
+  //   catch (Dune::QuadratureOrderOutOfRange & e) {
+  //     maxOrder = i-1;
+  //     break;
+  //   }
+  // }
+  for (unsigned int p=0; p<=maxOrder; ++p)
   {
-    try {
-      checkWeights<ctype,dim>(t, i);
+    const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(t, p, qt);
+    if (quad.type() != t || unsigned(quad.order()) < p) {
+      std::cerr << "Error: Type mismatch! Requested Quadrature for " << t
+                << " and order=" << p << "." << std::endl
+                << "\tGot Quadrature for " << quad.type() << " and order="
+                << quad.order() << std::endl;
+      success = false;
+      return;
     }
-    catch (Dune::QuadratureOrderOutOfRange & e) {
-      maxorder = i-1;
-      break;
-    }
+    checkWeights(quad);
+    checkQuadrature(quad);
   }
-  for (int i=maxorder+1;; i++)
+  if (dim>0 && (dim>3 ||
+                btype==Dune::GeometryType::cube ||
+                btype==Dune::GeometryType::simplex))
   {
-    try {
-      checkWeights<ctype,dim>(t, i);
-    }
-    catch (Dune::QuadratureOrderOutOfRange & e) {
-      if (i > maxorder+1)
-      {
-        std::cout << "Error: " << t << " allows higher order in the second run." << std::endl;
-        std::cout << "       " << maxorder << " in the first run, "
-                  << i-1 << " in the second run." << std::endl;
-      }
-      std::cout << "tested weights for " << t << " up to max order = " << maxorder << std::endl;
-      break;
-    }
+    check<ctype,((dim==0) ? 0 : dim-1)>(btype, maxOrder, qt);
   }
 }
 
-int main ()
+int main (int argc, char** argv)
 {
-  try {
-    Dune::GeometryType cube0d( Dune::GenericGeometry::CubeTopology< 0 > ::type::id, 0 );
-    Dune::GeometryType cube1d( Dune::GenericGeometry::CubeTopology< 1 > ::type::id, 1 );
-    Dune::GeometryType cube2d( Dune::GenericGeometry::CubeTopology< 2 > ::type::id, 2 );
-    Dune::GeometryType cube3d( Dune::GenericGeometry::CubeTopology< 3 > ::type::id, 3 );
-    //Dune::GeometryType cube4d( Dune::GenericGeometry::CubeTopology< 4 > ::type::id );
-    //Dune::GeometryType cube5d( Dune::GenericGeometry::CubeTopology< 5 > ::type::id );
-    //Dune::GeometryType cube6d( Dune::GenericGeometry::CubeTopology< 6 > ::type::id );
-
-    Dune::GeometryType simplex0d( Dune::GenericGeometry::SimplexTopology< 0 > ::type::id, 0 );
-    Dune::GeometryType simplex1d( Dune::GenericGeometry::SimplexTopology< 1 > ::type::id, 1 );
-    Dune::GeometryType simplex2d( Dune::GenericGeometry::SimplexTopology< 2 > ::type::id, 2 );
-    Dune::GeometryType simplex3d( Dune::GenericGeometry::SimplexTopology< 3 > ::type::id, 3 );
-
-    Dune::GeometryType prism3d( Dune::GenericGeometry::PrismTopology< 3 > ::type::id, 3 );
-    Dune::GeometryType pyramid3d( Dune::GenericGeometry::PyramidTopology< 3 > ::type::id, 3 );
-
-    checkWeights<double, 0>(cube0d);
-    checkWeights<double, 1>(cube1d);
-    checkWeights<double, 2>(cube2d);
-    checkWeights<double, 3>(cube3d);
-    // checkWeights<double, 4>(cube4d);
-    // checkWeights<double, 5>(cube5d);
-    // checkWeights<double, 6>(cube6d);
-
-    checkWeights<double, 0>(simplex0d);
-    checkWeights<double, 1>(simplex1d);
-    checkWeights<double, 2>(simplex2d);
-    checkWeights<double, 3>(simplex3d);
-
-    checkWeights<double, 3>(prism3d);
-    checkWeights<double, 3>(pyramid3d);
-
-    checkQuadrature<double, 0>(cube0d);
-    checkQuadrature<double, 1>(cube1d);
-    checkQuadrature<double, 2>(cube2d);
-    checkQuadrature<double, 3>(cube3d);
-    // checkQuadrature<double, 4>(cube4d);
-    // checkQuadrature<double, 5>(cube5d);
-    // checkQuadrature<double, 6>(cube6d);
-
-    checkQuadrature<double, 0>(simplex0d);
-    checkQuadrature<double, 1>(simplex1d);
-    checkQuadrature<double, 2>(simplex2d);
-    checkQuadrature<double, 3>(simplex3d);
-    checkQuadrature<double, 3>(prism3d);
-    checkQuadrature<double, 3>(pyramid3d);
+  unsigned int maxOrder = 45;
+  if (argc > 1)
+  {
+    maxOrder = std::atoi(argv[1]);
+    std::cout << "maxOrder = " << maxOrder << std::endl;
   }
-  catch (Dune::Exception &e) {
+  try {
+    check<double,4>(Dune::GeometryType::cube, maxOrder);
+    check<double,4>(Dune::GeometryType::simplex, maxOrder);
+    check<double,3>(Dune::GeometryType::prism, maxOrder);
+    check<double,3>(Dune::GeometryType::pyramid, maxOrder);
+  }
+  catch( const Dune::Exception &e )
+  {
     std::cerr << e << std::endl;
     return 1;
   }
