@@ -14,3 +14,5 @@ libgenericgeometry_la_SOURCES = referencedomain.cc subtopologies.cc
 libgenericgeometry_la_LIBADD = $(DUNE_LIBS)
 
 include $(top_srcdir)/am/global-rules
+
+EXTRA_DIST = CMakeLists.txt
