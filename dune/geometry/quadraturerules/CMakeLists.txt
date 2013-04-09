@@ -9,7 +9,6 @@ install(FILES
 
 #build the library libquadraturerules
 dune_add_library(quadraturerules OBJECT
-  cube.cc
   gauss.cc
   jacobi_1_0.cc
   jacobi_2_0.cc
