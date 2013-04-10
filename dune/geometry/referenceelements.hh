@@ -115,7 +115,7 @@ namespace Dune
     /** \brief obtain the type of this reference element */
     const GeometryType &type () const { return type( 0, 0 ); }
 
-  private:
+  protected:
     void initialize ( unsigned int topologyId )
     {
       assert( topologyId < GenericGeometry::numTopologies( dim ) );
@@ -130,6 +130,7 @@ namespace Dune
       }
     }
 
+  private:
     std::vector< SubEntityInfo > info_[ dim+1 ];
   };
 
@@ -245,12 +246,13 @@ namespace Dune
 
     friend class ReferenceElementContainer< ctype, dim >;
 
+    template< int codim > struct CreateGeometries;
+
     // make copy constructor private
     ReferenceElement ( const This & );
 
+  protected:
     ReferenceElement () {}
-
-    template< int codim > struct CreateGeometries;
 
   public:
     using Base::type;
@@ -411,7 +413,7 @@ namespace Dune
       return integrationOuterNormal( face );
     }
 
-  private:
+  protected:
     void initialize ( unsigned int topologyId )
     {
       Base::initialize( topologyId );
@@ -450,6 +452,7 @@ namespace Dune
       Dune::ForLoop< CreateGeometries, 0, dim >::apply( *this, geometries_ );
     }
 
+  private:
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
     struct GeometryArray
