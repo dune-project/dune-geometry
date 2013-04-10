@@ -65,7 +65,6 @@ namespace Dune
     template< int codim > struct CreateGeometries;
 
   public:
-
     /** \brief Collection of types depending on the codimension */
     template< int codim >
     struct Codim
@@ -290,6 +289,13 @@ namespace Dune
      *  \param[in]  topologyId  topology id for the desired reference element
      */
     void initializeTopology ( unsigned int topologyId )
+    DUNE_DEPRECATED_MSG( "initializeTopology has never been an official interface method." )
+    {
+      initialize( topologyId );
+    }
+
+  private:
+    void initialize ( unsigned int topologyId )
     {
       assert( topologyId < GenericGeometry::numTopologies( dim ) );
 
@@ -335,7 +341,6 @@ namespace Dune
       Dune::ForLoop< CreateGeometries, 0, dim >::apply( *this, geometries_ );
     }
 
-  private:
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
     struct GeometryArray
@@ -472,7 +477,7 @@ namespace Dune
 
 
   // ReferenceElementContainer
-  // --------------------------------
+  // -------------------------
 
   template< class ctype, int dim >
   class ReferenceElementContainer
@@ -486,7 +491,7 @@ namespace Dune
     ReferenceElementContainer ()
     {
       for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
-        values_[ topologyId ].initializeTopology( topologyId );
+        values_[ topologyId ].initialize( topologyId );
     }
 
     const value_type &operator() ( const GeometryType &type ) const
