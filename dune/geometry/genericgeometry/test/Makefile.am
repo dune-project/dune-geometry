@@ -21,3 +21,5 @@ testmatrix_LDADD = $(LDADD) $(GMP_LIBS)
 testsimplexify_SOURCES = testsimplexify.cc
 
 include $(top_srcdir)/am/global-rules
+
+EXTRA_DIST = CMakeLists.txt
