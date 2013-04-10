@@ -414,7 +414,7 @@ namespace Dune
   private:
     void initialize ( unsigned int topologyId )
     {
-      Base::initialize( topologId );
+      Base::initialize( topologyId );
 
       // compute corners
       const unsigned int numVertices = Base::size( dim );
