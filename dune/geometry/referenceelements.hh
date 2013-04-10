@@ -115,11 +115,8 @@ namespace Dune
     /** \brief obtain the type of this reference element */
     const GeometryType &type () const { return type( 0, 0 ); }
 
-    /** \brief initialize the reference element
-     *
-     *  \param[in]  topologyId  topology id for the desired reference element
-     */
-    void initializeTopology ( unsigned int topologyId )
+  private:
+    void initialize ( unsigned int topologyId )
     {
       assert( topologyId < GenericGeometry::numTopologies( dim ) );
 
@@ -133,7 +130,6 @@ namespace Dune
       }
     }
 
-  private:
     std::vector< SubEntityInfo > info_[ dim+1 ];
   };
 
@@ -415,13 +411,10 @@ namespace Dune
       return integrationOuterNormal( face );
     }
 
-    /** \brief initialize the reference element
-     *
-     *  \param[in]  topologyId  topology id for the desired reference element
-     */
-    void initializeTopology ( unsigned int topologyId )
+  private:
+    void initialize ( unsigned int topologyId )
     {
-      Base::initializeTopology( topologyId );
+      Base::initialize( topologId );
 
       // compute corners
       const unsigned int numVertices = Base::size( dim );
@@ -457,7 +450,6 @@ namespace Dune
       Dune::ForLoop< CreateGeometries, 0, dim >::apply( *this, geometries_ );
     }
 
-  private:
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
     struct GeometryArray
@@ -533,7 +525,7 @@ namespace Dune
     ReferenceElementContainer ()
     {
       for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
-        values_[ topologyId ].initializeTopology( topologyId );
+        values_[ topologyId ].initialize( topologyId );
     }
 
     const value_type &operator() ( const GeometryType &type ) const
