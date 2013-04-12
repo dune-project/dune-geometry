@@ -12,10 +12,10 @@ the space \f$ \mathbf{R}^w \f$.
 The basic building block for these elements is given
 by a recursion formula which assignes to each
 set \f$ E \subset \mathbf{R}^d \f$ either 
-a pyramid element 
+a prism element 
 \f$ E^\vert\subset \mathbf{R}^{d+1} \f$
-and a prism element 
-\f$ E^\vert\subset \mathbf{R}^{d+1} \f$ with
+or a pyramid element 
+\f$ E^\circ\subset \mathbf{R}^{d+1} \f$ with
 \f$ E^\vert = \lbrace (x,\bar{x}) \mid 
              x \in E, \bar{x} \in [0,1] \rbrace \f$ and
 \f$ E^\circ = \lbrace ((1-\bar{x})x,\bar{x}) \mid 
@@ -31,13 +31,13 @@ For \f$ d=1,2,3 \f$ this leads to the following elements
 - \f$ d=3 \f$: 
   \f$ Q_3 = Q_2^\vert \f$ is a cube,
   \f$ S_3 = S_2^\circ \f$ is a simplex,
-  \f$ \mathrm{pyramid}_3 = S_2^\vert \f$ is a pyramind, and
-  \f$ \mathrm{prism}_3   = Q_2^\circ \f$ is a prism.
+  \f$ \mathrm{pyramid}_3 = Q_2^\circ \f$ is a pyramid, and
+  \f$ \mathrm{prism}_3   = S_2^\vert \f$ is a prism.
 .
 In general if 
 \f$ Q_d \f$ is a cube then \f$ Q_d^\vert \f$ is also a cube 
 and if 
-\f$ S_d \f$ is a simplex then \f$ S_d^\vert \f$ is also a simplex.
+\f$ S_d \f$ is a simplex then \f$ S_d^\circ \f$ is also a simplex.
 
 Based on the recursion formula we can also define 
 a numbering of the subentities and also of the
