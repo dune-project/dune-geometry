@@ -46,10 +46,10 @@ namespace Dune
     typedef typename TestGeometry::ctype ctype;
 
     // vector type used for points in the domain
-    typedef typename TestGeometry::LocalCoordinate LocalCoordinate;
+    typedef typename TestGeometry::LocalCoordinate LocalCoordinate DUNE_UNUSED;
 
     // vector type used for image points
-    typedef typename TestGeometry::GlobalCoordinate GlobalCoordinate;
+    typedef typename TestGeometry::GlobalCoordinate GlobalCoordinate DUNE_UNUSED;
 
     // Matrix-like type for the return value of the jacobianTransposed method
     typedef typename TestGeometry::JacobianTransposed JacobianTransposed;
