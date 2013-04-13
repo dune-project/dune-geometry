@@ -23,6 +23,8 @@ namespace Dune
    *  \tparam  maxdim   maximum dimension to associate values to
    *  \tparam  T        type of values
    *  \tparam  incnone  associate data to type none (defaults to true)
+   *
+   *  \note T must be default constructable and copyable
    */
 
   template< int mindim, int maxdim, class T, bool incnone = true >
@@ -50,6 +52,10 @@ namespace Dune
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
     /** \brief type of reverse iterator over mutable list */
     typedef typename Container::reverse_iterator reverse_iterator;
+
+    GeometryTypeMap () {}
+
+    GeometryTypeMap ( const value_type &value ) { fill( value ); }
 
     /** \brief random access to data associated to a geometry type
      *
