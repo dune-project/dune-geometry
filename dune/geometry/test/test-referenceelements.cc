@@ -55,7 +55,7 @@ try
   test(referenceLine.type(1,1).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement< double, 1 >::Codim< 0 >::Geometry &referenceLineGeometry = referenceLine.geometry< 0 >( 0 );
+  const ReferenceElement< double, 1 >::Codim< 0 >::Geometry referenceLineGeometry = referenceLine.geometry< 0 >( 0 );
   referenceLineGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ try
   test(referenceTriangle.type(2,2).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,2>::Codim< 0 >::Geometry &referenceTriangleGeometry = referenceTriangle.geometry< 0 >( 0 );
+  const ReferenceElement<double,2>::Codim< 0 >::Geometry referenceTriangleGeometry = referenceTriangle.geometry< 0 >( 0 );
   referenceTriangleGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ try
 
 
   // test the 'geometry' method
-  const ReferenceElement< double, 2 >::Codim< 0 >::Geometry &referenceQuadGeometry = referenceQuad.geometry< 0 >( 0 );
+  const ReferenceElement< double, 2 >::Codim< 0 >::Geometry referenceQuadGeometry = referenceQuad.geometry< 0 >( 0 );
   referenceQuadGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ try
     test(referenceTetra.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referenceTetraGeometry = referenceTetra.geometry< 0 >( 0 );
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry referenceTetraGeometry = referenceTetra.geometry< 0 >( 0 );
   referenceTetraGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
@@ -324,7 +324,7 @@ try
     test(referencePyramid.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referencePyramidGeometry = referencePyramid.geometry< 0 >( 0 );
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry referencePyramidGeometry = referencePyramid.geometry< 0 >( 0 );
   referencePyramidGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
@@ -390,7 +390,7 @@ try
     test(referencePrism.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referencePrismGeometry = referencePrism.geometry< 0 >( 0 );
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry referencePrismGeometry = referencePrism.geometry< 0 >( 0 );
   referencePrismGeometry.corner( 0 );
 
   // //////////////////////////////////////////////////////////////////////////
@@ -444,7 +444,7 @@ try
     test(referenceHexa.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry &referenceHexaGeometry = referenceHexa.geometry< 0 >( 0 );
+  const ReferenceElement< double, 3 >::Codim< 0 >::Geometry referenceHexaGeometry = referenceHexa.geometry< 0 >( 0 );
   referenceHexaGeometry.corner( 0 );
 
   return errors>0 ? 1 : 0;
