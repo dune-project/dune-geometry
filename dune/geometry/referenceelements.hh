@@ -69,8 +69,9 @@ namespace Dune
     template< int codim >
     struct Codim
     {
-      //! type of mapping embedding a subentity into the reference element
-      typedef AffineGeometry< ctype, dim-codim, dim > Mapping;
+      //! type of geometry embedding a subentity into the reference element
+      typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
+      typedef Geometry Mapping DUNE_DEPRECATED_MSG ( "Use Geometry instead." );
     };
 
     /** \brief number of subentities of codimension c
@@ -208,12 +209,13 @@ namespace Dune
      */
     template< int codim >
     FieldVector< ctype, dim >
+    DUNE_DEPRECATED_MSG( "Use geometry< codim >().global( local ) instead." )
     global( const FieldVector< ctype, dim-codim > &local, int i, int c ) const
     {
       if( c != codim )
         DUNE_THROW( Exception, "Local Coordinate Type does not correspond to codimension c." );
       assert( c == codim );
-      return mapping< codim >( i ).global( local );
+      return geometry< codim >( i ).global( local );
     }
 
     /** \brief map a local coordinate on subentity (i,codim) into the reference
@@ -236,9 +238,10 @@ namespace Dune
      */
     template< int codim >
     FieldVector< ctype, dim >
+    DUNE_DEPRECATED_MSG( "Use geometry< codim >().global( local ) instead." )
     global( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
-      return mapping< codim >( i ).global( local );
+      return geometry< codim >( i ).global( local );
     }
 
     /** \brief obtain the embedding of subentity (i,codim) into the reference
@@ -253,6 +256,25 @@ namespace Dune
      *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
      */
     template< int codim >
+    typename Codim< codim >::Geometry geometry ( int i ) const
+    {
+      integral_constant< int, codim > codimVariable;
+      return geometries_[ codimVariable ][ i ];
+    }
+
+    /** \brief obtain the embedding of subentity (i,codim) into the reference
+     *         element
+     *
+     *  Denote by E the i-th subentity of codimension codim of the current
+     *  reference element. This method returns a \ref Dune::AffineGeometry
+     *  that maps the reference element of E into the current reference element.
+     *
+     *  \tparam     codim  codimension of subentity E
+     *
+     *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
+     */
+    template< int codim >
+    DUNE_DEPRECATED_MSG( "Use geometry instead." )
     const typename Codim< codim >::Mapping &mapping( int i ) const
     {
       integral_constant< int, codim > codimVariable;

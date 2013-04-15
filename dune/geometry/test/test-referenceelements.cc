@@ -53,8 +53,8 @@ int main () try
   test(referenceLine.type(0,1).isVertex());
   test(referenceLine.type(1,1).isVertex());
 
-  // test the 'mapping' method
-  const ReferenceElement<double,1>::Codim<0>::Mapping& referenceLineMapping = referenceLine.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,1>::Codim<0>::Geometry referenceLineMapping = referenceLine.geometry< 0 >( 0 );
   referenceLineMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -121,8 +121,8 @@ int main () try
   test(referenceTriangle.type(1,2).isVertex());
   test(referenceTriangle.type(2,2).isVertex());
 
-  // test the 'mapping' method
-  const ReferenceElement<double,2>::Codim<0>::Mapping& referenceTriangleMapping = referenceTriangle.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,2>::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
   referenceTriangleMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -201,8 +201,8 @@ int main () try
   test(referenceQuad.type(3,2).isVertex());
 
 
-  // test the 'mapping' method
-  const ReferenceElement<double,2>::Codim<0>::Mapping& referenceQuadMapping = referenceQuad.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,2>::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
   referenceQuadMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -254,8 +254,8 @@ int main () try
   for (int i=0; i<referenceTetra.size(3); i++)
     test(referenceTetra.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  const ReferenceElement<double,3>::Codim<0>::Mapping& referenceTetraMapping = referenceTetra.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,3>::Codim<0>::Geometry referenceTetraMapping = referenceTetra.geometry< 0 >( 0 );
   referenceTetraMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -319,8 +319,8 @@ int main () try
   for (int i=0; i<referencePyramid.size(3); i++)
     test(referencePyramid.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  const ReferenceElement<double,3>::Codim<0>::Mapping& referencePyramidMapping = referencePyramid.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,3>::Codim<0>::Geometry referencePyramidMapping = referencePyramid.geometry< 0 >( 0 );
   referencePyramidMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -384,8 +384,8 @@ int main () try
   for (int i=0; i<referencePrism.size(3); i++)
     test(referencePrism.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  const ReferenceElement<double,3>::Codim<0>::Mapping& referencePrismMapping = referencePrism.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,3>::Codim<0>::Geometry referencePrismMapping = referencePrism.geometry< 0 >( 0 );
   referencePrismMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -436,8 +436,8 @@ int main () try
   for (int i=0; i<referenceHexa.size(3); i++)
     test(referenceHexa.type(i,3).isVertex());
 
-  // test the 'mapping' method
-  const ReferenceElement<double,3>::Codim<0>::Mapping& referenceHexaMapping = referenceHexa.mapping< 0 >( 0 );
+  // test the 'geometry' method
+  const ReferenceElement<double,3>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 );
   referenceHexaMapping.corner(0);
 
   return errors>0 ? 1 : 0;
