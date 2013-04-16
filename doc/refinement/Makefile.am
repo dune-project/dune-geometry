@@ -21,11 +21,16 @@ refinement.dvi: refinement.tex simplexvertexindex.eps referencetokuhn0.eps kuhnt
 .svg.eps:
 if INKSCAPE
 	$(INKSCAPE) --export-dpi=180 -e $@.png $< || { rm -f $@.png ; exit 1; }
+if CONVERT
 	$(CONVERT) $@.png EPS:$@.tmp || { rm -f $@.tmp ; exit 1; }
+else !CONVERT
+	echo Sorry, you need convert installed to convert .png into .eps
+	exit 1
+endif !CONVERT
 	mv $@.tmp $@
 	rm $@.png
 else !INKSCAPE
-	echo Sorry, you need inkscape installed to convert .svg into .eps
+	echo Sorry, you need inkscape installed to convert .svg into .png
 	exit 1
 endif !INKSCAPE
 
