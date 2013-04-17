@@ -36,8 +36,6 @@ namespace Dune
   struct AffineGeometryTraits
   {
     typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
-
-    struct UserData {};
   };
 
 
@@ -59,9 +57,6 @@ namespace Dune
     /** \brief dimension of the world space */
     static const int coorddimension = cdim;
 
-    /** \brief type of user data */
-    typedef typename Traits::UserData UserData;
-
     /** \brief type for local coordinate vector */
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
     /** \brief type for global coordinate vector */
@@ -71,9 +66,6 @@ namespace Dune
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
     /** \brief type for the transposed inverse Jacobian matrix */
     typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
-
-    // for compatibility, export the type JacobianInverseTransposed as Jacobian
-    typedef JacobianInverseTransposed Jacobian;
 
     /** \brief type of reference element */
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
@@ -85,90 +77,70 @@ namespace Dune
     // helper class to compute a matrix pseudo inverse
     typedef typename Traits::MatrixHelper MatrixHelper;
 
-    struct Storage
-      : public UserData
-    {
-      Storage ( const ReferenceElement &refEl, const GlobalCoordinate &org,
-                const JacobianTransposed &jt, const UserData &userData )
-        : UserData( userData ),
-          refElement( &refEl ),
-          origin( org ),
-          jacobianTransposed( jt )
-      {
-        integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
-      }
-
-      template< class CoordVector >
-      Storage ( const ReferenceElement &refEl, const CoordVector &coordVector,
-                const UserData &userData )
-        : UserData( userData ),
-          refElement( &refEl ),
-          origin( coordVector[ 0 ] )
-      {
-        for( int i = 0; i < mydimension; ++i )
-          jacobianTransposed[ i ] = coordVector[ i+1 ] - origin;
-        integrationElement = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed, jacobianInverseTransposed );
-      }
-
-      const ReferenceElement *refElement;
-      GlobalCoordinate origin;
-      JacobianTransposed jacobianTransposed;
-      JacobianInverseTransposed jacobianInverseTransposed;
-      ctype integrationElement;
-    };
-
   public:
     /** \brief constructor
      *
      *  \param[in]  refElement          reference element for this geometry
      *  \param[in]  origin              image of the origin under the geometric mapping
      *  \param[in]  jacobianTransposed  constant transposed Jacobian matrix of the mapping
-     *  \param[in]  userData            initial value for the user data
-     *                                  (optional, if UserData is default constructable)
      */
-    AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
-                     const JacobianTransposed &jt, const UserData &userData = UserData() )
-      : storage_( refElement, origin, jt, userData )
-    {}
+    AffineGeometry ( const ReferenceElement &refElement,
+                     const GlobalCoordinate &origin,
+                     const JacobianTransposed &jacobianTransposed )
+      : refElement_( &refElement ),
+        origin_( origin ),
+        jacobianTransposed_( jacobianTransposed )
+    {
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     /** \brief constructor
      *
      *  \param[in]  gt                  Dune::GeometryType describing the reference element
      *  \param[in]  origin              image of the origin under the geometric mapping
      *  \param[in]  jacobianTransposed  constant transposed Jacobian matrix of the mapping
-     *  \param[in]  userData            initial value for the user data
-     *                                  (optional, if UserData is default constructable)
      */
-    AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
-                     const JacobianTransposed &jt, const UserData &userData = UserData() )
-      : storage_( ReferenceElements::general( gt ), origin, jt, userData )
-    {}
+    AffineGeometry ( Dune::GeometryType gt,
+                     const GlobalCoordinate &origin,
+                     const JacobianTransposed &jacobianTransposed )
+      : refElement_( &ReferenceElements::general( gt ) ),
+        origin_( origin ),
+        jacobianTransposed_( jacobianTransposed )
+    {
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     /** \brief constructor
      *
      *  \param[in]  refElement          reference element for this geometry
      *  \param[in]  coordVector         vector of coordinates
-     *  \param[in]  userData            initial value for the user data
-     *                                  (optional, if UserData is default constructable)
      */
     template< class CoordVector >
-    AffineGeometry ( const ReferenceElement &refElement, const CoordVector &coordVector,
-                     const UserData &userData = UserData() )
-      : storage_( refElement, coordVector, userData )
-    {}
+    AffineGeometry ( const ReferenceElement &refElement,
+                     const CoordVector &coordVector )
+      : refElement_( &refElement ),
+        origin_( coordVector[ 0 ] )
+    {
+      for( int i = 0; i < mydimension; ++i )
+        jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     /** \brief constructor
      *
      *  \param[in]  gt                  Dune::GeometryType describing the reference element
      *  \param[in]  coordVector         vector of coordinates
-     *  \param[in]  userData            initial value for the user data
-     *                                  (optional, if UserData is default constructable)
      */
     template< class CoordVector >
-    AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector,
-                     const UserData &userData = UserData() )
-      : storage_( ReferenceElements::general( gt ), coordVector, userData )
-    {}
+    AffineGeometry ( Dune::GeometryType gt,
+                     const CoordVector &coordVector )
+      : refElement_( &ReferenceElements::general( gt ) ),
+        origin_( coordVector[ 0 ] )
+    {
+      for( int i = 0; i < mydimension; ++i )
+        jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
+      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
+    }
 
     /** \brief is this mapping affine? */
     bool affine () const { return true; }
@@ -196,8 +168,8 @@ namespace Dune
      */
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
-      GlobalCoordinate global( storage().origin );
-      storage().jacobianTransposed.umtv( local, global );
+      GlobalCoordinate global( origin_ );
+      jacobianTransposed_.umtv( local, global );
       return global;
     }
 
@@ -215,7 +187,7 @@ namespace Dune
     LocalCoordinate local ( const GlobalCoordinate &global ) const
     {
       LocalCoordinate local;
-      storage().jacobianInverseTransposed.mtv( global - storage().origin, local );
+      jacobianInverseTransposed_.mtv( global - origin_, local );
       return local;
     }
 
@@ -231,13 +203,13 @@ namespace Dune
      */
     ctype integrationElement ( const LocalCoordinate &local ) const
     {
-      return storage().integrationElement;
+      return integrationElement_;
     }
 
     /** \brief obtain the volume of the mapping's image */
     ctype volume () const
     {
-      return storage().integrationElement * refElement().volume();
+      return integrationElement_ * refElement().volume();
     }
 
     /** \brief obtain the transposed of the Jacobian
@@ -251,7 +223,7 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianTransposed;
+      return jacobianTransposed_;
     }
 
     /** \brief obtain the transposed of the Jacobian's inverse
@@ -262,20 +234,18 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
     {
-      return storage().jacobianInverseTransposed;
+      return jacobianInverseTransposed_;
     }
 
-    const UserData &userData () const { return storage_; }
-    UserData &userData () { return storage_; }
-
   protected:
-    const Storage &storage () const { return storage_; }
-    Storage &storage () { return storage_; }
-
-    const ReferenceElement &refElement () const { return *storage().refElement; }
+    const ReferenceElement &refElement () const { return *refElement_; }
 
   private:
-    Storage storage_;
+    const ReferenceElement *refElement_;
+    GlobalCoordinate origin_;
+    JacobianTransposed jacobianTransposed_;
+    JacobianInverseTransposed jacobianInverseTransposed_;
+    ctype integrationElement_;
   };
 
 } // namespace Dune
