@@ -116,12 +116,6 @@ namespace Dune
       static const bool v = false;
       static const unsigned int topologyId = ~0u;
     };
-
-    /** \brief type of user data
-
-        This is used by GeometryGrid to implement reference-counted geometries.
-     */
-    struct UserData {};
   };
 
 
@@ -170,8 +164,6 @@ namespace Dune
 
         For example, GeometryGrid uses this to implement reference counting.
      */
-    typedef typename Traits::UserData UserData;
-
     //! type of local coordinates
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
     //! type of global coordinates
@@ -201,60 +193,45 @@ namespace Dune
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
   private:
-    struct Storage
-      : public UserData
-    {
-      template< class CornerStorage >
-      Storage ( const ReferenceElement &refEl, const CornerStorage &cornerStorage,
-                const UserData &userData )
-        : UserData( userData ),
-          refElement( &refEl ),
-          corners( cornerStorage )
-      {}
-
-      const ReferenceElement *refElement;
-      typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners;
-    };
-
     typedef typename Traits::template CornerStorage< mydimension, coorddimension >::Type::const_iterator CornerIterator;
 
   public:
     /** \brief constructor
      *
-     *  \param[in]  refElement     reference element for the geometry
-     *  \param[in]  cornerStorage  corner storage to store internally
-     *  \param[in]  userData       user data to store (optional, if default constructable)
+     *  \param[in]  refElement  reference element for the geometry
+     *  \param[in]  corners     corners to store internally
      *
-     *  \note The type of cornerStorage is actually a template argument.
+     *  \note The type of corners is actually a template argument.
      *        It is only required that the internal corner storage can be
      *        constructed from this object.
      */
-    template< class CornerStorage >
-    MultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
-                          const UserData &userData = UserData() )
-      : storage_( refElement, cornerStorage, userData )
+    template< class Corners >
+    MultiLinearGeometry ( const ReferenceElement &refElement,
+                          const Corners &corners )
+      : refElement_( &refElement ),
+        corners_( corners )
     {}
 
     /** \brief constructor
      *
-     *  \param[in]  gt             geometry type
-     *  \param[in]  cornerStorage  corner storage to store internally
-     *  \param[in]  userData       user data to store (optional, if default constructable)
+     *  \param[in]  gt          geometry type
+     *  \param[in]  corners     corners to store internally
      *
-     *  \note The type of cornerStorage is actually a template argument.
+     *  \note The type of corners is actually a template argument.
      *        It is only required that the internal corner storage can be
      *        constructed from this object.
      */
-    template< class CornerStorage >
-    MultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
-                          const UserData &userData = UserData() )
-      : storage_( ReferenceElements::general( gt ), cornerStorage, userData )
+    template< class Corners >
+    MultiLinearGeometry ( Dune::GeometryType gt,
+                          const Corners &corners )
+      : refElement_( &ReferenceElements::general( gt ) ),
+        corners_( corners )
     {}
 
     /** \brief is this mapping affine? */
     bool affine () const
     {
-      CornerIterator cit = storage().corners.begin();
+      CornerIterator cit = corners_.begin();
       return affine( topologyId(), integral_constant< int, mydimension >(), cit, jacobianTransposed_ );
     }
 
@@ -268,7 +245,7 @@ namespace Dune
     GlobalCoordinate corner ( int i ) const
     {
       assert( (i >= 0) && (i < corners()) );
-      return storage().corners[ i ];
+      return corners_[ i ];
     }
 
     /** \brief obtain the centroid of the mapping's image */
@@ -282,7 +259,7 @@ namespace Dune
      */
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
-      CornerIterator cit = storage().corners.begin();
+      CornerIterator cit = corners_.begin();
       GlobalCoordinate y;
       global< false >( topologyId(), integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), y );
       return y;
@@ -358,7 +335,7 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
-      CornerIterator cit = storage().corners.begin();
+      CornerIterator cit = corners_.begin();
       jacobianTransposed< false >( topologyId(), integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jacobianTransposed_ );
       return jacobianTransposed_;
     }
@@ -371,16 +348,8 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const;
 
-    /** \brief read-only access to the internal user data */
-    const UserData &userData () const { return storage_; }
-    /** \brief read-write access to the internal user data */
-    UserData &userData () { return storage_; }
-
   protected:
-    const Storage &storage () const { return storage_; }
-    Storage &storage () { return storage_; }
-
-    const ReferenceElement &refElement () const { return *storage().refElement; }
+    const ReferenceElement &refElement () const { return *refElement_; }
 
     TopologyId topologyId () const
     {
@@ -417,7 +386,8 @@ namespace Dune
     mutable JacobianInverseTransposed jacobianInverseTransposed_;
 
   private:
-    Storage storage_;
+    const ReferenceElement *refElement_;
+    typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners_;
   };
 
 
@@ -475,7 +445,6 @@ namespace Dune
 
   public:
     typedef typename Base::ReferenceElement ReferenceElement;
-    typedef typename Base::UserData UserData;
 
     typedef typename Base::ctype ctype;
 
@@ -489,18 +458,16 @@ namespace Dune
     typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
 
     template< class CornerStorage >
-    CachedMultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage,
-                                const UserData &userData = UserData() )
-      : Base( refElement, cornerStorage, userData ),
+    CachedMultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage )
+      : Base( refElement, cornerStorage ),
         affine_( Base::affine() ),
         jacobianInverseTransposedComputed_( false ),
         integrationElementComputed_( false )
     {}
 
     template< class CornerStorage >
-    CachedMultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage,
-                                const UserData &userData = UserData() )
-      : Base( gt, cornerStorage, userData ),
+    CachedMultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage )
+      : Base( gt, cornerStorage ),
         affine_( Base::affine() ),
         jacobianInverseTransposedComputed_( false ),
         integrationElementComputed_( false )
