@@ -490,7 +490,7 @@ namespace Dune
       geometries[ codimVariable ].reserve( size );
       for( int i = 0; i < size; ++i )
       {
-        typename Codim< codim >::Mapping geometry( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
+        typename Codim< codim >::Geometry geometry( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
         geometries[ codimVariable ].push_back( geometry );
       }
     }
