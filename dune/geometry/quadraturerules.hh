@@ -12,6 +12,7 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/exceptions.hh>
 #include <dune/common/stdstreams.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/type.hh>
 
@@ -174,7 +175,7 @@ namespace Dune {
     typedef Dune::QuadratureRule<ctype, dim> QuadratureRule;
 
     //! real rule creator
-    const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::Gauss)
+    DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::Gauss)
     {
       static std::map<QuadratureRuleKey, QuadratureRule> _quadratureMap;
       QuadratureRuleKey key(t,p);
@@ -191,7 +192,7 @@ namespace Dune {
       return _quadratureMap[key];
     }
     //! singleton provider
-    static QuadratureRules& instance()
+    DUNE_EXPORT static QuadratureRules& instance()
     {
       static QuadratureRules instance;
       return instance;

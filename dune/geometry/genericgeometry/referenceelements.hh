@@ -11,6 +11,7 @@
 #include <dune/common/array.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/genericgeometry/referencedomain.hh>
 
@@ -83,7 +84,7 @@ namespace Dune
         return ReferenceDomain< Topology > :: template volume< ctype >();
       }
 
-      static const ReferenceElement &instance ()
+      DUNE_EXPORT static const ReferenceElement &instance ()
       {
         static ReferenceElement inst;
         return inst;

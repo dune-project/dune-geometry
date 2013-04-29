@@ -5,6 +5,7 @@
 
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/visibility.hh>
 
 #include "mapping.hh"
 #include "subtopologies.hh"
@@ -74,7 +75,7 @@ namespace Dune
         ForLoop< Builder, 0, numSubTopologies-1 >::apply( construct_ );
       }
 
-      static const This &instance ()
+      DUNE_EXPORT static const This &instance ()
       {
         static This theInstance;
         return theInstance;

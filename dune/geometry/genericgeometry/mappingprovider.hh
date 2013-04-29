@@ -4,6 +4,7 @@
 #define DUNE_GEOMETRY_GENERICGEOMETRY_MAPPINGPROVIDER_HH
 
 #include <dune/common/typetraits.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/genericgeometry/maximum.hh>
 #include <dune/geometry/genericgeometry/cachedmapping.hh>
@@ -77,14 +78,14 @@ namespace Dune
       static const unsigned int maxMappingSize = Maximum< MappingSize, 0, ((numTopologies > 0) ? (numTopologies-1) : 0) >::v;
 
       template< class CoordVector >
-      static Mapping*
+      DUNE_EXPORT static Mapping*
       construct ( const unsigned int topologyId, const CoordVector &coords, char *mappingStorage )
       {
         static ConstructorTable< CoordVector > construct;
         return construct[ topologyId ]( coords, mappingStorage );
       }
 
-      static std::size_t mappingSize ( const unsigned int topologyId )
+      DUNE_EXPORT static std::size_t mappingSize ( const unsigned int topologyId )
       {
         static MappingSizeCache mappingSize;
         return mappingSize[ topologyId ];

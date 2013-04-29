@@ -11,6 +11,7 @@
 #include <dune/common/forloop.hh>
 #include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/genericgeometry/codimtable.hh>
@@ -583,7 +584,7 @@ namespace Dune
     static Iterator end () { return container().end(); }
 
   private:
-    static const ReferenceElementContainer< ctype, dim > &container ()
+    DUNE_EXPORT static const ReferenceElementContainer< ctype, dim > &container ()
     {
       static ReferenceElementContainer< ctype, dim > container;
       return container;
