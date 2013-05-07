@@ -18,5 +18,9 @@ dune-geometry-*.tar.gz
 dune-geometry-?.?
 ltmain.sh
 am
-.libs
-
+.libs/
+.deps/
+*.la
+*.lo
+*.o
+test-driver
