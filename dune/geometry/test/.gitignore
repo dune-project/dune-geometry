@@ -1,6 +1,5 @@
 Makefile
 Makefile.in
-.deps
 test-affinegeometry
 test-axisalignedcubegeometry
 test-multilineargeometry
@@ -8,4 +7,5 @@ test-quadrature
 test-referenceelements
 test-geometrytype
 test-refinement
-
+*.log
+*.trs
