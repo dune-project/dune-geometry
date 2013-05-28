@@ -159,17 +159,7 @@ void check(const Dune::GeometryType::BasicType &btype,
   typedef Dune::QuadratureRule<ctype, dim> Quad;
   typedef typename Quad::iterator QuadIterator;
   Dune::GeometryType t(btype,dim);
-  // unsigned int maxOrder;
-  // for (int i=0;; i++)
-  // {
-  //   try {
-  //     Dune::QuadratureRules<ctype,dim>::rule(t, i, qt);
-  //   }
-  //   catch (Dune::QuadratureOrderOutOfRange & e) {
-  //     maxOrder = i-1;
-  //     break;
-  //   }
-  // }
+
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
     const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(t, p, qt);
