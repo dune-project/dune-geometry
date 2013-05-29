@@ -2,6 +2,7 @@
 
 quadraturerulesdir = $(includedir)/dune/geometry/quadraturerules
 quadraturerules_HEADERS =		\
+	compositequadraturerule.hh 	\
 	pointquadrature.hh			\
 	simplexquadrature.hh		\
 	genericquadrature.hh		\

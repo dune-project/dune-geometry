@@ -1,4 +1,5 @@
 install(FILES
+  compositequadraturerule.hh
   pointquadrature.hh
   simplexquadrature.hh
   genericquadrature.hh
