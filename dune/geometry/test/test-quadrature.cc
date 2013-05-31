@@ -7,6 +7,7 @@
 
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/quadraturerules.hh>
+#include <dune/geometry/quadraturerules/compositequadraturerule.hh>
 
 bool success = true;
 
@@ -182,6 +183,34 @@ void check(const Dune::GeometryType::BasicType &btype,
   }
 }
 
+template<class ctype, int dim>
+void checkCompositeRule(const Dune::GeometryType::BasicType &btype,
+                        unsigned int maxOrder,
+                        unsigned int maxRefinement,
+                        Dune::QuadratureType::Enum qt = Dune::QuadratureType::Gauss)
+{
+  typedef Dune::QuadratureRule<ctype, dim> BaseQuad;
+  typedef Dune::CompositeQuadratureRule<ctype, dim> Quad;
+
+  typedef typename Quad::iterator QuadIterator;
+  Dune::GeometryType t(btype,dim);
+
+  for (unsigned int p=0; p<=maxOrder; ++p)
+  {
+    const BaseQuad& baseQuad = Dune::QuadratureRules<ctype,dim>::rule(t, p, qt);
+    Quad quad = Quad(baseQuad, maxRefinement);
+
+    checkWeights(quad);
+    checkQuadrature(quad);
+  }
+  if (dim>0 && (dim>3 ||
+                btype==Dune::GeometryType::cube ||
+                btype==Dune::GeometryType::simplex))
+  {
+    check<ctype,((dim==0) ? 0 : dim-1)>(btype, maxOrder, qt);
+  }
+}
+
 int main (int argc, char** argv)
 {
   unsigned int maxOrder = 45;
@@ -195,6 +224,10 @@ int main (int argc, char** argv)
     check<double,4>(Dune::GeometryType::simplex, maxOrder);
     check<double,3>(Dune::GeometryType::prism, maxOrder);
     check<double,3>(Dune::GeometryType::pyramid, maxOrder);
+
+    unsigned int maxRefinement = 4;
+
+    checkCompositeRule<double,2>(Dune::GeometryType::simplex, maxOrder, maxRefinement);
   }
   catch( const Dune::Exception &e )
   {
