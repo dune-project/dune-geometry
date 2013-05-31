@@ -393,14 +393,19 @@ namespace Dune
         Dune::FieldVector<CoordType,dimension> lower;
         Dune::FieldVector<CoordType,dimension> upper;
 
-        for (size_t j = 0; j < dimension; j++)
-        {
-          lower[j] = double(intCoords[j])     / double(1<<_level);
-          upper[j] = double(intCoords[j] + 1) / double(1<<_level);
+        assert(codimension == 0 or codimension == dimension);
+
+        if (codimension == 0) {
+          for (size_t j = 0; j < dimension; j++)
+          {
+            lower[j] = double(intCoords[j])     / double(1<<_level);
+            upper[j] = double(intCoords[j] + 1) / double(1<<_level);
+          }
+        } else {
+          for (size_t j = 0; j < dimension; j++)
+            lower[j] = upper[j] = double(intCoords[j])     / double(1<<_level);
         }
 
-        // The implementation for codimension>0 is still missing (or not needed?)
-        assert(codimension == 0);
         return typename RefinementImp<dimension,
             CoordType>::template Codim<codimension>::Geometry(lower,upper);
       }

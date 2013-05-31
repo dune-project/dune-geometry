@@ -519,6 +519,7 @@ namespace Dune {
       public:
         typedef RefinementImp<dimension, CoordType> Refinement;
         typedef typename Refinement::CoordVector CoordVector;
+        typedef typename Refinement::template Codim<dimension>::Geometry Geometry;
         typedef RefinementIteratorSpecial<dimension, CoordType, dimension> This;
 
         RefinementIteratorSpecial(int level, bool end = false);
@@ -527,6 +528,8 @@ namespace Dune {
         bool equals(const This &other) const;
 
         CoordVector coords() const;
+        Geometry geometry () const;
+
         int index() const;
       protected:
         typedef FieldVector<int, dimension> Vertex;
@@ -579,6 +582,15 @@ namespace Dune {
         for(int i = 0; i < dimension; ++i)
           coords[i] = CoordType(ref[i]) / size;
         return coords;
+      }
+
+      template<int dimension, class CoordType>
+      typename RefinementIteratorSpecial<dimension, CoordType, dimension>::Geometry
+      RefinementIteratorSpecial<dimension, CoordType, dimension>::geometry () const
+      {
+        std::vector<CoordVector> corners(1);
+        corners[0] = (CoordVector)vertex;
+        return Geometry(GeometryType(0), corners);
       }
 
       template<int dimension, class CoordType>

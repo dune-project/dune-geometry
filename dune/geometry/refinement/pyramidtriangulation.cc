@@ -167,12 +167,16 @@ namespace Dune
       public:
         typedef RefinementImp<dimension, CoordType> Refinement;
         typedef typename Refinement::CoordVector CoordVector;
+        typedef typename Refinement::template Codim<dimension>::Geometry Geometry;
 
         RefinementIteratorSpecial(int level, bool end = false);
 
         void increment();
 
         CoordVector coords() const;
+
+        Geometry geometry() const;
+
         int index() const;
       protected:
         typedef typename Refinement::BackendRefinement BackendRefinement;
@@ -217,6 +221,15 @@ namespace Dune
       {
         return transformCoordinate(referenceToKuhn(backend.coords(),
                                                    getPermutation<dimension>(kuhnIndex)));
+      }
+
+      template<int dimension, class CoordType>
+      typename RefinementIteratorSpecial<dimension, CoordType, dimension>::Geometry
+      RefinementIteratorSpecial<dimension, CoordType, dimension>::geometry () const
+      {
+        std::vector<CoordVector> corners(1);
+        corners[0] = referenceToKuhn(backend.coords(), getPermutation<dimension>(kuhnIndex));
+        return Geometry(GeometryType(0), corners);
       }
 
       template<int dimension, class CoordType>
