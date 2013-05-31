@@ -114,6 +114,7 @@ void testStaticRefinementGeometry(int &result, int refinement)
 
   typedef Dune::StaticRefinement<topologyId, ct, coerceToId, dim> Refinement;
   typedef typename Refinement::ElementIterator eIterator;
+  typedef typename Refinement::VertexIterator vIterator;
 
   eIterator eSubEnd = Refinement::eEnd(refinement);
   eIterator eSubIt  = Refinement::eBegin(refinement);
@@ -122,6 +123,15 @@ void testStaticRefinementGeometry(int &result, int refinement)
   {
     // Call the standard test for geometries
     collect(result, checkGeometry(eSubIt.geometry()));
+  }
+
+  vIterator vSubEnd = Refinement::vEnd(refinement);
+  vIterator vSubIt  = Refinement::vBegin(refinement);
+
+  for (; vSubIt != vSubEnd; ++vSubIt)
+  {
+    // Call the standard test for geometries
+    collect(result, checkGeometry(vSubIt.geometry()));
   }
 }
 
