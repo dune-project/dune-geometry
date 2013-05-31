@@ -126,6 +126,11 @@ int main (int argc , char **argv) try
   testCodimNonZero<2,3>(result);
   testCodimNonZero<3,3>(result);
 
+  // Test what happens when a zero-dimensional geometry (a point) is
+  // constructed with the codim-zero constructor (taking lower and upper
+  // corners).
+  testCodimZero<0,3>(result);
+
   return result;
 }
 catch (Dune::Exception& e) {
