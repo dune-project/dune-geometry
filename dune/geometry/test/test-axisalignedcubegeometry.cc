@@ -56,8 +56,8 @@ void testCodimZero(int& result)
 
   typedef AxisAlignedCubeGeometry<double, dim, coorddim> ElementGeometry;
 
-  FieldVector<double,dim> lower(0);
-  FieldVector<double,dim> upper(1);
+  FieldVector<double,coorddim> lower(0);
+  FieldVector<double,coorddim> upper(1);
 
   ElementGeometry geometry( lower, upper );
 
