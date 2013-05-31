@@ -285,6 +285,9 @@ namespace Dune {
     // jacobianTransposed: slow case --> dense matrix
     void jacobianTransposed ( FieldMatrix<ctype,dim,coorddim> &jacobianTransposed ) const
     {
+      if (dim==0)
+          return;
+
       size_t lc = 0;
       for (size_t i=0; i<coorddim; i++)
         if (axes_[i])
@@ -301,6 +304,9 @@ namespace Dune {
     // jacobianInverseTransposed: slow case --> dense matrix
     void jacobianInverseTransposed ( FieldMatrix<ctype,coorddim,dim> &jacobianInverseTransposed ) const
     {
+      if (dim==0)
+          return;
+
       size_t lc = 0;
       for (size_t i=0; i<coorddim; i++)
         if (axes_[i])
