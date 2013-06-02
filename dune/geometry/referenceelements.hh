@@ -201,15 +201,10 @@ namespace Dune
      *  \param[in]  c      codimension of subentity E
      *
      *  \note The runtime argument c is redundant and must equal codim.
-     *
-     *  \note This method is just an alias for
-     *  \code
-     *  geometry< codim >( i ).global( local );
-     *  \endcode
      */
     template< int codim >
     FieldVector< ctype, dim >
-    DUNE_DEPRECATED_MSG( "Use geometry< codim >().global( local ) instead." )
+    DUNE_DEPRECATED_MSG( "Use geometry< codim >( i ).global( local ) instead." )
     global( const FieldVector< ctype, dim-codim > &local, int i, int c ) const
     {
       if( c != codim )
@@ -230,15 +225,10 @@ namespace Dune
      *  \param[in]  local  coordinates of the point with respect to the reference
      *                     element of E
      *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
-     *
-     *  \note This method is just an alias for
-     *  \code
-     *  geometry< codim >( i ).global( local );
-     *  \endcode
      */
     template< int codim >
     FieldVector< ctype, dim >
-    DUNE_DEPRECATED_MSG( "Use geometry< codim >().global( local ) instead." )
+    DUNE_DEPRECATED_MSG( "Use geometry< codim >( i ).global( local ) instead." )
     global( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
       return geometry< codim >( i ).global( local );
@@ -274,7 +264,7 @@ namespace Dune
      *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
      */
     template< int codim >
-    DUNE_DEPRECATED_MSG( "Use geometry instead." )
+    DUNE_DEPRECATED_MSG( "Use geometry(i) instead." )
     const typename Codim< codim >::Mapping &mapping( int i ) const
     {
       integral_constant< int, codim > codimVariable;
