@@ -75,11 +75,7 @@ namespace Dune {
       Jacobian_1_0 = 1,
       Jacobian_2_0 = 2,
 
-      Simpson    = 3,
-      Trap       = 4,
-      Grid       = 5,
-
-      Clough     = 21,
+      GaussLobatto = 4,
 
       Invalid_Rule = 127
     };
@@ -410,6 +406,73 @@ namespace Dune {
 #define DUNE_INCLUDING_IMPLEMENTATION
 #include "quadraturerules/jacobi_2_0_imp.hh"
 
+namespace Dune {
+
+  //! \internal Helper template for the initialization of the quadrature rules
+  template<typename ct,
+      bool fundamental = std::numeric_limits<ct>::is_specialized>
+  struct GaussLobattoQuadratureInitHelper;
+  template<typename ct>
+  struct GaussLobattoQuadratureInitHelper<ct, true> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+  template<typename ct>
+  struct GaussLobattoQuadratureInitHelper<ct, false> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+
+  /** \brief Jacobi-Gauss quadrature for alpha=2, beta=0
+      \ingroup Quadrature
+   */
+  template<typename ct>
+  class GaussLobattoQuadratureRule1D :
+    public QuadratureRule<ct,1>
+  {
+  public:
+    /** \brief The space dimension */
+    enum { dim=1 };
+
+    /** \brief The highest quadrature order available */
+    enum { highest_order=61 };
+
+    ~GaussLobattoQuadratureRule1D(){}
+  private:
+    friend class QuadratureRuleFactory<ct,dim>;
+    GaussLobattoQuadratureRule1D (int p)
+      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+    {
+      //! set up quadrature of given order in d dimensions
+      std::vector< FieldVector<ct, dim> > _points;
+      std::vector< ct > _weight;
+
+      int delivered_order;
+
+      GaussLobattoQuadratureInitHelper<ct>::init
+        (p, _points, _weight, delivered_order);
+
+      this->delivered_order = delivered_order;
+      assert(_points.size() == _weight.size());
+      for (size_t i = 0; i < _points.size(); i++)
+        this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
+    }
+  };
+
+#ifndef DOXYGEN
+  extern template GaussLobattoQuadratureRule1D<float>::GaussLobattoQuadratureRule1D(int);
+  extern template GaussLobattoQuadratureRule1D<double>::GaussLobattoQuadratureRule1D(int);
+#endif // !DOXYGEN
+
+} // namespace Dune
+
+#define DUNE_INCLUDING_IMPLEMENTATION
+#include "quadraturerules/gausslobatto_imp.hh"
+
 #include "quadraturerules/genericquadrature.hh"
 
 #include "quadraturerules/simplexquadrature.hh"
@@ -640,6 +703,8 @@ namespace Dune {
           return Jacobi1QuadratureRule1D<ctype>(p);
         case QuadratureType::Jacobian_2_0 :
           return Jacobi2QuadratureRule1D<ctype>(p);
+        case QuadratureType::GaussLobatto :
+          return GaussLobattoQuadratureRule1D<ctype>(p);
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }

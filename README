@@ -70,4 +70,3 @@ for further options.
 The full build-system is described in the dune-common/doc/buildsystem (SVN version) or under share/doc/dune-common/buildsystem if you installed DUNE!
 
 $Id: duneproject 5232 2008-07-03 09:34:11Z christi $
-
