@@ -1,0 +1,38 @@
+/*
+ * Run `maxima --batch jacobian.mac'.
+ */
+
+/* adjust search path */
+file_search_maxima: append(["$$$.{mac,max}"],file_search_maxima);
+
+load(orthopoly)$
+load(stringproc)$
+load(writequad)$
+
+orthopoly_returns_intervals : false;
+
+fpprec: 120$
+fpprintprec: 100$
+maxp: 30$
+/* float2bf: false$ */
+
+/* points are given as the roots of (x^2-1)*L_p(x) */
+point(n) := (x^2-1)*diff(legendre_p(n,x),x)$
+weight(n,xx) := ratsimp(2/((n*(n+1))*legendre_p(n,xx)^2))$
+
+/*
+  write files
+*/
+
+/* num-points 4 */
+write_quad("gausslobatto_imp.hh", "GaussLobatto", "gausslobatto.mac",
+		   lambda([i],point(i)),
+           lambda([i,p],weight(i,p)),
+		   maxp)$
+
+/*
+ * Local variables:
+ * mode: maxima
+ * compile-command: "maxima --batch jacobian.mac"
+ * End:
+ */
