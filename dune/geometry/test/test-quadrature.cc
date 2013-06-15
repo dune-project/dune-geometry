@@ -202,6 +202,7 @@ int main (int argc, char** argv)
   }
   try {
     check<double,4>(Dune::GeometryType::cube, maxOrder);
+    check<double,4>(Dune::GeometryType::cube, maxOrder,Dune::QuadratureType::GaussLobatto);
     check<double,4>(Dune::GeometryType::simplex, maxOrder);
     check<double,3>(Dune::GeometryType::prism, maxOrder);
     check<double,3>(Dune::GeometryType::pyramid, maxOrder);
