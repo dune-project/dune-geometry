@@ -14,6 +14,7 @@ dune_add_library(quadraturerules OBJECT
   jacobi_1_0.cc
   jacobi_2_0.cc
   quadraturerules.cc
+  gausslobatto.cc
 )
 
 
