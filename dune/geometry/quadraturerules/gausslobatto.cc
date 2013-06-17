@@ -9,4 +9,4 @@ namespace Dune {
   template GaussLobattoQuadratureRule1D<float>::GaussLobattoQuadratureRule1D(int);
   template GaussLobattoQuadratureRule1D<double>::GaussLobattoQuadratureRule1D(int);
 
-} // namespace
+} // namespace Dune
