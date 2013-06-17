@@ -4,6 +4,7 @@ install(FILES
   simplexquadrature.hh
   genericquadrature.hh
   gauss_imp.hh
+  gausslobatto_imp.hh
   jacobi_1_0_imp.hh
   jacobi_2_0_imp.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
