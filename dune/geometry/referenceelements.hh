@@ -13,6 +13,7 @@
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/affinegeometry.hh>
+#include <dune/geometry/genericgeometry/codimtable.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
 
@@ -356,7 +357,7 @@ namespace Dune
     /** \brief Stores all subentities of a given codimension */
     template< int codim >
     struct GeometryArray
-      : public std::vector< typename Codim< codim >::Mapping >
+    : public std::vector< typename Codim< codim >::Geometry >
     {};
 
     /** \brief Type to store all subentities of all codimensions */

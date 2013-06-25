@@ -11,7 +11,6 @@
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
-#include <dune/geometry/genericgeometry/codimtable.hh>
 
 namespace Dune
 {
