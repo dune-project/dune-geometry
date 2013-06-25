@@ -6,6 +6,7 @@
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
 
+#include <dune/geometry/genericgeometry/codimtable.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
 #include <dune/geometry/genericgeometry/hybridmapping.hh>
