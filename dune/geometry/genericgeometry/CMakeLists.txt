@@ -22,6 +22,3 @@ dune_add_library(genericgeometry OBJECT
   referencedomain.cc
   subtopologies.cc
   )
-# Install some test headers, because they get used by tests in other modules
-# We do this here as test will not be considered for make install
-install(FILES test/checkgeometry.hh DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/genericgeometry/test)
