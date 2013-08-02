@@ -158,7 +158,6 @@ void check(const Dune::GeometryType::BasicType &btype,
            Dune::QuadratureType::Enum qt = Dune::QuadratureType::Gauss)
 {
   typedef Dune::QuadratureRule<ctype, dim> Quad;
-  typedef typename Quad::iterator QuadIterator;
   Dune::GeometryType t(btype,dim);
 
   for (unsigned int p=0; p<=maxOrder; ++p)
@@ -192,7 +191,6 @@ void checkCompositeRule(const Dune::GeometryType::BasicType &btype,
   typedef Dune::QuadratureRule<ctype, dim> BaseQuad;
   typedef Dune::CompositeQuadratureRule<ctype, dim> Quad;
 
-  typedef typename Quad::iterator QuadIterator;
   Dune::GeometryType t(btype,dim);
 
   for (unsigned int p=0; p<=maxOrder; ++p)
