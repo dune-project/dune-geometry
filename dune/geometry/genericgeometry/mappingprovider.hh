@@ -241,7 +241,7 @@ namespace Dune
           < typename SubTopology< Topology, codim, 0 >::type, GeometryTraits >
       {};
 
-      typedef typename SelectType< hybrid, HybridFactory<true>, NonHybridFactory<false> >::Type Factory;
+      typedef typename conditional< hybrid, HybridFactory<true>, NonHybridFactory<false> >::type Factory;
 
     public:
       // Maximal amount of memory required to store a mapping

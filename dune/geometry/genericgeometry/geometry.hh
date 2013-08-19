@@ -290,7 +290,7 @@ namespace Dune
       static const bool hybrid = !Traits::template hasSingleGeometryType< mydimension >::v;
 
     protected:
-      typedef typename SelectType< hybrid, Hybrid< true >, NonHybrid< false > >::Type::MappingFactory MappingFactory;
+      typedef typename conditional< hybrid, Hybrid< true >, NonHybrid< false > >::type::MappingFactory MappingFactory;
       typedef typename MappingFactory::Mapping Mapping;
 
     public:

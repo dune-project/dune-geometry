@@ -73,9 +73,9 @@ namespace Dune {
         The FieldMatrix will never contain more than one entry per row,
         hence it could be replaced by something more efficient.
      */
-    typedef typename SelectType<dim==coorddim,
+    typedef typename conditional<dim==coorddim,
         DiagonalMatrix<ctype,dim>,
-        FieldMatrix<ctype,dim,coorddim> >::Type JacobianTransposed;
+        FieldMatrix<ctype,dim,coorddim> >::type JacobianTransposed;
 
     /** \brief Return type of jacobianInverseTransposed
 
@@ -83,9 +83,9 @@ namespace Dune {
         The FieldMatrix will never contain more than one entry per column,
         hence it could be replaced by something more efficient.
      */
-    typedef typename SelectType<dim==coorddim,
+    typedef typename conditional<dim==coorddim,
         DiagonalMatrix<ctype,dim>,
-        FieldMatrix<ctype,coorddim,dim> >::Type JacobianInverseTransposed;
+        FieldMatrix<ctype,coorddim,dim> >::type JacobianInverseTransposed;
 
     /** \brief Constructor from a lower left and an upper right corner
 

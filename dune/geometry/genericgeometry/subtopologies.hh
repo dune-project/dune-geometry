@@ -185,7 +185,7 @@ namespace Dune
       };
 
     public:
-      typedef typename SelectType< (i < n), PrismSub<true>, BaseSub<false> > :: Type :: type type;
+      typedef typename conditional< (i < n), PrismSub<true>, BaseSub<false> > :: type :: type type;
     };
 
     template< class BaseTopology, unsigned int dim, unsigned int i >
@@ -234,7 +234,7 @@ namespace Dune
       };
 
     public:
-      typedef typename SelectType< (i < m), BaseSub<true>, PyramidSub<false> > :: Type :: type type;
+      typedef typename conditional< (i < m), BaseSub<true>, PyramidSub<false> > :: type :: type type;
     };
 
     template< class BaseTopology, unsigned int dim, unsigned int i >
@@ -507,9 +507,9 @@ namespace Dune
       static unsigned int number ( unsigned int i, unsigned int j )
       {
         assert( (j <= SubTopologySize< Topology, codim, subcodim > :: size( i )) );
-        return SelectType
+        return conditional
                < (codim == 0) || (codim == Topology :: dimension), BorderCodim<true>, InnerCodim<false> >
-               :: Type :: number( i, j );
+               :: type :: number( i, j );
       }
     };
 

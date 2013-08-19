@@ -54,7 +54,7 @@ namespace Dune
       template< bool > class HybridFactory;
       template< bool > class NonHybridFactory;
 
-      typedef typename SelectType< hybrid, HybridFactory< true >, NonHybridFactory< false > >::Type Factory;
+      typedef typename conditional< hybrid, HybridFactory< true >, NonHybridFactory< false > >::type Factory;
 
       template< int i > struct Builder;
 
