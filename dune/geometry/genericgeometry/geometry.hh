@@ -4,9 +4,11 @@
 #ifndef DUNE_GENERICGEOMETRY_GEOMETRY_HH
 #define DUNE_GENERICGEOMETRY_GEOMETRY_HH
 
+#warning This header and the code it contains is deprecated.  If you need functionality \
+         similar to BasicGeometry, please use the MultiLinearGeometry class.
+
 #include <dune/common/typetraits.hh>
 #include <dune/common/nullptr.hh>
-#include <dune/common/deprecated.hh>
 
 #include <dune/geometry/genericgeometry/mappingprovider.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
