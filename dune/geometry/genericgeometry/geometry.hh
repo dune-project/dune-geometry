@@ -6,6 +6,7 @@
 
 #include <dune/common/typetraits.hh>
 #include <dune/common/nullptr.hh>
+#include <dune/common/deprecated.hh>
 
 #include <dune/geometry/genericgeometry/mappingprovider.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
@@ -246,7 +247,7 @@ namespace Dune
      *        .
      */
     template< int mydim, class Traits >
-    class BasicGeometry
+    class BasicGeometry DUNE_DEPRECATED_MSG("Will be removed after dune-geometry-2.3.  Use MultilinearGeometry or something related instead!")
     {
       typedef typename Traits :: CoordTraits CoordTraits;
 
