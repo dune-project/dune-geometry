@@ -17,7 +17,6 @@
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
 
-#include "genericreferenceelements.hh"
 
 namespace Dune
 {
