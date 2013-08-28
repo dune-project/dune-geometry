@@ -3,6 +3,9 @@
 #ifndef DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH
 
+#warning The GenericReferenceElement code is deprecated, and will be removed after dune-geometry-2.3. \
+         Please use the regular ReferenceElements (without the Generic prefix) instead!
+
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
 
