@@ -247,7 +247,7 @@ namespace Dune
      *        .
      */
     template< int mydim, class Traits >
-    class BasicGeometry DUNE_DEPRECATED_MSG("Will be removed after dune-geometry-2.3.  Use MultilinearGeometry or something related instead!")
+    class BasicGeometry
     {
       typedef typename Traits :: CoordTraits CoordTraits;
 
