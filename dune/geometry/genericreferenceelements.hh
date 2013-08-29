@@ -3,9 +3,7 @@
 #ifndef DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_GENERICREFERENCEELEMENTS_HH
 
-#warning The GenericReferenceElement code is deprecated, and will be removed after dune-geometry-2.3. \
-         Please use the regular ReferenceElements (without the Generic prefix) instead!
-
+#include <dune/common/deprecated.hh>
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
 
@@ -49,8 +47,7 @@ namespace Dune
    *
    */
   template< class ctype, int dim >
-  class DUNE_DEPRECATED_MSG("GenericReferenceElement was renamed to ReferenceElement.")
-  GenericReferenceElement
+  class GenericReferenceElement
   {
     typedef GenericReferenceElement< ctype, dim > This;
 
@@ -562,8 +559,7 @@ namespace Dune
    * The class with the old name will be removed after Dune 2.3.
    */
   template< class ctype, int dim >
-  class DUNE_DEPRECATED_MSG("GenericReferenceElementContainer was renamed to ReferenceElementContainer.")
-  GenericReferenceElementContainer
+  class GenericReferenceElementContainer
   {
     static const unsigned int numTopologies = (1u << dim);
 
@@ -571,6 +567,7 @@ namespace Dune
     typedef GenericReferenceElement< ctype, dim > value_type;
     typedef const value_type *const_iterator;
 
+    DUNE_DEPRECATED_MSG("GenericReferenceElementContainer was renamed to ReferenceElementContainer.")
     GenericReferenceElementContainer ()
     {
       ForLoop< Builder, 0, numTopologies-1 >::apply( values_ );
@@ -635,26 +632,33 @@ namespace Dune
    *  with the old name will be removed after Dune 2.3.
    */
   template< class ctype, int dim >
-  struct DUNE_DEPRECATED_MSG ("GenericReferenceElements was renamed to ReferenceElements.")
-  GenericReferenceElements
+  struct GenericReferenceElements
   {
     typedef typename GenericReferenceElementContainer< ctype, dim >::const_iterator Iterator;
 
+    DUNE_DEPRECATED_MSG("GenericReferenceElements was renamed to ReferenceElements.")
+    GenericReferenceElements() {}
+
     //! get general generic reference elements
     static const GenericReferenceElement< ctype, dim > &
+    DUNE_DEPRECATED_MSG("GenericReferenceElements was renamed to ReferenceElements.")
     general ( const GeometryType &type )
     {
       return container() ( type );
     }
 
     //! get simplex generic reference elements
-    static const GenericReferenceElement< ctype, dim > &simplex ()
+    static const GenericReferenceElement< ctype, dim > &
+    DUNE_DEPRECATED_MSG("GenericReferenceElements was renamed to ReferenceElements.")
+    simplex ()
     {
       return container().simplex();
     }
 
     //! get hypercube generic reference elements
-    static const GenericReferenceElement< ctype, dim > &cube ()
+    static const GenericReferenceElement< ctype, dim > &
+    DUNE_DEPRECATED_MSG("GenericReferenceElements was renamed to ReferenceElements.")
+    cube ()
     {
       return container().cube();
     }
