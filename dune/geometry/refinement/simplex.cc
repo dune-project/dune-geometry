@@ -251,10 +251,8 @@
 
 #include <dune/common/array.hh>
 #include <dune/common/fvector.hh>
-#include <dune/common/misc.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
-#include <dune/geometry/genericgeometry/geometrytraits.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/referenceelements.hh>
 
