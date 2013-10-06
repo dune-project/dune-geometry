@@ -79,11 +79,11 @@
    -->
    \f[N(n+1,x)=\sum^x_{i=0}N(n,i)\f]
 
-   We slice the n+1 dimensional simplex ortogonal to one of the
+   We slice the n+1 dimensional simplex orthogonal to one of the
    dimensions and sum the number of points in the n dimensional
    subsimplices.
 
-   This formula is satisfied by the binomial koefficient
+   This formula is satisfied by the binomial coefficient
    <!--
             ( n+x )
    N(n, x) = (     )
