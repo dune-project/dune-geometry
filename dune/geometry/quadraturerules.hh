@@ -30,6 +30,8 @@ namespace Dune {
 
   /** \brief Single evaluation point in a quadrature rule
       \ingroup Quadrature
+      \tparam ct Number type used for both coordinates and the weights
+      \tparam dim Dimension of the integration domain
    */
   template<typename ct, int dim>
   class QuadraturePoint {
@@ -167,10 +169,12 @@ namespace Dune {
   template<typename ctype, int dim>
   class QuadratureRules {
 
-    /** \todo Please doc me! */
+    /** \brief Each rule is identified by a reference element type and a polynomial order.
+     * This is the type to store this data.
+     */
     typedef std::pair<GeometryType,int> QuadratureRuleKey;
 
-    /** \todo Please doc me! */
+    /** \brief Internal short-hand notation for the type of quadrature rules this container contains */
     typedef Dune::QuadratureRule<ctype, dim> QuadratureRule;
 
     //! real rule creator
