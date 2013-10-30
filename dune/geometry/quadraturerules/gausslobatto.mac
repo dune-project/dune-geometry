@@ -33,6 +33,6 @@ write_quad("gausslobatto_imp.hh", "GaussLobatto", "gausslobatto.mac",
 /*
  * Local variables:
  * mode: maxima
- * compile-command: "maxima --batch jacobian.mac"
+ * compile-command: "maxima --batch gausslobatto.mac"
  * End:
  */
