@@ -16,8 +16,8 @@ namespace Dune {
     {
       FieldVector<ct, dim> point(0.0);
 
-      /** \todo proper definition of delivered_order in 1D */
-      this->delivered_order = 666;
+      // Any function is integrated exactly, hence the order is infinite
+      this->delivered_order = std::numeric_limits<int>::max();
       this->push_back(QuadraturePoint<ct,dim>(point, 1.0));
     }
 
