@@ -71,7 +71,7 @@ namespace Dune
      *
      *  This quadrature for \f$B^\circ\f$ is generated from a quadrature for
      *  \f$B\f$ and a 1D quadrature by the so-called Duffy-Transformation
-     *  \f$y(x,z) = ((1-z)x,y)^T\f$. Hence, we have
+     *  \f$y(x,z) = ((1-z)x,z)^T\f$. Hence, we have
      *  \f[
      *  \int_{B^\circ} f( y )\,\mathrm{d}y
      *  = \int_0^1 \int_B f( (1-z)x, z )\,\mathrm{d}x\,(1-z)^{\dim B}\,\mathrm{d}z.
