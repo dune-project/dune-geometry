@@ -81,6 +81,13 @@ namespace Dune
      *
      *  Question: If the polynomials are created via Duffy Transformation, do we
      *            really need a higher quadrature order?
+     *
+     *  Answer (from OS): Not really.  The official way is to use a Gauss-Jacobi
+     *            rule with \f$ \alpha = \dim B, \beta = 0 \f$ for the 1D rule.
+     *            That takes care of the term \f$ (1-z)^{\dim B} \f$ without needing
+     *            additional orders.  See for example A.H. Stroud, "Approximate Calculation
+     *            of Multiple Integrals", Chapters 2.4 and 2.5 for details.
+     *            If you want to use plain Gauss-Legendre you do need the additional orders.
      */
     void create_pyramid(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
