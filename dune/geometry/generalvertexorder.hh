@@ -42,7 +42,7 @@ namespace Dune {
     typedef std::less<
         typename std::iterator_traits<InIterator>::value_type
         > less_t;
-    static const less_t less = less_t();
+    const less_t less = less_t();
 
     for(InIterator inIt = inBegin; inIt != inEnd; ++inIt, ++outIt)
       *outIt = std::count_if(inBegin, inEnd, std::bind2nd(less, *inIt));

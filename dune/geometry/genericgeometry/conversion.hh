@@ -4,6 +4,7 @@
 #define DUNE_GEOMETRY_GENERICGEOMETRY_CONVERSION_HH
 
 #include <dune/common/static_assert.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
@@ -115,7 +116,7 @@ namespace Dune
     private:
       GeometryType types_[ (dimension>=1) ? numTopologies / 2 : numTopologies ];
 
-      static const DuneGeometryTypeProvider &instance ()
+      DUNE_EXPORT static const DuneGeometryTypeProvider &instance ()
       {
         static DuneGeometryTypeProvider inst;
         return inst;

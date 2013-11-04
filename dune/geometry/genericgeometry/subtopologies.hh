@@ -9,6 +9,7 @@
 #include <dune/common/forloop.hh>
 #include <dune/common/static_assert.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 
@@ -299,7 +300,7 @@ namespace Dune
 
       SubTopologySize ( const SubTopologySize & );
 
-      static const SubTopologySize &instance ()
+      DUNE_EXPORT static const SubTopologySize &instance ()
       {
         static SubTopologySize inst;
         return inst;
@@ -553,7 +554,7 @@ namespace Dune
         }
       }
 
-      static const SubTopologyNumbering &instance ()
+      DUNE_EXPORT static const SubTopologyNumbering &instance ()
       {
         static SubTopologyNumbering inst;
         return inst;

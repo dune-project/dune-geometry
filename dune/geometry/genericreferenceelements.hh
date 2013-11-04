@@ -6,6 +6,7 @@
 #include <dune/common/deprecated.hh>
 #include <dune/common/forloop.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/visibility.hh>
 
 #include <dune/geometry/genericgeometry/codimtable.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
@@ -402,7 +403,7 @@ namespace Dune
     }
 
     template< class Topology, unsigned int codim, unsigned int i >
-    void initialize ()
+    DUNE_EXPORT void initialize ()
     {
       typedef Initialize< Topology, codim > Init;
       typedef GenericGeometry::ReferenceDomain< Topology > RefDomain;
@@ -667,7 +668,7 @@ namespace Dune
     static Iterator end () { return container().end(); }
 
   private:
-    static const GenericReferenceElementContainer< ctype, dim > &container ()
+    DUNE_EXPORT static const GenericReferenceElementContainer< ctype, dim > &container ()
     {
       static GenericReferenceElementContainer< ctype, dim > container;
       return container;
