@@ -12,7 +12,7 @@ namespace Dune
    * \brief Generic Quadrature rules using prism and pyramid construction (dynamic implementation)
    */
   template< class ctype, int dim >
-  class GenericQuadratureRule
+  class TensorProductQuadratureRule
     : public QuadratureRule< ctype, dim >
   {
     typedef QuadratureRule<ctype, dim> Base;
@@ -22,7 +22,7 @@ namespace Dune
 
     friend class QuadratureRuleFactory<ctype,dim>;
 
-    GenericQuadratureRule (unsigned int topologyId, unsigned int order, QuadratureType::Enum qt)
+    TensorProductQuadratureRule (unsigned int topologyId, unsigned int order, QuadratureType::Enum qt)
       : Base( GeometryType(topologyId, dim), order )
     {
       enum { bitSize = sizeof(unsigned int)*8 };

@@ -673,7 +673,7 @@ namespace Dune {
     friend class QuadratureRules<ctype, dim>;
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
-      return GenericQuadratureRule<ctype,dim>(t.id(), p, qt);
+      return TensorProductQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
@@ -729,7 +729,7 @@ namespace Dune {
       {
         return SimplexQuadratureRule<ctype,dim>(p);
       }
-      return GenericQuadratureRule<ctype,dim>(t.id(), p, qt);
+      return TensorProductQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
@@ -748,7 +748,7 @@ namespace Dune {
       {
         return PrismQuadratureRule<ctype,dim>(p);
       }
-      return GenericQuadratureRule<ctype,dim>(t.id(), p, qt);
+      return TensorProductQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
