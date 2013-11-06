@@ -478,7 +478,7 @@ namespace Dune {
 #define DUNE_INCLUDING_IMPLEMENTATION
 #include "quadraturerules/gausslobatto_imp.hh"
 
-#include "quadraturerules/genericquadrature.hh"
+#include "quadraturerules/tensorproductquadrature.hh"
 
 #include "quadraturerules/simplexquadrature.hh"
 

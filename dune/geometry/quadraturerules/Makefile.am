@@ -5,7 +5,7 @@ quadraturerules_HEADERS =		\
 	compositequadraturerule.hh 	\
 	pointquadrature.hh			\
 	simplexquadrature.hh		\
-	genericquadrature.hh		\
+	tensorproductquadrature.hh		\
 	gauss_imp.hh				\
 	gausslobatto_imp.hh		\
 	jacobi_1_0_imp.hh			\
@@ -14,7 +14,7 @@ quadraturerules_HEADERS =		\
 headercheck_IGNORE = 			\
 	pointquadrature.hh			\
 	simplexquadrature.hh		\
-	genericquadrature.hh		\
+	tensorproductquadrature.hh		\
 	gauss_imp.hh				\
         gausslobatto_imp.hh		\
 	jacobi_1_0_imp.hh			\
