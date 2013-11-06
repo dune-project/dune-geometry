@@ -35,9 +35,9 @@ namespace Dune
       GeometryType baseType(baseId.to_ulong(), dim-1);
       const BaseQuadrature & baseQuad = QuadratureRules<ctype,dim-1>::rule(baseType, order, qt);
       if (isPrism)
-        create_prism(baseQuad, order, qt);
+        tensorProduct(baseQuad, order, qt);
       else
-        create_pyramid(baseQuad, order, qt);
+        conicalProduct(baseQuad, order, qt);
     }
 
     /**
@@ -47,7 +47,7 @@ namespace Dune
      * \param order Requested order of the one-dimensional rule
      * \param qt Type of the one-dimensional rule
      */
-    void create_prism(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
+    void tensorProduct(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
       typedef QuadratureRule<ctype,1> OneDQuadrature;
       GeometryType onedType(GeometryType::cube,1);
@@ -103,7 +103,7 @@ namespace Dune
      * \param order Requested order of the one-dimensional rule
      * \param qt Type of the one-dimensional rule
      */
-    void create_pyramid(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
+    void conicalProduct(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
       typedef QuadratureRule<ctype,1> OneDQuadrature;
       GeometryType onedtype(GeometryType::cube,1);
