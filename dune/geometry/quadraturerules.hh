@@ -13,6 +13,7 @@
 #include <dune/common/exceptions.hh>
 #include <dune/common/stdstreams.hh>
 #include <dune/common/visibility.hh>
+#include <dune/common/deprecated.hh>
 
 #include <dune/geometry/type.hh>
 
@@ -38,8 +39,8 @@ namespace Dune {
   class QuadraturePoint {
   public:
     // compile time parameters
-    enum { d=dim };
-    typedef ct CoordType;
+    enum { d=dim } DUNE_DEPRECATED_MSG("Use 'dimension' instead");
+    typedef ct CoordType DUNE_DEPRECATED_MSG("Use type 'Field' instead");
 
     static const unsigned int dimension = d;
     typedef ct Field;
