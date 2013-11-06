@@ -9,7 +9,10 @@ namespace Dune
 {
 
   /**
-   * \brief Generic Quadrature rules using prism and pyramid construction (dynamic implementation)
+   * \brief Quadrature rules constructed by tensor and conical multiplication
+   *
+   * \tparam ctype Number type used for quadrature point coordinates and weights
+   * \tparam dim Dimension of the domain of integration
    */
   template< class ctype, int dim >
   class TensorProductQuadratureRule
@@ -38,7 +41,11 @@ namespace Dune
     }
 
     /**
-     * \brief Generic Quadrature for Prisms
+     * \brief Creates quadrature rule by tensor multiplication of an arbitrary rule with a rule for a one-dimensional domain
+     *
+     * \param baseQuad Quadrature rule for the base domain
+     * \param order Requested order of the one-dimensional rule
+     * \param qt Type of the one-dimensional rule
      */
     void create_prism(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
@@ -67,7 +74,7 @@ namespace Dune
       }
     }
 
-    /** \brief Generic Quadrature for Pyramids
+    /** \brief Creates quadrature rule by conical multiplication of an arbitrary rule with a rule for a one-dimensional domain
      *
      *  This quadrature for \f$B^\circ\f$ is generated from a quadrature for
      *  \f$B\f$ and a 1D quadrature by the so-called Duffy-Transformation
@@ -88,6 +95,13 @@ namespace Dune
      *            additional orders.  See for example A.H. Stroud, "Approximate Calculation
      *            of Multiple Integrals", Chapters 2.4 and 2.5 for details.
      *            If you want to use plain Gauss-Legendre you do need the additional orders.
+     *
+     * \note Details on how this construction works can be found in the book by A.H. Stroud,
+     *    "Approximate Calculation of Multiple Integrals", Chapter 2.5.
+     *
+     * \param baseQuad Quadrature rule for the base domain
+     * \param order Requested order of the one-dimensional rule
+     * \param qt Type of the one-dimensional rule
      */
     void create_pyramid(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
