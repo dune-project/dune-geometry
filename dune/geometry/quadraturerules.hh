@@ -23,8 +23,8 @@
 
 namespace Dune {
 
-  /** \brief Exception thrown if an desired QuadratureRule is not available,
-     because the order is to high
+  /** \brief Exception thrown if a desired QuadratureRule is not available,
+     because the requested order is to high
      \ingroup Quadrature
    */
   class QuadratureOrderOutOfRange : public NotImplemented {};
