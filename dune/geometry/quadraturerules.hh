@@ -49,7 +49,7 @@ namespace Dune {
     //! set up quadrature of given order in d dimensions
     QuadraturePoint (const Vector& x, ct w) : local(x)
     {
-      wght = w;
+      weight_ = w;
     }
 
     //! return local coordinates of integration point i
@@ -61,12 +61,12 @@ namespace Dune {
     //! return weight associated with integration point i
     const ct &weight () const
     {
-      return wght;
+      return weight_;
     }
 
   protected:
     FieldVector<ct, dim> local;
-    ct wght;
+    ct weight_;
   };
 
   /** \brief Defines an \p enum for currently available quadrature rules.
