@@ -78,9 +78,7 @@ namespace Dune {
       Jacobian_1_0 = 1,
       Jacobian_2_0 = 2,
 
-      GaussLobatto = 4,
-
-      Invalid_Rule = 127
+      GaussLobatto = 4
     };
   }
 
