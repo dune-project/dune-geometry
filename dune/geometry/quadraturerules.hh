@@ -120,43 +120,6 @@ namespace Dune {
   protected:
     GeometryType geometry_type;
     int delivered_order;
-
-    void tensor_product (const QuadratureRule<ct,1> & q1d)
-    {
-      // fill in all the gauss points
-      int m = q1d.size();
-      int n = power(m,dim);
-      for (int i=0; i<n; i++)
-      {
-        // compute multi index for Gauss point
-        int x[dim];
-        int z = i;
-        for (int k=0; k<dim; ++k)
-        {
-          x[k] = z%m;
-          z = z/m;
-        }
-
-        // compute coordinates and weight
-        double weight = 1.0;
-        FieldVector<ct, dim> local;
-        for (int k=0; k<dim; k++)
-        {
-          local[k] = q1d[x[k]].position()[0];
-          weight *= q1d[x[k]].weight();
-        }
-
-        // put in container
-        this->push_back(QuadraturePoint<ct,dim>(local,weight));
-      }
-    }
-
-    int power (int y, int d)
-    {
-      int m=1;
-      for (int i=0; i<d; i++) m *= y;
-      return m;
-    }
   };
 
   // Forward declaration of the factory class,
