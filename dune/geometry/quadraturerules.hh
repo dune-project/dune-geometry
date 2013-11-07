@@ -89,7 +89,7 @@ namespace Dune {
   template<typename ct, int dim>
   class QuadratureRule : public std::vector<QuadraturePoint<ct,dim> >
   {
-  public:
+  protected:
 
     /** \brief Default constructor */
     QuadratureRule() : delivered_order(-1) {}
@@ -99,7 +99,7 @@ namespace Dune {
 
     /** \brief Constructor for a given geometry type and a given quadrature order */
     QuadratureRule(GeometryType t, int order) : geometry_type(t), delivered_order(order) {}
-
+  public:
     /** \brief The space dimension */
     enum { d=dim };
 
@@ -153,9 +153,9 @@ namespace Dune {
          */
         QuadratureRule rule =
           QuadratureRuleFactory<ctype,dim>::rule(t,p,qt);
-        _quadratureMap[key] = rule;
+        _quadratureMap.insert(std::make_pair(key, rule));
       }
-      return _quadratureMap[key];
+      return _quadratureMap.find(key)->second;
     }
     //! singleton provider
     DUNE_EXPORT static QuadratureRules& instance()
