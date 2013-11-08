@@ -144,7 +144,7 @@ namespace Dune {
     typedef Dune::QuadratureRule<ctype, dim> QuadratureRule;
 
     //! real rule creator
-    DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::Gauss)
+    DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
       static std::map<QuadratureRuleKey, QuadratureRule> _quadratureMap;
       QuadratureRuleKey key(t,p);
@@ -170,12 +170,12 @@ namespace Dune {
     QuadratureRules () {}
   public:
     //! select the appropriate QuadratureRule for GeometryType t and order p
-    static const QuadratureRule& rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::Gauss)
+    static const QuadratureRule& rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
       return instance()._rule(t,p,qt);
     }
     //! @copydoc rule
-    static const QuadratureRule& rule(const GeometryType::BasicType t, int p, QuadratureType::Enum qt=QuadratureType::Gauss)
+    static const QuadratureRule& rule(const GeometryType::BasicType t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
       GeometryType gt(t,dim);
       return instance()._rule(gt,p,qt);
@@ -667,11 +667,11 @@ namespace Dune {
       if (t.isLine())
       {
         switch (qt) {
-        case QuadratureType::Gauss :
+        case QuadratureType::GaussLegendre :
           return GaussQuadratureRule1D<ctype>(p);
-        case QuadratureType::Jacobian_1_0 :
+        case QuadratureType::GaussJacobi_1_0 :
           return Jacobi1QuadratureRule1D<ctype>(p);
-        case QuadratureType::Jacobian_2_0 :
+        case QuadratureType::GaussJacobi_2_0 :
           return Jacobi2QuadratureRule1D<ctype>(p);
         case QuadratureType::GaussLobatto :
           return GaussLobattoQuadratureRule1D<ctype>(p);
