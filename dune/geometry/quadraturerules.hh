@@ -42,7 +42,7 @@ namespace Dune {
     enum { d=dim } DUNE_DEPRECATED_MSG("Use 'dimension' instead");
     typedef ct CoordType DUNE_DEPRECATED_MSG("Use type 'Field' instead");
 
-    enum { dimension = d };
+    enum { dimension = dim };
     typedef ct Field;
     typedef Dune::FieldVector<ct,dim> Vector;
 
