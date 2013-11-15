@@ -82,6 +82,13 @@ namespace Dune {
       O[m] = 0;
 
       // polynom degree 1
+
+      // Rule t2-1-1 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 1-1, P. 307, A.H. Stroud, Approximate Calculation of Multiple Integrals
+
       m = 1;
       G[m][0][0] = 0.333333333333333333333333333333333;
       G[m][0][1] = 0.333333333333333333333333333333333;
@@ -90,6 +97,13 @@ namespace Dune {
 
       // polynom degree 2
       // symmetric
+
+      // Rule t2-2-3a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 2-1, P. 307, A.H. Stroud, Approximate Calculation of Multiple Integrals
+
       m = 3;
       G[m][0][0] = 4.0/6.0;
       G[m][0][1] = 1.0/6.0;
@@ -104,6 +118,13 @@ namespace Dune {
 
       // polynom degree 3
       // symmetric
+
+      // Rule t2-3-4a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 3-1, P. 308, A.H. Stroud, Approximate Calculation of Multiple Integrals
+
       m = 4;
       G[m][0][0] = 10.0/30.0;
       G[m][0][1] = 10.0/30.0;
@@ -122,6 +143,13 @@ namespace Dune {
 
       // polynomial degree 4
       // symmetric points
+
+      // Rule t2-4-6a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Appendix II, D.A. Dunavant, High degree efficient symmetrical Gaussian quadrature rules for the triangle
+
       m = 6;
       G[m][0][0] = 0.81684757298045851308085707319560;
       G[m][0][1] = 0.091576213509770743459571463402202;
@@ -146,6 +174,12 @@ namespace Dune {
 
       // polynomial degree 5
       // symmetric points
+
+      // Rule t2-5-7 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 5-1, P. 314, A.H. Stroud, Approximate Calculation of Multiple Integrals
 
       m = 7;
       G[m][0][0] = 0.333333333333333333333333333333333;
@@ -174,6 +208,13 @@ namespace Dune {
 
       // polynomial degree 6
       /* 12 inner Gauss points, positive weights */
+
+      // Rule t2-6-12a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Appendix II, D.A. Dunavant, High degree efficient symmetrical Gaussian quadrature rules for the triangle
+
       m=12;
       G[m][0][0] = 0.063089014491502228340331602870819;
       G[m][0][1] = 0.063089014491502228340331602870819;
@@ -216,6 +257,12 @@ namespace Dune {
 
       // polynomial degree 7
       /* 12 inner Gauss points, positive weights */
+      // Rule t2-7-12 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Table 5, K. Gatermann, The construction of symmetric cubature formulas for the square and the triangle
+
       m=12;
       G[m][0][0] = 0.0623822650944021181736830009963499;
       G[m][0][1] = 0.0675178670739160854425571310508685;
@@ -258,6 +305,11 @@ namespace Dune {
 
       // polynomial degree 8
       /* 16 inner Gauss points, positive weights */
+      // Rule t2-8-16a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Appendix II, A. Dunavant, High degree efficient symmetrical Gaussian quadrature rules for the triangle
 
       m=16;
       G[m][0][0] = 0.33333333333333333333333333333333;
@@ -313,6 +365,12 @@ namespace Dune {
 
       // polynomial degree 9
       /* 19 inner Gauss points, positive weights */
+
+      // Rule t2-9-19 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Appendix II, A. Dunavant, High degree efficient symmetrical Gaussian quadrature rules for the triangle
 
       m=19;
       G[m][0][0] = 0.333333333333333333333333333333333;
@@ -377,6 +435,13 @@ namespace Dune {
 
       // polynomial degree 10
       /* 25 inner Gauss points, positive weights */
+
+      // Rule t2-10-25a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: M.E. Laursen and M. Gellert, Some criteria for numerically integrated matrices and quadrature formulas for triangles
+
       m= 25;
       G[m][0][0] = 0.333333333333333333333333333333333;
       G[m][0][1] = 0.333333333333333333333333333333333;
@@ -458,6 +523,12 @@ namespace Dune {
 
       // polynomial degree 11
       /* 28 inner Gauss points, positive weights */
+
+      // Rule t2-11-28 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: J.N. Lyness and D. Jespersen, Moderate degree symmetric quadrature rules for the triangle
 
       m=28;
       G[m][0][0] = 0.858870281282636704039173938058347;
@@ -557,6 +628,13 @@ namespace Dune {
 
       // polynomial degree 12
       /* 33 inner Gauss points, positive weights */
+
+      // Rule t2-12-33 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Appendix II, A. Dunavant, High degree efficient symmetrical Gaussian quadrature rules for the triangle
+
       m=33;
       G[m][0][0] = 0.02356522045239;
       G[m][0][1] = 0.488217389773805;
@@ -769,6 +847,13 @@ namespace Dune {
       O[m] = 0;
 
       // polynom degree 1
+
+      // Rule t3-1-1 of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 1-1, P. 307, A.H. Stroud, Approximate Calculation of Multiple Integrals
+
       m = 1;
       G[m][0][0] = 0.25;
       G[m][0][1] = 0.25;
@@ -779,6 +864,13 @@ namespace Dune {
 
       // polynom degree 2
       // symmetric
+
+      // Rule t3-2-4a of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 2-1, P. 307, A.H. Stroud, Approximate Calculation of Multiple Integrals
+
       m = 4;
       static const double m_4_a = 0.585410196624968500;
       static const double m_4_b = 0.138196601125010500;
@@ -798,6 +890,15 @@ namespace Dune {
 
       // polynom degree 3
       // symmetric
+
+      // Rule t3-3-8b of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // Note: according the Leuven Encyclopaedia, this quadrature rule can be found
+      // in A.H. Stroud, Approximate Calculation of Multiple Integrals.
+      // However, I have not been able to find it in there.
+
       m = 8;
       G[m][0][0] = 0.0;
       G[m][0][1] = 0.0;
@@ -836,6 +937,13 @@ namespace Dune {
 
       // polynomial degree 5
       // symmetric points
+
+      // Rule t3-5-15a (actual values for weights etc. not available here) of the "Encyclopaedia of Cubature Formulas" at
+      // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+      // maintained by Ronald Cools.
+
+      // For further reference: Rule 5-1, P. 315, A.H. Stroud, Approximate Calculation of Multiple Integrals
+
       static const double s_1=0.09197107805272303279;     /* (7 - sqrt(15) ) / 34 */
       static const double s_2=0.31979362782962990839;     /* (7 + sqrt(15) ) / 34 */
       static const double t_1=0.72408676584183090164;     /* (13 + 3*sqrt(15) ) / 34 */
