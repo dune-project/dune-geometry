@@ -815,13 +815,11 @@ namespace Dune {
     }
 
     this->delivered_order = SimplexQuadraturePointsSingleton<2>::sqp.order(m);
-    FieldVector<ct, 2> local;
-    double weight;
+
     for(int i=0; i<m; ++i)
     {
-      for(int k=0; k<2; ++k)
-        local[k]=SimplexQuadraturePointsSingleton<2>::sqp.point(m,i)[k];
-      weight=SimplexQuadraturePointsSingleton<2>::sqp.weight(m,i);
+      FieldVector<ct,2> local = SimplexQuadraturePointsSingleton<2>::sqp.point(m,i);
+      double weight = SimplexQuadraturePointsSingleton<2>::sqp.weight(m,i);
       // put in container
       this->push_back(QuadraturePoint<ct,2>(local,weight));
     }
@@ -1071,13 +1069,11 @@ namespace Dune {
     default : m=15;
     }
     this->delivered_order = SimplexQuadraturePointsSingleton<3>::sqp.order(m);
-    FieldVector<ct,3> local;
-    double weight;
+
     for(int i=0; i<m; ++i)
     {
-      for(int k=0; k<3; ++k)
-        local[k]=SimplexQuadraturePointsSingleton<3>::sqp.point(m,i)[k];
-      weight=SimplexQuadraturePointsSingleton<3>::sqp.weight(m,i);
+      FieldVector<ct,3> local = SimplexQuadraturePointsSingleton<3>::sqp.point(m,i);
+      double weight = SimplexQuadraturePointsSingleton<3>::sqp.weight(m,i);
       // put in container
       this->push_back(QuadraturePoint<ct,3>(local,weight));
     }
