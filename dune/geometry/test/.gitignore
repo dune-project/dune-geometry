@@ -3,6 +3,7 @@ Makefile.in
 test-affinegeometry
 test-axisalignedcubegeometry
 test-multilineargeometry
+test-nonetype
 test-quadrature
 test-referenceelements
 test-geometrytype

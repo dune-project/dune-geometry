@@ -3,6 +3,7 @@ set(TESTS
   test_axisalignedcubegeometry
   test_geometrytype
   test_multilineargeometry
+  test_nonetype
   test_quadrature
   test_referenceelements
   test_refinement)
@@ -19,6 +20,8 @@ add_executable(test_quadrature "test-quadrature.cc")
 target_link_libraries(test_quadrature dunecommon dunegeometry)
 add_executable(test_multilineargeometry test-multilineargeometry.cc)
 target_link_libraries(test_multilineargeometry dunecommon dunegeometry)
+add_executable(test_nonetype test-nonetype.cc)
+target_link_libraries(test_nonetype dunecommon dunegeometry)
 add_executable(test_refinement test-refinement.cc)
 target_link_libraries(test_refinement dunecommon dunegeometry)
 

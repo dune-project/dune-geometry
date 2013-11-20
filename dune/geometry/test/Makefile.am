@@ -4,6 +4,7 @@ TESTS = \
 	test-axisalignedcubegeometry \
 	test-geometrytype \
 	test-multilineargeometry \
+	test-nonetype \
 	test-quadrature \
 	test-referenceelements \
 	test-refinement
@@ -25,6 +26,8 @@ test_axisalignedcubegeometry_SOURCES = test-axisalignedcubegeometry.cc
 test_geometrytype_SOURCES = test-geometrytype.cc
 
 test_multilineargeometry_SOURCES = test-multilineargeometry.cc
+
+test_nonetype_SOURCES = test-nonetype.cc
 
 test_referenceelements_SOURCES = test-referenceelements.cc
 
