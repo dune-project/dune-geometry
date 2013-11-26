@@ -146,6 +146,8 @@ namespace Dune {
     //! real rule creator
     DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
+      assert(t.dim()==dim);
+
       static std::map<QuadratureRuleKey, QuadratureRule> _quadratureMap;
       QuadratureRuleKey key(t,p);
       if (_quadratureMap.find(key) == _quadratureMap.end()) {
