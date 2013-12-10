@@ -62,7 +62,7 @@ we use the numbering induced by the
 numbering the reference element corresponding to
 \f$ E' \f$.
 
-	 Here is a graphical representation of the reference elements:
+Here is a graphical representation of the reference elements:
      -# <b>One-dimensional reference element. For d=1 the simplex and cube are identical</b>
        \image html gg_line.png
      -# <b>Two-dimensional reference simplex (a.k.a. triangle)</b>
