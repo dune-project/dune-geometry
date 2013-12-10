@@ -14,7 +14,7 @@
 /**   @defgroup GeometryType Geometry Type
  *    @ingroup Geometry
  */
-/**   @defgroup GeometryGenericReferenceElements Generic Reference Elements
+/**   @defgroup GeometryReferenceElements Reference Elements
  *    @ingroup Geometry
  */
 /**   @defgroup GenericGeometry Generic Geometry
