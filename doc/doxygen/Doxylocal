@@ -9,7 +9,7 @@
 INPUT                 += @srcdir@/mainpage \
                          @srcdir@/modules \
                          @top_srcdir@/dune/geometry \
-                         @top_srcdir@/dune/geometry/genericgeometry/doc/genericgeometrypage \
+                         @top_srcdir@/doc/appl/refelements/referenceelementspage \
                          @top_srcdir@/dune/geometry/genericgeometry/doc/genericgeometrytransitionpage
 
 # see e.g. dune-grid for the examples of mainpage and modules
