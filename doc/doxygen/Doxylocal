@@ -31,5 +31,4 @@ EXCLUDE               += @top_srcdir@/dune/geometry/quadraturerules
 # the \image command).
 
 IMAGE_PATH            += @top_srcdir@/doc/appl/refelements \
-                         @top_srcdir@/doc/refinement \
-                         @top_srcdir@/dune/geometry/genericgeometry/doc
+                         @top_srcdir@/doc/refinement
