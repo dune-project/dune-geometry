@@ -17,9 +17,6 @@
 /**   @defgroup GeometryGenericReferenceElements Generic Reference Elements
  *    @ingroup Geometry
  */
-/**     @defgroup GeometryDuneREToGenericRE Transition to Generic Reference Elements
- *      @ingroup GeometryGenericReferenceElements
- */
 /**   @defgroup GenericGeometry Generic Geometry
  *    @ingroup Geometry
  */
