@@ -30,10 +30,6 @@ target_link_libraries(test_refinement dunecommon dunegeometry)
 add_directory_test_target(_test_target)
 add_dependencies(${_test_target} ${TESTS})
 
-# install th header as done for the auto-tools
-install(FILES checkgeometry.hh
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/test)
-
 foreach(_test ${TESTS})
   add_test(${_test} ${_test})
 endforeach(_test ${TESTS})
