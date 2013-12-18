@@ -12,7 +12,7 @@ if BUILD_DOCS
 endif
 EXTRAINSTALL = refinement.pdf
 
-docdir=$(datadir)/doc/dune-grid/refinement
+docdir=$(datadir)/doc/dune-geometry/refinement
 DOCFILES = $(PDFDOC)
 EXTRA_DIST = $(PDFDOC) CMakeLists.txt
 
