@@ -42,7 +42,7 @@ static bool testAffineGeometry ( const Dune::ReferenceElement< ctype, mydim > &r
   typedef Dune::AffineGeometry< ctype, mydim, cdim > Geometry;
 
   const Dune::FieldVector< ctype, mydim > &localCenter = refElement.position( 0, 0 );
-  const ctype epsilon = ctype( 256 )*std::numeric_limits< ctype >::epsilon();
+  const ctype epsilon = ctype( 1e5 )*std::numeric_limits< ctype >::epsilon();
 
   const ctype detA = A.determinant();
   assert( std::abs( std::abs( B.determinant() ) - ctype( 1 ) ) <= epsilon );
