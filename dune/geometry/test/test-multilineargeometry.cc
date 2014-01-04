@@ -113,8 +113,8 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   Dune::FieldMatrix< ctype, mydim, mydim > A;
   Dune::FieldMatrix< ctype, cdim, cdim > B;
 
-  std::cout << ">>> Checking geometry (topologyId = " << gt.id() << ", mydim = " << mydim << ", cdim = " << cdim << ")" << std::endl;
-  std::cout << ">>> Checking reference mapping" << std::endl;
+  std::cout << "Checking geometry (topologyId = " << gt.id() << ", mydim = " << mydim << ", cdim = " << cdim << ")" << std::endl;
+  std::cout << " reference mapping: ";
   A = ctype( 0 );
   for( int i = 0; i < mydim; ++i )
     A[ i ][ i ] = ctype( 1 );
@@ -122,9 +122,9 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   for( int i = 0; i < cdim; ++i )
     B[ i ][ i ] = ctype( 1 );
   const bool passId = testMultiLinearGeometry( refElement, A, B );
-  std::cout << ">>> " << (passId ? "passed" : "failed") << std::endl;
+  std::cout << (passId ? "passed" : "failed");
 
-  std::cout << ">>> Checking scaled reference mapping" << std::endl;
+  std::cout << ", scaled reference mapping: ";
   A = ctype( 0 );
   for( int i = 0; i < mydim; ++i )
     A[ i ][ i ] = ctype( 42 );
@@ -132,7 +132,7 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   for( int i = 0; i < cdim; ++i )
     B[ i ][ i ] = ctype( 1 );
   const bool passScaledId = testMultiLinearGeometry( refElement, A, B );
-  std::cout << ">>> " << (passScaledId ? "passed" : "failed") << std::endl;
+  std::cout << (passScaledId ? "passed" : "failed") << std::endl;
 
   return passId && passScaledId;
 }

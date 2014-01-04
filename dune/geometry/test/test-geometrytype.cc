@@ -55,8 +55,10 @@ unsigned int guessTopologyId(unsigned int dim, unsigned int vertices)
   guessTopologyId(dim,vertices,2,1,1,ids);
   if (ids.size() == 0)
     DUNE_THROW(Dune::Exception, "Impossible setting");
+  std::cout << "(";
   for (size_t i=0; i<ids.size(); i++)
-    std::cout << "possibility " << i << "\t" << convBase(ids[i],2) << std::endl;
+    std::cout << " possibility " << i << ": " << convBase(ids[i],2);
+  std::cout << ") ";
   if (ids.size() > 1)
     DUNE_THROW(Dune::Exception, "Too many options");
   return ids[0];
@@ -64,13 +66,16 @@ unsigned int guessTopologyId(unsigned int dim, unsigned int vertices)
 
 void testGuess(unsigned int dim, unsigned int vertices)
 {
-  std::cout << "dim: " << dim << std::endl;
-  std::cout << "vertices: " << vertices << std::endl;
+  std::cout << "dim: " << dim;
+  std::cout << " vertices: " << vertices << " ";
   unsigned int id = guessTopologyId(dim, vertices);
-  std::cout << "guess: " << convBase(id, 2) << std::endl;
-  // Dune::GeometryType gt;
-  // gt.makeFromVertices(dim, vertices);
-  // std::cout << "real:  " << convBase(gt.id(), 2) << std::endl;
+  std::cout << "guess: " << convBase(id, 2);
+  if (dim <= 3) {
+    Dune::GeometryType gt;
+    gt.makeFromVertices(dim, vertices);
+    std::cout << " real:  " << convBase(gt.id(), 2);
+  }
+  std::cout << std::endl;
 }
 
 int main()
