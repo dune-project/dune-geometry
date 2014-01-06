@@ -1,9 +1,9 @@
 # $Id: duneproject 6399 2011-03-18 16:05:35Z mblatt $
 
 # we need the module file to be able to build via dunecontrol
-EXTRA_DIST= CMakeLists.txt dune.module dune-geometry-config.cmake.in  dune-geometry-version.cmake.in
+EXTRA_DIST= CMakeLists.txt dune.module
 
-SUBDIRS = m4 cmake dune doc lib
+SUBDIRS = m4 dune doc lib
 
 # don't follow the full GNU-standard
 # we need automake 1.9 or newer
