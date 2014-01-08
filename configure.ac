@@ -19,8 +19,6 @@ AC_SUBST([LDADD], '$(top_builddir)/lib/libdunegeometry.la $(DUNE_LIBS)')
 AC_CONFIG_FILES([
   Makefile
   lib/Makefile
-  cmake/Makefile
-  cmake/pkg/Makefile
   doc/Makefile
   doc/appl/Makefile
   doc/appl/refelements/Makefile
