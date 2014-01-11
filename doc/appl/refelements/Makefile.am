@@ -2,9 +2,9 @@
 # $Id: Makefile.am 7400 2011-02-09 21:27:22Z christi $
 
 # include this into website
-EXTRAINSTALL=hexahedron.png line.png prism.png pyramid.png \
-  quadrilateral.png tetrahedron.png triangle.png\
-  hexahedron_edges.png tetrahedron_edges.png prism_edges.png pyramid_edges.png
+EXTRAINSTALL=gg_hexahedron.png gg_line.png gg_prism.png gg_pyramid.png \
+  gg_quadrilateral.png gg_tetrahedron.png gg_triangle.png\
+  gg_hexahedron_edges.png gg_tetrahedron_edges.png gg_prism_edges.png gg_pyramid_edges.png
 
 # place in website
 BASEDIR=../../..
