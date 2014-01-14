@@ -20,4 +20,4 @@ include $(top_srcdir)/am/global-rules
 configdir = $(datadir)/dune-geometry
 dist_config_DATA = config.h.cmake
 
-include /am/cmake-pkg-config
+include $(top_srcdir)/am/cmake-pkg-config
