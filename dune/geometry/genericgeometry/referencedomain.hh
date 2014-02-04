@@ -50,6 +50,7 @@ namespace Dune
       static void corner ( unsigned int i, FieldVector< ctype, dim > &n )
       {
         DUNE_UNUSED_PARAMETER(i);
+        DUNE_UNUSED_PARAMETER(n);
         assert( i < Topology::numCorners );
       }
 

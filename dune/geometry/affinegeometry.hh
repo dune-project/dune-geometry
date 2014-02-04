@@ -170,6 +170,7 @@ namespace Dune
      */
     ctype integrationElement ( const LocalCoordinate &local ) const
     {
+      DUNE_UNUSED_PARAMETER(local);
       return integrationElement_;
     }
 
@@ -187,6 +188,7 @@ namespace Dune
      */
     const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
     {
+      DUNE_UNUSED_PARAMETER(local);
       return jacobianTransposed_;
     }
 
@@ -198,6 +200,7 @@ namespace Dune
      */
     const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
     {
+      DUNE_UNUSED_PARAMETER(local);
       return jacobianInverseTransposed_;
     }
 

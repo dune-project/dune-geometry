@@ -39,6 +39,7 @@ namespace Dune
 
       static std::size_t mappingSize ( const unsigned int topologyId )
       {
+        DUNE_UNUSED_PARAMETER(topologyId);
         return sizeof( Mapping );
       }
     };

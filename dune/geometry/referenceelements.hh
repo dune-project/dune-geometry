@@ -12,6 +12,7 @@
 #include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/visibility.hh>
+#include <dune/common/unused.hh>
 
 #include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/genericgeometry/codimtable.hh>
@@ -470,6 +471,7 @@ namespace Dune
     static const ReferenceElement< ctype, dim > &
     subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, integral_constant< int, 0 > )
     {
+      DUNE_UNUSED_PARAMETER(i);
       return refElement;
     }
 
