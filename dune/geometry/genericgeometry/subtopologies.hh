@@ -10,6 +10,7 @@
 #include <dune/common/static_assert.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/visibility.hh>
+#include <dune/common/unused.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 
@@ -446,6 +447,7 @@ namespace Dune
 
       static unsigned int number ( unsigned int i, unsigned int j )
       {
+        DUNE_UNUSED_PARAMETER(j);
         return i;
       }
     };
