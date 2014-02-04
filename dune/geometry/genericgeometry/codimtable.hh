@@ -6,6 +6,7 @@
 
 #include <dune/common/typetraits.hh>
 #include <dune/common/tupleutility.hh>
+#include <dune/common/unused.hh>
 
 namespace Dune
 {
@@ -30,6 +31,7 @@ namespace Dune
       const Element< codim > &
       operator[] ( const integral_constant< int, codim > codimVariable ) const
       {
+        DUNE_UNUSED_PARAMETER(codimVariable);
         return Dune::get<codim>(map_);
       }
 
@@ -37,6 +39,7 @@ namespace Dune
       Element< codim > &
       operator[] ( const integral_constant< int, codim > codimVariable )
       {
+        DUNE_UNUSED_PARAMETER(codimVariable);
         return Dune::get<codim>(map_);
       }
     };

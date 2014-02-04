@@ -6,6 +6,7 @@
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/genericgeometry/referenceelements.hh>
 #include <dune/geometry/genericgeometry/matrixhelper.hh>
+#include <dune/common/unused.hh>
 
 namespace Dune
 {
@@ -56,6 +57,7 @@ namespace Dune
                             const FieldType &factor,
                             GlobalCoordinate &p )
       {
+        DUNE_UNUSED_PARAMETER(x);
         const GlobalCoordinate &y = origin( coords );
         for( unsigned int i = 0; i < dimW; ++i )
           p[ i ] = factor * y[ i ];

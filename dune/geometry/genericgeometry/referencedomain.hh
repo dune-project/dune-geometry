@@ -9,6 +9,7 @@
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/unused.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
@@ -48,6 +49,7 @@ namespace Dune
       template< class ctype, int dim >
       static void corner ( unsigned int i, FieldVector< ctype, dim > &n )
       {
+        DUNE_UNUSED_PARAMETER(i);
         assert( i < Topology::numCorners );
       }
 
@@ -55,6 +57,8 @@ namespace Dune
       static bool
       checkInside ( const FieldVector< ctype, dim > &x, ctype factor )
       {
+        DUNE_UNUSED_PARAMETER(x);
+        DUNE_UNUSED_PARAMETER(factor);
         return true;
       }
 
@@ -62,6 +66,8 @@ namespace Dune
       static void
       integrationOuterNormal ( unsigned int i, FieldVector< ctype, dim > &n )
       {
+        DUNE_UNUSED_PARAMETER(i);
+        DUNE_UNUSED_PARAMETER(n);
         assert( i < numNormals );
       }
 
