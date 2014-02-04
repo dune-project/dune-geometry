@@ -80,6 +80,10 @@ namespace Dune
                              const FieldType &factor,
                              JacobianTransposedType &J )
       {
+        DUNE_UNUSED_PARAMETER(coords);
+        DUNE_UNUSED_PARAMETER(x);
+        DUNE_UNUSED_PARAMETER(factor);
+        DUNE_UNUSED_PARAMETER(J);
         return true;
       }
 
@@ -89,6 +93,10 @@ namespace Dune
                              const FieldType &factor,
                              JacobianTransposedType &J )
       {
+        DUNE_UNUSED_PARAMETER(coords);
+        DUNE_UNUSED_PARAMETER(x);
+        DUNE_UNUSED_PARAMETER(factor);
+        DUNE_UNUSED_PARAMETER(J);
         return true;
       }
     };

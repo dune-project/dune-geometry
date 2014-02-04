@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include <dune/common/exceptions.hh>
+#include <dune/common/unused.hh>
 
 namespace Dune
 {
@@ -117,7 +118,9 @@ namespace Dune
     template<class TopologyType>
     explicit GeometryType(TopologyType t)
       : topologyId_(TopologyType::id), dim_(TopologyType::dimension), none_(false)
-    {}
+    {
+      DUNE_UNUSED_PARAMETER(t);
+    }
 
     /** \brief Constructor for vertices and segments */
     explicit GeometryType(unsigned int dim)

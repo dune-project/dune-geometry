@@ -8,6 +8,7 @@
 
 #include <dune/common/static_assert.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/unused.hh>
 
 namespace Dune
 {
@@ -368,30 +369,35 @@ namespace Dune
     public:
       static void apply ( const unsigned int topologyId )
       {
+        DUNE_UNUSED_PARAMETER(topologyId);
         Operation< Topology >::apply();
       }
 
       template< class T1 >
       static void apply ( const unsigned int topologyId, T1 &p1 )
       {
+        DUNE_UNUSED_PARAMETER(topologyId);
         Operation< Topology >::apply( p1 );
       }
 
       template< class T1, class T2 >
       static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2 )
       {
+        DUNE_UNUSED_PARAMETER(topologyId);
         Operation< Topology >::apply( p1, p2 );
       }
 
       template< class T1, class T2, class T3 >
       static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2, T3 &p3 )
       {
+        DUNE_UNUSED_PARAMETER(topologyId);
         Operation< Topology >::apply( p1, p2, p3 );
       }
 
       template< class T1, class T2, class T3, class T4 >
       static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2, T3 &p3, T4 &p4 )
       {
+        DUNE_UNUSED_PARAMETER(topologyId);
         Operation< Topology >::apply( p1, p2, p3, p4 );
       }
     };

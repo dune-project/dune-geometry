@@ -379,6 +379,7 @@ namespace Dune
 
       static unsigned int number ( unsigned int i, unsigned int j )
       {
+        DUNE_UNUSED_PARAMETER(j);
         return i;
       }
     };
