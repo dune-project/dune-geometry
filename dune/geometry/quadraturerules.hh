@@ -75,12 +75,9 @@ namespace Dune {
    */
   namespace QuadratureType {
     enum Enum {
-      Gauss      = 0,
       GaussLegendre = 0,
 
-      Jacobian_1_0 = 1,
       GaussJacobi_1_0 = 1,
-      Jacobian_2_0 = 2,
       GaussJacobi_2_0 = 2,
 
       GaussLobatto = 4
