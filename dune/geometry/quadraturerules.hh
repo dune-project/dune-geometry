@@ -38,9 +38,13 @@ namespace Dune {
   template<typename ct, int dim>
   class QuadraturePoint {
   public:
-    // compile time parameters
+    /** \brief Dimension of the integration domain */
     enum { dimension = dim };
+
+    /** \brief Number type used for coordinates and quadrature weights */
     typedef ct Field;
+
+    /** \brief Type used for the position of a quadrature point */
     typedef Dune::FieldVector<ct,dim> Vector;
 
     //! set up quadrature of given order in d dimensions
