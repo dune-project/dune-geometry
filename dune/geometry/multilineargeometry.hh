@@ -175,11 +175,6 @@ namespace Dune
     //! type of jacobian inverse transposed
     class JacobianInverseTransposed;
 
-    /** \brief For backward-compatibility, export the type JacobianInverseTransposed as Jacobian
-     *  \deprecated This typedef will be removed after the release of dune 2.3
-     */
-    typedef JacobianInverseTransposed Jacobian;
-
     //! type of reference element
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
 
@@ -231,8 +226,8 @@ namespace Dune
     /** \brief is this mapping affine? */
     bool affine () const
     {
-      CornerIterator cit = corners_.begin();
-      return affine( topologyId(), integral_constant< int, mydimension >(), cit, jacobianTransposed_ );
+      JacobianTransposed jt;
+      return affine( jt );
     }
 
     /** \brief obtain the name of the reference element */
@@ -333,11 +328,12 @@ namespace Dune
      *  \note The returned reference is reused on the next call to
      *        JacobianTransposed, destroying the previous value.
      */
-    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
+    JacobianTransposed jacobianTransposed ( const LocalCoordinate &local ) const
     {
+      JacobianTransposed jt;
       CornerIterator cit = corners_.begin();
-      jacobianTransposed< false >( topologyId(), integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jacobianTransposed_ );
-      return jacobianTransposed_;
+      jacobianTransposed< false >( topologyId(), integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jt );
+      return jt;
     }
 
     /** \brief obtain the transposed of the Jacobian's inverse
@@ -346,7 +342,7 @@ namespace Dune
      *  the Jacobian by \f$J(x)\f$, the following condition holds:
      *  \f[J^{-1}(x) J(x) = I.\f]
      */
-    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const;
+    JacobianInverseTransposed jacobianInverseTransposed ( const LocalCoordinate &local ) const;
 
   protected:
     const ReferenceElement &refElement () const { return *refElement_; }
@@ -378,14 +374,16 @@ namespace Dune
     static bool affine ( TopologyId topologyId, integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt );
     static bool affine ( TopologyId topologyId, integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt );
 
-  protected:
+    bool affine ( JacobianTransposed &jacobianTransposed ) const
+    {
+      CornerIterator cit = corners_.begin();
+      return affine( topologyId(), integral_constant< int, mydimension >(), cit, jacobianTransposed );
+    }
+
+  private:
     TopologyId topologyId ( integral_constant< bool, true > ) const { return TopologyId(); }
     unsigned int topologyId ( integral_constant< bool, false > ) const { return refElement().type().id(); }
 
-    mutable JacobianTransposed jacobianTransposed_;
-    mutable JacobianInverseTransposed jacobianInverseTransposed_;
-
-  private:
     const ReferenceElement *refElement_;
     typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners_;
   };
@@ -460,7 +458,7 @@ namespace Dune
     template< class CornerStorage >
     CachedMultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage )
       : Base( refElement, cornerStorage ),
-        affine_( Base::affine() ),
+        affine_( Base::affine( jacobianTransposed_ ) ),
         jacobianInverseTransposedComputed_( false ),
         integrationElementComputed_( false )
     {}
@@ -468,7 +466,7 @@ namespace Dune
     template< class CornerStorage >
     CachedMultiLinearGeometry ( Dune::GeometryType gt, const CornerStorage &cornerStorage )
       : Base( gt, cornerStorage ),
-        affine_( Base::affine() ),
+        affine_( Base::affine( jacobianTransposed_ ) ),
         jacobianInverseTransposedComputed_( false ),
         integrationElementComputed_( false )
     {}
@@ -572,7 +570,7 @@ namespace Dune
      *  \note The returned reference is reused on the next call to
      *        JacobianTransposed, destroying the previous value.
      */
-    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
+    JacobianTransposed jacobianTransposed ( const LocalCoordinate &local ) const
     {
       if( affine() )
         return jacobianTransposed_;
@@ -586,7 +584,7 @@ namespace Dune
      *  the Jacobian by \f$J(x)\f$, the following condition holds:
      *  \f[J^{-1}(x) J(x) = I.\f]
      */
-    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
+    JacobianInverseTransposed jacobianInverseTransposed ( const LocalCoordinate &local ) const
     {
       if( affine() )
       {
@@ -605,10 +603,10 @@ namespace Dune
   protected:
     using Base::refElement;
 
-    using Base::jacobianTransposed_;
-    using Base::jacobianInverseTransposed_;
-
   private:
+    mutable JacobianTransposed jacobianTransposed_;
+    mutable JacobianInverseTransposed jacobianInverseTransposed_;
+
     mutable bool affine_ : 1;
 
     mutable bool jacobianInverseTransposedComputed_ : 1;
@@ -621,12 +619,12 @@ namespace Dune
   // -------------------------------------
 
   template< class ct, int mydim, int cdim, class Traits >
-  inline const typename MultiLinearGeometry< ct, mydim, cdim, Traits >::JacobianInverseTransposed &
-  MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::jacobianInverseTransposed ( const LocalCoordinate &local ) const
+  inline typename MultiLinearGeometry< ct, mydim, cdim, Traits >::JacobianInverseTransposed
+  MultiLinearGeometry< ct, mydim, cdim, Traits >::jacobianInverseTransposed ( const LocalCoordinate &local ) const
   {
-    jacobianInverseTransposed_.setup( jacobianTransposed( local ) );
-    return jacobianInverseTransposed_;
+    JacobianInverseTransposed jit;
+    jit.setup( jacobianTransposed( local ) );
+    return jit;
   }
 
 
