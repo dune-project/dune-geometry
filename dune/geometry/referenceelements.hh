@@ -19,10 +19,6 @@
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/referencedomain.hh>
 
-// for backward compatibility include header
-// with deprecated classes. Remove after Dune 2.3
-#include "genericreferenceelements.hh"
-
 namespace Dune
 {
 

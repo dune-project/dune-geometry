@@ -3,7 +3,6 @@ geometryinclude_HEADERS =			\
 	affinegeometry.hh			\
 	axisalignedcubegeometry.hh		\
 	generalvertexorder.hh			\
-	genericreferenceelements.hh		\
 	mockgeometry.hh				\
 	multilineargeometry.hh			\
 	quadraturerules.hh			\
