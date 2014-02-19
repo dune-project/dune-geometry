@@ -7,7 +7,6 @@ install(FILES
   affinegeometry.hh
   axisalignedcubegeometry.hh
   generalvertexorder.hh
-  mockgeometry.hh
   multilineargeometry.hh
   quadraturerules.hh
   referenceelements.hh
