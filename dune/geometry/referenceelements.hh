@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <limits>
 
-#include <dune/common/deprecated.hh>
 #include <dune/common/array.hh>
 #include <dune/common/forloop.hh>
 #include <dune/common/nullptr.hh>
@@ -222,16 +221,6 @@ namespace Dune
     {
       assert( (face >= 0) && (face < int( integrationNormals_.size() )) );
       return integrationNormals_[ face ];
-    }
-
-    /** \brief initialize the reference element
-     *
-     *  \param[in]  topologyId  topology id for the desired reference element
-     */
-    void initializeTopology ( unsigned int topologyId )
-    DUNE_DEPRECATED_MSG( "initializeTopology has never been an official interface method." )
-    {
-      initialize( topologyId );
     }
 
   private:
