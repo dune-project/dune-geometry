@@ -36,9 +36,11 @@ namespace Dune
   /** \class ReferenceElement
    *  \ingroup GeometryReferenceElements
    *  \brief This class provides access to geometric and topological
-   *  properties of a reference element. This includes its type,
+   *  properties of a reference element.
+   *
+   *  This includes its type,
    *  the number of subentities, the volume, and a method for checking
-   *  if a point is inside.
+   *  if a point is contained in the reference element.
    *  The embedding of each subentity into the reference element is also
    *  provided.
    *
@@ -499,7 +501,9 @@ namespace Dune
   // ------------------------
 
   /** \brief Class providing access to the singletons of the
-   *  reference elements. Special methods are available for
+   *  reference elements
+   *
+   *  Special methods are available for
    *  simplex and cube elements of any dimension.
    *  The method general can be used to obtain the reference element
    *  for a given geometry type.
