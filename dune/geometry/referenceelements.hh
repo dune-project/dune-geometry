@@ -224,12 +224,6 @@ namespace Dune
       return integrationNormals_[ face ];
     }
 
-    const FieldVector< ctype, dim > &volumeOuterNormal ( int face ) const
-    DUNE_DEPRECATED_MSG( "This method has always returned the integration outer normal; use integrationOuterNormal instead." )
-    {
-      return integrationOuterNormal( face );
-    }
-
     /** \brief initialize the reference element
      *
      *  \param[in]  topologyId  topology id for the desired reference element
