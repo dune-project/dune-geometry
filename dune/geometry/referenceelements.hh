@@ -187,54 +187,6 @@ namespace Dune
       return GenericGeometry::template checkInside< ctype, dim >( type( i, codim ).id(), dim-codim, local, tolerance );
     }
 
-    /** \brief map a local coordinate on subentity (i,codim) into the reference
-     *         element
-     *
-     *  Denote by E the i-th subentity of codimension codim of the current
-     *  reference element. This method maps a point within the reference
-     *  element of E into the current reference element.
-     *
-     *  \tparam     codim  codimension of subentity E
-     *
-     *  \param[in]  local  coordinates of the point with respect to the reference
-     *                     element of E
-     *  \param[in]  i      number of subentity E (0 <= i < size( c ))
-     *  \param[in]  c      codimension of subentity E
-     *
-     *  \note The runtime argument c is redundant and must equal codim.
-     */
-    template< int codim >
-    FieldVector< ctype, dim >
-    DUNE_DEPRECATED_MSG( "Use geometry< codim >( i ).global( local ) instead." )
-    global( const FieldVector< ctype, dim-codim > &local, int i, int c ) const
-    {
-      if( c != codim )
-        DUNE_THROW( Exception, "Local Coordinate Type does not correspond to codimension c." );
-      assert( c == codim );
-      return geometry< codim >( i ).global( local );
-    }
-
-    /** \brief map a local coordinate on subentity (i,codim) into the reference
-     *         element
-     *
-     *  Denote by E the i-th subentity of codimension codim of the current
-     *  reference element. This method maps a point within the reference
-     *  element of E into the current reference element.
-     *
-     *  \tparam     codim  codimension of subentity E
-     *
-     *  \param[in]  local  coordinates of the point with respect to the reference
-     *                     element of E
-     *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
-     */
-    template< int codim >
-    FieldVector< ctype, dim >
-    DUNE_DEPRECATED_MSG( "Use geometry< codim >( i ).global( local ) instead." )
-    global( const FieldVector< ctype, dim-codim > &local, int i ) const
-    {
-      return geometry< codim >( i ).global( local );
-    }
-
     /** \brief obtain the embedding of subentity (i,codim) into the reference
      *         element
      *
