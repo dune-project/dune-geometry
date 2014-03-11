@@ -167,9 +167,8 @@ namespace Dune
       return GenericGeometry::template checkInside< ctype, dim >( type().id(), dim, local, tolerance );
     }
 
-    /** \brief check if a local coordinate is in the reference element of
-     *         the i-th subentity E with codimension c of the current
-     *         reference element.
+    /** \brief check if a point is in the reference element of
+     *         the i-th subentity with codimension codim
      *
      *  Denote by E the i-th subentity of codimension codim of the current
      *  reference element. This method return true, if the given local
