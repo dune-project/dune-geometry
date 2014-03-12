@@ -112,7 +112,7 @@ namespace Dune
      * \tparam TopologyType A class providing public static unsigned int members
      *                      TopologyType::dimension and TopologyType::id.
      *                      You can e.g. use the Point, Prism and Pyramid structs from
-     *                      topologytypes.hh in dune-grid.
+     *                      topologytypes.hh.
      * \param t             Any object of type TopologyType. The object t itself is ignored.
      */
     template<class TopologyType>
