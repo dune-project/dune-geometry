@@ -13,7 +13,6 @@
 #include <dune/common/exceptions.hh>
 #include <dune/common/stdstreams.hh>
 #include <dune/common/visibility.hh>
-#include <dune/common/deprecated.hh>
 
 #include <dune/geometry/type.hh>
 

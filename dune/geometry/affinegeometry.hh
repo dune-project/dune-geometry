@@ -60,9 +60,6 @@ namespace Dune
     /** \brief Type for the transposed inverse Jacobian matrix */
     typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
 
-    /** \deprecated for compatibility, export the type JacobianInverseTransposed as Jacobian */
-    typedef JacobianInverseTransposed Jacobian;
-
   private:
     //! type of reference element
     typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
