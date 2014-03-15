@@ -5,7 +5,6 @@ install(FILES
   conversion.hh
   cornermapping.hh
   geometrytraits.hh
-  geometry.hh
   hybridmapping.hh
   mapping.hh
   mappingprovider.hh
