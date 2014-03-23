@@ -1,6 +1,7 @@
 set(TESTS
+  testmatrix
   testsubtopologies
-  testbasicgeometry)
+  )
 
 set(GEOMETRYTYPE "cube")
 set(DIMENSION "3")
