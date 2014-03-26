@@ -47,7 +47,7 @@ namespace Dune
       template< class CoordStorage >
       static const GlobalCoordinate &origin ( const CoordStorage &coords )
       {
-        dune_static_assert( CoordStorage::size, "Invalid offset." );
+        static_assert(CoordStorage::size, "Invalid offset.");
         return coords[ offset ];
       }
 

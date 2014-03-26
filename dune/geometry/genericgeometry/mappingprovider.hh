@@ -183,7 +183,7 @@ namespace Dune
     {
       typedef MappingProvider< HybridMapping< dim, GeometryTraits >, codim > This;
 
-      dune_static_assert(dim>=codim, "Codim exceeds dimension");
+      static_assert(dim>=codim, "Codim exceeds dimension");
     public:
       static const unsigned int dimension = dim;
       static const unsigned int codimension = codim;

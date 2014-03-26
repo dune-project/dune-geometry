@@ -3,7 +3,6 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_CONVERSION_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_CONVERSION_HH
 
-#include <dune/common/static_assert.hh>
 #include <dune/common/visibility.hh>
 
 #include <dune/geometry/type.hh>
@@ -33,9 +32,9 @@ namespace Dune
     template< GeometryType::BasicType linetype >
     class DuneGeometryType< Point, linetype >
     {
-      dune_static_assert( (linetype == GeometryType::simplex)
-                          || (linetype == GeometryType::cube),
-                          "Parameter linetype may only be a simplex or a cube." );
+      static_assert((linetype == GeometryType::simplex)
+                     || (linetype == GeometryType::cube),
+                    "Parameter linetype may only be a simplex or a cube.");
 
     public:
       static const unsigned int dimension = 0;
@@ -47,13 +46,13 @@ namespace Dune
     {
       typedef DuneGeometryType< BaseTopology, linetype > DuneBaseGeometryType;
 
-      dune_static_assert( (linetype == GeometryType::simplex)
-                          || (linetype == GeometryType::cube),
-                          "Parameter linetype may only be a simplex or a cube." );
+      static_assert((linetype == GeometryType::simplex)
+                     || (linetype == GeometryType::cube),
+                          "Parameter linetype may only be a simplex or a cube.");
 
-      dune_static_assert( (DuneBaseGeometryType::basicType == GeometryType::simplex)
-                          || (DuneBaseGeometryType::basicType == GeometryType::cube),
-                          "Only prisms over simplices or cubes can be converted." );
+      static_assert((DuneBaseGeometryType::basicType == GeometryType::simplex)
+                     || (DuneBaseGeometryType::basicType == GeometryType::cube),
+                    "Only prisms over simplices or cubes can be converted.");
 
     public:
       static const unsigned int dimension = DuneBaseGeometryType::dimension + 1;
@@ -70,13 +69,13 @@ namespace Dune
     {
       typedef DuneGeometryType< BaseTopology, linetype > DuneBaseGeometryType;
 
-      dune_static_assert( (linetype == GeometryType::simplex)
-                          || (linetype == GeometryType::cube),
-                          "Parameter linetype may only be a simplex or a cube." );
+      static_assert((linetype == GeometryType::simplex)
+                     || (linetype == GeometryType::cube),
+                    "Parameter linetype may only be a simplex or a cube.");
 
-      dune_static_assert( (DuneBaseGeometryType::basicType == GeometryType::simplex)
-                          || (DuneBaseGeometryType::basicType == GeometryType::cube),
-                          "Only pyramids over simplices or cubes can be converted." );
+      static_assert((DuneBaseGeometryType::basicType == GeometryType::simplex)
+                     || (DuneBaseGeometryType::basicType == GeometryType::cube),
+                    "Only pyramids over simplices or cubes can be converted.");
 
     public:
       static const unsigned int dimension = DuneBaseGeometryType::dimension + 1;

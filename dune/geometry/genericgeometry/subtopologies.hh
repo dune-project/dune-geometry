@@ -7,7 +7,6 @@
 #include <vector>
 
 #include <dune/common/forloop.hh>
-#include <dune/common/static_assert.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/visibility.hh>
 #include <dune/common/unused.hh>
@@ -47,8 +46,8 @@ namespace Dune
     class SizeImpl< Point, dim, codim >
     {
       typedef Point Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (codim <= dim), "Invalid codimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((codim <= dim), "Invalid codimension");
 
     public:
       enum { value = 1 };
@@ -58,8 +57,8 @@ namespace Dune
     class SizeImpl< Prism< BaseTopology >, dim, codim >
     {
       typedef Prism< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (codim <= dim), "Invalid codimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((codim <= dim), "Invalid codimension");
 
       enum { m = Size< BaseTopology, codim-1 > :: value };
       enum { n = Size< BaseTopology, codim > :: value };
@@ -72,7 +71,7 @@ namespace Dune
     class SizeImpl< Prism< BaseTopology >, dim, 0 >
     {
       typedef Prism< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
 
     public:
       enum { value = 1 };
@@ -82,7 +81,7 @@ namespace Dune
     class SizeImpl< Prism< BaseTopology >, dim, dim >
     {
       typedef Prism< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
 
       enum { m = Size< BaseTopology, dim-1 > :: value };
 
@@ -94,8 +93,8 @@ namespace Dune
     class SizeImpl< Pyramid< BaseTopology >, dim, codim >
     {
       typedef Pyramid< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (codim <= dim), "Invalid codimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((codim <= dim), "Invalid codimension");
 
       enum { m = Size< BaseTopology, codim-1 > :: value };
       enum { n = Size< BaseTopology, codim > :: value };
@@ -108,7 +107,7 @@ namespace Dune
     class SizeImpl< Pyramid< BaseTopology >, dim, 0 >
     {
       typedef Pyramid< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
 
     public:
       enum { value = 1 };
@@ -118,7 +117,7 @@ namespace Dune
     class SizeImpl< Pyramid< BaseTopology >, dim, dim >
     {
       typedef Pyramid< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
 
       enum { m = Size< BaseTopology, dim-1 > :: value };
 
@@ -151,10 +150,9 @@ namespace Dune
     class SubTopologyImpl< Point, dim, codim, i >
     {
       typedef Point Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (codim <= dim), "Invalid codimension" );
-      dune_static_assert( (i < Size< Topology, codim > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((codim <= dim), "Invalid codimension");
+      static_assert((i < Size< Topology, codim > :: value), "Invalid subentity index");
 
     public:
       typedef Topology type;
@@ -164,10 +162,9 @@ namespace Dune
     class SubTopologyImpl< Prism< BaseTopology >, dim, codim, i >
     {
       typedef Prism< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (codim <= dim), "Invalid codimension" );
-      dune_static_assert( (i < Size< Topology, codim > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((codim <= dim), "Invalid codimension");
+      static_assert((i < Size< Topology, codim > :: value), "Invalid subentity index");
 
       enum { m = Size< BaseTopology, codim-1 > :: value };
       enum { n = Size< BaseTopology, codim > :: value };
@@ -194,9 +191,8 @@ namespace Dune
     class SubTopologyImpl< Prism< BaseTopology >, dim, 0, i >
     {
       typedef Prism< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (i < Size< Topology, 0 > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((i < Size< Topology, 0 > :: value), "Invalid subentity index");
     public:
       typedef Topology type;
     };
@@ -205,9 +201,8 @@ namespace Dune
     class SubTopologyImpl< Prism< BaseTopology >, dim, dim, i >
     {
       typedef Prism< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (i < Size< Topology, dim > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((i < Size< Topology, dim > :: value), "Invalid subentity index");
     public:
       typedef Point type;
     };
@@ -216,10 +211,9 @@ namespace Dune
     class SubTopologyImpl< Pyramid< BaseTopology >, dim, codim, i >
     {
       typedef Pyramid< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (codim <= dim), "Invalid codimension" );
-      dune_static_assert( (i < Size< Topology, codim > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((codim <= dim), "Invalid codimension" );
+      static_assert((i < Size< Topology, codim > :: value), "Invalid subentity index");
 
       enum { m = Size< BaseTopology, codim-1 > :: value };
 
@@ -243,9 +237,8 @@ namespace Dune
     class SubTopologyImpl< Pyramid< BaseTopology >, dim, 0, i >
     {
       typedef Pyramid< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (i < Size< Topology, 0 > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((i < Size< Topology, 0 > :: value), "Invalid subentity index");
 
     public:
       typedef Topology type;
@@ -255,9 +248,8 @@ namespace Dune
     class SubTopologyImpl< Pyramid< BaseTopology >, dim, dim, i >
     {
       typedef Pyramid< BaseTopology > Topology;
-      dune_static_assert( (dim == Topology :: dimension), "Wrong dimension" );
-      dune_static_assert( (i < Size< Topology, dim > :: value),
-                          "Invalid subentity index" );
+      static_assert((dim == Topology :: dimension), "Wrong dimension");
+      static_assert((i < Size< Topology, dim > :: value), "Invalid subentity index");
 
     public:
       typedef Point type;
@@ -483,9 +475,8 @@ namespace Dune
     template< class Topology, unsigned int codim, unsigned int subcodim >
     class GenericSubTopologyNumbering
     {
-      dune_static_assert( (codim <= Topology :: dimension), "Invalid codimension" );
-      dune_static_assert( (codim + subcodim <= Topology :: dimension),
-                          "Invalid subcodimension" );
+      static_assert((codim <= Topology :: dimension), "Invalid codimension");
+      static_assert((codim + subcodim <= Topology :: dimension), "Invalid subcodimension");
 
       template< bool >
       struct BorderCodim

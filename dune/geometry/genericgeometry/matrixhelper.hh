@@ -7,7 +7,6 @@
 
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
-#include <dune/common/static_assert.hh>
 
 namespace Dune
 {
@@ -436,7 +435,7 @@ namespace Dune
       leftInvA ( const typename Traits :: template Matrix< m, n > :: type &A,
                  typename Traits :: template Matrix< n, m > :: type &ret )
       {
-        dune_static_assert( (m >= n), "Matrix has no left inverse." );
+        static_assert((m >= n), "Matrix has no left inverse.");
         typename Traits :: template Matrix< n, n > :: type ata;
         ATA_L< m, n >( A, ata );
         const FieldType det = spdInvA< n >( ata );
@@ -450,7 +449,7 @@ namespace Dune
                   const typename Traits :: template Vector< m > :: type &x,
                   typename Traits :: template Vector< n > :: type &y )
       {
-        dune_static_assert( (m >= n), "Matrix has no left inverse." );
+        static_assert((m >= n), "Matrix has no left inverse.");
         typename Traits :: template Matrix< n, n > :: type ata;
         ATx< m, n >( A, x, y );
         ATA_L< m, n >( A, ata );
@@ -463,7 +462,7 @@ namespace Dune
       rightInvA ( const typename Traits :: template Matrix< m, n > :: type &A,
                   typename Traits :: template Matrix< n, m > :: type &ret )
       {
-        dune_static_assert( (n >= m), "Matrix has no right inverse." );
+        static_assert((n >= m), "Matrix has no right inverse.");
         if( (n == 2) && (m == 2) )
         {
           const FieldType det = (A[ 0 ][ 0 ]*A[ 1 ][ 1 ] - A[ 1 ][ 0 ]*A[ 0 ][ 1 ]);
@@ -490,7 +489,7 @@ namespace Dune
                     const typename Traits :: template Vector< n > :: type &x,
                     typename Traits :: template Vector< m > :: type &y )
       {
-        dune_static_assert( (n >= m), "Matrix has no right inverse." );
+        static_assert((n >= m), "Matrix has no right inverse.");
         typename Traits :: template Matrix< m, m > :: type aat;
         Ax< m, n >( A, x, y );
         AAT_L< m, n >( A, aat );

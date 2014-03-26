@@ -6,7 +6,6 @@
 #include <cassert>
 #include <string>
 
-#include <dune/common/static_assert.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
 
@@ -272,7 +271,7 @@ namespace Dune
     {
       static const unsigned int dimension = dim;
 
-      dune_static_assert( (id < (1 << dimension)), "id too large." );
+      static_assert((id < (1 << dimension)), "id too large.");
 
       static const bool isPrism = ((id >> (dimension-1)) != 0);
 
@@ -300,7 +299,7 @@ namespace Dune
     {
       static const unsigned int dimension = 0;
 
-      dune_static_assert( (id < (1 << dimension)), "id too large." );
+      static_assert((id < (1 << dimension)), "id too large.");
 
     public:
       typedef Point type;
