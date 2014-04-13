@@ -95,10 +95,13 @@ namespace Dune {
                             const Dune::FieldVector<ctype,coorddim> upper)
       : lower_(lower),
         upper_(upper),
-        axes_((1<<coorddim)-1),     // all 'true', but is never actually used
+        axes_(),
         jacobianTransposed_(0),
         jacobianInverseTransposed_(0)
-    {}
+    {
+      // all 'true', but is never actually used
+      axes_ = (1<<coorddim)-1;
+    }
 
     /** \brief Constructor from a lower left and an upper right corner
      *
