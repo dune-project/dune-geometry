@@ -224,7 +224,7 @@ namespace Dune {
     }
 
     /** \brief Return the number of corners of the element */
-    std::size_t corners() const
+    int corners() const
     {
       return 1<<dim;
     }
