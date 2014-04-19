@@ -1,5 +1,3 @@
-# $Id: Makefile.am 2248 2006-02-10 15:30:52Z joe $
-
 quadraturerulesdir = $(includedir)/dune/geometry/quadraturerules
 quadraturerules_HEADERS =		\
 	compositequadraturerule.hh 	\
@@ -26,8 +24,6 @@ libquadraturerules_la_SOURCES = quadraturerules.cc gauss.cc gausslobatto.cc jaco
 libquadraturerules_la_LIBADD =	\
 	$(DUNE_LIBS)
 
-extra_DIST=jacobian.mac
+EXTRA_DIST = CMakeLists.txt jacobian.mac
 
 include $(top_srcdir)/am/global-rules
-
-EXTRA_DIST = CMakeLists.txt

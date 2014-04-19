@@ -7,6 +7,7 @@ install(FILES
   gausslobatto_imp.hh
   jacobi_1_0_imp.hh
   jacobi_2_0_imp.hh
+  jacobian.mac
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
 
 exclude_from_headercheck(
@@ -27,6 +28,3 @@ dune_add_library(quadraturerules OBJECT
   quadraturerules.cc
   gausslobatto.cc
 )
-
-
-message(AUTHOR_WARNING "TODO in dune-geometry/dune/geometry/quadraturerules: Distribute jacobian.mac")
