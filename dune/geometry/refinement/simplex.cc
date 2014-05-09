@@ -755,7 +755,7 @@ namespace Dune {
         CoordVector v =
           referenceToKuhn(local, getPermutation<dimension>(kuhnIndex));
         v += origin;
-        v /= size;
+        v /= (typename CoordVector::value_type)size;
         return kuhnToReference(v, getPermutation<dimension>(0));
       }
 
