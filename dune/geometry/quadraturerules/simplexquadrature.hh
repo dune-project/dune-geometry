@@ -893,9 +893,7 @@ namespace Dune {
       // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
       // maintained by Ronald Cools.
 
-      // Note: according the Leuven Encyclopaedia, this quadrature rule can be found
-      // in A.H. Stroud, Approximate Calculation of Multiple Integrals.
-      // However, I have not been able to find it in there.
+      // For further reference: Rule 3-7, P. 309, A.H. Stroud, Approximate Calculation of Multiple Integrals
 
       m = 8;
       G[m][0][0] = 0.0;
