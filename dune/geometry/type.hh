@@ -239,7 +239,7 @@ namespace Dune
       case 3 :
         switch (vertices) {
         case 4 :
-          makeSimplex(2);
+          makeSimplex(3);
           return;
         case 5 :
           makePyramid();
