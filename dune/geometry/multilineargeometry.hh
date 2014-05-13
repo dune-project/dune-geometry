@@ -142,9 +142,6 @@ namespace Dune
    *
    *  The requirements on the traits are documented along with their default,
    *  MultiLinearGeometryTraits.
-   *
-   *  As an additional feature, this class allows to attach arbitrary user data
-   *  to each object.  This is used in GeometryGrid to implement reference counting.
    */
   template< class ct, int mydim, int cdim, class Traits = MultiLinearGeometryTraits< ct > >
   class MultiLinearGeometry
@@ -160,10 +157,6 @@ namespace Dune
     //! coordinate dimension
     static const int coorddimension = cdim;
 
-    /** \brief type of user data
-
-        For example, GeometryGrid uses this to implement reference counting.
-     */
     //! type of local coordinates
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
     //! type of global coordinates
