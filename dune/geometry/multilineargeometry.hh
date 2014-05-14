@@ -703,26 +703,33 @@ namespace Dune
     else
     {
       assert( GenericGeometry::isPyramid( topologyId, mydimension, mydimension-dim ) );
+
+      ctype dfcxn;
+      if (cxn > Traits::tolerance()) {
+        dfcxn = df / cxn;
+      } else {
+        dfcxn = 0;
+      }
       // initialize last row
-      global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df/cxn, x, -rf, jt[ dim-1 ] );
+      global< add >( topologyId, integral_constant< int, dim-1 >(), cit, dfcxn, x, -rf, jt[ dim-1 ] );
       jt[ dim-1 ].axpy( rf, *cit );
       ++cit;
       // apply Jacobian for bottom (with argument x/(1-xn)) and correct last row
       if( add )
       {
         FieldMatrix< ctype, dim-1, coorddimension > jt2;
-        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt2 );
+        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt2 );
         for( int j = 0; j < dim-1; ++j )
         {
           jt[ j ] += jt2[ j ];
-          jt[ dim-1 ].axpy( (df/cxn)*x[ j ], jt2[ j ] );
+          jt[ dim-1 ].axpy( dfcxn*x[ j ], jt2[ j ] );
         }
       }
       else
       {
-        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, df/cxn, x, rf, jt );
+        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt );
         for( int j = 0; j < dim-1; ++j )
-          jt[ dim-1 ].axpy( (df/cxn)*x[ j ], jt[ j ] );
+          jt[ dim-1 ].axpy( dfcxn*x[ j ], jt[ j ] );
       }
     }
   }
