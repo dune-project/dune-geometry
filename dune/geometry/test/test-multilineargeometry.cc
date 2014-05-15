@@ -118,7 +118,28 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
                 << ", should be " << t << ")." << std::endl;
       pass = false;
     }
+  }
 
+  for (int c = 0; c < numCorners; ++c) {
+    const Dune::FieldMatrix< ctype, mydim, cdim > JT = geometry.jacobianTransposed(refElement.position(c, mydim));
+    for( int i = 0; i < mydim; ++i ) {
+      Dune::FieldVector< ctype, mydim > e( ctype( 0 ) );
+      e[ i ] = ctype( 1 );
+      const Dune::FieldVector< ctype, cdim > t = map( A, B, e );
+      if (JT[i] != JT[i])
+      {
+        std::cerr << "Error: at corner " << c << ": jacobianTransposed["
+                  << i << "] (" << JT[i] << ") has NaN entry." << std::endl;
+        pass = false;
+      }
+      if( (t - JT[ i ]).two_norm() > epsilon )
+      {
+        std::cerr << "Error: at corner " << c << ": wrong jacobianTransposed[ "
+                  << i << " ] (" << JT[ i ] << ", should be " << t << ")."
+                  << std::endl;
+        pass = false;
+      }
+    }
   }
 
   pass &= checkGeometry( geometry );
