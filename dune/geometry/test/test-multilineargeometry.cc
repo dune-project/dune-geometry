@@ -180,6 +180,65 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   return passId && passScaledId;
 }
 
+template<class ctype>
+static bool testNonLinearGeometry()
+{
+  const unsigned dim = 2;
+  typedef Dune::ReferenceElement<ctype,dim> ReferenceElement;
+  typedef Dune::FieldVector<ctype,dim> Vector;
+  typedef Dune::MultiLinearGeometry<ctype,dim,dim> Geometry;
+  const ctype epsilon(ctype(16) * std::numeric_limits<ctype>::epsilon());
+
+  bool pass(true);
+  std::cout << "Checking geometry (non-linear, quadrilateral): ";
+
+  Dune::GeometryType quadrilateral;
+  quadrilateral.makeQuadrilateral();
+  const ReferenceElement& reference(Dune::ReferenceElements<ctype,dim>::general(quadrilateral));
+
+  std::vector<Vector> corners(4);
+  corners[0][0] = 0; corners[0][1] = 0;
+  corners[1][0] = 2; corners[1][1] = 0;
+  corners[2][0] = 0; corners[2][1] = 1;
+  corners[3][0] = 1; corners[3][1] = 1;
+
+  const Geometry geometry(reference, corners);
+
+  /* Test global() */
+  for (std::size_t c = 0; c < corners.size(); ++c) {
+    const Vector& local(reference.position(c, dim));
+    const Vector global(geometry.global(local));
+    if (global != global) {
+      std::cerr << "global failed at corner " << c << ": returned NaN: "
+                << global << std::endl;
+      pass = false;
+    }
+    if ((global - corners[c]).two_norm() > epsilon) {
+      std::cerr << "global failed at corner " << c << ": got " << global
+                << ", but expected " << corners[c] << std::endl;
+      pass = false;
+    }
+  }
+
+  /* Test local() */
+  for (std::size_t c = 0; c < corners.size(); ++c) {
+    const Vector& local(reference.position(c, dim));
+    const Vector local2(geometry.local(corners[c]));
+    if (local2 != local2) {
+      std::cerr << "local failed at corner " << c << ": returned NaN: "
+                << local2 << std::endl;
+      pass = false;
+    }
+    if ((local - local2).two_norm() > epsilon) {
+      std::cerr << "local failed at corner " << c << ": got " << local2
+                << ", but expected " << local << std::endl;
+      pass = false;
+    }
+  }
+
+  std::cout << (pass ? "passed" : "failed") << std::endl;
+  return pass;
+}
 
 template< class ctype >
 static bool testMultiLinearGeometry ()
@@ -248,6 +307,8 @@ static bool testMultiLinearGeometry ()
 
   pass &= testMultiLinearGeometry< ctype, 4, 4 >( cube4d );
   pass &= testMultiLinearGeometry< ctype, 4, 5 >( cube4d );
+
+  pass &= testNonLinearGeometry<ctype>();
 
   return pass;
 }
