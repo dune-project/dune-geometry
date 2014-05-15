@@ -84,6 +84,22 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     pass = false;
   }
 
+  for (int c = 0; c < numCorners; ++c) {
+    Dune::FieldVector<ctype, mydim> local(refElement.position(c, mydim));
+    Dune::FieldVector<ctype, cdim> global(geometry.global(local));
+    Dune::FieldVector<ctype, mydim> local2(geometry.local(global));
+    if (local2 != local2) {
+      std::cerr << "Error: at corner " << c << " local returned NaN: "
+                << local2 << std::endl;
+      pass = false;
+    }
+    if ((local - local2).two_norm() > epsilon) {
+      std::cerr << "Error: at corner " << c << " local returned wrong value: "
+                << local2 << " (expected: " << local << ")" << std::endl;
+      pass = false;
+    }
+  }
+
   const Dune::FieldMatrix< ctype, mydim, cdim > JT = geometry.jacobianTransposed( localCenter );
   for( int i = 0; i < mydim; ++i )
   {
