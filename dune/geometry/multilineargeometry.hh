@@ -694,22 +694,68 @@ namespace Dune
     else
     {
       assert( GenericGeometry::isPyramid( topologyId, mydimension, mydimension-dim ) );
+      /*
+       * In the pyramid case, we need a transformation Tb: B -> R^n for the
+       * base B \subset R^{n-1}. The pyramid transformation is then defined as
+       *   T: P \subset R^n  -> R^n
+       *      (x, xn)        |-> (1-xn) Tb(x*) + xn t  (x \in R^{n-1}, xn \in R)
+       * with the tip of the pyramid mapped to t and x* = x/(1-xn)
+       * the projection of (x,xn) onto the base.
+       *
+       * For the Jacobi matrix DT we get
+       *   DT = ( A | b )
+       * with A = DTb(x*)   (n x n-1 matrix)
+       *  and b = dT/dxn    (n-dim column vector).
+       * Furthermore
+       *   b = -Tb(x*) + t + \sum_i dTb/dx_i(x^*) x_i/(1-xn)
+       *
+       * Note that both A and b are not defined in the pyramid tip (x=0, xn=1)!
+       * Indeed for B the unit square, Tb mapping B to the quadrilateral given
+       * by the vertices (0,0,0), (2,0,0), (0,1,0), (1,1,0) and t=(0,0,1), we get
+       *
+       *   T(x,y,xn) = ( x(2-y/(1-xn)), y, xn )
+       *               / 2-y/(1-xn)  -x   0 \
+       *  DT(x,y,xn) = |    0         1   0 |
+       *               \    0         0   1 /
+       * which is not continuous for xn -> 1, choose for example
+       *   x=0,    y=1-xn, xn -> 1   --> DT -> diag(1,1,1)
+       *   x=1-xn, y=0,    xn -> 1   --> DT -> diag(2,1,1)
+       *
+       * However, for Tb affine-linear, Tb(y) = My + y0, DTb = M:
+       *   A = M
+       *   b = -M x* - y0 + t + \sum_i M_i x_i/(1-xn)
+       *     = -M x* - y0 + t + M x*
+       *     = -y0 + t
+       * which is continuous for xn -> 1. Note that this b is also given by
+       *   b = -Tb(0) + t + \sum_i dTb/dx_i(0) x_i/1
+       * that is replacing x* by 1 and 1-xn by 1 in the formular above.
+       *
+       * For xn -> 1, we can thus set x*=0, "1-xn"=1 (or anything != 0) and get
+       * the right result in case Tb is affine-linear.
+       */
 
       ctype dfcxn;
       if (cxn > Traits::tolerance()) {
         dfcxn = df / cxn;
       } else {
-        dfcxn = 0;
+        dfcxn = 0; /* effectively results in x* = 0 */
       }
       // initialize last row
+      // b =  -Tb(x*)
+      // (b = -Tb(0) = -y0 in case xn -> 1 and Tb affine-linear)
       global< add >( topologyId, integral_constant< int, dim-1 >(), cit, dfcxn, x, -rf, jt[ dim-1 ] );
+      // b += t
       jt[ dim-1 ].axpy( rf, *cit );
       ++cit;
       // apply Jacobian for bottom (with argument x/(1-xn)) and correct last row
       if( add )
       {
         FieldMatrix< ctype, dim-1, coorddimension > jt2;
+        // jt2 = dTb/dx_i(x*)
         jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt2 );
+        // A = dTb/dx_i(x*)                      (jt[j], j=0..dim-1)
+        // b += \sum_i dTb/dx_i(x*) x_i/(1-xn)   (jt[dim-1])
+        // (b += 0 in case xn -> 1)
         for( int j = 0; j < dim-1; ++j )
         {
           jt[ j ] += jt2[ j ];
@@ -718,7 +764,9 @@ namespace Dune
       }
       else
       {
+        // jt = dTb/dx_i(x*)
         jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt );
+        // b += \sum_i dTb/dx_i(x*) x_i/(1-xn)
         for( int j = 0; j < dim-1; ++j )
           jt[ dim-1 ].axpy( dfcxn*x[ j ], jt[ j ] );
       }
