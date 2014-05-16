@@ -734,12 +734,9 @@ namespace Dune
        * the right result in case Tb is affine-linear.
        */
 
-      ctype dfcxn;
-      if (cxn > Traits::tolerance()) {
-        dfcxn = df / cxn;
-      } else {
-        dfcxn = 0; /* effectively results in x* = 0 */
-      }
+      /* The second case effectively results in x* = 0 */
+      ctype dfcxn = (cxn > Traits::tolerance()) ? df / cxn : 0;
+
       // initialize last row
       // b =  -Tb(x*)
       // (b = -Tb(0) = -y0 in case xn -> 1 and Tb affine-linear)
