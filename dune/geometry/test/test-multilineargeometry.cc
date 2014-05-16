@@ -220,6 +220,23 @@ static bool testNonLinearGeometry()
     }
   }
 
+  /* Test global() outside reference element */
+  {
+    Vector local; local[0] = -1; local[1] = 0;
+    Vector global; global[0] = -2; global[1] = 0;
+    const Vector global2(geometry.global(local));
+    if (global2 != global2) {
+      std::cerr << "global failed outside reference element: returned NaN: "
+                << global2 << std::endl;
+      pass = false;
+    }
+    if ((global - global2).two_norm() > epsilon) {
+      std::cerr << "global failed outside reference element: got " << global2
+                << ", but expected " << global << std::endl;
+      pass = false;
+    }
+  }
+
   /* Test local() */
   for (std::size_t c = 0; c < corners.size(); ++c) {
     const Vector& local(reference.position(c, dim));
@@ -231,6 +248,23 @@ static bool testNonLinearGeometry()
     }
     if ((local - local2).two_norm() > epsilon) {
       std::cerr << "local failed at corner " << c << ": got " << local2
+                << ", but expected " << local << std::endl;
+      pass = false;
+    }
+  }
+
+  /* Test local() outside reference element */
+  {
+    Vector global; global[0] = -2; global[1] = 0;
+    Vector local; local[0] = -1; local[1] = 0;
+    const Vector local2(geometry.local(global));
+    if (local2 != local2) {
+      std::cerr << "local failed outside reference element: returned NaN: "
+                << local2 << std::endl;
+      pass = false;
+    }
+    if ((local - local2).two_norm() > epsilon) {
+      std::cerr << "local failed outside reference element: got " << local2
                 << ", but expected " << local << std::endl;
       pass = false;
     }
