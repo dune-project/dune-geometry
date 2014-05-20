@@ -275,7 +275,6 @@ namespace Dune
         const GlobalCoordinate dglobal = (*this).global( x ) - global;
         MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
         x -= dx;
-        assert( refElement().checkInside( x ) );
       } while( dx.two_norm2() > tolerance );
       return x;
     }
@@ -630,7 +629,6 @@ namespace Dune
   {
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
-    assert( (xn > -Traits::tolerance()) && (cxn > -Traits::tolerance()) );
 
     if( GenericGeometry::isPrism( topologyId, mydimension, mydimension-dim ) )
     {
@@ -643,7 +641,7 @@ namespace Dune
     {
       assert( GenericGeometry::isPyramid( topologyId, mydimension, mydimension-dim ) );
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
-      if( cxn > Traits::tolerance() )
+      if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
         global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
       else
         global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, ctype( 0 ), y );
@@ -678,7 +676,6 @@ namespace Dune
 
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
-    assert( (xn > -Traits::tolerance()) && (cxn > -Traits::tolerance()) );
 
     CornerIterator cit2( cit );
     if( GenericGeometry::isPrism( topologyId, mydimension, mydimension-dim ) )
@@ -735,7 +732,7 @@ namespace Dune
        */
 
       /* The second case effectively results in x* = 0 */
-      ctype dfcxn = (cxn > Traits::tolerance()) ? df / cxn : 0;
+      ctype dfcxn = (cxn > Traits::tolerance() || cxn < -Traits::tolerance()) ? df / cxn : 0;
 
       // initialize last row
       // b =  -Tb(x*)
