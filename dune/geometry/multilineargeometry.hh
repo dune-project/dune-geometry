@@ -259,7 +259,8 @@ namespace Dune
      *
      *  \return corresponding local coordinate
      *
-     *  \note The returned local coordinate y minimizes
+     *  \note For given global coordinate y the returned local coordinate x that minimizes
+     *  the following function over the local coordinate space spanned by the reference element.
      *  \code
      *  (global( x ) - y).two_norm()
      *  \endcode
@@ -495,7 +496,8 @@ namespace Dune
      *
      *  \return corresponding local coordinate
      *
-     *  \note The returned local coordinate y minimizes
+     *  \note For given global coordinate y the returned local coordinate x that minimizes
+     *  the following function over the local coordinate space spanned by the reference element.
      *  \code
      *  (global( x ) - y).two_norm()
      *  \endcode
