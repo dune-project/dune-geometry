@@ -734,7 +734,7 @@ namespace Dune
        */
 
       /* The second case effectively results in x* = 0 */
-      ctype dfcxn = (cxn > Traits::tolerance() || cxn < -Traits::tolerance()) ? df / cxn : 0;
+      ctype dfcxn = (cxn > Traits::tolerance() || cxn < -Traits::tolerance()) ? ctype(df / cxn) : ctype(0);
 
       // initialize last row
       // b =  -Tb(x*)
