@@ -175,7 +175,7 @@ namespace Dune
           isAffine &= TopMapping::Dphi_set( coords, x, factor, Jtop );
 
           FieldType norm = FieldType( 0 );
-          for( unsigned int i = 0; i < dim-1; ++i )
+          for( unsigned int i = 0; i+1 < dim; ++i )
           {
             Jtop[ i ] -= J[ i ];
             norm += Jtop[ i ].two_norm2();
@@ -209,7 +209,7 @@ namespace Dune
           isAffine &= TopMapping::Dphi_set( coords, x, FieldType( 1 ), Jtop );
 
           FieldType norm = FieldType( 0 );
-          for( unsigned int i = 0; i < dim-1; ++i )
+          for( unsigned int i = 0; i+1 < dim; ++i )
           {
             Jtop[ i ] -= Jbottom[ i ];
             norm += Jtop[ i ].two_norm2();
@@ -277,7 +277,7 @@ namespace Dune
           {
             const FieldType icxn = FieldType( 1 ) / cxn;
             LocalCoordinate xb;
-            for( unsigned int i = 0; i < dim-1; ++i )
+            for( unsigned int i = 0; i+1 < dim; ++i )
               xb[ i ] = icxn * x[ i ];
 
             BottomMapping::phi_add( coords, xb, factor * cxn, p );
@@ -309,7 +309,7 @@ namespace Dune
           {
             const FieldType icxn = FieldType( 1 ) / cxn;
             LocalCoordinate xb;
-            for( unsigned int i = 0; i < dim-1; ++i )
+            for( unsigned int i = 0; i+1 < dim; ++i )
               xb[ i ] = icxn * x[ i ];
 
             BottomMapping::phi_add( coords, xb, factor * cxn, p );
@@ -340,14 +340,14 @@ namespace Dune
           const FieldType cxn = FieldType( 1 ) - xn;
           const FieldType icxn = FieldType( 1 ) / cxn;
           LocalCoordinate xb;
-          for( unsigned int i = 0; i < dim-1; ++i )
+          for( unsigned int i = 0; i+1 < dim; ++i )
             xb[ i ] = icxn * x[ i ];
           isAffine = BottomMapping::Dphi_set( coords, xb, factor, J );
 
           TopMapping::phi_set( coords, x, factor, q );
           BottomMapping::phi_add( coords, xb, -factor, q );
           xb *= factor;
-          for( unsigned int j = 0; j < dim-1; ++j )
+          for( unsigned int j = 0; j+1 < dim; ++j )
           {
             for( unsigned int i = 0; i < dimW; ++i )
               q[ i ] += J[ j ][ i ] * xb[ j ];
@@ -379,14 +379,14 @@ namespace Dune
           const FieldType cxn = FieldType( 1 ) - xn;
           const FieldType icxn = FieldType( 1 ) / cxn;
           LocalCoordinate xb;
-          for( unsigned int i = 0; i < dim-1; ++i )
+          for( unsigned int i = 0; i+1 < dim; ++i )
             xb[ i ] = icxn * x[ i ];
           isAffine = BottomMapping::Dphi_add( coords, xb, factor, J );
 
           TopMapping::phi_add( coords, x, factor, q );
           BottomMapping::phi_add( coords, xb, -factor, q );
           xb *= factor;
-          for( unsigned int j = 0; j < dim-1; ++j )
+          for( unsigned int j = 0; j+1 < dim; ++j )
           {
             for( unsigned int i = 0; i < dimW; ++i )
               q[ i ] += J[ j ][ i ] * xb[ j ];
