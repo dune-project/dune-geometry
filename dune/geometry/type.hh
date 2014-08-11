@@ -61,7 +61,7 @@ namespace Dune
 
     /** \brief Constructor, using the basic type and the dimension */
     GeometryType(BasicType basicType, unsigned int dim)
-      : topologyId_(0), dim_(dim), none_(false)
+      : topologyId_(0), dim_(dim), none_((basicType == GeometryType::none) ? true : false)
     {
       if (dim < 2)
         return;
@@ -88,7 +88,6 @@ namespace Dune
                       "Invalid basic geometry type: no prisms for dimension " << dim << "." );
         break;
       case GeometryType::none :
-        makeNone(dim);
         break;
       default :
         DUNE_THROW( RangeError,
