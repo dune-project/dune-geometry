@@ -224,7 +224,7 @@ namespace Dune
     }
 
     /** \brief obtain the name of the reference element */
-    Dune::GeometryType type () const { return GeometryType( topologyId(), mydimension ); }
+    Dune::GeometryType type () const { return GeometryType( (unsigned int)topologyId(), mydimension ); }
 
     /** \brief obtain number of corners of the corresponding reference element */
     int corners () const { return refElement().size( mydimension ); }
