@@ -6,6 +6,7 @@ add_subdirectory("test" EXCLUDE_FROM_ALL)
 install(FILES
   affinegeometry.hh
   axisalignedcubegeometry.hh
+  dimension.hh
   generalvertexorder.hh
   multilineargeometry.hh
   quadraturerules.hh

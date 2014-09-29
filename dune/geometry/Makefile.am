@@ -2,6 +2,7 @@ geometryincludedir = $(includedir)/dune/geometry
 geometryinclude_HEADERS =			\
 	affinegeometry.hh			\
 	axisalignedcubegeometry.hh		\
+	dimension.hh				\
 	generalvertexorder.hh			\
 	multilineargeometry.hh			\
 	quadraturerules.hh			\
