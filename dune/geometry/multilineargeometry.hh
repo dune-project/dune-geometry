@@ -224,7 +224,7 @@ namespace Dune
     }
 
     /** \brief obtain the name of the reference element */
-    Dune::GeometryType type () const { return GeometryType( topologyId(), mydimension ); }
+    Dune::GeometryType type () const { return GeometryType( toUnsignedInt(topologyId()), mydimension ); }
 
     /** \brief obtain number of corners of the corresponding reference element */
     int corners () const { return refElement().size( mydimension ); }
@@ -374,6 +374,12 @@ namespace Dune
     }
 
   private:
+    // The following methods are needed to convert the return type of topologyId to
+    // unsigned int with g++-4.4. It has problems casting integral_constant to the
+    // integral type.
+    static unsigned int toUnsignedInt(unsigned int i) { return i; }
+    template<unsigned int v>
+    static unsigned int toUnsignedInt(std::integral_constant<unsigned int,v> i) { return v; }
     TopologyId topologyId ( integral_constant< bool, true > ) const { return TopologyId(); }
     unsigned int topologyId ( integral_constant< bool, false > ) const { return refElement().type().id(); }
 
@@ -632,7 +638,7 @@ namespace Dune
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
 
-    if( GenericGeometry::isPrism( topologyId, mydimension, mydimension-dim ) )
+    if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times mapping for bottom
       global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, rf*cxn, y );
@@ -641,7 +647,7 @@ namespace Dune
     }
     else
     {
-      assert( GenericGeometry::isPyramid( topologyId, mydimension, mydimension-dim ) );
+      assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
       if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
         global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
@@ -680,7 +686,7 @@ namespace Dune
     const ctype cxn = ctype( 1 ) - xn;
 
     CornerIterator cit2( cit );
-    if( GenericGeometry::isPrism( topologyId, mydimension, mydimension-dim ) )
+    if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times Jacobian for bottom
       jacobianTransposed< add >( topologyId, integral_constant< int, dim-1 >(), cit2, df, x, rf*cxn, jt );
@@ -692,7 +698,7 @@ namespace Dune
     }
     else
     {
-      assert( GenericGeometry::isPyramid( topologyId, mydimension, mydimension-dim ) );
+      assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       /*
        * In the pyramid case, we need a transformation Tb: B -> R^n for the
        * base B \subset R^{n-1}. The pyramid transformation is then defined as
@@ -791,7 +797,7 @@ namespace Dune
       return false;
     const GlobalCoordinate &orgTop = *cit;
 
-    if( GenericGeometry::isPrism( topologyId, mydimension, mydimension-dim ) )
+    if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       JacobianTransposed jtTop;
       if( !affine( topologyId, integral_constant< int, dim-1 >(), cit, jtTop ) )
