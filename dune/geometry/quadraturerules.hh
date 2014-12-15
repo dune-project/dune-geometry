@@ -4,6 +4,7 @@
 #ifndef DUNE_GEOMETRY_QUADRATURERULES_HH
 #define DUNE_GEOMETRY_QUADRATURERULES_HH
 
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <tuple>
@@ -169,6 +170,14 @@ namespace Dune {
     //! private constructor
     QuadratureRules () {}
   public:
+    //! maximum quadrature order for given geometry type and quadrature type
+    static unsigned
+    maxOrder(const GeometryType& t,
+             QuadratureType::Enum qt=QuadratureType::GaussLegendre)
+    {
+      return QuadratureRuleFactory<ctype,dim>::maxOrder(t,qt);
+    }
+
     //! select the appropriate QuadratureRule for GeometryType t and order p
     static const QuadratureRule& rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
@@ -636,6 +645,10 @@ namespace Dune {
   class QuadratureRuleFactory {
   private:
     friend class QuadratureRules<ctype, dim>;
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    {
+      return TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
+    }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
       return TensorProductQuadratureRule<ctype,dim>(t.id(), p, qt);
@@ -647,6 +660,14 @@ namespace Dune {
   private:
     enum { dim = 0 };
     friend class QuadratureRules<ctype, dim>;
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    {
+      if (t.isVertex())
+      {
+        return std::numeric_limits<int>::max();
+      }
+      DUNE_THROW(Exception, "Unknown GeometryType");
+    }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
       if (t.isVertex())
@@ -662,6 +683,25 @@ namespace Dune {
   private:
     enum { dim = 1 };
     friend class QuadratureRules<ctype, dim>;
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    {
+      if (t.isLine())
+      {
+        switch (qt) {
+        case QuadratureType::GaussLegendre :
+          return GaussQuadratureRule1D<ctype>::highest_order;
+        case QuadratureType::GaussJacobi_1_0 :
+          return Jacobi1QuadratureRule1D<ctype>::highest_order;
+        case QuadratureType::GaussJacobi_2_0 :
+          return Jacobi2QuadratureRule1D<ctype>::highest_order;
+        case QuadratureType::GaussLobatto :
+          return GaussLobattoQuadratureRule1D<ctype>::highest_order;
+        default :
+          DUNE_THROW(Exception, "Unknown QuadratureType");
+        }
+      }
+      DUNE_THROW(Exception, "Unknown GeometryType");
+    }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
       if (t.isLine())
@@ -688,6 +728,15 @@ namespace Dune {
   private:
     enum { dim = 2 };
     friend class QuadratureRules<ctype, dim>;
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    {
+      unsigned order =
+        TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
+      if (t.isSimplex())
+        order = std::max
+          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+      return order;
+    }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
       if (t.isSimplex() && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
@@ -703,6 +752,18 @@ namespace Dune {
   private:
     enum { dim = 3 };
     friend class QuadratureRules<ctype, dim>;
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    {
+      unsigned order =
+        TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
+      if (t.isSimplex())
+        order = std::max
+          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+      if (t.isPrism())
+        order = std::max
+          (order, unsigned(PrismQuadratureRule<ctype,dim>::highest_order));
+      return order;
+    }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
       if (t.isSimplex() && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
