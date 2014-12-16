@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <limits>
+#include <tuple>
 #include <vector>
 #include <map>
 
@@ -135,7 +136,7 @@ namespace Dune {
     /** \brief Each rule is identified by a reference element type and a polynomial order.
      * This is the type to store this data.
      */
-    typedef std::pair<GeometryType,int> QuadratureRuleKey;
+    typedef std::tuple<unsigned,GeometryType,int> QuadratureRuleKey;
 
     /** \brief Internal short-hand notation for the type of quadrature rules this container contains */
     typedef Dune::QuadratureRule<ctype, dim> QuadratureRule;
@@ -146,7 +147,7 @@ namespace Dune {
       assert(t.dim()==dim);
 
       static std::map<QuadratureRuleKey, QuadratureRule> _quadratureMap;
-      QuadratureRuleKey key(t,p);
+      QuadratureRuleKey key(qt,t,p);
       if (_quadratureMap.find(key) == _quadratureMap.end()) {
         /*
            The rule must be acquired before we can store it.
