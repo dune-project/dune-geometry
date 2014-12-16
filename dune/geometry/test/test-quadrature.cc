@@ -234,11 +234,11 @@ int main (int argc, char** argv)
   catch( const Dune::Exception &e )
   {
     std::cerr << e << std::endl;
-    return 1;
+    throw;
   }
   catch (...) {
     std::cerr << "Generic exception!" << std::endl;
-    return 1;
+    throw;
   }
 
   return success ? 0 : 1;
