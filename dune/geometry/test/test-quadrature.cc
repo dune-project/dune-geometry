@@ -1,5 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
+
+#include <algorithm>
 #include <limits>
 #include <iostream>
 
@@ -219,7 +221,8 @@ int main (int argc, char** argv)
   }
   try {
     check<double,4>(Dune::GeometryType::cube, maxOrder);
-    check<double,4>(Dune::GeometryType::cube, maxOrder,Dune::QuadratureType::GaussLobatto);
+    check<double,4>(Dune::GeometryType::cube, std::min(maxOrder, unsigned(31)),
+                    Dune::QuadratureType::GaussLobatto);
     check<double,4>(Dune::GeometryType::simplex, maxOrder);
     check<double,3>(Dune::GeometryType::prism, maxOrder);
     check<double,3>(Dune::GeometryType::pyramid, maxOrder);
