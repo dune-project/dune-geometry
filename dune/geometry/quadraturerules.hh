@@ -15,6 +15,7 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/exceptions.hh>
 #include <dune/common/stdstreams.hh>
+#include <dune/common/stdthread.hh>
 #include <dune/common/visibility.hh>
 
 #include <dune/geometry/type.hh>
@@ -148,6 +149,8 @@ namespace Dune {
     DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
       assert(t.dim()==dim);
+
+      DUNE_ASSERT_CALL_ONCE();
 
       static std::deque<std::pair< // indexed by quadrature type
         std::once_flag,
