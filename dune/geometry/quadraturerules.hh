@@ -409,7 +409,7 @@ namespace Dune {
     enum { dim=1 };
 
     /** \brief The highest quadrature order available */
-    enum { highest_order=61 };
+    enum { highest_order=31 };
 
     ~GaussLobattoQuadratureRule1D(){}
   private:
