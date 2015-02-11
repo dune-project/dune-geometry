@@ -3,7 +3,10 @@
 #ifndef DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
 #define DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
 
+#include <algorithm>
 #include <bitset>
+
+#include <dune/geometry/type.hh>
 
 namespace Dune
 {
@@ -133,6 +136,25 @@ namespace Dune
         }
       }
     }
+
+    static unsigned maxOrder(unsigned int topologyId, QuadratureType::Enum qt)
+    {
+      enum { bitSize = sizeof(unsigned int)*8 };
+      std::bitset<bitSize> baseId(topologyId);
+      bool isPrism = baseId[dim-1];
+      baseId.reset(dim-1);
+      GeometryType baseType(baseId.to_ulong(), dim-1);
+      unsigned order = QuadratureRules<ctype,dim-1>::maxOrder(baseType, qt);
+        GeometryType onedType(GeometryType::cube,1);
+      if (isPrism)
+        order = std::min
+          (order, QuadratureRules<ctype,1>::maxOrder(onedType, qt));
+      else
+        order = std::min
+          (order, QuadratureRules<ctype,1>::maxOrder(onedType, qt)-(dim-1));
+      return order;
+    }
+
   };
 
 }
