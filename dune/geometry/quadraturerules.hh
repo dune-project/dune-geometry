@@ -782,7 +782,9 @@ namespace Dune {
     }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
-      if (t.isSimplex() && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
+      if (t.isSimplex()
+        && qt == QuadratureType::GaussLegendre
+        && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
       {
         return SimplexQuadratureRule<ctype,dim>(p);
       }
@@ -809,11 +811,15 @@ namespace Dune {
     }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
-      if (t.isSimplex() && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
+      if (t.isSimplex()
+        && qt == QuadratureType::GaussLegendre
+        && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
       {
         return SimplexQuadratureRule<ctype,dim>(p);
       }
-      if (t.isPrism() && p <= PrismQuadratureRule<ctype,dim>::highest_order)
+      if (t.isPrism()
+        && qt == QuadratureType::GaussLegendre
+        && p <= PrismQuadratureRule<ctype,dim>::highest_order)
       {
         return PrismQuadratureRule<ctype,dim>(p);
       }
