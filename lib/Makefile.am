@@ -1,4 +1,3 @@
-# $Id: $
 dunemodulelibdir=$(libdir)
 
 # the dune-cgeometry library

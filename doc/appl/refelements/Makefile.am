@@ -1,6 +1,3 @@
-
-# $Id: Makefile.am 7400 2011-02-09 21:27:22Z christi $
-
 # include this into website
 EXTRAINSTALL=gg_hexahedron.png gg_line.png gg_prism.png gg_pyramid.png \
   gg_quadrilateral.png gg_tetrahedron.png gg_triangle.png\

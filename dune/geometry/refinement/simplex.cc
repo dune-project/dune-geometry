@@ -15,9 +15,6 @@
          simplices (triangles, tetrahedrons...)
 
    See @ref SimplexRefinement.
-   @verbatim
-   $Id: simplex.cc 8754 2013-01-18 14:14:15Z sander $
-   @endverbatim
  */
 
 /*! @defgroup SimplexRefinement Refinement implementation for simplices

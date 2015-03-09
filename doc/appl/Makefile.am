@@ -1,5 +1,3 @@
-# $Id: Makefile.am 6217 2010-01-20 23:02:03Z christi $
-
 if BUILD_DOCS
 PAGES =
 endif
