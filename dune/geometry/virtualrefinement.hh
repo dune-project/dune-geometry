@@ -17,7 +17,7 @@
  * Please have a look on the non-virtual \link Refinement
  * Refinement\endlink documentation.
  *
- * \section General
+ * \section Virtual_General General
  * <!--=========-->
  *
  * \link Refinement Refinement\endlink can only be used when you know
@@ -39,7 +39,7 @@
  * does these statements once and for all by wrapping them into the
  * buildRefinement() function.
  *
- * \section User_interface The user Interface
+ * \section Virtual_User_interface The user Interface
  * <!--===================================-->
  *
  * \subsection VirtualRefinement The VirtualRefinement class
@@ -128,7 +128,7 @@
  * };
  * \endcode
  *
- * \subsection buildRefinement buildRefinement()
+ * \subsection User_interface_buildRefinement buildRefinement()
  * <!------------------------------------------>
  *
  * The declaration for buildRefinement is
@@ -160,7 +160,7 @@
  * Summary: geometryType is the geometry type of the entity you want to
  * refine, while coerceTo is the geometry type of the subentities.
  *
- * \section Implementing Implementing a new Refinement type
+ * \section Virtual_Implementing Implementing a new Refinement type
  * <!--=================================================-->
  *
  * When you write a Refinement implementation for a new combination of
@@ -181,14 +181,14 @@
  *
  * Everything else has been done for you automatically.
  *
- * \subsection Namespaces
+ * \subsection Virtual_Namespaces Namespaces
  * <!------------------->
  *
  * VirtualRefinement does not use a complicated namespace scheme like
  * \link Refinement Refinement\endlink.  The complete VirtualRefinement
  * stuff simply lives directly in namespace Dune.
  *
- * \subsection Layers Conceptual layers
+ * \subsection Virtual_Layers Conceptual layers
  * <!--------------------------------->
  *
  * VirtualRefinement adds to more layers to the ones already defined in
@@ -224,7 +224,7 @@
  * class VirtualRefinement.  All this is done in a single template
  * class.
  *
- * \subsection Iterators The iterators
+ * \subsection Virtual_Iterators The iterators
  * <!-------------------------------->
  *
  * We can't do the same thing with the iterators as we do with class
@@ -242,7 +242,7 @@
  * abstract backend class and pass a pointer to a concrete backend
  * object when instantiating an iterator.
  *
- * \subsection buildRefinement buildRefinement()
+ * \subsection Implementiaion_buildRefinement buildRefinement()
  * <!------------------------------------------>
  *
  * The template function buildRefinement() has to be specialized for
