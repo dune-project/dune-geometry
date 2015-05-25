@@ -6,10 +6,10 @@
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                 += @srcdir@/mainpage \
-                         @srcdir@/modules \
+INPUT                 += @srcdir@/mainpage.txt \
+                         @srcdir@/modules.txt \
                          @top_srcdir@/dune/geometry \
-                         @top_srcdir@/doc/appl/refelements/referenceelementspage
+                         @top_srcdir@/doc/appl/refelements/referenceelementspage.txt
 
 # see e.g. dune-grid for the examples of mainpage and modules
 # INPUT                 += @srcdir@/mainpage #                          @srcdir@/modules
