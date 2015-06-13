@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 
-#include <dune/common/fvector.hh>
+#include <dune/common/array.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include "type.hh"
 
@@ -107,7 +107,7 @@ namespace Dune
     }
 
     static const unsigned int numTopologies = (1 << dimension);
-    typedef FieldVector< Object *, numTopologies > Array;
+    typedef std::array< Object *, numTopologies > Array;
     typedef std::map< Key, Array > Storage;
 
     TopologySingletonFactory ()
@@ -131,7 +131,7 @@ namespace Dune
     {
       typename Storage::iterator it = storage_.find( key );
       if( it == storage_.end() )
-        it = storage_.insert( std::make_pair( key, Array( 0 ) ) ).first;
+        it = storage_.insert( std::make_pair( key, fill_array<Object*, numTopologies>( nullptr ) ) ).first;
       return it->second[ topologyId ];
     }
 
