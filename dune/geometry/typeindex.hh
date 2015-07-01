@@ -11,6 +11,8 @@
 
 #include <cstddef>
 
+#include <dune/common/std/constexpr.hh>
+
 #include "type.hh"
 
 namespace Dune
@@ -24,7 +26,7 @@ namespace Dune
      * Regular geometry type are those which have a topologyId, i.e. "None" is
      * not a regular geometry type.
      */
-    inline static std::size_t regular_size(std::size_t dim)
+    DUNE_CONSTEXPR inline static std::size_t regular_size(std::size_t dim)
     {
       // The following expression is derived from the expression for
       // GlobalGeometryTypeIndex::regular_base().  Substracting
@@ -53,7 +55,7 @@ namespace Dune
      *
      * This includes irregular geometry types such as "None".
      */
-    inline static std::size_t size(std::size_t dim)
+    DUNE_CONSTEXPR inline static std::size_t size(std::size_t dim)
     {
       // one for "none"
       return regular_size(dim) + 1;
@@ -102,7 +104,7 @@ namespace Dune
      * This ignores irregular geometry types so it is not useful in itself.
      * Have a look at base() which does include the irregular geometry types.
      */
-    inline static std::size_t regular_base(std::size_t dim)
+    DUNE_CONSTEXPR inline static std::size_t regular_base(std::size_t dim)
     {
       // The number of regular geometry types in a given dimension is
       // 2^(dim-1).  For dim==0 this would yield 1/2 geometry types (which is
@@ -116,7 +118,7 @@ namespace Dune
      * \brief Compute the starting index for a given dimension including
      *        irregular geometry types
      */
-    inline static std::size_t base(std::size_t dim)
+    DUNE_CONSTEXPR inline static std::size_t base(std::size_t dim)
     {
       // dim times "none"
       return regular_base(dim) + dim;
@@ -129,7 +131,7 @@ namespace Dune
      *
      * This includes irregular geometry types such as "None".
      */
-    inline static std::size_t size(std::size_t maxdim)
+    DUNE_CONSTEXPR inline static std::size_t size(std::size_t maxdim)
     {
       return base(maxdim+1);
     }
