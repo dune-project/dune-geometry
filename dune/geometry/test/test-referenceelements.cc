@@ -125,6 +125,14 @@ int main () try
   const ReferenceElement<double,2>::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
   referenceTriangleMapping.corner(0);
 
+  // test the checkInside methods
+  test(referenceTriangle.checkInside({0.3,0.3}));
+  for (int i=0; i<3; i++)
+  {
+    test(referenceTriangle.checkInside<1>({0.5}, i));
+    test(!referenceTriangle.checkInside<1>({-0.5}, i));
+  }
+
   // //////////////////////////////////////////////////////////////////////////
   //   Test quadrilateral
   // //////////////////////////////////////////////////////////////////////////
@@ -257,6 +265,23 @@ int main () try
   // test the 'geometry' method
   const ReferenceElement<double,3>::Codim<0>::Geometry referenceTetraMapping = referenceTetra.geometry< 0 >( 0 );
   referenceTetraMapping.corner(0);
+
+  // test the checkInside methods
+  test(referenceTetra.checkInside({0.3,0.3,0.3}));
+
+  // checkInside for edges
+  for (int i=0; i<6; i++)
+  {
+    test(referenceTetra.checkInside<2>({0.5}, i));
+    test(!referenceTetra.checkInside<2>({-0.5}, i));
+  }
+
+  // checkInside for faces
+  for (int i=0; i<4; i++)
+  {
+    test(referenceTetra.checkInside<1>({0.3,0.3}, i));
+    test(!referenceTetra.checkInside<1>({1.0,1.0}, i));
+  }
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test pyramid
