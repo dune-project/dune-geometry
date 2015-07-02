@@ -183,7 +183,7 @@ namespace Dune
     bool checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
       const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
-      return GenericGeometry::template checkInside< ctype, dim >( type( i, codim ).id(), dim-codim, local, tolerance );
+      return GenericGeometry::template checkInside< ctype, dim-codim >( type( i, codim ).id(), dim-codim, local, tolerance );
     }
 
     /** \brief obtain the embedding of subentity (i,codim) into the reference
