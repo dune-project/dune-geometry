@@ -178,13 +178,9 @@ namespace Dune
      *  \param[in]  local  coordinates of the point with respect to the
      *                     reference element of E
      *  \param[in]  i      number of subentity E (0 <= i < size( c ))
-     *
-     * \deprecated This method has been deprecated in dune-geometry 2.4, and will be removed in
-     *   the following version.  Please use the method checkInside without a member template
-     *   parameter instead.
      */
     template< int codim >
-    bool DUNE_DEPRECATED_MSG("Please use the checkInside method without template parameter!") checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
+    bool checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
       const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
       return GenericGeometry::template checkInside< ctype, dim-codim >( type( i, codim ).id(), dim-codim, local, tolerance );
