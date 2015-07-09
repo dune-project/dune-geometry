@@ -7,6 +7,7 @@
 #include <map>
 
 #include <dune/common/array.hh>
+#include <dune/common/nullptr.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include "type.hh"
 
