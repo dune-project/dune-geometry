@@ -6,11 +6,11 @@
 
 In the following we will give a definition of reference
 elements and subelement numbering. This is used to
-define geometries by prescibing a set of points in
+define geometries by prescribing a set of points in
 the space \f$ \mathbf{R}^w \f$.
 
 The basic building block for these elements is given
-by a recursion formula which assignes to each
+by a recursion formula which assigns to each
 set \f$ E \subset \mathbf{R}^d \f$ either 
 a prism element 
 \f$ E^\vert\subset \mathbf{R}^{d+1} \f$
@@ -45,7 +45,7 @@ sub-subentities of \f$ E^\vert \f$ or \f$ E^\circ \f$
 based on a numbering of \f$ E \f$. For the
 subentities of codimension \f$ c \f$ we use the numbering
 - \f$ E^\vert \f$:
-  the first numbers are assinged to the entities parallel
+  the first numbers are assigned to the entities parallel
   to the \f$ x_d-\f$axis in the same order
   as the subentites of the same codimension in \f$ E \f$;
   then to the subentities of codimension \f$ c-1 \f$ 
@@ -101,12 +101,12 @@ The recursion formula is also used to define mappings
 from reference elements \f$ E \f$ to general polytop
 given by a set of coordinates for the corner points -
 together with the mapping \f$ \Phi \f$,
-the transpose of the jacobian 
+the transpose of the Jacobian 
 \f$ D\Phi^T(x)\in\mathbf{R}^{d,w} \f$ is also 
 defined where \f$ d \f$ is the dimension of the
 reference element and \f$ w \f$ the dimension of
 the coordinates. 
-This sufficies to define other necessary parts 
+This suffices to define other necessary parts 
 of a Dune geometry by LQ-decomposing \f$ D\Phi^T \f$:
 let \f$ D\Phi^T(x) = LQ \f$ be given
 with a lower diagonal matrix
@@ -229,7 +229,7 @@ we define a mapping
 \f$\Phi_T(\mathcal{C},\cdot)\mathrm{domain}( T ) \to \mathbf{R}^w\f$
 through \f$\Phi_T(\mathcal{C};p_i(T))=p_i\f$ for all
 \f$p_i(T)\in \mathcal{C}(T)\f$. This mapping can be expressed using the
-recurive definition of the reference topologies through:
+recursive definition of the reference topologies through:
 - \f$\Phi_{\mathbf{p}}( (p_0) ; x ) = p_0\f$,
 - \f$\Phi_{T^\vert}( (p_1,\ldots,p_{s_d(T^\vert)} ; (x,\bar{x}) )
   = (1 - \bar{x}) \Phi_T( p_1,\ldots,p_{s_d(T)} ; x )
