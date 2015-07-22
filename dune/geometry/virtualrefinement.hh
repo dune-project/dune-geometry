@@ -52,7 +52,7 @@
  * wraps one of the non-virtual \link Refinement Refinement\endlink
  * classes.
  *
- * The user interface is modelled closely after the the \link
+ * The user interface is modelled closely after the \link
  * Refinement Refinement\endlink interface.  The main differences are:
  *
  * - VirtualRefinement is not a static class, but a singleton.  Thus
