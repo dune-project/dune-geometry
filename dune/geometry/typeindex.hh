@@ -29,7 +29,7 @@ namespace Dune
     DUNE_CONSTEXPR inline static std::size_t regular_size(std::size_t dim)
     {
       // The following expression is derived from the expression for
-      // GlobalGeometryTypeIndex::regular_base().  Substracting
+      // GlobalGeometryTypeIndex::regular_base().  Subtracting
       // regular_base(dim+1)-regular_base(dim) we get:
       //
       //   ((1 << dim+1) >> 1) - ((1 << dim) >> 1)

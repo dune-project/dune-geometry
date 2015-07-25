@@ -56,7 +56,7 @@
  * Refinement Refinement\endlink interface.  The main differences are:
  *
  * - VirtualRefinement is not a static class, but a singleton.  Thus
- *   each VirtualRefinement implementation has to be instanciated
+ *   each VirtualRefinement implementation has to be instantiated
  *   before use.  This is done with the template function
  *   buildRefinement (see below).
  * - Since the methods of VirtualRefinement are virtual (or use virtual
@@ -102,7 +102,7 @@
  * The iterators have the same interface as the \link Refinement
  * Refinement\endlink iterators except that IndexVector is a
  * std::vector instead of a FieldVector (see above).  Also the
- * restriction that the Iterators are not derefencable applies.
+ * restriction that the Iterators are not dereferenceable applies.
  *
  * \code
  * template<int dimension>
@@ -175,7 +175,7 @@
  *   dimension, containing the single method build().
  * - The build() contains two levels of switch statements, the outer
  *   for geomentryType and the inner for coerceTo.  Each case will
- *   either return the correct VirtualRefinement or fall throught to
+ *   either return the correct VirtualRefinement or fall through to
  *   the end of the method and throw an error.  Insert the cases for
  *   your refinement.
  *
@@ -197,7 +197,7 @@
  * - <strong>Layer 3</strong> makes it easy to use several Refinement
  *   implementations in the same code, when you only know at run-time,
  *   which Refinement implementation you need.  It wraps class
- *   Refinement and it's iterators into a Proxy class, retaining it's
+ *   Refinement and its iterators into a Proxy class, retaining its
  *   interface but all deriving from a virtual base class
  *   VirtualRefinement<dimension, CoordType>.  This is located in
  *   refinementvirtual.cc.

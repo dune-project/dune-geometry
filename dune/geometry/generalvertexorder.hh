@@ -91,7 +91,7 @@ namespace Dune {
      * \param inBegin Start of the range of vertex ids.
      * \param inEnd   End of the range of vertex ids.
      *
-     * \c inBegin and \c inEnd denote the range of vertes ids to provide.
+     * \c inBegin and \c inEnd denote the range of vertex ids to provide.
      * This class stores a reduced copy of the ids, converted to type Index.
      */
     template<class InIterator>
@@ -181,9 +181,9 @@ namespace Dune {
 
     //! public default constructor
     /**
-     * The contructed iterator object will have a singular value.  The only
+     * The constructed iterator object will have a singular value.  The only
      * valid operations will be assignment of a non-singular value and
-     * destruction, all other operations will result in undefined behaviour.
+     * destruction, all other operations will result in undefined behavior.
      */
     iterator() { }
   };
