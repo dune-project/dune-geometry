@@ -166,26 +166,6 @@ namespace Dune
       return GenericGeometry::template checkInside< ctype, dim >( type().id(), dim, local, tolerance );
     }
 
-    /** \brief check if a point is in the reference element of
-     *         the i-th subentity with codimension codim
-     *
-     *  Denote by E the i-th subentity of codimension codim of the current
-     *  reference element. This method return true, if the given local
-     *  coordinate is within the reference element for the entity E.
-     *
-     *  \tparam     codim  codimension of subentity E
-     *
-     *  \param[in]  local  coordinates of the point with respect to the
-     *                     reference element of E
-     *  \param[in]  i      number of subentity E (0 <= i < size( c ))
-     */
-    template< int codim >
-    bool checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
-    {
-      const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
-      return GenericGeometry::template checkInside< ctype, dim-codim >( type( i, codim ).id(), dim-codim, local, tolerance );
-    }
-
     /** \brief obtain the embedding of subentity (i,codim) into the reference
      *         element
      *
