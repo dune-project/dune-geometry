@@ -196,11 +196,10 @@ static bool testNonLinearGeometry()
   quadrilateral.makeQuadrilateral();
   const ReferenceElement& reference(Dune::ReferenceElements<ctype,dim>::general(quadrilateral));
 
-  std::vector<Vector> corners(4);
-  corners[0][0] = 0; corners[0][1] = 0;
-  corners[1][0] = 2; corners[1][1] = 0;
-  corners[2][0] = 0; corners[2][1] = 1;
-  corners[3][0] = 1; corners[3][1] = 1;
+  std::vector<Vector> corners = {{0,0},
+                                 {2,0},
+                                 {0,1},
+                                 {1,1}};
 
   const Geometry geometry(reference, corners);
 
@@ -222,8 +221,8 @@ static bool testNonLinearGeometry()
 
   /* Test global() outside reference element */
   {
-    Vector local; local[0] = -1; local[1] = 0;
-    Vector global; global[0] = -2; global[1] = 0;
+    Vector local  = {-1, 0};
+    Vector global = {-2, 0};
     const Vector global2(geometry.global(local));
     if (global2 != global2) {
       std::cerr << "global failed outside reference element: returned NaN: "
@@ -255,8 +254,8 @@ static bool testNonLinearGeometry()
 
   /* Test local() outside reference element */
   {
-    Vector global; global[0] = -2; global[1] = 0;
-    Vector local; local[0] = -1; local[1] = 0;
+    Vector global = {-2, 0};
+    Vector local  = {-1, 0};
     const Vector local2(geometry.local(global));
     if (local2 != local2) {
       std::cerr << "local failed outside reference element: returned NaN: "
