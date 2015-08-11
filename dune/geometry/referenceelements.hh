@@ -180,7 +180,9 @@ namespace Dune
      *  \param[in]  i      number of subentity E (0 <= i < size( c ))
      */
     template< int codim >
-    bool checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
+    bool
+    DUNE_DEPRECATED_MSG("Method will be removed after dune-geometry-2.4")
+    checkInside ( const FieldVector< ctype, dim-codim > &local, int i ) const
     {
       const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
       return GenericGeometry::template checkInside< ctype, dim-codim >( type( i, codim ).id(), dim-codim, local, tolerance );
