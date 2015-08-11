@@ -364,7 +364,7 @@ namespace Dune
 
   private:
     unsigned int *numbering_;
-    array< unsigned int, dim+2 > offset_;
+    std::array< unsigned int, dim+2 > offset_;
     GeometryType type_;
   };
 

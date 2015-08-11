@@ -198,7 +198,7 @@ namespace Dune
       RefinementSubEntityIteratorSpecial<dimension, CoordType, dimension>::
       coords() const
       {
-        array<unsigned int, dimension> v(asCommon().vertexCoord());
+        std::array<unsigned int, dimension> v(asCommon().vertexCoord());
         CoordVector c;
         for (int d = 0; d < dimension; d++)
         {
@@ -236,11 +236,11 @@ namespace Dune
         enum { nIndices = (1 << dimension) };
 
         // cell index tuple
-        array<unsigned int, dimension> e(asCommon().cellCoord());
+        std::array<unsigned int, dimension> e(asCommon().cellCoord());
 
         // vertices
         IndexVector vec;
-        array<unsigned int, dimension> v;
+        std::array<unsigned int, dimension> v;
         for(int i = 0; i < nIndices; ++i)
         {
           for (int d = 0; d < dimension; d++)
@@ -260,7 +260,7 @@ namespace Dune
       RefinementSubEntityIteratorSpecial<dimension, CoordType, 0>::
       coords() const
       {
-        array<unsigned int, dimension> v(asCommon().cellCoord());
+        std::array<unsigned int, dimension> v(asCommon().cellCoord());
         CoordVector c;
         for (int d=0; d<dimension; d++)
         {
@@ -293,34 +293,34 @@ namespace Dune
         unsigned int _index;
         unsigned int _level;
 
-        array<unsigned int, dimension>
+        std::array<unsigned int, dimension>
         cellCoord(unsigned int idx) const
         {
           return idx2coord(idx, 1<<_level);
         }
 
-        array<unsigned int, dimension>
+        std::array<unsigned int, dimension>
         vertexCoord(unsigned int idx) const
         {
           return idx2coord(idx, (1<<_level)+1);
         }
 
-        array<unsigned int, dimension>
+        std::array<unsigned int, dimension>
         cellCoord() const
         {
           return cellCoord(_index);
         }
 
-        array<unsigned int, dimension>
+        std::array<unsigned int, dimension>
         vertexCoord() const
         {
           return vertexCoord(_index);
         }
 
-        array<unsigned int, dimension>
+        std::array<unsigned int, dimension>
         idx2coord(unsigned int idx, unsigned int w) const
         {
-          array<unsigned int, dimension> c;
+          std::array<unsigned int, dimension> c;
           for (unsigned int d = 0; d < dimension; d++)
           {
             c[d] = idx%w;
@@ -330,7 +330,7 @@ namespace Dune
         }
 
         unsigned int
-        coord2idx(array<unsigned int, dimension> c, unsigned int w) const
+        coord2idx(std::array<unsigned int, dimension> c, unsigned int w) const
         {
           unsigned int i = 0;
           for (unsigned int d = dimension; d > 0; d--)
@@ -342,7 +342,7 @@ namespace Dune
         }
 
         unsigned int
-        vertexIdx(array<unsigned int, dimension> c) const
+        vertexIdx(std::array<unsigned int, dimension> c) const
         {
           return coord2idx(c, (1<<_level)+1);
         }
@@ -388,7 +388,7 @@ namespace Dune
       typename RefinementImp<dimension, CoordType>::template Codim<codimension>::Geometry
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::geometry () const
       {
-        array<unsigned int,dimension> intCoords = idx2coord(_index,1<<_level);
+        std::array<unsigned int,dimension> intCoords = idx2coord(_index,1<<_level);
 
         Dune::FieldVector<CoordType,dimension> lower;
         Dune::FieldVector<CoordType,dimension> upper;
