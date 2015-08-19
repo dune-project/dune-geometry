@@ -143,10 +143,12 @@ namespace Dune
      *
      *  \return corresponding local coordinate
      *
-     *  \note The returned local coordinate y minimizes
+     *  The returned local coordinate y minimizes
      *  \code
-     *  (global( x ) - y).two_norm()
+     *  (global( y ) - x).two_norm()
      *  \endcode
+     *  on the entire affine hull of the reference element.  This degenerates
+     *  to the inverse map if the argument y is in the range of the map.
      */
     LocalCoordinate local ( const GlobalCoordinate &global ) const
     {
