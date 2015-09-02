@@ -17,7 +17,8 @@
 namespace Dune
 {
 
-  /** \brief Static and dynamic checks for all features of a Geometry
+  /**
+   * \brief Static and dynamic checks for all features of a Geometry
    *
    * This excludes anything related to being part of a grid.
    *
@@ -57,34 +58,88 @@ namespace Dune
     // Matrix-like type for the return value of the jacobianInverseTransposed method
     typedef typename TestGeometry::JacobianInverseTransposed JacobianInverseTransposed;
 
+    const ctype tolerance = std::sqrt( std::numeric_limits< ctype >::epsilon() );
+
     ////////////////////////////////////////////////////////////////////////
 
-    GeometryType type = geometry.type();
+    const int corners = geometry.corners();
+    if( corners == 0 )
+      DUNE_THROW( Exception, "A geometry must have at least one corner." );
+
+    GlobalCoordinate cornerAvg ( 0 );
+    for( int i = 0; i < corners; ++i )
+      cornerAvg += geometry.corner( i );
+    cornerAvg /= ctype( corners );
+
+    const GlobalCoordinate center = geometry.center();
+
+    if( corners > 1 )
+    {
+      // if we have more than one corner, no corner may coincide with their average or the center
+      for( int i = 0; i < corners; ++i )
+      {
+        const GlobalCoordinate corner = geometry.corner( i );
+        if( (corner - center).two_norm() <= tolerance )
+        {
+          std::cerr << "Error: Geometry has multiple corners, but one corner coincides with the center." << std::endl;
+          pass = false;
+        }
+
+        if( (corner - cornerAvg).two_norm() <= tolerance )
+        {
+          std::cerr << "Error: Geometry has multiple corners, but one corner coincides with their average." << std::endl;
+          pass = false;
+        }
+      }
+    }
+    else
+    {
+      // the single corner must coincide with the center
+      if( (center - cornerAvg).two_norm() > tolerance )
+      {
+        std::cerr << "Error: Geometry has a single corner (" << cornerAvg << "), but it does not coincide with the center (" << center << ")." << std::endl;
+        pass = false;
+      }
+    }
+
+    const ctype volume = geometry.volume();
+    if( volume < tolerance )
+    {
+      std::cerr << "Error: Geometry has nearly vanishing volume (" << volume << ")" << std::endl;
+      pass = false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+
+    const GeometryType type = geometry.type();
+    if( type.isNone() )
+      return pass;
 
     const ReferenceElement< ctype, mydim > &refElement = ReferenceElements< ctype, mydim >::general(type);
 
     // Test whether the return value of the method 'center' corresponds to the center of the
     // reference element.  That is the current definition of the method.
-    const FieldVector<ctype, coorddim> center = geometry.global(refElement.position(0,0));
-    if( std::abs( (geometry.center() - center).two_norm() ) > 1e-8 )
-      DUNE_THROW(Exception, "center() is not consistent with global(refElem.position(0,0)).");
+    if( (center - geometry.global( refElement.position( 0, 0 ) )).two_norm() > tolerance )
+      DUNE_THROW( Exception, "center() is not consistent with global(refElem.position(0,0))." );
 
     ////////////////////////////////////////////////////////////////////////
     // Test whether the number and placement of the corners is consistent
     // with the corners of the corresponding reference element.
     ////////////////////////////////////////////////////////////////////////
 
-    if( refElement.size( mydim ) == geometry.corners() )
+    if( refElement.size( mydim ) == corners )
     {
       for( int i = 0; i < geometry.corners(); ++i )
       {
-        if( (geometry.corner( i ) - geometry.global( refElement.position( i, mydim ) )).two_norm() > 1e-8 ) {
+        if( (geometry.corner( i ) - geometry.global( refElement.position( i, mydim ) )).two_norm() > tolerance )
+        {
           std::cerr << "Error: Methods corner and global are inconsistent." << std::endl;
           pass = false;
         }
       }
     }
-    else {
+    else
+    {
       std::cerr << "Error: Incorrect number of corners (" << geometry.corners() << ", should be " << refElement.size( mydim ) << ")." << std::endl;
       pass = false;
     }
@@ -105,7 +160,7 @@ namespace Dune
 
       // Test whether the methods 'jacobianTransposed' and 'jacobianInverseTransposed'
       // return matrices that are inverse to each other.
-      const JacobianTransposed         &jt = geometry.jacobianTransposed( x );
+      const JacobianTransposed &jt = geometry.jacobianTransposed( x );
       const JacobianInverseTransposed &jit = geometry.jacobianInverseTransposed( x );
 
       // Transform to FieldMatrix, so we can have coefficent access and other goodies
