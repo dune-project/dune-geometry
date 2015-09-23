@@ -17,3 +17,4 @@ AC_DEFUN([DUNE_GEOMETRY_CHECK_MODULE],
   AC_MSG_NOTICE([Searching for dune-geometry...])
   DUNE_CHECK_MODULES([dune-geometry], [geometry/dimension.hh],[dnl
   Dune::Dim<2>();])
+])
