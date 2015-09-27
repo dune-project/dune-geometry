@@ -95,9 +95,7 @@ namespace Dune {
                             const Dune::FieldVector<ctype,coorddim> upper)
       : lower_(lower),
         upper_(upper),
-        axes_(),
-        jacobianTransposed_(0),
-        jacobianInverseTransposed_(0)
+        axes_()
     {
       // all 'true', but is never actually used
       axes_ = (1<<coorddim)-1;
@@ -115,9 +113,7 @@ namespace Dune {
                             const std::bitset<coorddim>& axes)
       : lower_(lower),
         upper_(upper),
-        axes_(axes),
-        jacobianTransposed_(0),
-        jacobianInverseTransposed_(0)
+        axes_(axes)
     {
       assert(axes.count()==dim);
       for (size_t i=0; i<coorddim; i++)
@@ -130,9 +126,7 @@ namespace Dune {
         \note Only for dim==0
      */
     AxisAlignedCubeGeometry(const Dune::FieldVector<ctype,coorddim> lower)
-      : lower_(lower),
-        jacobianTransposed_(0),
-        jacobianInverseTransposed_(0)
+      : lower_(lower)
     {}
 
     /** \brief Assignment operator */
@@ -141,8 +135,6 @@ namespace Dune {
       lower_                     = other.lower_;
       upper_                     = other.upper_;
       axes_                      = other.axes_;
-      jacobianTransposed_        = other.jacobianTransposed_;
-      jacobianInverseTransposed_ = other.jacobianInverseTransposed_;
       return *this;
     }
 
@@ -188,17 +180,27 @@ namespace Dune {
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
-    const JacobianTransposed& jacobianTransposed(DUNE_UNUSED const LocalCoordinate& local) const
+    JacobianTransposed jacobianTransposed(DUNE_UNUSED const LocalCoordinate& local) const
     {
-      jacobianTransposed( jacobianTransposed_ );
-      return jacobianTransposed_;
+      JacobianTransposed result;
+
+      // Actually compute the result.  Computes different methods depending
+      // on what kind of matrix JacobianTransposed is.
+      jacobianTransposed(result);
+
+      return result;
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
-    const JacobianInverseTransposed& jacobianInverseTransposed(DUNE_UNUSED const LocalCoordinate& local) const
+    JacobianInverseTransposed jacobianInverseTransposed(DUNE_UNUSED const LocalCoordinate& local) const
     {
-      jacobianInverseTransposed( jacobianInverseTransposed_ );
-      return jacobianInverseTransposed_;
+      JacobianInverseTransposed result;
+
+      // Actually compute the result.  Computes different methods depending
+      // on what kind of matrix JacobianTransposed is.
+      jacobianInverseTransposed(result);
+
+      return result;
     }
 
     /** \brief Return the integration element, i.e., the determinant term in the integral
@@ -321,13 +323,6 @@ namespace Dune {
     Dune::FieldVector<ctype,coorddim> upper_;
 
     std::bitset<coorddim> axes_;
-
-    // Storage so method jacobianTransposed can return a const reference
-    mutable JacobianTransposed jacobianTransposed_;
-
-    // Storage so method jacobianInverseTransposed can return a const reference
-    mutable JacobianInverseTransposed jacobianInverseTransposed_;
-
   };
 
 } // namespace Dune
