@@ -203,13 +203,14 @@ namespace Dune
       return jacobianInverseTransposed_;
     }
 
+    friend const ReferenceElement &referenceElement ( const AffineGeometry &geometry ) { return *geometry.refElement_; }
+
   private:
     const ReferenceElement* refElement_;
     GlobalCoordinate origin_;
     JacobianTransposed jacobianTransposed_;
     JacobianInverseTransposed jacobianInverseTransposed_;
     ctype integrationElement_;
-
   };
 
 } // namespace Dune

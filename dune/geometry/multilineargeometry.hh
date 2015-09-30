@@ -337,6 +337,8 @@ namespace Dune
      */
     JacobianInverseTransposed jacobianInverseTransposed ( const LocalCoordinate &local ) const;
 
+    friend const ReferenceElement &referenceElement ( const MultiLinearGeometry &geometry ) { return geometry.refElement(); }
+
   protected:
     const ReferenceElement &refElement () const { return *refElement_; }
 

@@ -15,9 +15,8 @@
 #include <dune/common/diagonalmatrix.hh>
 #include <dune/common/unused.hh>
 
+#include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
-
-
 
 
 namespace Dune {
@@ -277,6 +276,11 @@ namespace Dune {
     bool affine() const
     {
       return true;
+    }
+
+    friend const ReferenceElement< ctype, dim > &referenceElement ( const AxisAlignedCubeGeometry &geometry )
+    {
+      return ReferenceElements< ctype, dim >::cube();
     }
 
   private:
