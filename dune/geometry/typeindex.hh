@@ -29,8 +29,8 @@ namespace Dune
     DUNE_CONSTEXPR inline static std::size_t regular_size(std::size_t dim)
     {
       // The following expression is derived from the expression for
-      // GlobalGeometryTypeIndex::regular_base().  Subtracting
-      // regular_base(dim+1)-regular_base(dim) we get:
+      // GlobalGeometryTypeIndex::regular_offset().  Subtracting
+      // regular_offset(dim+1)-regular_offset(dim) we get:
       //
       //   ((1 << dim+1) >> 1) - ((1 << dim) >> 1)
       //
@@ -102,9 +102,9 @@ namespace Dune
      *        irregular geometry types
      *
      * This ignores irregular geometry types so it is not useful in itself.
-     * Have a look at base() which does include the irregular geometry types.
+     * Have a look at offset() which does include the irregular geometry types.
      */
-    DUNE_CONSTEXPR inline static std::size_t regular_base(std::size_t dim)
+    DUNE_CONSTEXPR inline static std::size_t regular_offset(std::size_t dim)
     {
       // The number of regular geometry types in a given dimension is
       // 2^(dim-1).  For dim==0 this would yield 1/2 geometry types (which is
@@ -119,10 +119,10 @@ namespace Dune
      * \brief Compute the starting index for a given dimension including
      *        irregular geometry types
      */
-    DUNE_CONSTEXPR inline static std::size_t base(std::size_t dim)
+    DUNE_CONSTEXPR inline static std::size_t offset(std::size_t dim)
     {
       // dim times "none"
-      return regular_base(dim) + dim;
+      return regular_offset(dim) + dim;
     }
 
     /**
@@ -133,7 +133,7 @@ namespace Dune
      */
     DUNE_CONSTEXPR inline static std::size_t size(std::size_t maxdim)
     {
-      return base(maxdim+1);
+      return offset(maxdim+1);
     }
 
     /**
@@ -146,7 +146,7 @@ namespace Dune
      */
     inline static std::size_t index(const GeometryType &gt)
     {
-      return base(gt.dim()) + LocalGeometryTypeIndex::index(gt);
+      return offset(gt.dim()) + LocalGeometryTypeIndex::index(gt);
     }
   };
 } // namespace Dune
