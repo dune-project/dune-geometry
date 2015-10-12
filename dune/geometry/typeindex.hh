@@ -114,6 +114,7 @@ namespace Dune
       return (1 << dim) >> 1;
     }
 
+  public:
     /**
      * \brief Compute the starting index for a given dimension including
      *        irregular geometry types
@@ -124,7 +125,6 @@ namespace Dune
       return regular_base(dim) + dim;
     }
 
-  public:
     /**
      * \brief Compute total number of geometry types up to and including the
      *        given dimension
