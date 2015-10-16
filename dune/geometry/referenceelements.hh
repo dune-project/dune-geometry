@@ -6,9 +6,7 @@
 #include <algorithm>
 #include <limits>
 
-#include <dune/common/array.hh>
 #include <dune/common/forloop.hh>
-#include <dune/common/nullptr.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/visibility.hh>
 #include <dune/common/unused.hh>
