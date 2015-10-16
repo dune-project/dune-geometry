@@ -1,26 +1,19 @@
-set(TESTS
-  test-affinegeometry
-  test-axisalignedcubegeometry
-  test-geometrytype
-  test-multilineargeometry
-  test-quadrature
-  test-referenceelements
-  test-refinement)
+dune_add_test(SOURCES test-affinegeometry.cc
+              LINK_LIBRARIES dunegeometry)
 
-add_executable(test-affinegeometry test-affinegeometry.cc)
-add_executable(test-axisalignedcubegeometry test-axisalignedcubegeometry.cc)
-add_executable(test-geometrytype test-geometrytype.cc)
-add_executable(test-referenceelements test-referenceelements.cc)
-add_executable(test-quadrature test-quadrature.cc)
-add_executable(test-multilineargeometry test-multilineargeometry.cc)
-add_executable(test-refinement test-refinement.cc)
+dune_add_test(SOURCES test-axisalignedcubegeometry.cc
+              LINK_LIBRARIES dunegeometry)
 
-# We do not want want to build the tests during make all,
-# but just build them on demand
-add_directory_test_target(_test_target)
-add_dependencies(${_test_target} ${TESTS})
+dune_add_test(SOURCES test-geometrytype.cc)
 
-foreach(_test ${TESTS})
-  target_link_libraries(${_test} dunegeometry ${DUNE_LIBS})
-  add_test(${_test} ${_test})
-endforeach(_test ${TESTS})
+dune_add_test(SOURCES test-referenceelements.cc
+              LINK_LIBRARIES dunegeometry)
+
+dune_add_test(SOURCES test-quadrature.cc
+              LINK_LIBRARIES dunegeometry)
+
+dune_add_test(SOURCES test-multilineargeometry.cc
+              LINK_LIBRARIES dunegeometry)
+
+dune_add_test(SOURCES test-refinement.cc
+              LINK_LIBRARIES dunegeometry)
