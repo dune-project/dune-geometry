@@ -93,9 +93,9 @@ namespace Dune
     // Use a quadrature rule as a set of test points and loop over them
     ///////////////////////////////////////////////////////////////////////////////
     const Dune::QuadratureRule<ctype, mydim> & quadrature = Dune::QuadratureRules<ctype, mydim>::rule(geometry.type(), 2);
-    for( size_t i = 0; i < quadrature.size(); ++i )
+    for (const auto& ip : quadrature)
     {
-      const typename TestGeometry::LocalCoordinate &x = quadrature[ i ].position();
+      const typename TestGeometry::LocalCoordinate &x = ip.position();
 
       // Test whether the methods 'local' and 'global' are inverse to each other
       if ( (x - geometry.local( geometry.global( x ) )).two_norm() > 1e-8 ) {
