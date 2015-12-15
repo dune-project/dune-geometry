@@ -260,11 +260,11 @@ namespace Dune
         {
           FieldType &rii = ret[ i ][ i ];
 
-          FieldType x = A[ i ][ i ];
+          FieldType xDiag = A[ i ][ i ];
           for( int j = 0; j < i; ++j )
-            x -= ret[ i ][ j ] * ret[ i ][ j ];
-          assert( x > FieldType( 0 ) );
-          rii = sqrt( x );
+            xDiag -= ret[ i ][ j ] * ret[ i ][ j ];
+          assert( xDiag > FieldType( 0 ) );
+          rii = sqrt( xDiag );
 
           FieldType invrii = FieldType( 1 ) / rii;
           for( int k = i+1; k < n; ++k )
