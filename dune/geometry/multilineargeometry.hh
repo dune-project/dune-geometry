@@ -176,7 +176,7 @@ namespace Dune
 
   protected:
     typedef typename Traits::MatrixHelper MatrixHelper;
-    typedef typename conditional< hasSingleGeometryType, std::integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::type TopologyId;
+    typedef typename std::conditional< hasSingleGeometryType, std::integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::type TopologyId;
 
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 

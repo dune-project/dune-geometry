@@ -291,7 +291,7 @@ namespace Dune
       };
 
     public:
-      typedef typename conditional< isPrism, Prism<true>, Pyramid<false> >::type::type type;
+      typedef typename std::conditional< isPrism, Prism<true>, Pyramid<false> >::type::type type;
     };
 
     template< unsigned int id >
