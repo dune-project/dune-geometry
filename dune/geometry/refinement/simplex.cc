@@ -798,7 +798,7 @@ namespace Dune {
         int dim>
     struct Traits<
         topologyId, CoordType, coerceToId, dim,
-        typename enable_if<
+        typename std::enable_if<
             ((GenericGeometry::SimplexTopology<dim>::type::id >> 1) ==
              (topologyId >> 1) &&
              (GenericGeometry::SimplexTopology<dim>::type::id >> 1) ==

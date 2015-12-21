@@ -396,7 +396,7 @@ namespace Dune
     template<unsigned topologyId, class CoordType, unsigned coerceToId>
     struct Traits<
         topologyId, CoordType, coerceToId, 3,
-        typename enable_if<
+        typename std::enable_if<
             (GenericGeometry::PrismTopology<3>::type::id >> 1) ==
             (topologyId >> 1) &&
             (GenericGeometry::SimplexTopology<3>::type::id >> 1) ==
