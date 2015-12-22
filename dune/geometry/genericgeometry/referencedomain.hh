@@ -218,7 +218,7 @@ namespace Dune
       static void
       integrationOuterNormal ( unsigned int i, FieldVector< ctype, dim > &n )
       {
-        conditional< (dimension > 1), MultiDimensional<true>, OneDimensional<false> > :: type
+          std::conditional< (dimension > 1), MultiDimensional<true>, OneDimensional<false> > :: type
         ::integrationOuterNormal( i, n );
       }
 

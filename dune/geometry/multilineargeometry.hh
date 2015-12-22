@@ -176,7 +176,7 @@ namespace Dune
 
   protected:
     typedef typename Traits::MatrixHelper MatrixHelper;
-    typedef typename conditional< hasSingleGeometryType, integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::type TopologyId;
+    typedef typename std::conditional< hasSingleGeometryType, std::integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::type TopologyId;
 
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
@@ -249,7 +249,7 @@ namespace Dune
     {
       CornerIterator cit = corners_.begin();
       GlobalCoordinate y;
-      global< false >( topologyId(), integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), y );
+      global< false >( topologyId(), std::integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), y );
       return y;
     }
 
@@ -325,7 +325,7 @@ namespace Dune
     {
       JacobianTransposed jt;
       CornerIterator cit = corners_.begin();
-      jacobianTransposed< false >( topologyId(), integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jt );
+      jacobianTransposed< false >( topologyId(), std::integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jt );
       return jt;
     }
 
@@ -344,35 +344,35 @@ namespace Dune
 
     TopologyId topologyId () const
     {
-      return topologyId( integral_constant< bool, hasSingleGeometryType >() );
+      return topologyId( std::integral_constant< bool, hasSingleGeometryType >() );
     }
 
     template< bool add, int dim >
-    static void global ( TopologyId topologyId, integral_constant< int, dim >,
+    static void global ( TopologyId topologyId, std::integral_constant< int, dim >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, GlobalCoordinate &y );
     template< bool add >
-    static void global ( TopologyId topologyId, integral_constant< int, 0 >,
+    static void global ( TopologyId topologyId, std::integral_constant< int, 0 >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, GlobalCoordinate &y );
 
     template< bool add, int rows, int dim >
-    static void jacobianTransposed ( TopologyId topologyId, integral_constant< int, dim >,
+    static void jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, dim >,
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                                      const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
     template< bool add, int rows >
-    static void jacobianTransposed ( TopologyId topologyId, integral_constant< int, 0 >,
+    static void jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, 0 >,
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                                      const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
 
     template< int dim >
-    static bool affine ( TopologyId topologyId, integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt );
-    static bool affine ( TopologyId topologyId, integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt );
+    static bool affine ( TopologyId topologyId, std::integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt );
+    static bool affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt );
 
     bool affine ( JacobianTransposed &jacobianTransposed ) const
     {
       CornerIterator cit = corners_.begin();
-      return affine( topologyId(), integral_constant< int, mydimension >(), cit, jacobianTransposed );
+      return affine( topologyId(), std::integral_constant< int, mydimension >(), cit, jacobianTransposed );
     }
 
   private:
@@ -382,8 +382,8 @@ namespace Dune
     static unsigned int toUnsignedInt(unsigned int i) { return i; }
     template<unsigned int v>
     static unsigned int toUnsignedInt(std::integral_constant<unsigned int,v> i) { return v; }
-    TopologyId topologyId ( integral_constant< bool, true > ) const { return TopologyId(); }
-    unsigned int topologyId ( integral_constant< bool, false > ) const { return refElement().type().id(); }
+    TopologyId topologyId ( std::integral_constant< bool, true > ) const { return TopologyId(); }
+    unsigned int topologyId ( std::integral_constant< bool, false > ) const { return refElement().type().id(); }
 
     const ReferenceElement *refElement_;
     typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners_;
@@ -633,7 +633,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, int dim >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::global ( TopologyId topologyId, integral_constant< int, dim >,
+  ::global ( TopologyId topologyId, std::integral_constant< int, dim >,
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
   {
@@ -643,18 +643,18 @@ namespace Dune
     if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times mapping for bottom
-      global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, rf*cxn, y );
+      global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, rf*cxn, y );
       // apply xn times mapping for top
-      global< true >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, rf*xn, y );
+      global< true >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, rf*xn, y );
     }
     else
     {
       assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
       if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
-        global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
+        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
       else
-        global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, ctype( 0 ), y );
+        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, ctype( 0 ), y );
       // apply xn times the tip
       y.axpy( rf*xn, *cit );
       ++cit;
@@ -664,7 +664,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::global ( TopologyId topologyId, integral_constant< int, 0 >,
+  ::global ( TopologyId topologyId, std::integral_constant< int, 0 >,
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
   {
@@ -678,7 +678,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, int rows, int dim >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::jacobianTransposed ( TopologyId topologyId, integral_constant< int, dim >,
+  ::jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, dim >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt )
   {
@@ -691,12 +691,12 @@ namespace Dune
     if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times Jacobian for bottom
-      jacobianTransposed< add >( topologyId, integral_constant< int, dim-1 >(), cit2, df, x, rf*cxn, jt );
+      jacobianTransposed< add >( topologyId, std::integral_constant< int, dim-1 >(), cit2, df, x, rf*cxn, jt );
       // apply xn times Jacobian for top
-      jacobianTransposed< true >( topologyId, integral_constant< int, dim-1 >(), cit2, df, x, rf*xn, jt );
+      jacobianTransposed< true >( topologyId, std::integral_constant< int, dim-1 >(), cit2, df, x, rf*xn, jt );
       // compute last row as difference between top value and bottom value
-      global< add >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, -rf, jt[ dim-1 ] );
-      global< true >( topologyId, integral_constant< int, dim-1 >(), cit, df, x, rf, jt[ dim-1 ] );
+      global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, -rf, jt[ dim-1 ] );
+      global< true >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, rf, jt[ dim-1 ] );
     }
     else
     {
@@ -747,7 +747,7 @@ namespace Dune
       // initialize last row
       // b =  -Tb(x*)
       // (b = -Tb(0) = -y0 in case xn -> 1 and Tb affine-linear)
-      global< add >( topologyId, integral_constant< int, dim-1 >(), cit, dfcxn, x, -rf, jt[ dim-1 ] );
+      global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, dfcxn, x, -rf, jt[ dim-1 ] );
       // b += t
       jt[ dim-1 ].axpy( rf, *cit );
       ++cit;
@@ -756,7 +756,7 @@ namespace Dune
       {
         FieldMatrix< ctype, dim-1, coorddimension > jt2;
         // jt2 = dTb/dx_i(x*)
-        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt2 );
+        jacobianTransposed< false >( topologyId, std::integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt2 );
         // A = dTb/dx_i(x*)                      (jt[j], j=0..dim-1)
         // b += \sum_i dTb/dx_i(x*) x_i/(1-xn)   (jt[dim-1])
         // (b += 0 in case xn -> 1)
@@ -769,7 +769,7 @@ namespace Dune
       else
       {
         // jt = dTb/dx_i(x*)
-        jacobianTransposed< false >( topologyId, integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt );
+        jacobianTransposed< false >( topologyId, std::integral_constant< int, dim-1 >(), cit2, dfcxn, x, rf, jt );
         // b += \sum_i dTb/dx_i(x*) x_i/(1-xn)
         for( int j = 0; j < dim-1; ++j )
           jt[ dim-1 ].axpy( dfcxn*x[ j ], jt[ j ] );
@@ -780,7 +780,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, int rows >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::jacobianTransposed ( TopologyId topologyId, integral_constant< int, 0 >,
+  ::jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, 0 >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt )
   {
@@ -792,17 +792,17 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< int dim >
   inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::affine ( TopologyId topologyId, integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt )
+  ::affine ( TopologyId topologyId, std::integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt )
   {
     const GlobalCoordinate &orgBottom = *cit;
-    if( !affine( topologyId, integral_constant< int, dim-1 >(), cit, jt ) )
+    if( !affine( topologyId, std::integral_constant< int, dim-1 >(), cit, jt ) )
       return false;
     const GlobalCoordinate &orgTop = *cit;
 
     if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       JacobianTransposed jtTop;
-      if( !affine( topologyId, integral_constant< int, dim-1 >(), cit, jtTop ) )
+      if( !affine( topologyId, std::integral_constant< int, dim-1 >(), cit, jtTop ) )
         return false;
 
       // check whether both jacobians are identical
@@ -820,7 +820,7 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::affine ( TopologyId topologyId, integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt )
+  ::affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt )
   {
     ++cit;
     return true;

@@ -29,7 +29,7 @@ namespace Dune
 
       template< int codim >
       const Element< codim > &
-      operator[] ( const integral_constant< int, codim > codimVariable ) const
+      operator[] ( const std::integral_constant< int, codim > codimVariable ) const
       {
         DUNE_UNUSED_PARAMETER(codimVariable);
         return Dune::get<codim>(map_);
@@ -37,7 +37,7 @@ namespace Dune
 
       template< int codim >
       Element< codim > &
-      operator[] ( const integral_constant< int, codim > codimVariable )
+      operator[] ( const std::integral_constant< int, codim > codimVariable )
       {
         DUNE_UNUSED_PARAMETER(codimVariable);
         return Dune::get<codim>(map_);

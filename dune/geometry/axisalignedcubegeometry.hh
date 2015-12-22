@@ -72,7 +72,7 @@ namespace Dune {
         The FieldMatrix will never contain more than one entry per row,
         hence it could be replaced by something more efficient.
      */
-    typedef typename conditional<dim==coorddim,
+    typedef typename std::conditional<dim==coorddim,
         DiagonalMatrix<ctype,dim>,
         FieldMatrix<ctype,dim,coorddim> >::type JacobianTransposed;
 
@@ -82,7 +82,7 @@ namespace Dune {
         The FieldMatrix will never contain more than one entry per column,
         hence it could be replaced by something more efficient.
      */
-    typedef typename conditional<dim==coorddim,
+    typedef typename std::conditional<dim==coorddim,
         DiagonalMatrix<ctype,dim>,
         FieldMatrix<ctype,coorddim,dim> >::type JacobianInverseTransposed;
 

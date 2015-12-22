@@ -178,7 +178,7 @@ namespace Dune
     template< int codim >
     typename Codim< codim >::Geometry geometry ( int i ) const
     {
-      integral_constant< int, codim > codimVariable;
+      std::integral_constant< int, codim > codimVariable;
       return geometries_[ codimVariable ][ i ];
     }
 
@@ -353,13 +353,13 @@ namespace Dune
   {
     template< int cc >
     static const ReferenceElement< ctype, dim-cc > &
-    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, integral_constant< int, cc > )
+    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, std::integral_constant< int, cc > )
     {
       return ReferenceElements< ctype, dim-cc >::general( refElement.type( i, cc ) );
     }
 
     static const ReferenceElement< ctype, dim > &
-    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, integral_constant< int, 0 > )
+    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, std::integral_constant< int, 0 > )
     {
       DUNE_UNUSED_PARAMETER(i);
       return refElement;
@@ -372,7 +372,7 @@ namespace Dune
       std::vector< FieldMatrix< ctype, dim - codim, dim > > jacobianTransposeds( size );
       GenericGeometry::referenceEmbeddings( refElement.type().id(), dim, codim, &(origins[ 0 ]), &(jacobianTransposeds[ 0 ]) );
 
-      integral_constant< int, codim > codimVariable;
+      std::integral_constant< int, codim > codimVariable;
       geometries[ codimVariable ].reserve( size );
       for( int i = 0; i < size; ++i )
       {
