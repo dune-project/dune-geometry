@@ -17,14 +17,8 @@
 
 using namespace Dune;
 
-int main(int argc, char** argv)
-{
-  Dune::MPIHelper::instance(argc, argv);
-
-  typedef double Field;
-  //typedef long double Field;
-  //typedef GMPField< 72 > Field;
-  //typedef GMPField< 160 > Field;
+template <typename Field>
+void runTest() {
 
   typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< Field > > MatrixHelper;
 
@@ -36,13 +30,12 @@ int main(int argc, char** argv)
   A[1][0] =  0.099999999999999867;
   A[1][1] = -0.0099999999999998979;
 
-
-  Field sqrtDetAAT = MatrixHelper::sqrtDetAAT< 2, 2 >( A );
+  Field sqrtDetAAT = MatrixHelper::template sqrtDetAAT< 2, 2 >( A );
   std::cout << "sqrtDetAAT = " << sqrtDetAAT << std::endl;
 
   if (std::numeric_limits<Field>::is_exact) {
     FieldMatrix< Field, 2, 2 > invA;
-    Field detA = MatrixHelper::rightInvA< 2, 2 >( A, invA );
+    Field detA = MatrixHelper::template rightInvA< 2, 2 >( A, invA );
     std::cout << "detA = " << detA << std::endl;
     std::cout << "invA = [ " << invA[ 0 ] << ", " << invA[ 1 ] << " ]" << std::endl;
   }
@@ -56,12 +49,33 @@ int main(int argc, char** argv)
   B[1][1] = A[1][1];
   B[1][2] = 0;
 
-
-  Field sqrtDetBBT = MatrixHelper::sqrtDetAAT< 2, 3 >( B );
+  Field sqrtDetBBT = MatrixHelper::template sqrtDetAAT< 2, 3 >( B );
   std::cout << "sqrtDetBBT = " << sqrtDetBBT << std::endl;
 
   FieldMatrix< Field, 3, 2 > invB;
-  Field detB = MatrixHelper::rightInvA< 2, 3 >( B, invB );
+  Field detB = MatrixHelper::template rightInvA< 2, 3 >( B, invB );
   std::cout << "detB = " << detB << std::endl;
   std::cout << "invB = [ " << invB[ 0 ] << ", " << invB[ 1 ] << ", " << invB[ 2 ] << " ]" << std::endl;
+}
+
+int main(int argc, char** argv)
+{
+  Dune::MPIHelper::instance(argc, argv);
+  std::cout << "Running tests for type: double" << std::endl;
+  runTest<double>();
+  std::cout << std::endl;
+
+  std::cout << "Running tests for type: long double" << std::endl;
+  runTest<long double>();
+  std::cout << std::endl;
+
+#if HAVE_GMP
+  std::cout << "Running tests for type: GMPField<72>" << std::endl;
+  runTest<GMPField<72>>();
+  std::cout << std::endl;
+
+  std::cout << "Running tests for type: GMPField<160>" << std::endl;
+  runTest<GMPField<160>>();
+  std::cout << std::endl;
+#endif
 }
