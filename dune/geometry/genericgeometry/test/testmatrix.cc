@@ -17,6 +17,24 @@
 
 using namespace Dune;
 
+template <class Matrix>
+void printAsSingleLine(Matrix const &m, std::string name)
+{
+  std::cout << name << " = [ ";
+  for (size_t i = 0; i<m.N() - 1; ++i)
+    std::cout << m[i] << ", ";
+  std::cout << m[m.N() - 1] << " ]" << std::endl;
+}
+
+template <class Matrix>
+typename FieldTraits<typename DenseMatVecTraits<Matrix>::value_type>::real_type
+matrixNormDifference(Matrix const &m1, Matrix const &m2)
+{
+  Matrix tmp = m1;
+  tmp -= m2;
+  return tmp.infinity_norm();
+}
+
 template <typename Field>
 void runTest() {
 
@@ -35,8 +53,21 @@ void runTest() {
 
   FieldMatrix< Field, 2, 2 > invA;
   Field detA = MatrixHelper::template rightInvA< 2, 2 >( A, invA );
-  std::cout << "detA = " << detA << std::endl;
-  std::cout << "invA = [ " << invA[ 0 ] << ", " << invA[ 1 ] << " ]" << std::endl;
+  std::cout << "detA       = " << detA << std::endl;
+
+  // Check the identity invA*A*invA = A
+  const FieldMatrix<Field, 2, 2> invAAinvA = invA.rightmultiplyany(A).rightmultiplyany(invA);
+  printAsSingleLine(invA,      "invA       ");
+  printAsSingleLine(invAAinvA, "invA*A*invA");
+  std::cout << "Identity invA*A*invA = invA satisfied up to error: "
+            << matrixNormDifference(invAAinvA, invA) << std::endl;
+
+  // Check the identity A*invA*A = A
+  const FieldMatrix<Field, 2, 2> AinvAA = A.rightmultiplyany(invA).rightmultiplyany(A);
+  printAsSingleLine(A,      "A       ");
+  printAsSingleLine(AinvAA, "A*invA*A");
+  std::cout << "Identity    A*invA*A = A    satisfied up to error: "
+            << matrixNormDifference(AinvAA, A) << std::endl;
 
   // Lets do the same for a non-square matrix.
   FieldMatrix< Field, 2, 3 > B;
@@ -52,8 +83,21 @@ void runTest() {
 
   FieldMatrix< Field, 3, 2 > invB;
   Field detB = MatrixHelper::template rightInvA< 2, 3 >( B, invB );
-  std::cout << "detB = " << detB << std::endl;
-  std::cout << "invB = [ " << invB[ 0 ] << ", " << invB[ 1 ] << ", " << invB[ 2 ] << " ]" << std::endl;
+  std::cout << "detB       = " << detB << std::endl;
+
+  // Check the identity invB*B*invB = B
+  const FieldMatrix<Field, 3, 2> invBBinvB = invB.rightmultiplyany(B).rightmultiplyany(invB);
+  printAsSingleLine(invB,      "invB       ");
+  printAsSingleLine(invBBinvB, "invB*B*invB");
+  std::cout << "Identity invB*B*invB = invB satisfied up to error: "
+            << matrixNormDifference(invBBinvB, invB) << std::endl;
+
+  // Check the identity B*invB*B = B
+  const FieldMatrix<Field, 2, 3> BinvBB = B.rightmultiplyany(invB).rightmultiplyany(B);
+  printAsSingleLine(B,      "B       ");
+  printAsSingleLine(BinvBB, "B*invB*B");
+  std::cout << "Identity    B*invB*B = B    satisfied up to error: "
+            << matrixNormDifference(BinvBB, B) << std::endl;
 }
 
 int main(int argc, char** argv)
