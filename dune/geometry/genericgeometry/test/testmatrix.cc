@@ -38,6 +38,13 @@ void runTest() {
   std::cout << "detA = " << detA << std::endl;
   std::cout << "invA = [ " << invA[ 0 ] << ", " << invA[ 1 ] << " ]" << std::endl;
 
+  const FieldMatrix<Field, 2, 2> AinvAA = A.rightmultiplyany(invA).rightmultiplyany(A);
+  std::cout << "A = [ " << A[ 0 ] << ", " << A[ 1 ] << " ]" << std::endl;
+  std::cout << "A*invA*A = [ " << AinvAA[ 0 ] << ", " << AinvAA[ 1 ] << " ]" << std::endl;
+  FieldMatrix<Field, 2, 2> AinvAAerror = AinvAA;
+  AinvAAerror -= A;
+  std::cout << "error = " << AinvAAerror.infinity_norm() << std::endl;
+
   // Lets do the same for a non-square matrix.
   FieldMatrix< Field, 2, 3 > B;
   B[0][0] = A[0][0];
@@ -54,6 +61,13 @@ void runTest() {
   Field detB = MatrixHelper::template rightInvA< 2, 3 >( B, invB );
   std::cout << "detB = " << detB << std::endl;
   std::cout << "invB = [ " << invB[ 0 ] << ", " << invB[ 1 ] << ", " << invB[ 2 ] << " ]" << std::endl;
+
+  const FieldMatrix<Field, 2, 3> BinvBB = B.rightmultiplyany(invB).rightmultiplyany(B);
+  std::cout << "B = [ " << B[ 0 ] << ", " << B[ 1 ] << " ]" << std::endl;
+  std::cout << "B*invB*B = [ " << BinvBB[ 0 ] << ", " << BinvBB[ 1 ] << " ]" << std::endl;
+  FieldMatrix<Field, 2, 3> BinvBBerror = BinvBB;
+  BinvBBerror -= B;
+  std::cout << "error = " << BinvBBerror.infinity_norm() << std::endl;
 }
 
 int main(int argc, char** argv)
