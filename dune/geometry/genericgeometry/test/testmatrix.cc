@@ -33,12 +33,10 @@ void runTest() {
   Field sqrtDetAAT = MatrixHelper::template sqrtDetAAT< 2, 2 >( A );
   std::cout << "sqrtDetAAT = " << sqrtDetAAT << std::endl;
 
-  if (std::numeric_limits<Field>::is_exact) {
-    FieldMatrix< Field, 2, 2 > invA;
-    Field detA = MatrixHelper::template rightInvA< 2, 2 >( A, invA );
-    std::cout << "detA = " << detA << std::endl;
-    std::cout << "invA = [ " << invA[ 0 ] << ", " << invA[ 1 ] << " ]" << std::endl;
-  }
+  FieldMatrix< Field, 2, 2 > invA;
+  Field detA = MatrixHelper::template rightInvA< 2, 2 >( A, invA );
+  std::cout << "detA = " << detA << std::endl;
+  std::cout << "invA = [ " << invA[ 0 ] << ", " << invA[ 1 ] << " ]" << std::endl;
 
   // Lets do the same for a non-square matrix.
   FieldMatrix< Field, 2, 3 > B;
