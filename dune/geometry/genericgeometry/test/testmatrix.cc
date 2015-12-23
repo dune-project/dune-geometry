@@ -36,7 +36,6 @@ int main(int argc, char** argv)
   A[1][0] =  0.099999999999999867;
   A[1][1] = -0.0099999999999998979;
 
-  std::cout << std::scientific << std::setprecision( 20 );
 
   Field sqrtDetAAT = MatrixHelper::sqrtDetAAT< 2, 2 >( A );
   std::cout << "sqrtDetAAT = " << sqrtDetAAT << std::endl;
@@ -57,7 +56,6 @@ int main(int argc, char** argv)
   B[1][1] = A[1][1];
   B[1][2] = 0;
 
-  std::cout << std::scientific << std::setprecision( 20 );
 
   Field sqrtDetBBT = MatrixHelper::sqrtDetAAT< 2, 3 >( B );
   std::cout << "sqrtDetBBT = " << sqrtDetBBT << std::endl;
