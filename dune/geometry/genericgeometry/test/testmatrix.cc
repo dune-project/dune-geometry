@@ -50,11 +50,11 @@ int main(int argc, char** argv)
 
   // Lets do the same crap for a non-square matrix.
   FieldMatrix< Field, 2, 3 > B;
-  B[0][0] =  0.099999999999999867;
-  B[0][1] = -0.010000000000002118;
+  B[0][0] = A[0][0];
+  B[0][1] = A[0][1];
   B[0][2] = 0;
-  B[1][0] =  0.099999999999999867;
-  B[1][1] = -0.0099999999999998979;
+  B[1][0] = A[1][0];
+  B[1][1] = A[1][1];
   B[1][2] = 0;
 
   std::cout << std::scientific << std::setprecision( 20 );
