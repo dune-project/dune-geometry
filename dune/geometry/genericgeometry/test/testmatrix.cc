@@ -35,11 +35,37 @@ matrixNormDifference(Matrix const &m1, Matrix const &m2)
   return tmp.infinity_norm();
 }
 
+template <typename Field, int rows, int cols>
+void examineMatrix(std::string name, Dune::FieldMatrix<Field, rows, cols> const &A) {
+  using MatrixHelper =
+      GenericGeometry::MatrixHelper<GenericGeometry::DuneCoordTraits<Field>>;
+  std::cout << "Examining matrix " << name << std::endl;
+
+  Field sqrtDetAAT = MatrixHelper::template sqrtDetAAT< rows, cols >( A );
+  std::cout << "sqrtDetAAT  = " << sqrtDetAAT << std::endl;
+
+  FieldMatrix< Field, cols, rows > invA;
+  Field detA = MatrixHelper::template rightInvA< rows, cols >( A, invA );
+  std::cout << "detA        = " << detA << std::endl;
+
+  // Check the identity A*invA*A = A
+  const FieldMatrix<Field, rows, cols> AinvAA = A.rightmultiplyany(invA).rightmultiplyany(A);
+  printAsSingleLine(A,      "A          ");
+  printAsSingleLine(AinvAA, "A*invA*A   ");
+  std::cout << "Identity    A*invA*A = A    satisfied up to error: "
+            << matrixNormDifference(AinvAA, A) << std::endl;
+
+  // Check the identity invA*A*invA = A
+  const FieldMatrix<Field, cols, rows> invAAinvA = invA.rightmultiplyany(A).rightmultiplyany(invA);
+  printAsSingleLine(invA,      "invA       ");
+  printAsSingleLine(invAAinvA, "invA*A*invA");
+  std::cout << "Identity invA*A*invA = invA satisfied up to error: "
+            << matrixNormDifference(invAAinvA, invA) << std::endl;
+  std::cout << std::endl;
+}
+
 template <typename Field>
 void runTest() {
-
-  typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< Field > > MatrixHelper;
-
   // Test whether I can compute the square root of the determinant of A A^T of a nearly singular matrix.
   // This particular matrix makes the sqrtDetAAT method abort in dune-grid revision 6631.
   FieldMatrix< Field, 2, 2 > A;
@@ -47,27 +73,7 @@ void runTest() {
   A[0][1] = -0.010000000000002118;
   A[1][0] =  0.099999999999999867;
   A[1][1] = -0.0099999999999998979;
-
-  Field sqrtDetAAT = MatrixHelper::template sqrtDetAAT< 2, 2 >( A );
-  std::cout << "sqrtDetAAT = " << sqrtDetAAT << std::endl;
-
-  FieldMatrix< Field, 2, 2 > invA;
-  Field detA = MatrixHelper::template rightInvA< 2, 2 >( A, invA );
-  std::cout << "detA       = " << detA << std::endl;
-
-  // Check the identity invA*A*invA = A
-  const FieldMatrix<Field, 2, 2> invAAinvA = invA.rightmultiplyany(A).rightmultiplyany(invA);
-  printAsSingleLine(invA,      "invA       ");
-  printAsSingleLine(invAAinvA, "invA*A*invA");
-  std::cout << "Identity invA*A*invA = invA satisfied up to error: "
-            << matrixNormDifference(invAAinvA, invA) << std::endl;
-
-  // Check the identity A*invA*A = A
-  const FieldMatrix<Field, 2, 2> AinvAA = A.rightmultiplyany(invA).rightmultiplyany(A);
-  printAsSingleLine(A,      "A       ");
-  printAsSingleLine(AinvAA, "A*invA*A");
-  std::cout << "Identity    A*invA*A = A    satisfied up to error: "
-            << matrixNormDifference(AinvAA, A) << std::endl;
+  examineMatrix("#1", A);
 
   // Lets do the same for a non-square matrix.
   FieldMatrix< Field, 2, 3 > B;
@@ -77,27 +83,7 @@ void runTest() {
   B[1][0] = A[1][0];
   B[1][1] = A[1][1];
   B[1][2] = 0;
-
-  Field sqrtDetBBT = MatrixHelper::template sqrtDetAAT< 2, 3 >( B );
-  std::cout << "sqrtDetBBT = " << sqrtDetBBT << std::endl;
-
-  FieldMatrix< Field, 3, 2 > invB;
-  Field detB = MatrixHelper::template rightInvA< 2, 3 >( B, invB );
-  std::cout << "detB       = " << detB << std::endl;
-
-  // Check the identity invB*B*invB = B
-  const FieldMatrix<Field, 3, 2> invBBinvB = invB.rightmultiplyany(B).rightmultiplyany(invB);
-  printAsSingleLine(invB,      "invB       ");
-  printAsSingleLine(invBBinvB, "invB*B*invB");
-  std::cout << "Identity invB*B*invB = invB satisfied up to error: "
-            << matrixNormDifference(invBBinvB, invB) << std::endl;
-
-  // Check the identity B*invB*B = B
-  const FieldMatrix<Field, 2, 3> BinvBB = B.rightmultiplyany(invB).rightmultiplyany(B);
-  printAsSingleLine(B,      "B       ");
-  printAsSingleLine(BinvBB, "B*invB*B");
-  std::cout << "Identity    B*invB*B = B    satisfied up to error: "
-            << matrixNormDifference(BinvBB, B) << std::endl;
+  examineMatrix("#2", B);
 }
 
 int main(int argc, char** argv)
