@@ -3,9 +3,10 @@
 #ifndef DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 #define DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 
-#include <array>
 #include <vector>
 #include <map>
+
+#include <dune/common/array.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include "type.hh"
