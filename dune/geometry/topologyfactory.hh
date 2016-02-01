@@ -3,10 +3,10 @@
 #ifndef DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 #define DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 
+#include <algorithm>
+#include <array>
 #include <vector>
 #include <map>
-
-#include <dune/common/array.hh>
 
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include "type.hh"
@@ -131,8 +131,11 @@ namespace Dune
     Object *&find( const unsigned int topologyId, const Key &key )
     {
       typename Storage::iterator it = storage_.find( key );
-      if( it == storage_.end() )
-        it = storage_.insert( std::make_pair( key, fill_array<Object*, numTopologies>( nullptr ) ) ).first;
+      if( it == storage_.end() ) {
+        Array tmp;
+        std::fill(tmp.begin(), tmp.end(), nullptr);
+        it = storage_.insert(std::make_pair(key, tmp)).first;
+      }
       return it->second[ topologyId ];
     }
 
