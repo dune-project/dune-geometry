@@ -82,7 +82,7 @@ namespace Dune
       return data_[i];
     }
 
-    //! number of itemscurrently in the vector
+    //! number of items currently in the vector
     std::size_t size() const
     {
       return size_;
@@ -93,7 +93,7 @@ namespace Dune
     {
       return data_;
     }
-    //! passed-the-end iterator
+    //! past-the-end iterator
     iterator end()
     {
       return data_ + size_;
