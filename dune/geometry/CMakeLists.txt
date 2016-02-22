@@ -1,7 +1,7 @@
 add_subdirectory("quadraturerules")
 add_subdirectory("genericgeometry")
 add_subdirectory("refinement")
-add_subdirectory("test" EXCLUDE_FROM_ALL)
+add_subdirectory("test")
 
 install(FILES
   affinegeometry.hh
