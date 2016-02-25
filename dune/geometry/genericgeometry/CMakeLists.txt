@@ -1,4 +1,4 @@
-add_subdirectory("test" EXCLUDE_FROM_ALL)
+add_subdirectory("test")
 install(FILES
   codimtable.hh
   conversion.hh
