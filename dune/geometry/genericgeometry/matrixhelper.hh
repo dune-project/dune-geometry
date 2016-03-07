@@ -20,7 +20,10 @@ namespace Dune
     template< class Field >
     struct FieldHelper
     {
-      static Field abs ( const Field &x ) { return std::abs( x ); }
+      static Field abs ( const Field &x ) {
+        using std::abs;
+        return abs( x );
+      }
     };
 
 
