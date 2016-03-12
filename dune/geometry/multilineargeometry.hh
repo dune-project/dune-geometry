@@ -86,9 +86,50 @@ namespace Dune
      *  \endcode
      *  By default, a std::vector of FieldVector is used.
      *
-     *  Apart from being copy constructable and assignable, the corner storage
-     *  must provide a constant input iterator, i.e., it must define a type
-     *  const_iterator and a pair of constant begin / end methods.
+     *  Apart from being copy constructable and assignable, an \c const corner
+     *  storage object \c corners must support the expressions \c
+     *  begin(corners), \c end(corners), and subscription \c corners[i].  \c
+     *  begin() and \c end() are looked up via ADL and in namespace \c std:
+     *  \code
+     *  using std::begin;
+     *  using std::end;
+     *  // it is a const_iterator over the corners in Dune-ordering
+     *  auto it = begin(corners);
+     *  FieldVector<ctype, cdim> c0 = *it;
+     *  auto itend = end(corners);
+     *  while(it != itend) {
+     *    //...
+     *  }
+     *
+     *  // elements must be accessible by subscription, indexed in
+     *  // Dune-ordering
+     *  FieldVector<ctype, cdim> c1 = corners[1];
+     *  \endcode
+     *  This means that all of the following qualify: \c
+     *  FieldVector<ctype,cdim>[1<<mydim], \c
+     *  std::array<FieldVector<ctype,cdim>,(1<<mydim)>, \c
+     *  std::vector<FieldVector<ctype,cdim>>.
+     *
+     *  \note The expression \c end(corners) isn't actually used by the
+     *        implementation currently, but we require it anyway so we can add
+     *        runtime checks for the container size when we feel like it.
+     *
+     *  It is also possible to use a \c std::reference_wrapper of a suitable
+     *  container as the type for the corner storage.  The implementation
+     *  automatically calls \c corners.get() on internally stored \c
+     *  std::reference_wrapper objects before applying \c begin(), \c end(),
+     *  or subscription in that case.
+     *
+     *  \note Using \c std::reference_wrapper of some container as the corner
+     *        storage means that the geometry has no control over the lifetime
+     *        of or the access to that container.  When the lifetime of the
+     *        container ends, or the container itself or its elements are
+     *        modified, any geometry object that still references that
+     *        container becomes invalid.  The only valid operation on invalid
+     *        geometry objects are destruction and assignment from another
+     *        geometry.  If invalidation happens concurrently with some
+     *        operation (other than destruction or assignment) on the
+     *        geometry, that is a race.
      *
      *  \tparam  mydim  geometry dimension
      *  \tparam  cdim   coordinate dimension
