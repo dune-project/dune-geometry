@@ -7,6 +7,7 @@
 
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
+#include <dune/common/rangeutilities.hh>
 
 namespace Dune
 {
@@ -266,7 +267,7 @@ namespace Dune
           FieldType xDiag = A[ i ][ i ];
           for( int j = 0; j < i; ++j )
             xDiag -= ret[ i ][ j ] * ret[ i ][ j ];
-          assert( xDiag > FieldType( 0 ) );
+          assert( all_true( xDiag > FieldType( 0 ) ) );
           rii = sqrt( xDiag );
 
           FieldType invrii = FieldType( 1 ) / rii;
