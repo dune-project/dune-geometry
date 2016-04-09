@@ -32,7 +32,7 @@ namespace Dune
       operator[] ( const std::integral_constant< int, codim > codimVariable ) const
       {
         DUNE_UNUSED_PARAMETER(codimVariable);
-        return Dune::get<codim>(map_);
+        return std::get<codim>(map_);
       }
 
       template< int codim >
@@ -40,7 +40,7 @@ namespace Dune
       operator[] ( const std::integral_constant< int, codim > codimVariable )
       {
         DUNE_UNUSED_PARAMETER(codimVariable);
-        return Dune::get<codim>(map_);
+        return std::get<codim>(map_);
       }
     };
 
@@ -49,7 +49,7 @@ namespace Dune
     class CodimTable< Element, -1 >
     {
       friend class CodimTable< Element, 0 >;
-      typedef typename Dune::tuple<> ElementTuple;
+      typedef typename std::tuple<> ElementTuple;
     };
 
   }
