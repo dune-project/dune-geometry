@@ -3,8 +3,10 @@
 #ifndef DUNE_GEOMETRY_GENERICGEOMETRY_GEOMETRYTRAITS_HH
 #define DUNE_GEOMETRY_GENERICGEOMETRY_GEOMETRYTRAITS_HH
 
+#include <dune/common/fvector.hh>
+#include <dune/common/fmatrix.hh>
+
 #include "../type.hh"
-#include "matrixhelper.hh"
 
 namespace Dune
 {
