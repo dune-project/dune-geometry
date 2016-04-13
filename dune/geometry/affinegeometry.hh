@@ -10,10 +10,10 @@
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/matrixhelper.hh>
 
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
-#include <dune/geometry/genericgeometry/matrixhelper.hh>
 
 namespace Dune
 {
@@ -67,7 +67,7 @@ namespace Dune
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
     // Helper class to compute a matrix pseudo inverse
-    typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
+    typedef MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
   public:
     /** \brief Create affine geometry from reference element, one vertex, and the Jacobian matrix */

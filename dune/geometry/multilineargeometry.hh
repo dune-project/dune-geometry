@@ -9,12 +9,12 @@
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/matrixhelper.hh>
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/genericgeometry/geometrytraits.hh>
-#include <dune/geometry/genericgeometry/matrixhelper.hh>
 
 namespace Dune
 {
@@ -63,7 +63,7 @@ namespace Dune
      *                            FieldVector< ctype, m > &y );
      *  \endcode
      */
-    typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
+    typedef MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
 
     /** \brief tolerance to numerical algorithms */
     static ct tolerance () { return ct( 16 ) * std::numeric_limits< ct >::epsilon(); }
