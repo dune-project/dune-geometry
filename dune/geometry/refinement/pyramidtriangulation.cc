@@ -180,7 +180,7 @@ namespace Dune
         typedef typename BackendRefinement::template Codim<dimension>::SubEntityIterator BackendIterator;
         enum { nKuhnSimplices = 2 };
 
-        int level;
+        int level_;
 
         int kuhnIndex;
         BackendIterator backend;
@@ -189,10 +189,10 @@ namespace Dune
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
-      RefinementIteratorSpecial(int level_, bool end)
-        : level(level_), kuhnIndex(0),
-          backend(BackendRefinement::vBegin(level)),
-          backendEnd(BackendRefinement::vEnd(level))
+      RefinementIteratorSpecial(int level, bool end)
+        : level_(level), kuhnIndex(0),
+          backend(BackendRefinement::vBegin(level_)),
+          backendEnd(BackendRefinement::vEnd(level_))
       {
         if (end)
           kuhnIndex = nKuhnSimplices;
@@ -206,7 +206,7 @@ namespace Dune
         ++backend;
         if(backend == backendEnd)
         {
-          backend = BackendRefinement::vBegin(level);
+          backend = BackendRefinement::vBegin(level_);
           ++kuhnIndex;
         }
       }
@@ -234,7 +234,7 @@ namespace Dune
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
       index() const
       {
-        return kuhnIndex*BackendRefinement::nVertices(level) + backend.index();
+        return kuhnIndex*BackendRefinement::nVertices(level_) + backend.index();
       }
 
       // elements
@@ -265,7 +265,7 @@ namespace Dune
         typedef typename BackendRefinement::template Codim<0>::SubEntityIterator BackendIterator;
         enum { nKuhnSimplices = 2};
 
-        int level;
+        int level_;
 
         int kuhnIndex;
         BackendIterator backend;
@@ -274,10 +274,10 @@ namespace Dune
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, 0>::
-      RefinementIteratorSpecial(int level_, bool end)
-        : level(level_), kuhnIndex(0),
-          backend(BackendRefinement::eBegin(level)),
-          backendEnd(BackendRefinement::eEnd(level))
+      RefinementIteratorSpecial(int level, bool end)
+        : level_(level), kuhnIndex(0),
+          backend(BackendRefinement::eBegin(level_)),
+          backendEnd(BackendRefinement::eEnd(level_))
       {
         if (end)
           kuhnIndex = nKuhnSimplices;
@@ -291,7 +291,7 @@ namespace Dune
         ++backend;
         if (backend == backendEnd)
         {
-          backend = BackendRefinement::eBegin(level);
+          backend = BackendRefinement::eBegin(level_);
           ++kuhnIndex;
         }
       }
@@ -303,7 +303,7 @@ namespace Dune
       {
         IndexVector indices = backend.vertexIndices();
 
-        int base = kuhnIndex * BackendRefinement::nVertices(level);
+        int base = kuhnIndex * BackendRefinement::nVertices(level_);
         indices += base;
 
         return indices;
@@ -314,7 +314,7 @@ namespace Dune
       RefinementIteratorSpecial<dimension, CoordType, 0>::
       index() const
       {
-        return kuhnIndex*BackendRefinement::nElements(level) + backend.index();
+        return kuhnIndex*BackendRefinement::nElements(level_) + backend.index();
       }
 
       template<int dimension, class CoordType>
