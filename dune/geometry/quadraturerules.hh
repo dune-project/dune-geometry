@@ -340,11 +340,11 @@ namespace Dune {
       std::vector< FieldVector<ct, dim> > _points;
       std::vector< ct > _weight;
 
-      int delivered_order;
+      int deliveredOrder_;
 
       Jacobi1QuadratureInitHelper<ct>::init
-        (p, _points, _weight, delivered_order);
-      this->delivered_order = delivered_order;
+        (p, _points, _weight, deliveredOrder_);
+      this->delivered_order = deliveredOrder_;
       assert(_points.size() == _weight.size());
       for (size_t i = 0; i < _points.size(); i++)
         this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
@@ -406,12 +406,12 @@ namespace Dune {
       std::vector< FieldVector<ct, dim> > _points;
       std::vector< ct > _weight;
 
-      int delivered_order;
+      int deliveredOrder_;
 
       Jacobi2QuadratureInitHelper<ct>::init
-        (p, _points, _weight, delivered_order);
+        (p, _points, _weight, deliveredOrder_);
 
-      this->delivered_order = delivered_order;
+      this->delivered_order = deliveredOrder_;
       assert(_points.size() == _weight.size());
       for (size_t i = 0; i < _points.size(); i++)
         this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
@@ -473,12 +473,12 @@ namespace Dune {
       std::vector< FieldVector<ct, dim> > _points;
       std::vector< ct > _weight;
 
-      int delivered_order;
+      int deliveredOrder_;
 
       GaussLobattoQuadratureInitHelper<ct>::init
-        (p, _points, _weight, delivered_order);
+        (p, _points, _weight, deliveredOrder_);
 
-      this->delivered_order = delivered_order;
+      this->delivered_order = deliveredOrder_;
       assert(_points.size() == _weight.size());
       for (size_t i = 0; i < _points.size(); i++)
         this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
