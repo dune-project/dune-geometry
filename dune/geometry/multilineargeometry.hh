@@ -272,9 +272,8 @@ namespace Dune
     /** \brief obtain coordinates of the i-th corner */
     GlobalCoordinate corner ( int i ) const
     {
-      using std::cref;
       assert( (i >= 0) && (i < corners()) );
-      return cref(corners_).get()[ i ];
+      return std::cref(corners_).get()[ i ];
     }
 
     /** \brief obtain the centroid of the mapping's image */
@@ -289,9 +288,8 @@ namespace Dune
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
       using std::begin;
-      using std::cref;
 
-      auto cit = begin(cref(corners_).get());
+      auto cit = begin(std::cref(corners_).get());
       GlobalCoordinate y;
       global< false >( topologyId(), std::integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), y );
       return y;
@@ -368,10 +366,9 @@ namespace Dune
     JacobianTransposed jacobianTransposed ( const LocalCoordinate &local ) const
     {
       using std::begin;
-      using std::cref;
 
       JacobianTransposed jt;
-      auto cit = begin(cref(corners_).get());
+      auto cit = begin(std::cref(corners_).get());
       jacobianTransposed< false >( topologyId(), std::integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jt );
       return jt;
     }
@@ -420,9 +417,8 @@ namespace Dune
     bool affine ( JacobianTransposed &jacobianTransposed ) const
     {
       using std::begin;
-      using std::cref;
 
-      auto cit = begin(cref(corners_).get());
+      auto cit = begin(std::cref(corners_).get());
       return affine( topologyId(), std::integral_constant< int, mydimension >(), cit, jacobianTransposed );
     }
 
