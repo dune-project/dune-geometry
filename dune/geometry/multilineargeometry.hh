@@ -4,6 +4,8 @@
 #define DUNE_GEOMETRY_MULTILINEARGEOMETRY_HH
 
 #include <cassert>
+#include <functional>
+#include <iterator>
 #include <limits>
 #include <vector>
 
@@ -84,9 +86,50 @@ namespace Dune
      *  \endcode
      *  By default, a std::vector of FieldVector is used.
      *
-     *  Apart from being copy constructable and assignable, the corner storage
-     *  must provide a constant input iterator, i.e., it must define a type
-     *  const_iterator and a pair of constant begin / end methods.
+     *  Apart from being copy constructable and assignable, an \c const corner
+     *  storage object \c corners must support the expressions \c
+     *  begin(corners), \c end(corners), and subscription \c corners[i].  \c
+     *  begin() and \c end() are looked up via ADL and in namespace \c std:
+     *  \code
+     *  using std::begin;
+     *  using std::end;
+     *  // it is a const_iterator over the corners in Dune-ordering
+     *  auto it = begin(corners);
+     *  FieldVector<ctype, cdim> c0 = *it;
+     *  auto itend = end(corners);
+     *  while(it != itend) {
+     *    //...
+     *  }
+     *
+     *  // elements must be accessible by subscription, indexed in
+     *  // Dune-ordering
+     *  FieldVector<ctype, cdim> c1 = corners[1];
+     *  \endcode
+     *  This means that all of the following qualify: \c
+     *  FieldVector<ctype,cdim>[1<<mydim], \c
+     *  std::array<FieldVector<ctype,cdim>,(1<<mydim)>, \c
+     *  std::vector<FieldVector<ctype,cdim>>.
+     *
+     *  \note The expression \c end(corners) isn't actually used by the
+     *        implementation currently, but we require it anyway so we can add
+     *        runtime checks for the container size when we feel like it.
+     *
+     *  It is also possible to use a \c std::reference_wrapper of a suitable
+     *  container as the type for the corner storage.  The implementation
+     *  automatically calls \c corners.get() on internally stored \c
+     *  std::reference_wrapper objects before applying \c begin(), \c end(),
+     *  or subscription in that case.
+     *
+     *  \note Using \c std::reference_wrapper of some container as the corner
+     *        storage means that the geometry has no control over the lifetime
+     *        of or the access to that container.  When the lifetime of the
+     *        container ends, or the container itself or its elements are
+     *        modified, any geometry object that still references that
+     *        container becomes invalid.  The only valid operation on invalid
+     *        geometry objects are destruction and assignment from another
+     *        geometry.  If invalidation happens concurrently with some
+     *        operation (other than destruction or assignment) on the
+     *        geometry, that is a race.
      *
      *  \tparam  mydim  geometry dimension
      *  \tparam  cdim   coordinate dimension
@@ -180,9 +223,6 @@ namespace Dune
 
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
-  private:
-    typedef typename Traits::template CornerStorage< mydimension, coorddimension >::Type::const_iterator CornerIterator;
-
   public:
     /** \brief constructor
      *
@@ -233,7 +273,7 @@ namespace Dune
     GlobalCoordinate corner ( int i ) const
     {
       assert( (i >= 0) && (i < corners()) );
-      return corners_[ i ];
+      return std::cref(corners_).get()[ i ];
     }
 
     /** \brief obtain the centroid of the mapping's image */
@@ -247,7 +287,9 @@ namespace Dune
      */
     GlobalCoordinate global ( const LocalCoordinate &local ) const
     {
-      CornerIterator cit = corners_.begin();
+      using std::begin;
+
+      auto cit = begin(std::cref(corners_).get());
       GlobalCoordinate y;
       global< false >( topologyId(), std::integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), y );
       return y;
@@ -323,8 +365,10 @@ namespace Dune
      */
     JacobianTransposed jacobianTransposed ( const LocalCoordinate &local ) const
     {
+      using std::begin;
+
       JacobianTransposed jt;
-      CornerIterator cit = corners_.begin();
+      auto cit = begin(std::cref(corners_).get());
       jacobianTransposed< false >( topologyId(), std::integral_constant< int, mydimension >(), cit, ctype( 1 ), local, ctype( 1 ), jt );
       return jt;
     }
@@ -347,31 +391,34 @@ namespace Dune
       return topologyId( std::integral_constant< bool, hasSingleGeometryType >() );
     }
 
-    template< bool add, int dim >
+    template< bool add, int dim, class CornerIterator >
     static void global ( TopologyId topologyId, std::integral_constant< int, dim >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, GlobalCoordinate &y );
-    template< bool add >
+    template< bool add, class CornerIterator >
     static void global ( TopologyId topologyId, std::integral_constant< int, 0 >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                          const ctype &rf, GlobalCoordinate &y );
 
-    template< bool add, int rows, int dim >
+    template< bool add, int rows, int dim, class CornerIterator >
     static void jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, dim >,
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                                      const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
-    template< bool add, int rows >
+    template< bool add, int rows, class CornerIterator >
     static void jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, 0 >,
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                                      const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
 
-    template< int dim >
+    template< int dim, class CornerIterator >
     static bool affine ( TopologyId topologyId, std::integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt );
+    template< class CornerIterator >
     static bool affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt );
 
     bool affine ( JacobianTransposed &jacobianTransposed ) const
     {
-      CornerIterator cit = corners_.begin();
+      using std::begin;
+
+      auto cit = begin(std::cref(corners_).get());
       return affine( topologyId(), std::integral_constant< int, mydimension >(), cit, jacobianTransposed );
     }
 
@@ -631,7 +678,7 @@ namespace Dune
 
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< bool add, int dim >
+  template< bool add, int dim, class CornerIterator >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::global ( TopologyId topologyId, std::integral_constant< int, dim >,
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
@@ -662,7 +709,7 @@ namespace Dune
   }
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< bool add >
+  template< bool add, class CornerIterator >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::global ( TopologyId topologyId, std::integral_constant< int, 0 >,
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
@@ -676,7 +723,7 @@ namespace Dune
 
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< bool add, int rows, int dim >
+  template< bool add, int rows, int dim, class CornerIterator >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, dim >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
@@ -687,7 +734,7 @@ namespace Dune
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
 
-    CornerIterator cit2( cit );
+    auto cit2( cit );
     if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times Jacobian for bottom
@@ -778,7 +825,7 @@ namespace Dune
   }
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< bool add, int rows >
+  template< bool add, int rows, class CornerIterator >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, 0 >,
                          CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
@@ -790,7 +837,7 @@ namespace Dune
 
 
   template< class ct, int mydim, int cdim, class Traits >
-  template< int dim >
+  template< int dim, class CornerIterator >
   inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::affine ( TopologyId topologyId, std::integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt )
   {
@@ -819,6 +866,7 @@ namespace Dune
   }
 
   template< class ct, int mydim, int cdim, class Traits >
+  template< class CornerIterator >
   inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
   ::affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt )
   {
