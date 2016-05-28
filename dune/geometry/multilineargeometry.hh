@@ -297,7 +297,7 @@ namespace Dune
 
     /** \brief evaluate the inverse mapping
      *
-     *  \param[in]  global  global coordinate to map
+     *  \param[in] globalCoord global coordinate to map
      *
      *  \return corresponding local coordinate
      *
@@ -307,7 +307,7 @@ namespace Dune
      *  (global( x ) - y).two_norm()
      *  \endcode
      */
-    LocalCoordinate local ( const GlobalCoordinate &global ) const
+    LocalCoordinate local ( const GlobalCoordinate &globalCoord ) const
     {
       const ctype tolerance = Traits::tolerance();
       LocalCoordinate x = refElement().position( 0, 0 );
@@ -315,7 +315,7 @@ namespace Dune
       do
       {
         // Newton's method: DF^n dx^n = F^n, x^{n+1} -= dx^n
-        const GlobalCoordinate dglobal = (*this).global( x ) - global;
+        const GlobalCoordinate dglobal = (*this).global( x ) - globalCoord;
         MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
         x -= dx;
       } while( dx.two_norm2() > tolerance );
@@ -414,12 +414,12 @@ namespace Dune
     template< class CornerIterator >
     static bool affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt );
 
-    bool affine ( JacobianTransposed &jacobianTransposed ) const
+    bool affine ( JacobianTransposed &jacobianT ) const
     {
       using std::begin;
 
       auto cit = begin(std::cref(corners_).get());
-      return affine( topologyId(), std::integral_constant< int, mydimension >(), cit, jacobianTransposed );
+      return affine( topologyId(), std::integral_constant< int, mydimension >(), cit, jacobianT );
     }
 
   private:
@@ -504,8 +504,8 @@ namespace Dune
     typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
 
     template< class CornerStorage >
-    CachedMultiLinearGeometry ( const ReferenceElement &refElement, const CornerStorage &cornerStorage )
-      : Base( refElement, cornerStorage ),
+    CachedMultiLinearGeometry ( const ReferenceElement &referenceElement, const CornerStorage &cornerStorage )
+      : Base( referenceElement, cornerStorage ),
         affine_( Base::affine( jacobianTransposed_ ) ),
         jacobianInverseTransposedComputed_( false ),
         integrationElementComputed_( false )
