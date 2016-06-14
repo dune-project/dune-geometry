@@ -84,13 +84,13 @@ namespace Dune
         typedef typename Codim<0>::SubEntityIterator ElementIterator;
         typedef FieldVector<int, (1<<dimension)> IndexVector;
 
-        static int nVertices(int level);
-        static VertexIterator vBegin(int level);
-        static VertexIterator vEnd(int level);
+        static unsigned nVertices(unsigned level);
+        static VertexIterator vBegin(unsigned level);
+        static VertexIterator vEnd(unsigned level);
 
-        static int nElements(int level);
-        static ElementIterator eBegin(int level);
-        static ElementIterator eEnd(int level);
+        static unsigned nElements(unsigned level);
+        static ElementIterator eBegin(unsigned level);
+        static ElementIterator eEnd(unsigned level);
       };
 
       template<int dimension, class CoordType>
@@ -102,18 +102,18 @@ namespace Dune
       };
 
       template<int dimension, class CoordType>
-      int
+      unsigned
       RefinementImp<dimension, CoordType>::
-      nVertices(int level)
+      nVertices(unsigned level)
       {
         // return (2^level + 1)^dim
-        return Power<dimension>::eval((1<<level)+1);
+        return Power<dimension>::eval((1u<<level)+1u);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vBegin(int level)
+      vBegin(unsigned level)
       {
         return VertexIterator(0,level);
       }
@@ -121,24 +121,26 @@ namespace Dune
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vEnd(int level)
+      vEnd(unsigned level)
       {
         return VertexIterator(nVertices(level),level);
       }
 
       template<int dimension, class CoordType>
-      int
+      unsigned
       RefinementImp<dimension, CoordType>::
-      nElements(int level)
+      nElements(unsigned level)
       {
+        static_assert(dimension >= 0,
+                      "Negative dimension given, what the heck is that supposed to mean?");
         // return (2^level)^dim
-        return 1<<(level*dimension);
+        return 1u<<(level*unsigned(dimension));
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eBegin(int level)
+      eBegin(unsigned level)
       {
         return ElementIterator(0,level);
       }
@@ -146,7 +148,7 @@ namespace Dune
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eEnd(int level)
+      eEnd(unsigned level)
       {
         return ElementIterator(nElements(level),level);
       }
@@ -296,13 +298,13 @@ namespace Dune
         std::array<unsigned int, dimension>
         cellCoord(unsigned int idx) const
         {
-          return idx2coord(idx, 1<<_level);
+          return idx2coord(idx, 1u<<_level);
         }
 
         std::array<unsigned int, dimension>
         vertexCoord(unsigned int idx) const
         {
-          return idx2coord(idx, (1<<_level)+1);
+          return idx2coord(idx, (1u<<_level)+1u);
         }
 
         std::array<unsigned int, dimension>
@@ -344,7 +346,7 @@ namespace Dune
         unsigned int
         vertexIdx(std::array<unsigned int, dimension> c) const
         {
-          return coord2idx(c, (1<<_level)+1);
+          return coord2idx(c, (1u<<_level)+1u);
         }
       };
 
@@ -388,7 +390,7 @@ namespace Dune
       typename RefinementImp<dimension, CoordType>::template Codim<codimension>::Geometry
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::geometry () const
       {
-        std::array<unsigned int,dimension> intCoords = idx2coord(_index,1<<_level);
+        std::array<unsigned int,dimension> intCoords = idx2coord(_index,1u<<_level);
 
         Dune::FieldVector<CoordType,dimension> lower;
         Dune::FieldVector<CoordType,dimension> upper;
@@ -398,12 +400,12 @@ namespace Dune
         if (codimension == 0) {
           for (size_t j = 0; j < dimension; j++)
           {
-            lower[j] = double(intCoords[j])     / double(1<<_level);
-            upper[j] = double(intCoords[j] + 1) / double(1<<_level);
+            lower[j] = double(intCoords[j])     / double(1u<<_level);
+            upper[j] = double(intCoords[j] + 1) / double(1u<<_level);
           }
         } else {
           for (size_t j = 0; j < dimension; j++)
-            lower[j] = upper[j] = double(intCoords[j])     / double(1<<_level);
+            lower[j] = upper[j] = double(intCoords[j]) / double(1u<<_level);
         }
 
         return typename RefinementImp<dimension,
