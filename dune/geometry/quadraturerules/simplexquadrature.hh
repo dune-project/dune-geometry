@@ -626,13 +626,7 @@ namespace Dune {
       W[m][27] = 0.5 * 0.041056315429288566641652314907294;
       O[m] = 11;
 
-      // The following symmetric quadrature rules order 12-24 are extracted from
-      // "A Set of Symmetric Quadrature Rules on Triangles and Tetrahedra"
-      // by L. Zhang, T. Cui and H. Liu, (2009) and the referenced library
-      // PHG version 0.9.2 that can be found at
-      // http://lsec.cc.ac.cn/phg/index_en.htm
-      //
-      // The residuum is defined as
+      // For the following quadrature rules a residuum is provided, defined as
       // \[
       //    residuum = \sqrt( \sum_k (quad_k - exact_k)^2 )
       // \]
@@ -646,6 +640,12 @@ namespace Dune {
       //    k = (k0,k1), k0 \leq k1, k0 + k1 \leq order
       //    x = (x0,x1), f(k, x) = x0^k0 * x1^k1
       // \]
+
+      // The following symmetric quadrature rules order 12-16 are extracted from
+      // "A Set of Symmetric Quadrature Rules on Triangles and Tetrahedra"
+      // by L. Zhang, T. Cui and H. Liu, (2009) and the referenced library
+      // PHG version 0.9.2 that can be found at
+      // http://lsec.cc.ac.cn/phg/index_en.htm
 
       // symmetric rule: dim = 2, order = 12, npoints = 33
       // residuum = 5.83047334136441978343521021299895407e-36
@@ -1330,6 +1330,13 @@ namespace Dune {
       W[m][54] = 3.64989846971588104205627204388883000e-03;
       O[m] = 16;
 
+
+      // The following symmetric quadrature rules order 17-18 are given in
+      // "A numerical algorithm for the construction of efficient quadrature
+      // rules in two and higher dimensions", by H. Xiao and Z. Gimbutas,
+      // and provided in PHG version 0.9.2 that can be found at
+      // http://lsec.cc.ac.cn/phg/index_en.htm
+
       // symmetric rule: dim = 2, order = 17, npoints = 60
       // residuum = 4.32149829790295757631711520879850628e-35
 
@@ -1725,6 +1732,11 @@ namespace Dune {
       W[m][66] = 7.66412909727657043352314340960345500e-03;
       O[m] = 18;
 
+      // The following symmetric quadrature rule order 19 is given in
+      // "Higer-order Finite Element Methods", by P. Solin, K. Segeth,
+      // and I. Dolezel, and provided in PHG version 0.9.2 that can be found at
+      // http://lsec.cc.ac.cn/phg/index_en.htm
+
       // symmetric rule: dim = 2, order = 19, npoints = 73
       // residuum = 3.77800787123198295013923944209262786e-35
 
@@ -1950,6 +1962,12 @@ namespace Dune {
       W[m][71] = 1.89996442765095698953657685681985000e-03;
       W[m][72] = 1.89996442765095698953657685681985000e-03;
       O[m] = 19;
+
+      // The following quadrature rule order 20 is given in
+      // "Optimierungbasierte Berechnung multivariater Quadraturformeln",
+      // by Simone Weikl, Diploma thesis (2011),
+      // and provided in PHG version 0.9.2 that can be found at
+      // http://lsec.cc.ac.cn/phg/index_en.htm
 
       // symmetric rule: dim = 2, order = 20, npoints = 82
       // residuum = 6.27453294678040286715755918441129456e-36
@@ -2203,6 +2221,13 @@ namespace Dune {
       W[m][80] = 9.55270890737394033290686518826940500e-03;
       W[m][81] = 9.55270890737394033290686518826940500e-03;
       O[m] = 20;
+
+      // The following symmetric quadrature rules order 21-24 are given in
+      // "New fully symmetric and rotationally symmetric cubature rules on the
+      // triangle using minimal orthonormal bases", by S.-A. Papanicolopulos,
+      // (2016), see e.g. http://arxiv.org/src/1411.5631v2/anc/fullsymmetry.txt,
+      // and provided in PHG version 0.9.2 that can be found at
+      // http://lsec.cc.ac.cn/phg/index_en.htm
 
       // symmetric rule: dim = 2, order = 21, npoints = 87
       // residuum = 1.78321258111938357362582551642425159e-35
@@ -3422,7 +3447,6 @@ namespace Dune {
       W[m][110] = 9.61539155871833939313656073776311000e-03;
       W[m][111] = 9.61539155871833939313656073776311000e-03;
       O[m] = 24;
-
     }
 
     FieldVector<double, 2> point(int m, int i)
@@ -3582,26 +3606,26 @@ namespace Dune {
       W[m][0] = 1.0/6.0;
       O[m] = 1;
 
-      // The following symmetric quadrature rules order 2-12 are extracted from
-      // "A Set of Symmetric Quadrature Rules on Triangles and Tetrahedra"
-      // by L. Zhang, T. Cui and H. Liu, (2009) and the referenced library
-      // PHG version 0.9.2 that can be found at
-      // http://lsec.cc.ac.cn/phg/index_en.htm
-      //
-      // The residuum is defined as
+      // For the following quadrature rules a residuum is provided, defined as
       // \[
       //    residuum = \sqrt( \sum_k (quad_k - exact_k)^2 )
       // \]
       // with
       // \[
       //    quad_k = \sum_i w_i * f(k, x_i)
-      //    exact_k = \frac{k0! * k1! * k2!}{(3 + k0 + k1 + k2)!}
+      //    exact_k = \frac{k0! * k1!}{(2 + k0 + k1)!}
       // \]
       // where
       // \[
-      //    k = (k0,k1,k2), k0 \leq k1 \leq k2, k0 + k1 + k2 \leq order
-      //    x = (x0,x1,x2), f(k, x) = x0^k0 * x1^k1 * x2^k2
+      //    k = (k0,k1), k0 \leq k1, k0 + k1 \leq order
+      //    x = (x0,x1), f(k, x) = x0^k0 * x1^k1
       // \]
+
+      // The following symmetric quadrature rules order 2-12 are extracted from
+      // "A Set of Symmetric Quadrature Rules on Triangles and Tetrahedra"
+      // by L. Zhang, T. Cui and H. Liu, (2009) and the referenced library
+      // PHG version 0.9.2 that can be found at
+      // http://lsec.cc.ac.cn/phg/index_en.htm
 
       // symmetric rule: dim = 3, order = 2, npoints = 4
       // residuum = 6.60396931805987156022145966330473167e-38
@@ -5703,8 +5727,6 @@ namespace Dune {
       W[m][125] = 1.26652659028895147679412408471734833e-03;
       W[m][126] = 1.26652659028895147679412408471734833e-03;
       O[m] = 12;
-
-
     }
 
     FieldVector<double, 3> point(int m, int i)
