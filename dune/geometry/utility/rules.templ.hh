@@ -46,7 +46,11 @@ namespace Dune {
 <%    rule = rules[o] %>\
       %if rule and rule['points'] and len(rule['points']) > 0:
 <%      points, weights = rule['points'], rule['weights'] %>\
-        // symmetric rule: dim = ${dim}, order = ${o}, npoints = ${len(points)}
+        // Symmetric rule: dim = ${dim}, order = ${o}, npoints = ${len(points)}
+        % if len(rule['reference']) > 0:
+        // Source:
+        // ${("\n" + " "*8 + "// ").join(rule['reference'])}
+        % endif
         this->delivered_order = ${o};
         this->reserve(${len(points)});
         this->insert(this->end(), {

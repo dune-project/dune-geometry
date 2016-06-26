@@ -13,7 +13,7 @@
 
 #include "staticIf.hh"
 
-#define CALC_PRECISION  90
+#define CALC_PRECISION  80
 #define PRINT_PRECISION 35
 
 using boost::multiprecision::cpp_dec_float;
@@ -136,7 +136,7 @@ void print(Out& out, std::string filename, int order,
 int main(int argc, char** argv)
 {
   if (argc <= 3)
-    throw std::runtime_error("Not enough argument given. Usage: ./convert_rules filename order name");
+    throw std::runtime_error("Not enough arguments given. Usage: ./convert_rules filename order name");
 
   std::string filename = "", name = "";
   int order = 0;

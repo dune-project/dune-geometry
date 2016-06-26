@@ -1,0 +1,9 @@
+# Rule t2-3-4a of the "Encyclopaedia of Cubature Formulas" at
+# http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html
+# maintained by Ronald Cools.
+# For further reference: Rule 3-1, P. 308, A.H. Stroud, Approximate Calculation of Multiple Integrals
+2 3
+0.33333333333333333333333333333333333 0.33333333333333333333333333333333333 -0.28125
+0.6 0.2 0.26041666666666666666666666666666667
+0.2 0.6 0.26041666666666666666666666666666667
+0.2 0.2 0.26041666666666666666666666666666667
