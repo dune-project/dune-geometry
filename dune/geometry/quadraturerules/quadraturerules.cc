@@ -22,6 +22,7 @@ namespace Dune {
   template class Cube2dQuadratureRule<double, 2>;
   template class Simplex2dQuadratureRule<float, 2>;
   template class Simplex2dQuadratureRule<double, 2>;
+  template class Simplex2dQuadratureRule<FieldVector<double,1>, 2>;
 
   template class Cube3dQuadratureRule<float, 3>;
   template class Cube3dQuadratureRule<double, 3>;

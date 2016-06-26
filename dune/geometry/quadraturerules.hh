@@ -286,7 +286,7 @@ namespace Dune {
   private:
     enum { dim = 0 };
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum /*qt*/)
     {
       if (t.isVertex())
       {
@@ -294,7 +294,7 @@ namespace Dune {
       }
       DUNE_THROW(Exception, "Unknown GeometryType");
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int /*p*/, QuadratureType::Enum /*qt*/)
     {
       if (t.isVertex())
       {
@@ -453,6 +453,7 @@ namespace Dune {
   extern template class Cube2dQuadratureRule<double, 2>;
   extern template class Simplex2dQuadratureRule<float, 2>;
   extern template class Simplex2dQuadratureRule<double, 2>;
+  extern template class Simplex2dQuadratureRule<FieldVector<double,1>, 2>;
 
   extern template class Cube3dQuadratureRule<float, 3>;
   extern template class Cube3dQuadratureRule<double, 3>;

@@ -4,6 +4,8 @@
 #ifndef DUNE_GEOMETRY_COMMON_QUADMATH_HH
 #define DUNE_GEOMETRY_COMMON_QUADMATH_HH
 
+#include "config.h"
+
 #if HAVE_FLOAT128
 #include <ostream>
 #include <quadmath.h>

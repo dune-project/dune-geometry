@@ -43,7 +43,11 @@ namespace Dune {
     {
       case 0:
       case 1:
-        // symmetric rule: dim = 2, order = 1, npoints = 1
+        // Symmetric rule: dim = 2, order = 1, npoints = 1
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 1;
         this->reserve(1);
         this->insert(this->end(), {
@@ -56,7 +60,11 @@ namespace Dune {
         break;
 
       case 2:
-        // symmetric rule: dim = 2, order = 2, npoints = 3
+        // Symmetric rule: dim = 2, order = 2, npoints = 3
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 2;
         this->reserve(3);
         this->insert(this->end(), {
@@ -79,8 +87,44 @@ namespace Dune {
         break;
 
       case 3:
+        // Symmetric rule: dim = 2, order = 3, npoints = 4
+        // Source:
+        // Rule t2-3-4a of the Encyclopaedia of Cubature Formulas at
+        // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html maintained by
+        // Ronald Cools. For further reference: Rule 3-1, P. 308, A.H. Stroud,
+        // Approximate Calculation of Multiple Integrals
+        this->delivered_order = 3;
+        this->reserve(4);
+        this->insert(this->end(), {
+          {
+            { cast<ct>("0.33333333333333333333333333333333333"),
+              cast<ct>("0.33333333333333333333333333333333333") },
+            cast<ct>("-0.28125")
+          },
+          {
+            { cast<ct>("0.6"),
+              cast<ct>("0.2") },
+            cast<ct>("0.26041666666666666666666666666666667")
+          },
+          {
+            { cast<ct>("0.2"),
+              cast<ct>("0.6") },
+            cast<ct>("0.26041666666666666666666666666666667")
+          },
+          {
+            { cast<ct>("0.2"),
+              cast<ct>("0.2") },
+            cast<ct>("0.26041666666666666666666666666666667")
+          }
+        });
+        break;
+
       case 4:
-        // symmetric rule: dim = 2, order = 4, npoints = 6
+        // Symmetric rule: dim = 2, order = 4, npoints = 6
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 4;
         this->reserve(6);
         this->insert(this->end(), {
@@ -118,7 +162,11 @@ namespace Dune {
         break;
 
       case 5:
-        // symmetric rule: dim = 2, order = 5, npoints = 7
+        // Symmetric rule: dim = 2, order = 5, npoints = 7
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 5;
         this->reserve(7);
         this->insert(this->end(), {
@@ -161,7 +209,11 @@ namespace Dune {
         break;
 
       case 6:
-        // symmetric rule: dim = 2, order = 6, npoints = 12
+        // Symmetric rule: dim = 2, order = 6, npoints = 12
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 6;
         this->reserve(12);
         this->insert(this->end(), {
@@ -229,90 +281,85 @@ namespace Dune {
         break;
 
       case 7:
-        // symmetric rule: dim = 2, order = 7, npoints = 15
+        // Symmetric rule: dim = 2, order = 7, npoints = 12
+        // Source:
+        // Rule t2-7-12 of the Encyclopaedia of Cubature Formulas at
+        // http://www.cs.kuleuven.ac.be/~nines/research/ecf/ecf.html maintained by
+        // Ronald Cools. For further reference: Table 5, K. Gatermann, The
+        // construction of symmetric cubature formulas for the square and the
+        // triangle
         this->delivered_order = 7;
-        this->reserve(15);
+        this->reserve(12);
         this->insert(this->end(), {
           {
-            { cast<ct>("0.0337306485545878487149717263008162381"),
-              cast<ct>("0.932538702890824302570056547398367524") },
-            cast<ct>("0.00827252505539606551798897423645872281")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.026517028157436251428754180460739")
           },
           {
-            { cast<ct>("0.932538702890824302570056547398367524"),
-              cast<ct>("0.0337306485545878487149717263008162381") },
-            cast<ct>("0.00827252505539606551798897423645872281")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.026517028157436251428754180460739")
           },
           {
-            { cast<ct>("0.0337306485545878487149717263008162381"),
-              cast<ct>("0.0337306485545878487149717263008162381") },
-            cast<ct>("0.00827252505539606551798897423645872281")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.026517028157436251428754180460739")
           },
           {
-            { cast<ct>("0.241577382595403558950186769837782"),
-              cast<ct>("0.516845234809192882099626460324436001") },
-            cast<ct>("0.0639720856150777863914506175923231553")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.0438814087144460550367699031392875")
           },
           {
-            { cast<ct>("0.516845234809192882099626460324436001"),
-              cast<ct>("0.241577382595403558950186769837782") },
-            cast<ct>("0.0639720856150777863914506175923231553")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.0438814087144460550367699031392875")
           },
           {
-            { cast<ct>("0.241577382595403558950186769837782"),
-              cast<ct>("0.241577382595403558950186769837782") },
-            cast<ct>("0.0639720856150777863914506175923231553")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.0438814087144460550367699031392875")
           },
           {
-            { cast<ct>("0.474309692504718234209580735949185782"),
-              cast<ct>("0.051380614990563531580838528101628435") },
-            cast<ct>("0.0385433230929930339174107604168706932")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.0287750427849815857384454969002185")
           },
           {
-            { cast<ct>("0.051380614990563531580838528101628435"),
-              cast<ct>("0.474309692504718234209580735949185782") },
-            cast<ct>("0.0385433230929930339174107604168706932")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.0287750427849815857384454969002185")
           },
           {
-            { cast<ct>("0.474309692504718234209580735949185782"),
-              cast<ct>("0.474309692504718234209580735949185782") },
-            cast<ct>("0.0385433230929930339174107604168706932")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.0287750427849815857384454969002185")
           },
           {
-            { cast<ct>("0.0470366446525952333414099753568849755"),
-              cast<ct>("0.754280040550053177356239324628119964") },
-            cast<ct>("0.0279393664515998904199081572105070476")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.06749318700980277446269708616642")
           },
           {
-            { cast<ct>("0.754280040550053177356239324628119964"),
-              cast<ct>("0.0470366446525952333414099753568849755") },
-            cast<ct>("0.0279393664515998904199081572105070476")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.06749318700980277446269708616642")
           },
           {
-            { cast<ct>("0.198683314797351589302350700014995061"),
-              cast<ct>("0.754280040550053177356239324628119964") },
-            cast<ct>("0.0279393664515998904199081572105070476")
-          },
-          {
-            { cast<ct>("0.754280040550053177356239324628119964"),
-              cast<ct>("0.198683314797351589302350700014995061") },
-            cast<ct>("0.0279393664515998904199081572105070476")
-          },
-          {
-            { cast<ct>("0.198683314797351589302350700014995061"),
-              cast<ct>("0.0470366446525952333414099753568849755") },
-            cast<ct>("0.0279393664515998904199081572105070476")
-          },
-          {
-            { cast<ct>("0.0470366446525952333414099753568849755"),
-              cast<ct>("0.198683314797351589302350700014995061") },
-            cast<ct>("0.0279393664515998904199081572105070476")
+            { cast<ct>("0.20644149867001643817295474177985"),
+              cast<ct>("0.51584233435359177925746338682643") },
+            cast<ct>("0.06749318700980277446269708616642")
           }
         });
         break;
 
       case 8:
-        // symmetric rule: dim = 2, order = 8, npoints = 16
+        // Symmetric rule: dim = 2, order = 8, npoints = 16
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 8;
         this->reserve(16);
         this->insert(this->end(), {
@@ -400,7 +447,11 @@ namespace Dune {
         break;
 
       case 9:
-        // symmetric rule: dim = 2, order = 9, npoints = 19
+        // Symmetric rule: dim = 2, order = 9, npoints = 19
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 9;
         this->reserve(19);
         this->insert(this->end(), {
@@ -503,7 +554,11 @@ namespace Dune {
         break;
 
       case 10:
-        // symmetric rule: dim = 2, order = 10, npoints = 25
+        // Symmetric rule: dim = 2, order = 10, npoints = 25
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 10;
         this->reserve(25);
         this->insert(this->end(), {
@@ -636,7 +691,11 @@ namespace Dune {
         break;
 
       case 11:
-        // symmetric rule: dim = 2, order = 11, npoints = 28
+        // Symmetric rule: dim = 2, order = 11, npoints = 28
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 11;
         this->reserve(28);
         this->insert(this->end(), {
@@ -784,7 +843,11 @@ namespace Dune {
         break;
 
       case 12:
-        // symmetric rule: dim = 2, order = 12, npoints = 33
+        // Symmetric rule: dim = 2, order = 12, npoints = 33
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 12;
         this->reserve(33);
         this->insert(this->end(), {
@@ -957,7 +1020,11 @@ namespace Dune {
         break;
 
       case 13:
-        // symmetric rule: dim = 2, order = 13, npoints = 37
+        // Symmetric rule: dim = 2, order = 13, npoints = 37
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 13;
         this->reserve(37);
         this->insert(this->end(), {
@@ -1150,7 +1217,11 @@ namespace Dune {
         break;
 
       case 14:
-        // symmetric rule: dim = 2, order = 14, npoints = 42
+        // Symmetric rule: dim = 2, order = 14, npoints = 42
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 14;
         this->reserve(42);
         this->insert(this->end(), {
@@ -1368,7 +1439,11 @@ namespace Dune {
         break;
 
       case 15:
-        // symmetric rule: dim = 2, order = 15, npoints = 49
+        // Symmetric rule: dim = 2, order = 15, npoints = 49
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 15;
         this->reserve(49);
         this->insert(this->end(), {
@@ -1621,7 +1696,11 @@ namespace Dune {
         break;
 
       case 16:
-        // symmetric rule: dim = 2, order = 16, npoints = 55
+        // Symmetric rule: dim = 2, order = 16, npoints = 55
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 16;
         this->reserve(55);
         this->insert(this->end(), {
@@ -1904,7 +1983,11 @@ namespace Dune {
         break;
 
       case 17:
-        // symmetric rule: dim = 2, order = 17, npoints = 60
+        // Symmetric rule: dim = 2, order = 17, npoints = 60
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 17;
         this->reserve(60);
         this->insert(this->end(), {
@@ -2212,7 +2295,11 @@ namespace Dune {
         break;
 
       case 18:
-        // symmetric rule: dim = 2, order = 18, npoints = 67
+        // Symmetric rule: dim = 2, order = 18, npoints = 67
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 18;
         this->reserve(67);
         this->insert(this->end(), {
@@ -2555,7 +2642,11 @@ namespace Dune {
         break;
 
       case 19:
-        // symmetric rule: dim = 2, order = 19, npoints = 73
+        // Symmetric rule: dim = 2, order = 19, npoints = 73
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 19;
         this->reserve(73);
         this->insert(this->end(), {
@@ -2928,7 +3019,11 @@ namespace Dune {
         break;
 
       case 20:
-        // symmetric rule: dim = 2, order = 20, npoints = 79
+        // Symmetric rule: dim = 2, order = 20, npoints = 79
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 20;
         this->reserve(79);
         this->insert(this->end(), {

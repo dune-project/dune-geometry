@@ -43,7 +43,11 @@ namespace Dune {
     {
       case 0:
       case 1:
-        // symmetric rule: dim = 2, order = 1, npoints = 1
+        // Symmetric rule: dim = 2, order = 1, npoints = 1
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 1;
         this->reserve(1);
         this->insert(this->end(), {
@@ -57,7 +61,11 @@ namespace Dune {
 
       case 2:
       case 3:
-        // symmetric rule: dim = 2, order = 3, npoints = 4
+        // Symmetric rule: dim = 2, order = 3, npoints = 4
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 3;
         this->reserve(4);
         this->insert(this->end(), {
@@ -86,7 +94,11 @@ namespace Dune {
 
       case 4:
       case 5:
-        // symmetric rule: dim = 2, order = 5, npoints = 8
+        // Symmetric rule: dim = 2, order = 5, npoints = 8
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 5;
         this->reserve(8);
         this->insert(this->end(), {
@@ -135,7 +147,11 @@ namespace Dune {
 
       case 6:
       case 7:
-        // symmetric rule: dim = 2, order = 7, npoints = 12
+        // Symmetric rule: dim = 2, order = 7, npoints = 12
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 7;
         this->reserve(12);
         this->insert(this->end(), {
@@ -204,7 +220,11 @@ namespace Dune {
 
       case 8:
       case 9:
-        // symmetric rule: dim = 2, order = 9, npoints = 20
+        // Symmetric rule: dim = 2, order = 9, npoints = 20
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 9;
         this->reserve(20);
         this->insert(this->end(), {
@@ -313,7 +333,11 @@ namespace Dune {
 
       case 10:
       case 11:
-        // symmetric rule: dim = 2, order = 11, npoints = 28
+        // Symmetric rule: dim = 2, order = 11, npoints = 28
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 11;
         this->reserve(28);
         this->insert(this->end(), {
@@ -462,7 +486,11 @@ namespace Dune {
 
       case 12:
       case 13:
-        // symmetric rule: dim = 2, order = 13, npoints = 37
+        // Symmetric rule: dim = 2, order = 13, npoints = 37
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 13;
         this->reserve(37);
         this->insert(this->end(), {
@@ -656,7 +684,11 @@ namespace Dune {
 
       case 14:
       case 15:
-        // symmetric rule: dim = 2, order = 15, npoints = 48
+        // Symmetric rule: dim = 2, order = 15, npoints = 48
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 15;
         this->reserve(48);
         this->insert(this->end(), {
@@ -905,7 +937,11 @@ namespace Dune {
 
       case 16:
       case 17:
-        // symmetric rule: dim = 2, order = 17, npoints = 60
+        // Symmetric rule: dim = 2, order = 17, npoints = 60
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 17;
         this->reserve(60);
         this->insert(this->end(), {
@@ -1214,7 +1250,11 @@ namespace Dune {
 
       case 18:
       case 19:
-        // symmetric rule: dim = 2, order = 19, npoints = 72
+        // Symmetric rule: dim = 2, order = 19, npoints = 72
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 19;
         this->reserve(72);
         this->insert(this->end(), {
@@ -1583,7 +1623,11 @@ namespace Dune {
 
       case 20:
       case 21:
-        // symmetric rule: dim = 2, order = 21, npoints = 85
+        // Symmetric rule: dim = 2, order = 21, npoints = 85
+        // Source:
+        // Witherden, F. D.; Vincent, P. E. On the identification of symmetric
+        // quadrature rules for finite element methods. Comput. Math. Appl. 69
+        // (2015), no. 10, 1232-1241
         this->delivered_order = 21;
         this->reserve(85);
         this->insert(this->end(), {

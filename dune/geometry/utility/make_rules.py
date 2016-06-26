@@ -6,6 +6,21 @@ import sys
 from mpmath import *
 from mako.template import Template
 
+def split_reference(ref):
+  words = ref.split()
+  lines = []
+  line = ""
+  for w in words:
+    if len(line + w) > 72:
+      lines.append(line.strip())
+      line = w + " "
+    else:
+      line += w + " "
+  if len(line.strip()) > 0:
+    lines.append(line.strip())
+
+  return lines
+
 #-------------------------------------------------------------------------------
 
 # provide reference values for the volume, to test for correct normalization of the weights
@@ -44,20 +59,39 @@ n_files = len(filenames)
 if n_files == 0:
   sys.stderr.write('ERROR: No files found in rules directory "' + rules_dir + '"!')
 
+# extract maximal order from all files.
 maxorder = 0
 for f_ in filenames:
-  order = int(float(f_.split('-')[0]))
-  maxorder = max(maxorder, order)
+  f = os.path.join(rules_dir, f_)
+  with open(f, 'r') as quadfile:
+    quadreader = csv.reader(quadfile, delimiter=' ', skipinitialspace=True)
+
+    header = next(quadreader)
+    while header[0][0] == '#':
+      header = next(quadreader)
+
+    dim = int(float(header[0]))
+    order = int(float(header[1]))
+    maxorder = max(maxorder, order)
 
 rules = [None]*(maxorder+1)
 
 for f_ in filenames:
   f = os.path.join(rules_dir, f_)
 
-  rule = {'points' : [], 'weights': []}
+  rule = {'points' : [], 'weights': [], 'reference': []}
   with open(f, 'r') as quadfile:
     quadreader = csv.reader(quadfile, delimiter=' ', skipinitialspace=True)
+
     header = next(quadreader)
+    reference = ''
+    while header[0][0] == '#':
+      line = " ".join(header)
+      reference += line[1:].strip() + ' '
+      header = next(quadreader)
+
+    if len(reference) > 0:
+      rule['reference'] = split_reference(reference)
 
     dim = int(float(header[0]))
     order = int(float(header[1]))
@@ -81,12 +115,17 @@ for f_ in filenames:
       sum_weights += w
 
     if abs(sum_weights - reference_volume[name]) < 1.e-10:
-      rules[order] = rule
+      if not rules[order] or not rules[order]['points'] or len(rules[order]['points']) == 0 or \
+         len(rules[order]['points']) > len(rule['points']):
+        rules[order] = rule
     else:
       sys.stderr.write('ERROR: Weights are not normalized correctly. Expected: ' + str(reference_volume[name]) + ', but given: ' + str(sum_weights) + '! In file: "' + f + '"')
 
 max_i = len(rules)-1
 while not rules[max_i] or not rules[max_i]["points"] or len(rules[max_i]["points"]) == 0:
+  if max_i == 0:
+    sys.stderr.write('ERROR: No valid quadrature rule created!')
+
   max_i -= 1
 
 if max_i != maxorder:

@@ -10,6 +10,10 @@
 
 namespace Dune
 {
+  // forward declarations
+  template< class K, int SIZE > class FieldVector;
+  template< class K, int ROWS, int COLS > class FieldMatrix;
+
   namespace Impl
   {
     // General cast class that implements an `eval` method to cast a string to
@@ -28,6 +32,13 @@ namespace Dune
     };
     template<> struct Cast<long double> {
       static long double eval(char const* str) { return std::strtold(str, NULL); }
+    };
+
+    template<typename T> struct Cast<FieldVector<T,1>> {
+      static FieldVector<T,1> eval(char const* str) { return Cast<T>::eval(str); }
+    };
+    template<typename T> struct Cast<FieldMatrix<T,1,1>> {
+      static FieldMatrix<T,1,1> eval(char const* str) { return Cast<T>::eval(str); }
     };
 
 #if HAVE_FLOAT128
