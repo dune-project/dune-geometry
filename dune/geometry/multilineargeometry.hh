@@ -718,7 +718,7 @@ namespace Dune
     const GlobalCoordinate &origin = *cit;
     ++cit;
     for( int i = 0; i < coorddimension; ++i )
-      y[ i ] = (add ? y[ i ] + rf*origin[ i ] : rf*origin[ i ]);
+      y[ i ] = (add ? ct( y[ i ] + rf*origin[ i ] ) : ct( rf*origin[ i ] ));
   }
 
 

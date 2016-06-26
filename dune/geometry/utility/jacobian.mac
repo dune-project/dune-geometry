@@ -1,0 +1,52 @@
+/*
+ * Run `maxima --batch jacobian.mac'.
+ */
+
+/* adjust search path */
+file_search_maxima: append(["$$$.{mac,max}"],file_search_maxima);
+
+load(orthopoly)$
+load(stringproc)$
+load(writequad2)$
+
+fpprec: 100$
+maxp: 61$
+/* float2bf: false$ */
+
+jacobi(p,a,b) := jacobi_p(p,a,b,x)$
+
+/*
+  d/dx jacobi_p
+  see http://mathworld.wolfram.com/JacobiPolynomial.html
+*/
+jacobi_p_x(p,a,b,x) := 1/2*(p+a+b+1)*jacobi_p(p-1,a+1,b+1,x)$
+
+A(n,a,b) := gamma(2*n+a+b+1)/(2^n*n!*gamma(n+a+b+1))$
+
+gamma_n(n,a,b) := 1/(2^(2*n)*(n!)^2)*(2^(2*n+a+b+1)*n!)/(2*n+a+b+1)*(gamma(n+a+1)*gamma(n+b+1))/gamma(n+a+b+1)$
+
+weight(n,a,b,xx) := A(n,a,b)/A(n-1,a,b)*gamma_n(n-1,a,b)/(at(ratexpand(jacobi_p(n-1,a,b,x)*jacobi_p_x(n,a,b,x)), x=xx))$
+
+/*
+  write files
+*/
+
+write_quad2("jacobi_1_0_imp.hh", "jacobi1", "jacobian.mac",
+		   lambda([i],jacobi(i,1,0)),
+           lambda([i,p],weight(i,1,0,p)),
+		   maxp)$
+write_quad2("jacobi_2_0_imp.hh", "jacobi2", "jacobian.mac",
+		   lambda([i],jacobi(i,2,0)),
+           lambda([i,p],weight(i,2,0,p)),
+           maxp)$
+write_quad2("gauss_imp.hh", "gauss", "jacobian.mac",
+		   lambda([i],jacobi(i,0,0)),
+           lambda([i,p],weight(i,0,0,p)),
+           maxp)$
+
+/*
+ * Local variables:
+ * mode: maxima
+ * compile-command: "maxima --batch jacobian.mac"
+ * End:
+ */

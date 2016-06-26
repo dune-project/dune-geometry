@@ -2,30 +2,35 @@ install(FILES
   compositequadraturerule.hh
   nocopyvector.hh
   pointquadrature.hh
-  simplexquadrature.hh
+  gaussquadrature.inc.hh
+  gausslobattoquadrature.inc.hh
+  jacobi1quadrature.inc.hh
+  jacobi2quadrature.inc.hh
+  cube2dquadrature.inc.hh
+  cube3dquadrature.inc.hh
+  simplex2dquadrature.inc.hh
+  simplex3dquadrature.inc.hh
+  prismquadrature.inc.hh
+  pyramidquadrature.inc.hh
   tensorproductquadrature.hh
-  gauss_imp.hh
-  gausslobatto_imp.hh
-  jacobi_1_0_imp.hh
-  jacobi_2_0_imp.hh
-  jacobian.mac
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
 
 exclude_from_headercheck(
   "pointquadrature.hh
-  simplexquadrature.hh
   genericquadrature.hh
-  gauss_imp.hh
-  gausslobatto_imp.hh
-  jacobi_1_0_imp.hh
-  jacobi_2_0_imp.hh
+  gaussquadrature.inc.hh
+  gausslobattoquadrature.inc.hh
+  jacobi1quadrature.inc.hh
+  jacobi2quadrature.inc.hh
+  cube2dquadrature.inc.hh
+  cube3dquadrature.inc.hh
+  simplex2dquadrature.inc.hh
+  simplex3dquadrature.inc.hh
+  prismquadrature.inc.hh
+  pyramidquadrature.inc.hh
   tensorproductquadrature.hh")
 
 #build the library libquadraturerules
 dune_add_library(quadraturerules OBJECT
-  gauss.cc
-  jacobi_1_0.cc
-  jacobi_2_0.cc
   quadraturerules.cc
-  gausslobatto.cc
 )

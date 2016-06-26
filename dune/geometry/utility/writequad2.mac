@@ -1,0 +1,30 @@
+load(to_poly_solve)$
+
+epsilon: 1e-110$
+
+write_quad2(file, name, scriptname, polynome_fnkt, weight_fnkt, maxp) :=
+block([i,N,n_,points,p,w],
+
+for i: 1 thru maxp/2+1 do block([fn,fd],
+  points: makelist(rhs(p), p, bfallroots(polynome_fnkt(i))),
+  weights: makelist(bfloat(weight_fnkt(i, p)), p, points),
+  N: length(points),
+  S: sort(makelist(n, n, 1, N), lambda([x,y], weights[x] < weights[y])),
+
+  fn: printf(false, "~a/~d-~d.csv", name,2*i-1,N),
+  fd: openw(fn),
+
+  printf(fd,"~d ~d
+",1,2*i-1),
+  for n_: 1 thru N do block([n],
+    n: S[n_],
+    p: (points[n]+1)/2,
+    p: max(p-epsilon,-epsilon)+epsilon,
+    w: weights[n]/2,
+    printf(fd,"~h ~h
+",p,w)
+  ),
+  close(fd)
+)
+
+)$
