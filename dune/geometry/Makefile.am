@@ -14,7 +14,7 @@ geometryinclude_HEADERS =			\
 	virtualrefinement.hh			\
 	virtualrefinement.cc
 
-SUBDIRS = quadraturerules genericgeometry refinement test
+SUBDIRS = quadraturerules genericgeometry implementation refinement test
 
 noinst_LTLIBRARIES = libgeometry.la
 libgeometry_la_SOURCES =
