@@ -246,6 +246,8 @@
     - \f$x_{p_d}:=x_{p_d}-x_{p_{d+1}}\f$.
  */
 
+#include <algorithm>
+
 #include <dune/common/fvector.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
@@ -291,13 +293,12 @@ namespace Dune {
        */
       inline int binomial(int upper, int lower)
       {
-        if(lower > upper - lower)
-          lower = upper - lower;
+        lower = std::min( lower, upper - lower );
         if(lower < 0)
           return 0;
         int prod = 1;
-        for(int i = upper - lower + 1; i <= upper; ++i)
-          prod *= i;
+        for(int i = upper - lower; i < upper; ++i)
+          prod *= (i+1);
         return prod / factorial(lower);
       }
 

@@ -183,7 +183,7 @@ namespace Dune {
     {
       JacobianTransposed result;
 
-      // Actually compute the result.  Computes different methods depending
+      // Actually compute the result.  Uses different methods depending
       // on what kind of matrix JacobianTransposed is.
       jacobianTransposed(result);
 
@@ -195,7 +195,7 @@ namespace Dune {
     {
       JacobianInverseTransposed result;
 
-      // Actually compute the result.  Computes different methods depending
+      // Actually compute the result.  Uses different methods depending
       // on what kind of matrix JacobianTransposed is.
       jacobianInverseTransposed(result);
 

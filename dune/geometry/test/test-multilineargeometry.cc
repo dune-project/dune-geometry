@@ -2,13 +2,28 @@
 // vi: set et ts=4 sw=2 sts=2:
 #include <config.h>
 
+#include <functional>
 #include <vector>
+
+#include <dune/common/fvector.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 
 #include <dune/geometry/test/checkgeometry.hh>
 
+
+template<class ct>
+struct ReferenceWrapperGeometryTraits :
+  public Dune::MultiLinearGeometryTraits<ct>
+{
+  template< int mydim, int cdim >
+  struct CornerStorage
+  {
+    typedef std::reference_wrapper<
+      const std::vector< Dune::FieldVector< ct, cdim > > > Type;
+  };
+};
 
 template< class ctype, int mydim, int cdim >
 static Dune::FieldVector< ctype, cdim >
@@ -32,14 +47,15 @@ map ( const Dune::FieldMatrix< ctype, mydim, mydim > &A,
 }
 
 
-template< class ctype, int mydim, int cdim >
+template< class ctype, int mydim, int cdim, class Traits >
 static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim > &refElement,
                                       const Dune::FieldMatrix< ctype, mydim, mydim > &A,
-                                      const Dune::FieldMatrix< ctype, cdim, cdim > &B )
+                                      const Dune::FieldMatrix< ctype, cdim, cdim > &B,
+                                      const Traits &traits )
 {
   bool pass = true;
 
-  typedef Dune::MultiLinearGeometry< ctype, mydim, cdim > Geometry;
+  typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Traits > Geometry;
 
   const Dune::FieldVector< ctype, mydim > &localCenter = refElement.position( 0, 0 );
   const ctype epsilon = ctype( 1e5 )*std::numeric_limits< ctype >::epsilon();
@@ -148,8 +164,9 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
 }
 
 
-template< class ctype, int mydim, int cdim >
-static bool testMultiLinearGeometry ( Dune::GeometryType gt )
+template< class ctype, int mydim, int cdim, class Traits >
+static bool testMultiLinearGeometry ( Dune::GeometryType gt,
+                                      const Traits &traits )
 {
   const Dune::ReferenceElement< ctype, mydim > &refElement = Dune::ReferenceElements< ctype, mydim >::general( gt );
 
@@ -164,7 +181,7 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   B = ctype( 0 );
   for( int i = 0; i < cdim; ++i )
     B[ i ][ i ] = ctype( 1 );
-  const bool passId = testMultiLinearGeometry( refElement, A, B );
+  const bool passId = testMultiLinearGeometry( refElement, A, B, traits );
   std::cout << (passId ? "passed" : "failed");
 
   std::cout << ", scaled reference mapping: ";
@@ -174,19 +191,19 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt )
   B = ctype( 0 );
   for( int i = 0; i < cdim; ++i )
     B[ i ][ i ] = ctype( 1 );
-  const bool passScaledId = testMultiLinearGeometry( refElement, A, B );
+  const bool passScaledId = testMultiLinearGeometry( refElement, A, B, traits );
   std::cout << (passScaledId ? "passed" : "failed") << std::endl;
 
   return passId && passScaledId;
 }
 
-template<class ctype>
-static bool testNonLinearGeometry()
+template<class ctype, class Traits>
+static bool testNonLinearGeometry(const Traits &traits)
 {
   const unsigned dim = 2;
   typedef Dune::ReferenceElement<ctype,dim> ReferenceElement;
   typedef Dune::FieldVector<ctype,dim> Vector;
-  typedef Dune::MultiLinearGeometry<ctype,dim,dim> Geometry;
+  typedef Dune::MultiLinearGeometry<ctype,dim,dim,Traits> Geometry;
   const ctype epsilon(ctype(16) * std::numeric_limits<ctype>::epsilon());
 
   bool pass(true);
@@ -273,8 +290,8 @@ static bool testNonLinearGeometry()
   return pass;
 }
 
-template< class ctype >
-static bool testMultiLinearGeometry ()
+template< class ctype, class Traits >
+static bool testMultiLinearGeometry ( const Traits& traits )
 {
   bool pass = true;
 
@@ -293,55 +310,55 @@ static bool testMultiLinearGeometry ()
   Dune::GeometryType prism3d( Dune::GenericGeometry::PrismTopology< 3 >::type::id, 3 );
   Dune::GeometryType pyramid3d( Dune::GenericGeometry::PyramidTopology< 3 >::type::id, 3 );
 
-  pass &= testMultiLinearGeometry< ctype, 0, 0 >( simplex0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 1 >( simplex0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 2 >( simplex0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 3 >( simplex0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 4 >( simplex0d );
+  pass &= testMultiLinearGeometry< ctype, 0, 0 >( simplex0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 1 >( simplex0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 2 >( simplex0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 3 >( simplex0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 4 >( simplex0d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 0, 0 >( cube0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 1 >( cube0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 2 >( cube0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 3 >( cube0d );
-  pass &= testMultiLinearGeometry< ctype, 0, 4 >( cube0d );
+  pass &= testMultiLinearGeometry< ctype, 0, 0 >( cube0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 1 >( cube0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 2 >( cube0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 3 >( cube0d, traits );
+  pass &= testMultiLinearGeometry< ctype, 0, 4 >( cube0d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 1, 1 >( simplex1d );
-  pass &= testMultiLinearGeometry< ctype, 1, 2 >( simplex1d );
-  pass &= testMultiLinearGeometry< ctype, 1, 3 >( simplex1d );
-  pass &= testMultiLinearGeometry< ctype, 1, 4 >( simplex1d );
+  pass &= testMultiLinearGeometry< ctype, 1, 1 >( simplex1d, traits );
+  pass &= testMultiLinearGeometry< ctype, 1, 2 >( simplex1d, traits );
+  pass &= testMultiLinearGeometry< ctype, 1, 3 >( simplex1d, traits );
+  pass &= testMultiLinearGeometry< ctype, 1, 4 >( simplex1d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 1, 3 >( cube1d );
-  pass &= testMultiLinearGeometry< ctype, 1, 1 >( cube1d );
-  pass &= testMultiLinearGeometry< ctype, 1, 2 >( cube1d );
-  pass &= testMultiLinearGeometry< ctype, 1, 4 >( cube1d );
+  pass &= testMultiLinearGeometry< ctype, 1, 3 >( cube1d, traits );
+  pass &= testMultiLinearGeometry< ctype, 1, 1 >( cube1d, traits );
+  pass &= testMultiLinearGeometry< ctype, 1, 2 >( cube1d, traits );
+  pass &= testMultiLinearGeometry< ctype, 1, 4 >( cube1d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 2, 2 >( simplex2d );
-  pass &= testMultiLinearGeometry< ctype, 2, 3 >( simplex2d );
-  pass &= testMultiLinearGeometry< ctype, 2, 4 >( simplex2d );
+  pass &= testMultiLinearGeometry< ctype, 2, 2 >( simplex2d, traits );
+  pass &= testMultiLinearGeometry< ctype, 2, 3 >( simplex2d, traits );
+  pass &= testMultiLinearGeometry< ctype, 2, 4 >( simplex2d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 2, 2 >( cube2d );
-  pass &= testMultiLinearGeometry< ctype, 2, 3 >( cube2d );
-  pass &= testMultiLinearGeometry< ctype, 2, 4 >( cube2d );
+  pass &= testMultiLinearGeometry< ctype, 2, 2 >( cube2d, traits );
+  pass &= testMultiLinearGeometry< ctype, 2, 3 >( cube2d, traits );
+  pass &= testMultiLinearGeometry< ctype, 2, 4 >( cube2d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 3, 3 >( simplex3d );
-  pass &= testMultiLinearGeometry< ctype, 3, 4 >( simplex3d );
+  pass &= testMultiLinearGeometry< ctype, 3, 3 >( simplex3d, traits );
+  pass &= testMultiLinearGeometry< ctype, 3, 4 >( simplex3d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 3, 3 >( pyramid3d );
-  pass &= testMultiLinearGeometry< ctype, 3, 4 >( pyramid3d );
+  pass &= testMultiLinearGeometry< ctype, 3, 3 >( pyramid3d, traits );
+  pass &= testMultiLinearGeometry< ctype, 3, 4 >( pyramid3d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 3, 3 >( prism3d );
-  pass &= testMultiLinearGeometry< ctype, 3, 4 >( prism3d );
+  pass &= testMultiLinearGeometry< ctype, 3, 3 >( prism3d, traits );
+  pass &= testMultiLinearGeometry< ctype, 3, 4 >( prism3d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 3, 3 >( cube3d );
-  pass &= testMultiLinearGeometry< ctype, 3, 4 >( cube3d );
+  pass &= testMultiLinearGeometry< ctype, 3, 3 >( cube3d, traits );
+  pass &= testMultiLinearGeometry< ctype, 3, 4 >( cube3d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 4, 4 >( simplex4d );
-  pass &= testMultiLinearGeometry< ctype, 4, 5 >( simplex4d );
+  pass &= testMultiLinearGeometry< ctype, 4, 4 >( simplex4d, traits );
+  pass &= testMultiLinearGeometry< ctype, 4, 5 >( simplex4d, traits );
 
-  pass &= testMultiLinearGeometry< ctype, 4, 4 >( cube4d );
-  pass &= testMultiLinearGeometry< ctype, 4, 5 >( cube4d );
+  pass &= testMultiLinearGeometry< ctype, 4, 4 >( cube4d, traits );
+  pass &= testMultiLinearGeometry< ctype, 4, 5 >( cube4d, traits );
 
-  pass &= testNonLinearGeometry<ctype>();
+  pass &= testNonLinearGeometry<ctype>( traits );
 
   return pass;
 }
@@ -351,9 +368,22 @@ int main ( int argc, char **argv )
   bool pass = true;
 
   std::cout << ">>> Checking ctype = double" << std::endl;
-  pass &= testMultiLinearGeometry< double >();
-  //std::cout << ">>> Checking ctype = float" << std::endl;
-  //pass &= testMultiLinearGeometry< float >();
+  pass &= testMultiLinearGeometry< double >
+    ( Dune::MultiLinearGeometryTraits< double >{} );
+
+  std::cout << ">>> Checking ctype = double with reference_wrapped corner "
+            << "storage" << std::endl;
+  pass &= testMultiLinearGeometry< double >
+    ( ReferenceWrapperGeometryTraits< double >{} );
+
+  // std::cout << ">>> Checking ctype = float" << std::endl;
+  // pass &= testMultiLinearGeometry< float >
+  //   ( Dune::MultiLinearGeometryTraits< float >{} );
+
+  // std::cout << ">>> Checking ctype = float with reference_wrapped corner "
+  //           << "storage" << std::endl;
+  // pass &= testMultiLinearGeometry< float >
+  //   ( ReferenceWrapperGeometryTraits< float >{} );
 
   return (pass ? 0 : 1);
 }

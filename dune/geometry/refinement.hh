@@ -184,7 +184,7 @@
  *   to protect against double inclusion.
  * - implement a class (or template class) RefinementImp conforming
  *   exactly to the user interface above.
- * - put it (and it's helper stuff as apropriate) into it's own
+ * - put it (and it's helper stuff as appropriate) into it's own
  *   namespace Dune::RefinementImp::SquaringTheCircle.
  * - define the mapping of topologyId, CoordType and coerceToId to your
  *   implementation by specialising template struct
