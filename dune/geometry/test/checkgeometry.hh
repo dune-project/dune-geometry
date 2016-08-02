@@ -8,6 +8,7 @@
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/rangeutilities.hh>
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/quadraturerules.hh>
@@ -30,6 +31,9 @@ namespace Dune
   template <class TestGeometry>
   bool checkGeometry ( const TestGeometry& geometry )
   {
+    using Dune::all_true;
+    using Dune::any_true;
+
     bool pass = true;
 
     ////////////////////////////////////////////////////////////////
@@ -78,13 +82,13 @@ namespace Dune
       for( int i = 0; i < corners; ++i )
       {
         const GlobalCoordinate corner = geometry.corner( i );
-        if( (corner - center).two_norm() <= tolerance )
+        if( any_true( (corner - center).two_norm() <= tolerance ) )
         {
           std::cerr << "Error: Geometry has multiple corners, but one corner coincides with the center." << std::endl;
           pass = false;
         }
 
-        if( (corner - cornerAvg).two_norm() <= tolerance )
+        if( any_true( (corner - cornerAvg).two_norm() <= tolerance ) )
         {
           std::cerr << "Error: Geometry has multiple corners, but one corner coincides with their average." << std::endl;
           pass = false;
@@ -94,7 +98,7 @@ namespace Dune
     else
     {
       // the single corner must coincide with the center
-      if( (center - cornerAvg).two_norm() > tolerance )
+      if( any_true( (center - cornerAvg).two_norm() > tolerance ) )
       {
         std::cerr << "Error: Geometry has a single corner (" << cornerAvg << "), but it does not coincide with the center (" << center << ")." << std::endl;
         pass = false;
@@ -102,7 +106,7 @@ namespace Dune
     }
 
     const ctype volume = geometry.volume();
-    if( volume < tolerance )
+    if( any_true( volume < tolerance ) )
     {
       std::cerr << "Error: Geometry has nearly vanishing volume (" << volume << ")" << std::endl;
       pass = false;
@@ -118,7 +122,8 @@ namespace Dune
 
     // Test whether the return value of the method 'center' corresponds to the center of the
     // reference element.  That is the current definition of the method.
-    if( (center - geometry.global( refElement.position( 0, 0 ) )).two_norm() > tolerance )
+    if( any_true( (center - geometry.global( refElement.position( 0, 0 ) ))
+                  .two_norm() > tolerance ) )
       DUNE_THROW( Exception, "center() is not consistent with global(refElem.position(0,0))." );
 
     ////////////////////////////////////////////////////////////////////////
@@ -130,7 +135,9 @@ namespace Dune
     {
       for( int i = 0; i < geometry.corners(); ++i )
       {
-        if( (geometry.corner( i ) - geometry.global( refElement.position( i, mydim ) )).two_norm() > tolerance )
+        if( any_true( (geometry.corner( i ) - geometry.global(
+                         refElement.position( i, mydim )
+                       )).two_norm() > tolerance ) )
         {
           std::cerr << "Error: Methods corner and global are inconsistent." << std::endl;
           pass = false;
@@ -152,7 +159,9 @@ namespace Dune
       const typename TestGeometry::LocalCoordinate &x = ip.position();
 
       // Test whether the methods 'local' and 'global' are inverse to each other
-      if ( (x - geometry.local( geometry.global( x ) )).two_norm() > 1e-8 ) {
+      if ( any_true( (x - geometry.local( geometry.global( x ) )).two_norm()
+                     > 1e-8 ) )
+      {
         std::cerr << "Error: global and local are not inverse to each other." << std::endl;
         pass = false;
       }
@@ -201,7 +210,7 @@ namespace Dune
       bool isId = true;
       for( int j = 0; j < mydim; ++j )
         for( int k = 0; k < mydim; ++k )
-          isId &= (std::abs( id[ j ][ k ] - (j == k ? 1 : 0) ) < 1e-8);
+          isId &= all_true(std::abs( id[ j ][ k ] - (j == k ? 1 : 0) ) < 1e-8);
       if( !isId)
       {
         std::cerr << "Error: jacobianTransposed and jacobianInverseTransposed are not inverse to each other." << std::endl;
@@ -213,7 +222,7 @@ namespace Dune
       }
 
       // Test whether integrationElement returns something nonnegative
-      if( geometry.integrationElement( x ) < 0 ) {
+      if( any_true( geometry.integrationElement( x ) < 0 ) ) {
         std::cerr << "Error: Negative integrationElement found." << std::endl;
         pass = false;
       }
@@ -224,15 +233,23 @@ namespace Dune
           for( int k = 0; k < coorddim; ++k )
             jtj[ i ][ j ] += jtAsFieldMatrix[ i ][ k ] * jtAsFieldMatrix[ j ][ k ];
 
-      if( std::abs( std::sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > 1e-8 ) {
+      if( any_true( std::abs( std::sqrt( jtj.determinant() ) -
+                              geometry.integrationElement( x ) ) > 1e-8 ) )
+      {
         std::cerr << "Error: integrationElement is not consistent with jacobianTransposed." << std::endl;
         pass = false;
       }
-      if (geometry.affine())
-        if( std::abs( geometry.volume() - refElement.volume()*geometry.integrationElement( x ) ) > 1e-8 ) {
+      auto affine = geometry.affine();
+      if ( any_true(affine) )
+      {
+        auto bad = std::abs( geometry.volume() - refElement.volume()*
+                             geometry.integrationElement( x ) ) > 1e-8;
+        if( any_true( affine && bad ) )
+        {
           std::cerr << "Error: volume is not consistent with jacobianTransposed." << std::endl;
           pass = false;
         }
+      }
     }
 
     return pass;

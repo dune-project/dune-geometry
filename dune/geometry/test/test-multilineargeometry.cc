@@ -2,10 +2,13 @@
 // vi: set et ts=4 sw=2 sts=2:
 #include <config.h>
 
+#include <cmath>
 #include <functional>
 #include <vector>
 
 #include <dune/common/fvector.hh>
+#include <dune/common/rangeutilities.hh>
+#include <dune/common/simd.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
 #include <dune/geometry/referenceelements.hh>
@@ -53,6 +56,11 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
                                       const Dune::FieldMatrix< ctype, cdim, cdim > &B,
                                       const Traits &traits )
 {
+  using std::isnan;
+
+  using Dune::all_true;
+  using Dune::any_true;
+
   bool pass = true;
 
   typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Traits > Geometry;
@@ -61,7 +69,8 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
   const ctype epsilon = ctype( 1e5 )*std::numeric_limits< ctype >::epsilon();
 
   const ctype detA = A.determinant();
-  assert( std::abs( std::abs( B.determinant() ) - ctype( 1 ) ) <= epsilon );
+  assert( all_true( std::abs( std::abs( B.determinant() ) - ctype( 1 ) )
+                    <= epsilon ) );
 
   const int numCorners = refElement.size( mydim );
   std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
@@ -70,14 +79,14 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
 
   Geometry geometry( refElement, corners );
 
-  if( !geometry.affine() )
+  if( !all_true(geometry.affine()) )
   {
     std::cerr << "Error: Affine returns false for an affine geometry." << std::endl;
     pass = false;
   }
 
   const ctype integrationElement = geometry.integrationElement( localCenter );
-  if( std::abs( integrationElement - std::abs( detA ) ) > epsilon )
+  if( any_true( std::abs( integrationElement - std::abs( detA ) ) > epsilon ) )
   {
     std::cerr << "Error: Wrong integration element (" << integrationElement
               << ", should be " << std::abs( detA )
@@ -85,7 +94,8 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     pass = false;
   }
   const ctype volume = geometry.volume();
-  if( std::abs( volume - refElement.volume()*std::abs( detA ) ) > epsilon )
+  if( any_true( std::abs( volume - refElement.volume()*std::abs( detA ) )
+                > epsilon ) )
   {
     std::cerr << "Error: Wrong volume (" << volume
               << ", should be " << (refElement.volume()*std::abs( detA ))
@@ -94,7 +104,8 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
   }
 
   const Dune::FieldVector< ctype, cdim > center = geometry.center();
-  if( (center - map( A, B, refElement.position( 0, 0 ) )).two_norm() > epsilon )
+  if( any_true( (center - map( A, B, refElement.position( 0, 0 ) )).two_norm()
+                > epsilon ) )
   {
     std::cerr << "Error: wrong barycenter (" << center << ")." << std::endl;
     pass = false;
@@ -104,12 +115,14 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     Dune::FieldVector<ctype, mydim> local(refElement.position(c, mydim));
     Dune::FieldVector<ctype, cdim> global(geometry.global(local));
     Dune::FieldVector<ctype, mydim> local2(geometry.local(global));
-    if (local2 != local2) {
-      std::cerr << "Error: at corner " << c << " local returned NaN: "
-                << local2 << std::endl;
-      pass = false;
-    }
-    if ((local - local2).two_norm() > epsilon) {
+    for(auto entry : local2)
+      if (any_true(isnan(entry))) {
+        std::cerr << "Error: at corner " << c << " local returned NaN: "
+                  << local2 << std::endl;
+        pass = false;
+        break;
+      }
+    if (any_true((local - local2).two_norm() > epsilon)) {
       std::cerr << "Error: at corner " << c << " local returned wrong value: "
                 << local2 << " (expected: " << local << ")" << std::endl;
       pass = false;
@@ -122,13 +135,15 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     Dune::FieldVector< ctype, mydim > e( ctype( 0 ) );
     e[ i ] = ctype( 1 );
     const Dune::FieldVector< ctype, cdim > t = map( A, B, e );
-    if (JT[i] != JT[i])
-    {
-      std::cerr << "Error: jacobianTransposed[" << i << "] (" << JT[i]
-                << ") has NaN entry." << std::endl;
-      pass = false;
-    }
-    if( (t - JT[ i ]).two_norm() > epsilon )
+    for(auto entry : JT[i])
+      if (any_true(isnan(entry)))
+      {
+        std::cerr << "Error: jacobianTransposed[" << i << "] (" << JT[i]
+                  << ") has NaN entry." << std::endl;
+        pass = false;
+        break;
+      }
+    if( any_true( (t - JT[ i ]).two_norm() > epsilon ) )
     {
       std::cerr << "Error: wrong jacobianTransposed[ " << i << " ] (" << JT[ i ]
                 << ", should be " << t << ")." << std::endl;
@@ -142,13 +157,16 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
       Dune::FieldVector< ctype, mydim > e( ctype( 0 ) );
       e[ i ] = ctype( 1 );
       const Dune::FieldVector< ctype, cdim > t = map( A, B, e );
-      if (cornerJT[i] != cornerJT[i])
-      {
-        std::cerr << "Error: at corner " << c << ": jacobianTransposed["
-                  << i << "] (" << cornerJT[i] << ") has NaN entry." << std::endl;
-        pass = false;
-      }
-      if( (t - cornerJT[ i ]).two_norm() > epsilon )
+      for(auto entry : cornerJT[i])
+        if (any_true(isnan(entry)))
+        {
+          std::cerr << "Error: at corner " << c << ": jacobianTransposed["
+                    << i << "] (" << cornerJT[i] << ") has NaN entry."
+                    << std::endl;
+          pass = false;
+          break;
+        }
+      if( any_true( (t - cornerJT[ i ]).two_norm() > epsilon ) )
       {
         std::cerr << "Error: at corner " << c << ": wrong jacobianTransposed[ "
                   << i << " ] (" << cornerJT[ i ] << ", should be " << t << ")."
@@ -200,6 +218,10 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt,
 template<class ctype, class Traits>
 static bool testNonLinearGeometry(const Traits &traits)
 {
+  using std::isnan;
+
+  using Dune::any_true;
+
   const unsigned dim = 2;
   typedef Dune::ReferenceElement<ctype,dim> ReferenceElement;
   typedef Dune::FieldVector<ctype,dim> Vector;
@@ -224,12 +246,12 @@ static bool testNonLinearGeometry(const Traits &traits)
   for (std::size_t c = 0; c < corners.size(); ++c) {
     const Vector& local(reference.position(c, dim));
     const Vector global(geometry.global(local));
-    if (global != global) {
+    if (any_true(isnan(global.two_norm2()))) {
       std::cerr << "global failed at corner " << c << ": returned NaN: "
                 << global << std::endl;
       pass = false;
     }
-    if ((global - corners[c]).two_norm() > epsilon) {
+    if (any_true((global - corners[c]).two_norm() > epsilon)) {
       std::cerr << "global failed at corner " << c << ": got " << global
                 << ", but expected " << corners[c] << std::endl;
       pass = false;
@@ -241,12 +263,12 @@ static bool testNonLinearGeometry(const Traits &traits)
     Vector local  = {-1, 0};
     Vector global = {-2, 0};
     const Vector global2(geometry.global(local));
-    if (global2 != global2) {
+    if (any_true(isnan(global2.two_norm2()))) {
       std::cerr << "global failed outside reference element: returned NaN: "
                 << global2 << std::endl;
       pass = false;
     }
-    if ((global - global2).two_norm() > epsilon) {
+    if (any_true((global - global2).two_norm() > epsilon)) {
       std::cerr << "global failed outside reference element: got " << global2
                 << ", but expected " << global << std::endl;
       pass = false;
@@ -257,12 +279,12 @@ static bool testNonLinearGeometry(const Traits &traits)
   for (std::size_t c = 0; c < corners.size(); ++c) {
     const Vector& local(reference.position(c, dim));
     const Vector local2(geometry.local(corners[c]));
-    if (local2 != local2) {
+    if (any_true(isnan(local2.two_norm2()))) {
       std::cerr << "local failed at corner " << c << ": returned NaN: "
                 << local2 << std::endl;
       pass = false;
     }
-    if ((local - local2).two_norm() > epsilon) {
+    if (any_true((local - local2).two_norm() > epsilon)) {
       std::cerr << "local failed at corner " << c << ": got " << local2
                 << ", but expected " << local << std::endl;
       pass = false;
@@ -274,12 +296,12 @@ static bool testNonLinearGeometry(const Traits &traits)
     Vector global = {-2, 0};
     Vector local  = {-1, 0};
     const Vector local2(geometry.local(global));
-    if (local2 != local2) {
+    if (any_true(isnan(local2.two_norm2()))) {
       std::cerr << "local failed outside reference element: returned NaN: "
                 << local2 << std::endl;
       pass = false;
     }
-    if ((local - local2).two_norm() > epsilon) {
+    if (any_true((local - local2).two_norm() > epsilon)) {
       std::cerr << "local failed outside reference element: got " << local2
                 << ", but expected " << local << std::endl;
       pass = false;
@@ -375,6 +397,17 @@ int main ( int argc, char **argv )
             << "storage" << std::endl;
   pass &= testMultiLinearGeometry< double >
     ( ReferenceWrapperGeometryTraits< double >{} );
+
+#if HAVE_VC
+  constexpr auto lanes = Vc::Vector<double>::size();
+  std::cout << ">>> Checking ctype = Vc::SimdArray<double, " << lanes << ">"
+            << std::endl;
+  pass &= testMultiLinearGeometry< Vc::SimdArray<double, lanes> >
+    ( Dune::MultiLinearGeometryTraits< Vc::SimdArray<double, lanes> >{} );
+#else // ! HAVE_VC
+  std::cout << ">>> Skipping ctype = Vc::SimdArray<double, ...>: Vc not found"
+            << std::endl;
+#endif // ! HAVE_VC
 
   // std::cout << ">>> Checking ctype = float" << std::endl;
   // pass &= testMultiLinearGeometry< float >
