@@ -17,6 +17,7 @@ dune_add_test(SOURCES test-quadrature.cc
 
 dune_add_test(SOURCES test-multilineargeometry.cc
               LINK_LIBRARIES dunegeometry)
+add_dune_vc_flags(test-multilineargeometry)
 
 dune_add_test(SOURCES test-refinement.cc
               LINK_LIBRARIES dunegeometry)
