@@ -6,11 +6,10 @@
 
 #include <limits>
 
-#include <dune/common/typetraits.hh>
-#include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
+#include <dune/common/fvector.hh>
+#include <dune/common/typetraits.hh>
 
-#include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/quadraturerules.hh>
 #include <dune/geometry/referenceelements.hh>
 
