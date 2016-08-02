@@ -11,6 +11,7 @@
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/rangeutilities.hh>
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/referenceelements.hh>
@@ -309,6 +310,8 @@ namespace Dune
      */
     LocalCoordinate local ( const GlobalCoordinate &globalCoord ) const
     {
+      using Dune::any_true;
+
       const ctype tolerance = Traits::tolerance();
       LocalCoordinate x = refElement().position( 0, 0 );
       LocalCoordinate dx;
@@ -318,7 +321,8 @@ namespace Dune
         const GlobalCoordinate dglobal = (*this).global( x ) - globalCoord;
         MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
         x -= dx;
-      } while( dx.two_norm2() > tolerance );
+        // continue iterating until _all_ lanes are converged
+      } while( any_true( dx.two_norm2() > tolerance ) );
       return x;
     }
 
@@ -684,6 +688,8 @@ namespace Dune
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
   {
+    using Dune::cond;
+
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
 
@@ -698,10 +704,11 @@ namespace Dune
     {
       assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
-      if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
-        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
-      else
-        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, ctype( 0 ), y );
+      auto cxn_nonzero =
+        cxn > Traits::tolerance() || cxn < -Traits::tolerance();
+      global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit,
+                     df/cond( cxn_nonzero, cxn, ctype( 1 ) ), x,
+                     rf*cond( cxn_nonzero, cxn, ctype( 0 ) ), y );
       // apply xn times the tip
       y.axpy( rf*xn, *cit );
       ++cit;
