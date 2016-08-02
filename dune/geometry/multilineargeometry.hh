@@ -11,6 +11,8 @@
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/rangeutilities.hh>
+#include <dune/common/simd.hh>
 #include <dune/common/typetraits.hh>
 
 #include <dune/geometry/referenceelements.hh>
@@ -257,7 +259,7 @@ namespace Dune
     {}
 
     /** \brief is this mapping affine? */
-    bool affine () const
+    SimdMask<ctype> affine () const
     {
       JacobianTransposed jt;
       return affine( jt );
@@ -309,6 +311,8 @@ namespace Dune
      */
     LocalCoordinate local ( const GlobalCoordinate &globalCoord ) const
     {
+      using Dune::any_true;
+
       const ctype tolerance = Traits::tolerance();
       LocalCoordinate x = refElement().position( 0, 0 );
       LocalCoordinate dx;
@@ -318,7 +322,8 @@ namespace Dune
         const GlobalCoordinate dglobal = (*this).global( x ) - globalCoord;
         MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
         x -= dx;
-      } while( dx.two_norm2() > tolerance );
+        // continue iterating until _all_ lanes are converged
+      } while( any_true( dx.two_norm2() > tolerance ) );
       return x;
     }
 
@@ -409,17 +414,43 @@ namespace Dune
                                      CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
                                      const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt );
 
+    /*
+     * These two affine functions call each other recursively.  They return \c
+     * initial_result, after (possible) setting some lanes in it to false.
+     * They use \c jt as a scratch space to compute the transposed jacobian
+     * in, and the value of \c jt may be used afterwards, _but_ only if the
+     * return value is true for all lanes.  Otherwise the \c jt may contain
+     * garbage values.
+     */
     template< int dim, class CornerIterator >
-    static bool affine ( TopologyId topologyId, std::integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt );
+    static SimdMask<ctype>
+    affine ( TopologyId topologyId, std::integral_constant< int, dim >,
+             CornerIterator &cit, JacobianTransposed &jt,
+             SimdMask<ctype> initial_result );
     template< class CornerIterator >
-    static bool affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt );
+    static SimdMask<ctype>
+    affine ( TopologyId topologyId, std::integral_constant< int, 0 >,
+             CornerIterator &cit, JacobianTransposed &jt,
+             SimdMask<ctype> initial_result );
 
-    bool affine ( JacobianTransposed &jacobianT ) const
+
+    //! compute affine condition and possibly transposed Jacobian
+    /**
+     * This function computes whether the geometry is affine.
+     *
+     * \c jacobianT is used as scratch space.  Iff the affine condition turns
+     * out to be true for _all_ lanes, then on return \c jacobianT will
+     * contain the transposed Jacobian(s), otherwise the value in \c jacobianT
+     * should not be relied upon.
+     */
+    SimdMask<ctype> affine ( JacobianTransposed &jacobianT ) const
     {
       using std::begin;
 
       auto cit = begin(std::cref(corners_).get());
-      return affine( topologyId(), std::integral_constant< int, mydimension >(), cit, jacobianT );
+      return affine( topologyId(),
+                     std::integral_constant< int, mydimension >(), cit,
+                     jacobianT, SimdMask<ctype>(true) );
     }
 
   private:
@@ -684,6 +715,8 @@ namespace Dune
              CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
              const ctype &rf, GlobalCoordinate &y )
   {
+    using Dune::cond;
+
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
 
@@ -698,10 +731,11 @@ namespace Dune
     {
       assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
-      if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
-        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
-      else
-        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, ctype( 0 ), y );
+      auto cxn_nonzero =
+        cxn > Traits::tolerance() || cxn < -Traits::tolerance();
+      global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit,
+                     df/cond( cxn_nonzero, cxn, ctype( 1 ) ), x,
+                     rf*cond( cxn_nonzero, cxn, ctype( 0 ) ), y );
       // apply xn times the tip
       y.axpy( rf*xn, *cit );
       ++cit;
@@ -789,7 +823,9 @@ namespace Dune
        */
 
       /* The second case effectively results in x* = 0 */
-      ctype dfcxn = (cxn > Traits::tolerance() || cxn < -Traits::tolerance()) ? ctype(df / cxn) : ctype(0);
+      ctype dfcxn =
+        cond(cxn > Traits::tolerance() || cxn < -Traits::tolerance(),
+             ctype(df / cxn), ctype(0));
 
       // initialize last row
       // b =  -Tb(x*)
@@ -838,40 +874,50 @@ namespace Dune
 
   template< class ct, int mydim, int cdim, class Traits >
   template< int dim, class CornerIterator >
-  inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::affine ( TopologyId topologyId, std::integral_constant< int, dim >, CornerIterator &cit, JacobianTransposed &jt )
+  inline SimdMask<ct> MultiLinearGeometry< ct, mydim, cdim, Traits >
+  ::affine ( TopologyId topologyId, std::integral_constant< int, dim >,
+             CornerIterator &cit, JacobianTransposed &jt, SimdMask<ct> result )
   {
+    // result is initially true in all lanes.  This affine() function returns
+    // result, after possibly setting some lanes to false.
+    if( !any_true(result) ) return result;
+
     const GlobalCoordinate &orgBottom = *cit;
-    if( !affine( topologyId, std::integral_constant< int, dim-1 >(), cit, jt ) )
-      return false;
+    result = affine( topologyId, std::integral_constant< int, dim-1 >(), cit,
+                     jt, result );
+    if( !any_true(result) ) return result;
     const GlobalCoordinate &orgTop = *cit;
 
+    // geometry type must be the same for all lanes, so there is no divergence
+    // between lanes here
     if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       JacobianTransposed jtTop;
-      if( !affine( topologyId, std::integral_constant< int, dim-1 >(), cit, jtTop ) )
-        return false;
+      result = affine( topologyId, std::integral_constant< int, dim-1 >(), cit,
+                       jtTop, result );
+      if( !any_true(result) ) return result;
 
       // check whether both jacobians are identical
       ctype norm( 0 );
       for( int i = 0; i < dim-1; ++i )
         norm += (jtTop[ i ] - jt[ i ]).two_norm2();
-      if( norm >= Traits::tolerance() )
-        return false;
+      result &= !( norm >= Traits::tolerance() );
+      if( !any_true(result) ) return result;
     }
     else
       ++cit;
     jt[ dim-1 ] = orgTop - orgBottom;
-    return true;
+    return result;
   }
 
   template< class ct, int mydim, int cdim, class Traits >
   template< class CornerIterator >
-  inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt )
+  inline SimdMask<ct> MultiLinearGeometry< ct, mydim, cdim, Traits >
+  ::affine ( TopologyId topologyId, std::integral_constant< int, 0 >,
+             CornerIterator &cit, JacobianTransposed &jt, SimdMask<ct> result )
   {
     ++cit;
-    return true;
+    return result;
   }
 
 } // namespace Dune
