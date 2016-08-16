@@ -68,7 +68,6 @@ namespace Dune
         enum {dimension = dimension_};
 
         typedef CoordType ctype;
-        enum {dimensionworld = dimension};
 
         template<int codimension>
         struct Codim;
