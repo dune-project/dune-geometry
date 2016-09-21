@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import csv
 import fnmatch
@@ -33,21 +34,25 @@ translate = { 'prism': 'prism', 'simplex2d': 'tri', 'simplex3d': 'tet',
               'jacobi2': 'jacobi2', 'gauss': 'gauss', 'gausslobatto': 'gausslobatto'}
 
 geo = { 'prism': 'prism', 'simplex2d': 'simplex', 'simplex3d': 'simplex',
-              'pyramid': 'pyramid', 'cube2d': 'cube', 'cube3d': 'cube', 'jacobi1': 'simplex',
-              'jacobi2': 'simplex', 'gauss': 'simplex', 'gausslobatto': 'simplex'}
+        'pyramid': 'pyramid', 'cube2d': 'cube', 'cube3d': 'cube', 'jacobi1': 'simplex',
+        'jacobi2': 'simplex', 'gauss': 'simplex', 'gausslobatto': 'simplex'}
+
+if len(sys.argv) < 2:
+  print "usage: ./make_rules (prism|simplex2d|simplex3d|pyramid|cube2d|cube3d) [precision]"
 
 
-name = 'prism'
-geometry = 'prism'
-
-if len(sys.argv) > 1:
-  name = sys.argv[1]
+# read geometry name from command line arguments
+name = sys.argv[1]
 if not name in reference_volume:
   sys.stderr.write('ERROR: Given name "' + name + '" is not allowed. Choose one of (prism|simplex2d|simplex3d|pyramid|cube2d|cube3d)!')
-
 geometry = geo[name]
 
+# set calculation precision
 mp.dps = 80
+if len(sys.argv) > 2:
+  mp.dps = int(float(sys.argv[2]))
+
+# open quadrature rules from file
 rules_dir = './rules/' + translate[name]
 if not os.path.exists(rules_dir):
   sys.stderr.write('ERROR: Given rules directory "' + rules_dir + '" does not exist!')
@@ -55,8 +60,7 @@ if not os.path.exists(rules_dir):
 directory = os.listdir(rules_dir)
 filenames = fnmatch.filter(directory, '*.csv')
 
-n_files = len(filenames)
-if n_files == 0:
+if len(filenames) == 0:
   sys.stderr.write('ERROR: No files found in rules directory "' + rules_dir + '"!')
 
 # extract maximal order from all files.
@@ -76,6 +80,7 @@ for f_ in filenames:
 
 rules = [None]*(maxorder+1)
 
+# read rules from the files and sore list of points and weights in `rule`
 for f_ in filenames:
   f = os.path.join(rules_dir, f_)
 
@@ -114,6 +119,7 @@ for f_ in filenames:
       rule['weights'].append(w)
       sum_weights += w
 
+    # test for correct volume (sum(weights) = reference_volume)
     if abs(sum_weights - reference_volume[name]) < 1.e-10:
       if not rules[order] or not rules[order]['points'] or len(rules[order]['points']) == 0 or \
          len(rules[order]['points']) > len(rule['points']):
@@ -121,6 +127,7 @@ for f_ in filenames:
     else:
       sys.stderr.write('ERROR: Weights are not normalized correctly. Expected: ' + str(reference_volume[name]) + ', but given: ' + str(sum_weights) + '! In file: "' + f + '"')
 
+# test for correct max-order
 max_i = len(rules)-1
 while not rules[max_i] or not rules[max_i]["points"] or len(rules[max_i]["points"]) == 0:
   if max_i == 0:
@@ -131,6 +138,7 @@ while not rules[max_i] or not rules[max_i]["points"] or len(rules[max_i]["points
 if max_i != maxorder:
   sys.stderr.write('ERROR: max_i != maxorder: ' + str(max_i) + ' != ' + str(maxorder))
 
+# provide parameters for template engine
 dim = len(rules[maxorder]["points"][0])
 maxp = len(rules[maxorder]["points"])
 
@@ -145,6 +153,7 @@ placeholders = {
   'cast' : lambda s: "cast<ct>(\"" + s + "\")",
   'uppercase': lambda s: s.upper()}
 
+# create quadrature rule implementation from template
 code = Template(filename='rules.templ.hh')
 with open('../quadraturerules/' + name + 'quadrature.inc.hh', 'w') as out:
   out.write(code.render(**placeholders))
