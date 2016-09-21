@@ -2,7 +2,7 @@ load(to_poly_solve)$
 
 epsilon: 1e-110$
 
-write_quad(name, scriptname, polynome_fnkt, weight_fnkt, maxp) :=
+write_quad2(file, name, scriptname, polynome_fnkt, weight_fnkt, maxp) :=
 block([i,N,n_,points,p,w],
 
 for i: 1 thru maxp/2+1 do block([fn,fd],
