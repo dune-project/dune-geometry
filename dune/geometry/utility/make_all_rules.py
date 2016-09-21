@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import subprocess
 
 geometries = ['prism', 'simplex2d', 'simplex3d', 'pyramid', 'cube2d', 'cube3d', 'jacobi1',

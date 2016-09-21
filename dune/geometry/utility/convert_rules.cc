@@ -138,15 +138,9 @@ int main(int argc, char** argv)
   if (argc <= 3)
     throw std::runtime_error("Not enough arguments given. Usage: ./convert_rules filename order name");
 
-  std::string filename = "", name = "";
-  int order = 0;
-  if (argc > 1)
-    filename = argv[1];
-  if (argc > 2)
-    order = std::atoi(argv[2]);
-  if (argc > 3)
-    name = argv[3];
-
+  std::string filename(argv[1]);
+  int order = std::atoi(argv[2]);
+  std::string name(argv[3]);
 
   std::vector<mp_type> data;
   std::ifstream in(filename, std::ios_base::in);
@@ -156,8 +150,10 @@ int main(int argc, char** argv)
     data.push_back(mp_type(x_));
 
 
+  // set output precision
   std::cout << std::setprecision(PRINT_PRECISION) << std::scientific;
 
+  // geometry description of reference geometry
   std::string geo_filename = "./rules/" + name + ".txt";
   if (name == "prism")
     print<3, Dune::GeometryType::prism>(std::cout, geo_filename, order, data);
