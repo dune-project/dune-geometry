@@ -11,6 +11,7 @@
 
 #include <cassert>
 #include <typeinfo>
+#include <memory>
 
 #include <dune/common/exceptions.hh>
 #include <dune/common/fvector.hh>
@@ -270,7 +271,7 @@ namespace Dune
     static VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension> &instance();
   private:
     VirtualRefinementImp() {}
-    static VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension> *instance_;
+    static std::unique_ptr<VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>> instance_;
 
     typename VirtualRefinement::VertexIteratorBack *vBeginBack(int level) const;
     typename VirtualRefinement::VertexIteratorBack *vEndBack(int level) const;
@@ -283,14 +284,14 @@ namespace Dune
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension> &
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::instance()
   {
-    if(instance_ == 0)
-      instance_ = new VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>;
+    if(not instance_)
+      instance_.reset(new VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>);
     return *instance_;
   }
 
   template<unsigned topologyId, class CoordType,
       unsigned coerceToId, int dimension>
-  VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension> *
+  std::unique_ptr<VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>>
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::instance_ = 0;
 
   template<unsigned topologyId, class CoordType,
