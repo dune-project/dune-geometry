@@ -185,11 +185,13 @@ namespace Dune
      *
      *  \returns a reference to the transposed of the Jacobian
      */
-    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
+    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const&
     {
       DUNE_UNUSED_PARAMETER(local);
       return jacobianTransposed_;
     }
+
+    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) && = delete;
 
     /** \brief Obtain the transposed of the Jacobian's inverse
      *
@@ -197,11 +199,13 @@ namespace Dune
      *  the Jacobian by \f$J(x)\f$, the following condition holds:
      *  \f[J^{-1}(x) J(x) = I.\f]
      */
-    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
+    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const&
     {
       DUNE_UNUSED_PARAMETER(local);
       return jacobianInverseTransposed_;
     }
+
+    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) && = delete;
 
     friend const ReferenceElement &referenceElement ( const AffineGeometry &geometry ) { return *geometry.refElement_; }
 
