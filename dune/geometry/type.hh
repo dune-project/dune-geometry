@@ -11,6 +11,7 @@
 
 #include <dune/common/exceptions.hh>
 #include <dune/common/unused.hh>
+#include <dune/common/typetraits.hh>
 
 namespace Dune
 {
@@ -114,7 +115,8 @@ namespace Dune
      *                      topologytypes.hh.
      * \param t             Any object of type TopologyType. The object t itself is ignored.
      */
-    template<class TopologyType>
+    template<class TopologyType,
+      class = Dune::void_t<decltype(TopologyType::dimension), decltype(TopologyType::id)>>
     explicit GeometryType(TopologyType t)
       : topologyId_(TopologyType::id), dim_(TopologyType::dimension), none_(false)
     {
