@@ -440,14 +440,14 @@ namespace Dune {
   };
 
 #ifndef DUNE_NO_EXTERN_QUADRATURERULES
-  extern template class GaussQuadratureRule1D<float>;
-  extern template class GaussQuadratureRule1D<double>;
-  extern template class Jacobi1QuadratureRule1D<float>;
-  extern template class Jacobi1QuadratureRule1D<double>;
-  extern template class Jacobi2QuadratureRule1D<float>;
-  extern template class Jacobi2QuadratureRule1D<double>;
-  extern template class GaussLobattoQuadratureRule1D<float>;
-  extern template class GaussLobattoQuadratureRule1D<double>;
+  extern template class GaussQuadratureRule<float, 1>;
+  extern template class GaussQuadratureRule<double, 1>;
+  extern template class Jacobi1QuadratureRule<float, 1>;
+  extern template class Jacobi1QuadratureRule<double, 1>;
+  extern template class Jacobi2QuadratureRule<float, 1>;
+  extern template class Jacobi2QuadratureRule<double, 1>;
+  extern template class GaussLobattoQuadratureRule<float, 1>;
+  extern template class GaussLobattoQuadratureRule<double, 1>;
 
   extern template class SimplexQuadratureRule<float, 2>;
   extern template class SimplexQuadratureRule<double, 2>;
