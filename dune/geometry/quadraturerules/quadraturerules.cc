@@ -24,8 +24,8 @@ namespace Dune {
   template class Jacobi2QuadratureRule<double, 1>;
   template class GaussQuadratureRule<float, 1>;
   template class GaussQuadratureRule<double, 1>;
-  template class GausslobattoQuadratureRule<float, 1>;
-  template class GausslobattoQuadratureRule<double, 1>;
+  template class GaussLobattoQuadratureRule<float, 1>;
+  template class GaussLobattoQuadratureRule<double, 1>;
 
   template class SimplexQuadratureRule<float, 2>;
   template class SimplexQuadratureRule<double, 2>;
