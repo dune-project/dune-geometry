@@ -39,8 +39,8 @@ namespace Dune {
 
   private:
     friend class QuadratureRuleFactory<ct,1>;
-    ~aaQuadratureRule (int p);
-    ~~~aaQuadratureRule(){}
+    ~aQuadratureRule (int p);
+    ~~~aQuadratureRule(){}
   };
 
   //! \internal Helper template for the initialization of the quadrature rules
