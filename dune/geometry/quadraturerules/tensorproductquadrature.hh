@@ -1,5 +1,8 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
+#ifndef DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
+#define DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
+
 #ifndef DUNE_INCLUDING_IMPLEMENTATION
 #error This is a private header that should not be included directly.
 #error Use #include <dune/geometry/quadraturerules.hh> instead.
@@ -157,3 +160,5 @@ namespace Dune
   };
 
 } // end namspace Dune
+
+#endif // DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
