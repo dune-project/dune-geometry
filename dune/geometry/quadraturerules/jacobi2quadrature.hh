@@ -32,8 +32,8 @@ namespace Dune {
 
   private:
     friend class QuadratureRuleFactory<ct,1>;
-    Jacobi2aQuadratureRule (int p);
-    ~Jacobi2aQuadratureRule(){}
+    Jacobi2QuadratureRule (int p);
+    ~Jacobi2QuadratureRule(){}
   };
 
   //! internal Helper template for the initialization of the quadrature rules
