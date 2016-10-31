@@ -25,7 +25,7 @@ weight(n,xx) := ratsimp(2/((n*(n+1))*legendre_p(n,xx)^2))$
 */
 
 /* num-points 4 */
-write_quad("gausslobatto_imp.hh", "GaussLobatto", "gausslobatto.mac",
+write_quad("gausslobattoquadrature.hh", "GaussLobatto", "gausslobatto.mac",
 		   lambda([i],point(i)),
            lambda([i,p],weight(i,p)),
 		   maxp)$
