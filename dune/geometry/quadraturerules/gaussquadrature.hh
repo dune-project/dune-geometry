@@ -8,9 +8,52 @@
 #error This is a private header that should not be included directly.
 #error Use #include <dune/geometry/quadraturerules.hh> instead.
 #endif
-#undef DUNE_INCLUDING_IMPLEMENTATION
 
 namespace Dune {
+
+  /************************************************
+   * Quadraturerule for 1d line
+   *************************************************/
+
+  template<typename ct, int dim>
+  class GaussQuadratureRule;
+
+  template<typename ct>
+  using GaussQuadratureRule1D = GaussQuadratureRule<ct,1>;
+
+  template<typename ct>
+  class GaussQuadratureRule<ct,1> : public QuadratureRule<ct,1>
+  {
+  public:
+    /** brief The highest quadrature order available */
+    enum { highest_order=31 };
+
+  private:
+    friend class QuadratureRuleFactory<ct,dim>;
+    GaussaQuadratureRule (int p);
+    ~GaussaQuadratureRule(){}
+  };
+
+  //! internal Helper template for the initialization of the quadrature rules
+  template<typename ct,
+      bool fundamental = std::numeric_limits<ct>::is_specialized>
+  struct GaussQuadratureInitHelper;
+
+  template<typename ct>
+  struct GaussQuadratureInitHelper<ct, true> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+
+  template<typename ct>
+  struct GaussQuadratureInitHelper<ct, false> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
 
   // for fundamental types
   template<typename ct>
@@ -2520,4 +2563,22 @@ namespace Dune {
     }
   }
 
-} // namespace
+  template<typename ct>
+  GaussQuadratureRule<ct,1>::GaussQuadratureRule (int p)
+      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+  {
+    //! set up quadrature of given order in d dimensions
+    std::vector< FieldVector<ct, dim> > _points;
+    std::vector< ct > _weight;
+
+    int deliveredOrder_;
+
+    GaussQuadratureInitHelper<ct>::init(p, _points, _weight, deliveredOrder_);
+
+    this->delivered_order = deliveredOrder_;
+    assert(_points.size() == _weight.size());
+    for (size_t i = 0; i < _points.size(); i++)
+      this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
+  }
+
+} // namespace Dune
