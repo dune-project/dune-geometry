@@ -31,7 +31,7 @@ namespace Dune {
     enum { highest_order = 2 };
 
   private:
-    friend class QuadratureRuleFactory<ct,d>;
+    friend class QuadratureRuleFactory<ct,3>;
     PrismQuadratureRule(int p);
     ~PrismQuadratureRule(){}
   };
@@ -167,7 +167,7 @@ namespace Dune {
   };
 
   template<typename ct>
-  PrismQuadratureRule<ct,3>::PrismQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryType(GeometryType::prism, d))
+  PrismQuadratureRule<ct,3>::PrismQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryType(GeometryType::prism, 3))
   {
     int m=6;
     this->delivered_order = PrismQuadraturePointsSingleton<3>::prqp.order(m);
@@ -176,8 +176,10 @@ namespace Dune {
       FieldVector<ct,3> local = PrismQuadraturePointsSingleton<3>::prqp.point(m,i);
       ct weight = PrismQuadraturePointsSingleton<3>::prqp.weight(m,i);
       // put in container
-      this->push_back(QuadraturePoint<ct,d>(local,weight));
+      this->push_back(QuadraturePoint<ct,3>(local,weight));
     }
   }
 
 } // namespace Dune
+
+#endif // DUNE_GEOMETRY_QUADRATURE_PRISM_HH
