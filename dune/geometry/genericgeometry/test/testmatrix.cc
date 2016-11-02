@@ -13,7 +13,6 @@
 #include <dune/common/parallel/mpihelper.hh>
 
 #include <dune/geometry/affinegeometry.hh>
-#include "../geometrytraits.hh"
 
 using namespace Dune;
 
@@ -26,7 +25,7 @@ int main(int argc, char** argv)
   //typedef GMPField< 72 > Field;
   //typedef GMPField< 160 > Field;
 
-  typedef Impl::MatrixHelper< GenericGeometry::DuneCoordTraits< Field > > MatrixHelper;
+  typedef Impl::FieldMatrixHelper< Field > MatrixHelper;
 
   // Test whether I can compute the square root of the determinant of A A^T of a nearly singular matrix.
   // This particular matrix makes the sqrtDetAAT method abort in dune-grid revision 6631.

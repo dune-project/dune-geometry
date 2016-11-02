@@ -16,7 +16,6 @@
 #include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
-#include <dune/geometry/genericgeometry/geometrytraits.hh>
 
 namespace Dune
 {
@@ -65,7 +64,7 @@ namespace Dune
      *                            FieldVector< ctype, m > &y );
      *  \endcode
      */
-    typedef Impl::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
+    typedef Impl::FieldMatrixHelper< ct > MatrixHelper;
 
     /** \brief tolerance to numerical algorithms */
     static ct tolerance () { return ct( 16 ) * std::numeric_limits< ct >::epsilon(); }
