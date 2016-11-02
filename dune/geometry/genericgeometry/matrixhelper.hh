@@ -14,20 +14,6 @@ namespace Dune
   namespace GenericGeometry
   {
 
-    // FieldHelper
-    // -----------
-
-    template< class Field >
-    struct FieldHelper
-    {
-      static Field abs ( const Field &x ) {
-        using std::abs;
-        return abs( x );
-      }
-    };
-
-
-
     // MatrixHelper
     // ------------
 
@@ -35,12 +21,6 @@ namespace Dune
     struct MatrixHelper
     {
       typedef typename Traits::ctype FieldType;
-
-      static FieldType abs ( const FieldType &x )
-      {
-        //return std::abs( x );
-        return FieldHelper< FieldType >::abs( x );
-      }
 
       template< int m, int n >
       static void
@@ -396,6 +376,7 @@ namespace Dune
       static FieldType
       sqrtDetAAT ( const typename Traits::template Matrix< m, n >::type &A )
       {
+        using std::abs;
         // These special cases are here not only for speed reasons:
         // The general implementation aborts if the matrix is almost singular,
         // and the special implementation provide a stable way to handle that case.
@@ -466,6 +447,7 @@ namespace Dune
                   typename Traits :: template Matrix< n, m > :: type &ret )
       {
         static_assert((n >= m), "Matrix has no right inverse.");
+        using std::abs;
         if( (n == 2) && (m == 2) )
         {
           const FieldType det = (A[ 0 ][ 0 ]*A[ 1 ][ 1 ] - A[ 1 ][ 0 ]*A[ 0 ][ 1 ]);
