@@ -23,3 +23,7 @@ install(FILES
 # install the header as done for the auto-tools
 install(FILES test/checkgeometry.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/test)
+
+dune_add_library(geometry OBJECT
+  referenceelements.cc
+  )

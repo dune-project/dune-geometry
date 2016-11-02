@@ -2,12 +2,12 @@
 // vi: set et ts=4 sw=2 sts=2:
 #include <config.h>
 
-#include <dune/geometry/genericgeometry/referencedomain.hh>
+#include <dune/geometry/referenceelements.hh>
 
 namespace Dune
 {
 
-  namespace GenericGeometry
+  namespace Impl
   {
 
     // ReferenceVolumeInverse
@@ -26,6 +26,6 @@ namespace Dune
         return 1;
     }
 
-  } // namespace GenericGeometry
+  } // namespace Impl
 
 } // namespace Dune
