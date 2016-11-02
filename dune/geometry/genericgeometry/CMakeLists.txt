@@ -1,4 +1,3 @@
-add_subdirectory("test")
 install(FILES
   codimtable.hh
   referencedomain.hh
