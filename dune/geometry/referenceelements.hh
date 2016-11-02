@@ -5,6 +5,9 @@
 
 #include <algorithm>
 #include <limits>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 #include <dune/common/array.hh>
 #include <dune/common/forloop.hh>
@@ -15,7 +18,6 @@
 #include <dune/common/unused.hh>
 
 #include <dune/geometry/affinegeometry.hh>
-#include <dune/geometry/genericgeometry/codimtable.hh>
 #include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 
@@ -456,8 +458,7 @@ namespace Dune
     template< int codim >
     typename Codim< codim >::Geometry geometry ( int i ) const
     {
-      std::integral_constant< int, codim > codimVariable;
-      return geometries_[ codimVariable ][ i ];
+      return std::get< codim >( geometries_ )[ i ];
     }
 
     /** \brief obtain the volume of the reference element */
@@ -526,14 +527,12 @@ namespace Dune
       Dune::ForLoop< CreateGeometries, 0, dim >::apply( *this, geometries_ );
     }
 
-    /** \brief Stores all subentities of a given codimension */
-    template< int codim >
-    struct GeometryArray
-    : public std::vector< typename Codim< codim >::Geometry >
-    {};
+    template< int... codim >
+    static std::tuple< std::vector< typename Codim< codim >::Geometry >... >
+    makeGeometryTable ( std::integer_sequence< int, codim... > );
 
     /** \brief Type to store all subentities of all codimensions */
-    typedef GenericGeometry::CodimTable< GeometryArray, dim > GeometryTable;
+    typedef decltype( makeGeometryTable( std::make_integer_sequence< int, dim+1 >() ) ) GeometryTable;
 
     /** \brief The reference element volume */
     ctype volume_;
@@ -650,12 +649,11 @@ namespace Dune
       std::vector< FieldMatrix< ctype, dim - codim, dim > > jacobianTransposeds( size );
       Impl::referenceEmbeddings( refElement.type().id(), dim, codim, &(origins[ 0 ]), &(jacobianTransposeds[ 0 ]) );
 
-      std::integral_constant< int, codim > codimVariable;
-      geometries[ codimVariable ].reserve( size );
+      std::get< codim >( geometries ).reserve( size );
       for( int i = 0; i < size; ++i )
       {
-        typename Codim< codim >::Geometry geometry( subRefElement( refElement, i, codimVariable ), origins[ i ], jacobianTransposeds[ i ] );
-        geometries[ codimVariable ].push_back( geometry );
+        typename Codim< codim >::Geometry geometry( subRefElement( refElement, i, std::integral_constant< int, codim >() ), origins[ i ], jacobianTransposeds[ i ] );
+        std::get< codim >( geometries ).push_back( geometry );
       }
     }
   };
