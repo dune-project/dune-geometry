@@ -3,7 +3,6 @@ install(FILES
   codimtable.hh
   conversion.hh
   geometrytraits.hh
-  matrixhelper.hh
   referencedomain.hh
   referenceelements.hh
   subtopologies.hh

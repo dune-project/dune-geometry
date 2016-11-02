@@ -4,7 +4,6 @@
 #define DUNE_GEOMETRY_GENERICGEOMETRY_GEOMETRYTRAITS_HH
 
 #include "../type.hh"
-#include "matrixhelper.hh"
 
 namespace Dune
 {
