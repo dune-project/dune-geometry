@@ -1,7 +1,6 @@
 add_subdirectory("test")
 install(FILES
   codimtable.hh
-  conversion.hh
   referencedomain.hh
   referenceelements.hh
   subtopologies.hh
