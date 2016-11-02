@@ -24,7 +24,6 @@
  * We explicitly use some of the utilities from the \ref SimplexRefinement.
  */
 
-#include <dune/geometry/genericgeometry/geometrytraits.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/referenceelements.hh>
 

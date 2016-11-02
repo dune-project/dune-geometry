@@ -6,7 +6,6 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
 
-#include <dune/geometry/genericgeometry/geometrytraits.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
