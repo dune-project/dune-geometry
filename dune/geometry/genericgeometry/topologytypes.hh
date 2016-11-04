@@ -268,31 +268,26 @@ namespace Dune
     // ----------
 
     template< template< class > class Operation, int dim, class Topology = Point >
-    class IfTopology
+    struct IfTopology
     {
-      typedef IfTopology< Operation, dim-1, Prism< Topology > > IfPrism;
-      typedef IfTopology< Operation, dim-1, Pyramid< Topology > > IfPyramid;
-
-    public:
       template< class... Args >
-      static void apply ( unsigned int topologyId, Args &&... args )
+      static auto apply ( unsigned int topologyId, Args &&... args )
       {
         if( topologyId & 1 )
-          IfPrism::apply( topologyId >> 1, std::forward< Args >( args )... );
+          return IfTopology< Operation, dim-1, Prism< Topology > >::apply( topologyId >> 1, std::forward< Args >( args )... );
         else
-          IfPyramid::apply( topologyId >> 1, std::forward< Args >( args )... );
+          return IfTopology< Operation, dim-1, Pyramid< Topology > >::apply( topologyId >> 1, std::forward< Args >( args )... );
       }
     };
 
     template< template< class > class Operation, class Topology >
-    class IfTopology< Operation, 0, Topology >
+    struct IfTopology< Operation, 0, Topology >
     {
-    public:
       template< class... Args >
-      static void apply ( unsigned int topologyId, Args &&... args )
+      static auto apply ( unsigned int topologyId, Args &&... args )
       {
         DUNE_UNUSED_PARAMETER( topologyId );
-        Operation< Topology >::apply( std::forward< Args >( args )... );
+        return Operation< Topology >::apply( std::forward< Args >( args )... );
       }
     };
 
