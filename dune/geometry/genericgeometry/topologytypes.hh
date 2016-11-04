@@ -263,49 +263,6 @@ namespace Dune
 
 
 
-    // Topology
-    // --------
-
-    template< unsigned int id, unsigned int dim >
-    class Topology
-    {
-      static const unsigned int dimension = dim;
-
-      static_assert((id < (1 << dimension)), "id too large.");
-
-      static const bool isPrism = ((id >> (dimension-1)) != 0);
-
-      typedef typename Topology< (id & ~(1 << (dimension-1))), dimension-1 >::type
-      BaseTopology;
-
-      template< bool >
-      struct Prism
-      {
-        typedef GenericGeometry :: Prism< BaseTopology > type;
-      };
-
-      template< bool >
-      struct Pyramid
-      {
-        typedef GenericGeometry :: Pyramid< BaseTopology > type;
-      };
-
-    public:
-      typedef typename std::conditional< isPrism, Prism<true>, Pyramid<false> >::type::type type;
-    };
-
-    template< unsigned int id >
-    class Topology< id, 0 >
-    {
-      static const unsigned int dimension = 0;
-
-      static_assert((id < (1 << dimension)), "id too large.");
-
-    public:
-      typedef Point type;
-    };
-
-
 
     // IfTopology
     // ----------
