@@ -555,62 +555,6 @@ namespace Dune
       }
     };
 
-
-    // SubTopologyMapper
-    // -----------------
-
-    template< class Topology >
-    class SubTopologyMapper
-    {
-      static const unsigned int dimension = Topology::dimension;
-
-      template< class A, class B >
-      struct StaticSum
-      {
-        static const unsigned int value = A::value + B::value;
-      };
-
-      template< int codim >
-      struct Size
-      {
-        static const unsigned int value = GenericGeometry::Size< Topology, codim >::value;
-      };
-
-      template< int codim >
-      struct CalcOffset
-      {
-        static void apply ( unsigned int (&offsets)[ dimension+2 ] )
-        {
-          offsets[ codim+1 ] = offsets[ codim ] + Size< codim >::value;
-        }
-      };
-
-    public:
-      static const unsigned int staticSize = GenericForLoop< StaticSum, Size, 0, dimension >::value;
-
-      SubTopologyMapper ()
-      {
-        offsets_[ 0 ] = 0;
-        ForLoop< CalcOffset, 0, dimension >::apply( offsets_ );
-        assert( size() == staticSize );
-      }
-
-      unsigned int operator() ( const unsigned int codim, const unsigned int subEntity ) const
-      {
-        const unsigned int offset = offsets_[ codim ];
-        assert( offset + subEntity < offsets_[ codim+1 ] );
-        return offset + subEntity;
-      }
-
-      unsigned int size () const
-      {
-        return offsets_[ dimension+1 ];
-      }
-
-    private:
-      unsigned int offsets_[ dimension+2 ];
-    };
-
   } // namespace GenericGeometry
 
 } // namespace Dune
