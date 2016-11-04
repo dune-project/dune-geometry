@@ -3,6 +3,8 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENTS_HH
 
+#include <cassert>
+
 #include <algorithm>
 #include <limits>
 #include <tuple>
@@ -18,7 +20,6 @@
 #include <dune/common/unused.hh>
 
 #include <dune/geometry/affinegeometry.hh>
-#include <dune/geometry/genericgeometry/subtopologies.hh>
 #include <dune/geometry/genericgeometry/topologytypes.hh>
 
 namespace Dune
@@ -40,6 +41,31 @@ namespace Dune
 
     // just for the transition phase
     using namespace GenericGeometry;
+
+
+
+    /** \brief Compute the number of subentities of a given codimension */
+    unsigned int size ( unsigned int topologyId, int dim, int codim );
+
+
+
+    /** \brief Compute the topology id of a given subentity
+     *
+     * \param topologyId Topology id of entity
+     * \param dim Dimension of entity
+     * \param codim Codimension of the subentity that we are interested in
+     * \param i Number of the subentity that we are interested in
+     */
+    unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i );
+
+
+
+    // subTopologyNumbering
+    // --------------------
+
+    void subTopologyNumbering ( unsigned int topologyId, int dim, int codim, unsigned int i, int subcodim,
+                                unsigned int *beginOut, unsigned int *endOut );
+
 
 
 
@@ -488,7 +514,7 @@ namespace Dune
       // set up subentities
       for( int codim = 0; codim <= dim; ++codim )
       {
-        const unsigned int size = GenericGeometry::size( topologyId, dim, codim );
+        const unsigned int size = Impl::size( topologyId, dim, codim );
         info_[ codim ].resize( size );
         for( unsigned int i = 0; i < size; ++i )
           info_[ codim ][ i ].initialize( topologyId, codim, i );
@@ -594,20 +620,20 @@ namespace Dune
 
     void initialize ( unsigned int topologyId, int codim, unsigned int i )
     {
-      const unsigned int subId = GenericGeometry::subTopologyId( topologyId, dim, codim, i );
+      const unsigned int subId = Impl::subTopologyId( topologyId, dim, codim, i );
       type_ = GeometryType( subId, dim-codim );
 
       // compute offsets
       for( int cc = 0; cc <= codim; ++cc )
         offset_[ cc ] = 0;
       for( int cc = codim; cc <= dim; ++cc )
-        offset_[ cc+1 ] = offset_[ cc ] + GenericGeometry::size( subId, dim-codim, cc-codim );
+        offset_[ cc+1 ] = offset_[ cc ] + Impl::size( subId, dim-codim, cc-codim );
 
       // compute subnumbering
       deallocate( numbering_ );
       numbering_ = allocate();
       for( int cc = codim; cc <= dim; ++cc )
-        GenericGeometry::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
+        Impl::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
     }
 
   protected:
