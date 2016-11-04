@@ -274,48 +274,13 @@ namespace Dune
       typedef IfTopology< Operation, dim-1, Pyramid< Topology > > IfPyramid;
 
     public:
-      static void apply ( const unsigned int topologyId )
+      template< class... Args >
+      static void apply ( unsigned int topologyId, Args &&... args )
       {
         if( topologyId & 1 )
-          IfPrism::apply( topologyId >> 1 );
+          IfPrism::apply( topologyId >> 1, std::forward< Args >( args )... );
         else
-          IfPyramid::apply( topologyId >> 1 );
-      }
-
-      template< class T1 >
-      static void apply ( const unsigned int topologyId, T1 &p1 )
-      {
-        if( topologyId & 1 )
-          IfPrism::apply( topologyId >> 1, p1 );
-        else
-          IfPyramid::apply( topologyId >> 1, p1 );
-      }
-
-      template< class T1, class T2 >
-      static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2 )
-      {
-        if( topologyId & 1 )
-          IfPrism::apply( topologyId >> 1, p1, p2 );
-        else
-          IfPyramid::apply( topologyId >> 1, p1, p2 );
-      }
-
-      template< class T1, class T2, class T3 >
-      static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2, T3 &p3 )
-      {
-        if( topologyId & 1 )
-          IfPrism::apply( topologyId >> 1, p1, p2, p3 );
-        else
-          IfPyramid::apply( topologyId >> 1, p1, p2, p3 );
-      }
-
-      template< class T1, class T2, class T3, class T4 >
-      static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2, T3 &p3, T4 &p4 )
-      {
-        if( topologyId & 1 )
-          IfPrism::apply( topologyId >> 1, p1, p2, p3, p4 );
-        else
-          IfPyramid::apply( topologyId >> 1, p1, p2, p3, p4 );
+          IfPyramid::apply( topologyId >> 1, std::forward< Args >( args )... );
       }
     };
 
@@ -323,38 +288,11 @@ namespace Dune
     class IfTopology< Operation, 0, Topology >
     {
     public:
-      static void apply ( const unsigned int topologyId )
+      template< class... Args >
+      static void apply ( unsigned int topologyId, Args &&... args )
       {
-        DUNE_UNUSED_PARAMETER(topologyId);
-        Operation< Topology >::apply();
-      }
-
-      template< class T1 >
-      static void apply ( const unsigned int topologyId, T1 &p1 )
-      {
-        DUNE_UNUSED_PARAMETER(topologyId);
-        Operation< Topology >::apply( p1 );
-      }
-
-      template< class T1, class T2 >
-      static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2 )
-      {
-        DUNE_UNUSED_PARAMETER(topologyId);
-        Operation< Topology >::apply( p1, p2 );
-      }
-
-      template< class T1, class T2, class T3 >
-      static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2, T3 &p3 )
-      {
-        DUNE_UNUSED_PARAMETER(topologyId);
-        Operation< Topology >::apply( p1, p2, p3 );
-      }
-
-      template< class T1, class T2, class T3, class T4 >
-      static void apply ( const unsigned int topologyId, T1 &p1, T2 &p2, T3 &p3, T4 &p4 )
-      {
-        DUNE_UNUSED_PARAMETER(topologyId);
-        Operation< Topology >::apply( p1, p2, p3, p4 );
+        DUNE_UNUSED_PARAMETER( topologyId );
+        Operation< Topology >::apply( std::forward< Args >( args )... );
       }
     };
 
