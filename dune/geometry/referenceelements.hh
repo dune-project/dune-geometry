@@ -20,7 +20,7 @@
 #include <dune/common/unused.hh>
 
 #include <dune/geometry/affinegeometry.hh>
-#include <dune/geometry/genericgeometry/topologytypes.hh>
+#include <dune/geometry/type.hh>
 
 namespace Dune
 {
@@ -38,11 +38,6 @@ namespace Dune
 
   namespace Impl
   {
-
-    // just for the transition phase
-    using namespace GenericGeometry;
-
-
 
     /** \brief Compute the number of subentities of a given codimension */
     unsigned int size ( unsigned int topologyId, int dim, int codim );
@@ -509,7 +504,7 @@ namespace Dune
   private:
     void initialize ( unsigned int topologyId )
     {
-      assert( topologyId < GenericGeometry::numTopologies( dim ) );
+      assert( topologyId < Impl::numTopologies( dim ) );
 
       // set up subentities
       for( int codim = 0; codim <= dim; ++codim )
@@ -712,22 +707,22 @@ namespace Dune
 
     const value_type &simplex () const
     {
-      return values_[ GenericGeometry::SimplexTopology< dim >::type::id ];
+      return values_[ Impl::SimplexTopology< dim >::type::id ];
     }
 
     const value_type &cube () const
     {
-      return values_[ GenericGeometry::CubeTopology< dim >::type::id ];
+      return values_[ Impl::CubeTopology< dim >::type::id ];
     }
 
     const value_type &pyramid () const
     {
-      return values_[ GenericGeometry::PyramidTopology< dim >::type::id ];
+      return values_[ Impl::PyramidTopology< dim >::type::id ];
     }
 
     const value_type &prism () const
     {
-      return values_[ GenericGeometry::PrismTopology< dim >::type::id ];
+      return values_[ Impl::PrismTopology< dim >::type::id ];
     }
 
     const_iterator begin () const { return values_; }

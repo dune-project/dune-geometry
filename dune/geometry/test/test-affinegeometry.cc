@@ -143,20 +143,20 @@ static bool testAffineGeometry ()
 {
   bool pass = true;
 
-  Dune::GeometryType cube0d( Dune::GenericGeometry::CubeTopology< 0 >::type::id, 0 );
-  Dune::GeometryType cube1d( Dune::GenericGeometry::CubeTopology< 1 >::type::id, 1 );
-  Dune::GeometryType cube2d( Dune::GenericGeometry::CubeTopology< 2 >::type::id, 2 );
-  Dune::GeometryType cube3d( Dune::GenericGeometry::CubeTopology< 3 >::type::id, 3 );
-  Dune::GeometryType cube4d( Dune::GenericGeometry::CubeTopology< 4 >::type::id, 4 );
+  Dune::GeometryType cube0d( Dune::Impl::CubeTopology< 0 >::type::id, 0 );
+  Dune::GeometryType cube1d( Dune::Impl::CubeTopology< 1 >::type::id, 1 );
+  Dune::GeometryType cube2d( Dune::Impl::CubeTopology< 2 >::type::id, 2 );
+  Dune::GeometryType cube3d( Dune::Impl::CubeTopology< 3 >::type::id, 3 );
+  Dune::GeometryType cube4d( Dune::Impl::CubeTopology< 4 >::type::id, 4 );
 
-  Dune::GeometryType simplex0d( Dune::GenericGeometry::SimplexTopology< 0 >::type::id, 0 );
-  Dune::GeometryType simplex1d( Dune::GenericGeometry::SimplexTopology< 1 >::type::id, 1 );
-  Dune::GeometryType simplex2d( Dune::GenericGeometry::SimplexTopology< 2 >::type::id, 2 );
-  Dune::GeometryType simplex3d( Dune::GenericGeometry::SimplexTopology< 3 >::type::id, 3 );
-  Dune::GeometryType simplex4d( Dune::GenericGeometry::SimplexTopology< 4 >::type::id, 4 );
+  Dune::GeometryType simplex0d( Dune::Impl::SimplexTopology< 0 >::type::id, 0 );
+  Dune::GeometryType simplex1d( Dune::Impl::SimplexTopology< 1 >::type::id, 1 );
+  Dune::GeometryType simplex2d( Dune::Impl::SimplexTopology< 2 >::type::id, 2 );
+  Dune::GeometryType simplex3d( Dune::Impl::SimplexTopology< 3 >::type::id, 3 );
+  Dune::GeometryType simplex4d( Dune::Impl::SimplexTopology< 4 >::type::id, 4 );
 
-  Dune::GeometryType prism3d( Dune::GenericGeometry::PrismTopology< 3 >::type::id, 3 );
-  Dune::GeometryType pyramid3d( Dune::GenericGeometry::PyramidTopology< 3 >::type::id, 3 );
+  Dune::GeometryType prism3d( Dune::Impl::PrismTopology< 3 >::type::id, 3 );
+  Dune::GeometryType pyramid3d( Dune::Impl::PyramidTopology< 3 >::type::id, 3 );
 
   pass &= testAffineGeometry< ctype, 0, 0 >( simplex0d );
   pass &= testAffineGeometry< ctype, 0, 1 >( simplex0d );

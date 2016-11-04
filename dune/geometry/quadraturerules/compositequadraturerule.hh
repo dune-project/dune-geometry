@@ -32,9 +32,9 @@ namespace Dune {
       // Currently only works for simplices, because we are using the StaticRefinement
       assert(quad.type().isSimplex());
 
-      typedef Dune::StaticRefinement<Dune::GenericGeometry::SimplexTopology<dim>::type::id,
+      typedef Dune::StaticRefinement<Dune::Impl::SimplexTopology<dim>::type::id,
                                      ctype,
-                                     Dune::GenericGeometry::SimplexTopology<dim>::type::id,
+                                     Dune::Impl::SimplexTopology<dim>::type::id,
                                      dim> Refinement;
       typedef typename Refinement::ElementIterator eIterator;
 

@@ -24,8 +24,8 @@
  * We explicitly use some of the utilities from the \ref SimplexRefinement.
  */
 
-#include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/referenceelements.hh>
+#include <dune/geometry/type.hh>
 
 #include "base.cc"
 #include "simplex.cc"
@@ -399,9 +399,9 @@ namespace Dune
         topologyId, CoordType, coerceToId, dim,
         typename std::enable_if<
             (dim >= 2 &&
-             (GenericGeometry::CubeTopology<dim>::type::id >> 1) ==
+             (Impl::CubeTopology<dim>::type::id >> 1) ==
              (topologyId >> 1) &&
-             (GenericGeometry::SimplexTopology<dim>::type::id >> 1) ==
+             (Impl::SimplexTopology<dim>::type::id >> 1) ==
              (coerceToId >> 1)
             )>::type
         >
