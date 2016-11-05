@@ -251,8 +251,8 @@
 #include <dune/common/fvector.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
-#include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/referenceelements.hh>
+#include <dune/geometry/type.hh>
 
 #include "base.cc"
 
@@ -799,9 +799,9 @@ namespace Dune {
     struct Traits<
         topologyId, CoordType, coerceToId, dim,
         typename std::enable_if<
-            ((GenericGeometry::SimplexTopology<dim>::type::id >> 1) ==
+            ((Impl::SimplexTopology<dim>::type::id >> 1) ==
              (topologyId >> 1) &&
-             (GenericGeometry::SimplexTopology<dim>::type::id >> 1) ==
+             (Impl::SimplexTopology<dim>::type::id >> 1) ==
              (coerceToId >> 1)
             )>::type
         >

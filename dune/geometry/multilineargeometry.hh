@@ -13,10 +13,9 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
 
+#include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
-#include <dune/geometry/genericgeometry/geometrytraits.hh>
-#include <dune/geometry/genericgeometry/matrixhelper.hh>
 
 namespace Dune
 {
@@ -65,7 +64,7 @@ namespace Dune
      *                            FieldVector< ctype, m > &y );
      *  \endcode
      */
-    typedef GenericGeometry::MatrixHelper< GenericGeometry::DuneCoordTraits< ct > > MatrixHelper;
+    typedef Impl::FieldMatrixHelper< ct > MatrixHelper;
 
     /** \brief tolerance to numerical algorithms */
     static ct tolerance () { return ct( 16 ) * std::numeric_limits< ct >::epsilon(); }
@@ -687,7 +686,7 @@ namespace Dune
     const ctype xn = df*x[ dim-1 ];
     const ctype cxn = ctype( 1 ) - xn;
 
-    if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
+    if( Impl::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times mapping for bottom
       global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, rf*cxn, y );
@@ -696,7 +695,7 @@ namespace Dune
     }
     else
     {
-      assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
+      assert( Impl::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
       if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
         global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
@@ -735,7 +734,7 @@ namespace Dune
     const ctype cxn = ctype( 1 ) - xn;
 
     auto cit2( cit );
-    if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
+    if( Impl::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       // apply (1-xn) times Jacobian for bottom
       jacobianTransposed< add >( topologyId, std::integral_constant< int, dim-1 >(), cit2, df, x, rf*cxn, jt );
@@ -747,7 +746,7 @@ namespace Dune
     }
     else
     {
-      assert( GenericGeometry::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
+      assert( Impl::isPyramid( toUnsignedInt(topologyId), mydimension, mydimension-dim ) );
       /*
        * In the pyramid case, we need a transformation Tb: B -> R^n for the
        * base B \subset R^{n-1}. The pyramid transformation is then defined as
@@ -846,7 +845,7 @@ namespace Dune
       return false;
     const GlobalCoordinate &orgTop = *cit;
 
-    if( GenericGeometry::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
+    if( Impl::isPrism( toUnsignedInt(topologyId), mydimension, mydimension-dim ) )
     {
       JacobianTransposed jtTop;
       if( !affine( topologyId, std::integral_constant< int, dim-1 >(), cit, jtTop ) )
