@@ -7,7 +7,7 @@ dune_add_test(SOURCES test-axisalignedcubegeometry.cc
 dune_add_test(SOURCES test-cornerstoragerefwrap.cc
               LINK_LIBRARIES dunegeometry)
 
-dune_add_test(SOURCES test-geometrytype.cc)
+dune_add_test(SOURCES test-fromvertices.cc)
 
 dune_add_test(SOURCES test-referenceelements.cc
               LINK_LIBRARIES dunegeometry)
