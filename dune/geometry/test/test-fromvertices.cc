@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 
-#include <dune/geometry/type.hh>
+#include <dune/geometry/utility/typefromvertices.hh>
 
 std::string convBase(unsigned long v, long base)
 {
@@ -48,7 +48,7 @@ unsigned int guessTopologyId(unsigned int dim, unsigned int vertices)
   std::vector<unsigned int> ids;
   if (dim == 0 || dim == 1)
     return 0;
-  if (vertices < dim+1 || vertices > 1<<dim)
+  if (vertices < dim+1 || vertices > 1u<<dim)
     DUNE_THROW(Dune::Exception, "IMPOSSIBLE");
   guessTopologyId(dim,vertices,2,1,1,ids);
   if (ids.size() == 0)
@@ -70,18 +70,17 @@ void testGuess(unsigned int dim, unsigned int vertices)
   std::cout << "guess: " << convBase(id, 2);
   Dune::GeometryType gt = Dune::geometryTypeFromVertices(dim, vertices);
   std::cout << " real:  " << convBase(gt.id(), 2);
+  std::cout << std::endl;
   if (id != gt.id())
     DUNE_THROW(Dune::Exception, "Failed to guess the geometry type from the number of vertices.");
-  std::cout << std::endl;
 }
 
 int main()
 try {
+  std::vector<std::vector<int>> configurations = { {1}, {2}, {3,4}, {4,5,6,8} };
   for (int d=0; d<=3; d++)
-    for (int v=d+1; v<=(1<<d); v++)
-    {
+    for (int v : configurations[d])
         testGuess(d,v);
-    }
 }
 catch (Dune::Exception & e)
 {

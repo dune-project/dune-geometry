@@ -15,10 +15,13 @@
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
 
-#include "utility/typefromvertices.hh"
-
 namespace Dune
 {
+
+  // forward declaration needed for deprecated makeFromVertices
+  class GeometryType;
+  template<typename T = void>
+  GeometryType geometryTypeFromVertices(unsigned int dim, unsigned int vertices, T* dummy = 0);
 
   namespace Impl
   {
@@ -630,5 +633,8 @@ namespace Dune
   }
 
 } // namespace Dune
+
+// include utility header needed for deprecated makeFromVertices
+#include "utility/typefromvertices.hh"
 
 #endif // DUNE_GEOMETRY_TYPE_HH
