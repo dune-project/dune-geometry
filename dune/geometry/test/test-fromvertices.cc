@@ -37,8 +37,6 @@ void guessTopologyId(unsigned int dim, unsigned int vertices,
       ids.push_back(id);
     return;
   }
-  // if (v > vertices-dim+d)
-  //     return;
   // try simplex
   guessTopologyId(dim,vertices,v+1,id,d+1,ids);
   // try cube
@@ -70,25 +68,22 @@ void testGuess(unsigned int dim, unsigned int vertices)
   std::cout << " vertices: " << vertices << " ";
   unsigned int id = guessTopologyId(dim, vertices);
   std::cout << "guess: " << convBase(id, 2);
-  if (dim <= 3) {
-    Dune::GeometryType gt;
-    gt.makeFromVertices(dim, vertices);
-    std::cout << " real:  " << convBase(gt.id(), 2);
-  }
+  Dune::GeometryType gt = Dune::geometryTypeFromVertices(dim, vertices);
+  std::cout << " real:  " << convBase(gt.id(), 2);
+  if (id != gt.id())
+    DUNE_THROW(Dune::Exception, "Failed to guess the geometry type from the number of vertices.");
   std::cout << std::endl;
 }
 
 int main()
-{
-  for (int d=0; d<=8; d++)
+try {
+  for (int d=0; d<=3; d++)
     for (int v=d+1; v<=(1<<d); v++)
     {
-      try {
         testGuess(d,v);
-      }
-      catch (Dune::Exception & e)
-      {
-        std::cout << "Error: " << e.what() << std::endl;
-      }
     }
+}
+catch (Dune::Exception & e)
+{
+  std::cout << "Error: " << e.what() << std::endl;
 }
