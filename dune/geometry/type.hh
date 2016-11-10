@@ -566,7 +566,7 @@ namespace Dune
       return dim_;
     }
 
-    /** \brief Return the topology id the type */
+    /** \brief Return the topology id of the type */
     unsigned int id() const {
       return topologyId_;
     }
