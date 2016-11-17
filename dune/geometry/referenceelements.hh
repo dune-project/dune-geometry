@@ -12,9 +12,10 @@
 #include <vector>
 
 #include <dune/common/array.hh>
-#include <dune/common/forloop.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
+#include <dune/common/hybridutilities.hh>
+#include <dune/common/std/utility.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/visibility.hh>
 #include <dune/common/unused.hh>
@@ -545,7 +546,7 @@ namespace Dune
       }
 
       // set up geometries
-      Dune::ForLoop< CreateGeometries, 0, dim >::apply( *this, geometries_ );
+      Hybrid::forEach( Std::make_index_sequence< dim+1 >{}, [ & ]( auto i ){ CreateGeometries< i >::apply( *this, geometries_ ); } );
     }
 
     template< int... codim >
