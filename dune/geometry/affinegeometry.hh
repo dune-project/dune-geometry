@@ -503,10 +503,8 @@ namespace Dune
     /** \brief Create affine geometry from GeometryType, one vertex, and the Jacobian matrix */
     AffineGeometry ( Dune::GeometryType gt, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
-      : refElement_( &ReferenceElements::general( gt ) ), origin_(origin), jacobianTransposed_( jt )
-    {
-      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
-    }
+      : AffineGeometry(ReferenceElements::general( gt ), origin, jt)
+    { }
 
     /** \brief Create affine geometry from reference element and a vector of vertex coordinates */
     template< class CoordVector >
@@ -521,12 +519,8 @@ namespace Dune
     /** \brief Create affine geometry from GeometryType and a vector of vertex coordinates */
     template< class CoordVector >
     AffineGeometry ( Dune::GeometryType gt, const CoordVector &coordVector )
-      : refElement_(&ReferenceElements::general( gt )), origin_(coordVector[0] )
-    {
-      for( int i = 0; i < mydimension; ++i )
-        jacobianTransposed_[ i ] = coordVector[ i+1 ] - origin_;
-      integrationElement_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jacobianTransposed_, jacobianInverseTransposed_ );
-    }
+      : AffineGeometry(ReferenceElements::general( gt ), coordVector)
+    { }
 
     /** \brief Always true: this is an affine geometry */
     bool affine () const { return true; }
