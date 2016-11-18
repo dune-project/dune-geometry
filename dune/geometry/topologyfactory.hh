@@ -8,8 +8,7 @@
 
 #include <dune/common/array.hh>
 
-#include <dune/geometry/genericgeometry/topologytypes.hh>
-#include "type.hh"
+#include <dune/geometry/type.hh>
 
 namespace Dune
 {
@@ -42,34 +41,33 @@ namespace Dune
     typedef typename Traits::Factory Factory;
 
     //! dynamically create objects
-    static Object *create(const Dune::GeometryType &gt, const Key &key)
+    static Object *create ( const Dune::GeometryType &gt, const Key &key )
     {
-      Object *object;
-      GenericGeometry::IfTopology< Maker, dimension >::apply( gt.id(), key, object );
-      return object;
+      return Impl::IfTopology< Maker, dimension >::apply( gt.id(), key );
     }
+
     //! statically create objects
-    template <class Topology>
-    static Object *create(const Key &key)
+    template< class Topology >
+    static Object *create ( const Key &key )
     {
-      return Factory::template createObject<Topology> ( key );
+      return Factory::template createObject< Topology >( key );
     }
+
     //! release the object returned by the create methods
-    static void release( Object *object)
-    {
-      delete object;
-    }
+    static void release( Object *object ) { delete object; }
+
   private:
     // Internal maker class used in ifTopology helper
     template< class Topology >
     struct Maker
     {
-      static void apply ( const Key &key, Object *&object )
+      static Object *apply ( const Key &key )
       {
-        object = create<Topology>( key );
+        return create< Topology >( key );
       };
     };
   };
+
 
 
   /** @brief A wrapper for a TopologyFactory providing

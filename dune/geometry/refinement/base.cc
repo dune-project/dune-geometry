@@ -11,7 +11,6 @@
  */
 
 #include <dune/geometry/type.hh>
-#include <dune/geometry/genericgeometry/topologytypes.hh>
 
 namespace Dune
 {
@@ -57,7 +56,7 @@ namespace Dune
      * e.g.:
      * \code
      * template<class CoordType>
-     * struct Traits<sphereTopologyId, CoordType, GenericGeometry::CubeToplogy<2>::id, 2>
+     * struct Traits<sphereTopologyId, CoordType, Impl::CubeToplogy<2>::id, 2>
      * {
      *   typedef SquaringTheCircle::Refinement Imp;
      * };

@@ -11,7 +11,6 @@
 #include <iostream>
 #include <ostream>
 
-#include <dune/geometry/genericgeometry/topologytypes.hh>
 #include <dune/geometry/test/checkgeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
@@ -138,17 +137,17 @@ void testStaticRefinementGeometry(int &result, int refinement)
 
 int main(int argc, char** argv) try
 {
-  using GenericGeometry::Point;
+  using Impl::Point;
 
-  typedef GenericGeometry::Prism  <Point>    Line;
+  typedef Impl::Prism  <Point>    Line;
 
-  typedef GenericGeometry::Prism  <Line>     Square;
-  typedef GenericGeometry::Pyramid<Line>     Triangle;
+  typedef Impl::Prism  <Line>     Square;
+  typedef Impl::Pyramid<Line>     Triangle;
 
-  typedef GenericGeometry::Prism  <Square>   Cube;
-  typedef GenericGeometry::Pyramid<Square>   Pyramid;
-  typedef GenericGeometry::Prism  <Triangle> Prism;
-  typedef GenericGeometry::Pyramid<Triangle> Tet;
+  typedef Impl::Prism  <Square>   Cube;
+  typedef Impl::Pyramid<Square>   Pyramid;
+  typedef Impl::Prism  <Triangle> Prism;
+  typedef Impl::Pyramid<Triangle> Tet;
 
   // 77 means 'SKIP'
   int result = 77;
