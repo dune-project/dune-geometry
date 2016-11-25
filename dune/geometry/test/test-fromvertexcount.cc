@@ -71,7 +71,7 @@ void testGuess(unsigned int dim, unsigned int vertices)
   Dune::GeometryType gt = Dune::geometryTypeFromVertexCount(dim, vertices);
   std::cout << " real:  " << convBase(gt.id(), 2);
   std::cout << std::endl;
-  if (id != gt.id())
+  if (Dune::GeometryType(id,dim) != gt)
     DUNE_THROW(Dune::Exception, "Failed to guess the geometry type from the number of vertices.");
 }
 
