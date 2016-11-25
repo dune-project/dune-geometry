@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 
-#include <dune/geometry/utility/typefromvertices.hh>
+#include <dune/geometry/utility/typefromvertexcount.hh>
 
 std::string convBase(unsigned long v, long base)
 {
@@ -68,7 +68,7 @@ void testGuess(unsigned int dim, unsigned int vertices)
   std::cout << " vertices: " << vertices << " ";
   unsigned int id = guessTopologyId(dim, vertices);
   std::cout << "guess: " << convBase(id, 2);
-  Dune::GeometryType gt = Dune::geometryTypeFromVertices(dim, vertices);
+  Dune::GeometryType gt = Dune::geometryTypeFromVertexCount(dim, vertices);
   std::cout << " real:  " << convBase(gt.id(), 2);
   std::cout << std::endl;
   if (id != gt.id())

@@ -14,7 +14,7 @@ namespace Dune {
    */
   template<typename T/* = void*/>
   inline
-  GeometryType geometryTypeFromVertices(unsigned int dim, unsigned int vertices, T* dummy/* = 0*/)
+  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices, T* dummy/* = 0*/)
   {
     GeometryType gt;
     switch (dim)

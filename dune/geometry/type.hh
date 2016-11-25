@@ -21,7 +21,7 @@ namespace Dune
   // forward declaration needed for deprecated makeFromVertices
   class GeometryType;
   template<typename T = void>
-  GeometryType geometryTypeFromVertices(unsigned int dim, unsigned int vertices, T* dummy = 0);
+  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices, T* dummy = 0);
 
   namespace Impl
   {
@@ -465,7 +465,7 @@ namespace Dune
      */
     void makeFromVertices(unsigned int dim, unsigned int vertices) DUNE_DEPRECATED_MSG("Use the utility function geometryTypeFromVertices(...) instead.")
     {
-      *this = geometryTypeFromVertices(dim, vertices);
+      *this = geometryTypeFromVertexCount(dim, vertices);
       return;
     }
 
@@ -635,6 +635,6 @@ namespace Dune
 } // namespace Dune
 
 // include utility header needed for deprecated makeFromVertices
-#include "utility/typefromvertices.hh"
+#include "utility/typefromvertexcount.hh"
 
 #endif // DUNE_GEOMETRY_TYPE_HH
