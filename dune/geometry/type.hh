@@ -11,6 +11,7 @@
 
 #include <string>
 
+#include <dune/common/deprecated.hh>
 #include <dune/common/exceptions.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
