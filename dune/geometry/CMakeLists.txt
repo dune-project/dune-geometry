@@ -1,5 +1,6 @@
 add_subdirectory("quadraturerules")
 add_subdirectory("refinement")
+add_subdirectory("utility")
 add_subdirectory("test")
 
 install(FILES

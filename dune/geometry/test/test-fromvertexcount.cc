@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 
-#include <dune/geometry/type.hh>
+#include <dune/geometry/utility/typefromvertexcount.hh>
 
 std::string convBase(unsigned long v, long base)
 {
@@ -37,8 +37,6 @@ void guessTopologyId(unsigned int dim, unsigned int vertices,
       ids.push_back(id);
     return;
   }
-  // if (v > vertices-dim+d)
-  //     return;
   // try simplex
   guessTopologyId(dim,vertices,v+1,id,d+1,ids);
   // try cube
@@ -50,15 +48,11 @@ unsigned int guessTopologyId(unsigned int dim, unsigned int vertices)
   std::vector<unsigned int> ids;
   if (dim == 0 || dim == 1)
     return 0;
-  if (vertices < dim+1 || vertices > 1<<dim)
+  if (vertices < dim+1 || vertices > 1u<<dim)
     DUNE_THROW(Dune::Exception, "IMPOSSIBLE");
   guessTopologyId(dim,vertices,2,1,1,ids);
   if (ids.size() == 0)
     DUNE_THROW(Dune::Exception, "Impossible setting");
-  std::cout << "(";
-  for (size_t i=0; i<ids.size(); i++)
-    std::cout << " possibility " << i << ": " << convBase(ids[i],2);
-  std::cout << ") ";
   if (ids.size() > 1)
     DUNE_THROW(Dune::Exception, "Too many options");
   return ids[0];
@@ -66,29 +60,23 @@ unsigned int guessTopologyId(unsigned int dim, unsigned int vertices)
 
 void testGuess(unsigned int dim, unsigned int vertices)
 {
-  std::cout << "dim: " << dim;
-  std::cout << " vertices: " << vertices << " ";
+  std::cout << "check dim: " << dim
+            << " vertices: " << vertices
+            << std::endl;
   unsigned int id = guessTopologyId(dim, vertices);
-  std::cout << "guess: " << convBase(id, 2);
-  if (dim <= 3) {
-    Dune::GeometryType gt;
-    gt.makeFromVertices(dim, vertices);
-    std::cout << " real:  " << convBase(gt.id(), 2);
-  }
-  std::cout << std::endl;
+  Dune::GeometryType gt = Dune::geometryTypeFromVertexCount(dim, vertices);
+  if (Dune::GeometryType(id,dim) != gt)
+    DUNE_THROW(Dune::Exception, "Failed to guess the geometry type from the number of vertices.");
 }
 
 int main()
-{
-  for (int d=0; d<=8; d++)
-    for (int v=d+1; v<=(1<<d); v++)
-    {
-      try {
+try {
+  std::vector<std::vector<int>> configurations = { {1}, {2}, {3,4}, {4,5,6,8} };
+  for (int d=0; d<=3; d++)
+    for (int v : configurations[d])
         testGuess(d,v);
-      }
-      catch (Dune::Exception & e)
-      {
-        std::cout << "Error: " << e.what() << std::endl;
-      }
-    }
+}
+catch (Dune::Exception & e)
+{
+  std::cout << "Error: " << e.what() << std::endl;
 }

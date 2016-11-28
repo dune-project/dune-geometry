@@ -18,6 +18,11 @@
 namespace Dune
 {
 
+  // forward declaration needed for deprecated makeFromVertices
+  class GeometryType;
+  template<typename T = void>
+  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices, T* dummy = 0);
+
   namespace Impl
   {
 
@@ -458,47 +463,10 @@ namespace Dune
      *  \note This code only works up to dimension 3.
      *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedron.
      */
-    void makeFromVertices(unsigned int dim, unsigned int vertices)
+    void makeFromVertices(unsigned int dim, unsigned int vertices) DUNE_DEPRECATED_MSG("Use the utility function geometryTypeFromVertices(...) instead.")
     {
-      switch (dim)
-      {
-      case 0 :
-        makeVertex();
-        return;
-      case 1 :
-        makeLine();
-        return;
-      case 2 :
-        switch (vertices) {
-        case 3 :
-          makeSimplex(2);
-          return;
-        case 4 :
-          makeCube(2);
-          return;
-        default :
-          DUNE_THROW(NotImplemented, "2d elements with " << vertices << " corners are not supported!");
-        }
-      case 3 :
-        switch (vertices) {
-        case 4 :
-          makeSimplex(3);
-          return;
-        case 5 :
-          makePyramid();
-          return;
-        case 6 :
-          makePrism();
-          return;
-        case 8 :
-          makeCube(3);
-          return;
-        default :
-          DUNE_THROW(NotImplemented, "3d elements with " << vertices << " corners are not supported!");
-        }
-      default :
-        DUNE_THROW(NotImplemented, "makeFromVertices only implemented up to 3d");
-      }
+      *this = geometryTypeFromVertexCount(dim, vertices);
+      return;
     }
 
     /*@}*/
@@ -665,5 +633,8 @@ namespace Dune
   }
 
 } // namespace Dune
+
+// include utility header needed for deprecated makeFromVertices
+#include "utility/typefromvertexcount.hh"
 
 #endif // DUNE_GEOMETRY_TYPE_HH
