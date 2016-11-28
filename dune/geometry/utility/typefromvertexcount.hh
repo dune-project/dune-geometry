@@ -1,7 +1,7 @@
 // -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
-#ifndef DUNE_GEOMETRY_TYPE_FROM_VERTICES_HH
-#define DUNE_GEOMETRY_TYPE_FROM_VERTICES_HH
+#ifndef DUNE_GEOMETRY_TYPE_FROM_VERTEX_COUNT_HH
+#define DUNE_GEOMETRY_TYPE_FROM_VERTEX_COUNT_HH
 
 #include <dune/geometry/type.hh>
 
@@ -52,10 +52,10 @@ namespace Dune {
             DUNE_THROW(NotImplemented, "3d elements with " << vertices << " corners are not supported!");
         }
       default :
-        DUNE_THROW(NotImplemented, "geometryTypeFromVertices works only up to dim=3");
+        DUNE_THROW(NotImplemented, "geometryTypeFromVertexCount works only up to dim=3");
     }
   }
 
 }
 
-#endif // DUNE_GEOMETRY_TYPE_FROM_VERTICES_HH
+#endif // DUNE_GEOMETRY_TYPE_FROM_VERTEX_COUNT_HH

@@ -463,7 +463,7 @@ namespace Dune
      *  \note This code only works up to dimension 3.
      *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedron.
      */
-    void makeFromVertices(unsigned int dim, unsigned int vertices) DUNE_DEPRECATED_MSG("Use the utility function geometryTypeFromVertices(...) instead.")
+    void makeFromVertices(unsigned int dim, unsigned int vertices) DUNE_DEPRECATED_MSG("Use the utility function geometryTypeFromVertexCount(...) instead.")
     {
       *this = geometryTypeFromVertexCount(dim, vertices);
       return;
