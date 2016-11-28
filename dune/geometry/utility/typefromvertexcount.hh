@@ -10,11 +10,9 @@ namespace Dune {
   /** \brief Utitlity function to construct the correct geometry type given the dimension and the number of vertices
    *  \note This code only works up to dimension 3.
    *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedron.
-   *  \note As this function should never go into a library, but be inline, we enforce weak symbols by using a template for the unsigned int index type.
    */
-  template<typename T/* = void*/>
   inline
-  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices, T* dummy/* = 0*/)
+  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices)
   {
     GeometryType gt;
     switch (dim)
