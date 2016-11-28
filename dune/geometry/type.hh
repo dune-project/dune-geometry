@@ -11,6 +11,7 @@
 
 #include <string>
 
+#include <dune/common/deprecated.hh>
 #include <dune/common/exceptions.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
@@ -20,8 +21,7 @@ namespace Dune
 
   // forward declaration needed for deprecated makeFromVertices
   class GeometryType;
-  template<typename T = void>
-  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices, T* dummy = 0);
+  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices);
 
   namespace Impl
   {
