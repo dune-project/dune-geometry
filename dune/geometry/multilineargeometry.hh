@@ -699,8 +699,11 @@ namespace Dune
       // apply (1-xn) times mapping for bottom (with argument x/(1-xn))
       if( cxn > Traits::tolerance() || cxn < -Traits::tolerance() )
         global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df/cxn, x, rf*cxn, y );
-      else
-        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, ctype( 0 ), y );
+      else {
+        CornerIterator cit2(cit);
+        global< add >( topologyId, std::integral_constant< int, dim-1 >(), cit, df, x, rf, y );
+        global< true >(topologyId, std::integral_constant< int, dim-1 >(), cit2, df, LocalCoordinate(0), -rf, y );
+      }
       // apply xn times the tip
       y.axpy( rf*xn, *cit );
       ++cit;
@@ -781,7 +784,7 @@ namespace Dune
        *     = -y0 + t
        * which is continuous for xn -> 1. Note that this b is also given by
        *   b = -Tb(0) + t + \sum_i dTb/dx_i(0) x_i/1
-       * that is replacing x* by 1 and 1-xn by 1 in the formular above.
+       * that is replacing x* by 0 and 1-xn by 1 in the formular above.
        *
        * For xn -> 1, we can thus set x*=0, "1-xn"=1 (or anything != 0) and get
        * the right result in case Tb is affine-linear.
