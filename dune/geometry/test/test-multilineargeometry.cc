@@ -104,6 +104,7 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
     Dune::FieldVector<ctype, mydim> local(refElement.position(c, mydim));
     Dune::FieldVector<ctype, cdim> global(geometry.global(local));
     Dune::FieldVector<ctype, mydim> local2(geometry.local(global));
+
     if (local2 != local2) {
       std::cerr << "Error: at corner " << c << " local returned NaN: "
                 << local2 << std::endl;
@@ -114,6 +115,16 @@ static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim
                 << local2 << " (expected: " << local << ")" << std::endl;
       pass = false;
     }
+  }
+
+  Dune::FieldVector<ctype, mydim> local(refElement.position(geometry.corners()-1, mydim));
+  if (mydim > 1)
+    local[mydim - 2] += 0.5;
+  Dune::FieldVector<ctype, mydim> local2(geometry.local(geometry.global(local)));
+  if ((local - local2).two_norm() > epsilon) {
+    std::cerr << "Error: local() does not invert global() outside reference element: "
+              << "local(global(x)) = " << local2 << " (expected: x = " << local << ")" << std::endl;
+    pass = false;
   }
 
   const Dune::FieldMatrix< ctype, mydim, cdim > JT = geometry.jacobianTransposed( localCenter );
