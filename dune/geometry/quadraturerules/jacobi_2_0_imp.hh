@@ -1262,7 +1262,7 @@ namespace Dune {
       break;
 
     default :
-       DUNE_THROW(QuadratureOrderOutOfRange, "Quadrature rule " << p << " not supported!");
+      DUNE_THROW(QuadratureOrderOutOfRange, "Quadrature rule " << p << " not supported!");
     }
   }
 
