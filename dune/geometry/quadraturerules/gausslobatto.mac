@@ -1,5 +1,5 @@
 /*
- * Run `maxima --batch jacobian.mac'.
+ * Run `maxima --batch gausslobatto.mac'.
  */
 
 /* adjust search path */

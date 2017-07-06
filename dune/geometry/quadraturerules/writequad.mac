@@ -95,9 +95,9 @@ for i: 1 thru maxp/2+1 do block([],
     p: (points[n]+1)/2,
     p: max(p-epsilon,-epsilon)+epsilon,
     w: weights[n]/2,
-    printf(fd,"      _points[~d] = \"~h\";
+    printf(fd,"      _points[~d] = ct(\"~h\");
 ",n_-1,p),
-    printf(fd,"      _weight[~d] = \"~h\";
+    printf(fd,"      _weight[~d] = ct(\"~h\");
 ",n_-1,w)
   ),
   printf(fd,"      break;
