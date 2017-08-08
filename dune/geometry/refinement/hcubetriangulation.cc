@@ -75,13 +75,13 @@ namespace Dune
         typedef typename Codim<0>::SubEntityIterator ElementIterator;
         typedef FieldVector<int, dimension+1> IndexVector;
 
-        static int nVertices(int level);
-        static VertexIterator vBegin(int level);
-        static VertexIterator vEnd(int level);
+        static int nVertices(int nHypercubes);
+        static VertexIterator vBegin(int nHypercubes);
+        static VertexIterator vEnd(int nHypercubes);
 
-        static int nElements(int level);
-        static ElementIterator eBegin(int level);
-        static ElementIterator eEnd(int level);
+        static int nElements(int nHypercubes);
+        static ElementIterator eBegin(int nHypercubes);
+        static ElementIterator eEnd(int nHypercubes);
       private:
         friend class RefinementIteratorSpecial<dimension, CoordType, 0>;
         friend class RefinementIteratorSpecial<dimension, CoordType, dimension>;
@@ -100,49 +100,49 @@ namespace Dune
       template<int dimension, class CoordType>
       int
       RefinementImp<dimension, CoordType>::
-      nVertices(int level)
+      nVertices(int nHypercubes)
       {
-        return BackendRefinement::nVertices(level) * Factorial<dimension>::factorial;
+        return BackendRefinement::nVertices(nHypercubes) * Factorial<dimension>::factorial;
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vBegin(int level)
+      vBegin(int nHypercubes)
       {
-        return VertexIterator(level);
+        return VertexIterator(nHypercubes);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vEnd(int level)
+      vEnd(int nHypercubes)
       {
-        return VertexIterator(level, true);
+        return VertexIterator(nHypercubes, true);
       }
 
       template<int dimension, class CoordType>
       int
       RefinementImp<dimension, CoordType>::
-      nElements(int level)
+      nElements(int nHypercubes)
       {
-        return BackendRefinement::nElements(level) * Factorial<dimension>::factorial;
+        return BackendRefinement::nElements(nHypercubes) * Factorial<dimension>::factorial;
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eBegin(int level)
+      eBegin(int nHypercubes)
       {
-        return ElementIterator(level);
+        return ElementIterator(nHypercubes);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eEnd(int level)
+      eEnd(int nHypercubes)
       {
-        return ElementIterator(level, true);
+        return ElementIterator(nHypercubes, true);
       }
 
       // //////////////
@@ -159,7 +159,7 @@ namespace Dune
         typedef typename Refinement::CoordVector CoordVector;
         typedef typename Refinement::template Codim<dimension>::Geometry Geometry;
 
-        RefinementIteratorSpecial(int level, bool end = false);
+        RefinementIteratorSpecial(int nHypercubes, bool end = false);
 
         void increment();
 
@@ -173,7 +173,7 @@ namespace Dune
         typedef typename BackendRefinement::template Codim<dimension>::SubEntityIterator BackendIterator;
         enum { nKuhnSimplices = Factorial<dimension>::factorial };
 
-        int level_;
+        int nHypercubes_;
 
         int kuhnIndex;
         BackendIterator backend;
@@ -182,10 +182,10 @@ namespace Dune
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
-      RefinementIteratorSpecial(int level, bool end)
-        : level_(level), kuhnIndex(0),
-          backend(BackendRefinement::vBegin(level_)),
-          backendEnd(BackendRefinement::vEnd(level_))
+      RefinementIteratorSpecial(int nHypercubes, bool end)
+        : nHypercubes_(nHypercubes), kuhnIndex(0),
+          backend(BackendRefinement::vBegin(nHypercubes_)),
+          backendEnd(BackendRefinement::vEnd(nHypercubes_))
       {
         if (end)
           kuhnIndex = nKuhnSimplices;
@@ -199,7 +199,7 @@ namespace Dune
         ++backend;
         if (backend == backendEnd)
         {
-          backend = BackendRefinement::vBegin(level_);
+          backend = BackendRefinement::vBegin(nHypercubes_);
           ++kuhnIndex;
         }
       }
@@ -226,7 +226,7 @@ namespace Dune
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
       index() const
       {
-        return kuhnIndex*BackendRefinement::nVertices(level_) + backend.index();
+        return kuhnIndex*BackendRefinement::nVertices(nHypercubes_) + backend.index();
       }
 
       // elements
@@ -239,7 +239,7 @@ namespace Dune
         typedef typename Refinement::CoordVector CoordVector;
         typedef typename Refinement::template Codim<0>::Geometry Geometry;
 
-        RefinementIteratorSpecial(int level_, bool end = false);
+        RefinementIteratorSpecial(int nHypercubes_, bool end = false);
         RefinementIteratorSpecial(const RefinementIteratorSpecial<dimension, CoordType, 0> &other);
 
         void increment();
@@ -258,7 +258,7 @@ namespace Dune
         typedef typename BackendRefinement::template Codim<0>::SubEntityIterator BackendIterator;
         enum { nKuhnSimplices = Factorial<dimension>::factorial };
 
-        int level_;
+        int nHypercubes_;
 
         int kuhnIndex;
         BackendIterator backend;
@@ -267,10 +267,10 @@ namespace Dune
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, 0>::
-      RefinementIteratorSpecial(int level, bool end)
-        : level_(level), kuhnIndex(0),
-          backend(BackendRefinement::eBegin(level_)),
-          backendEnd(BackendRefinement::eEnd(level_))
+      RefinementIteratorSpecial(int nHypercubes, bool end)
+        : nHypercubes_(nHypercubes), kuhnIndex(0),
+          backend(BackendRefinement::eBegin(nHypercubes_)),
+          backendEnd(BackendRefinement::eEnd(nHypercubes_))
       {
         if (end)
           kuhnIndex = nKuhnSimplices;
@@ -278,7 +278,7 @@ namespace Dune
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, 0>::
       RefinementIteratorSpecial(const RefinementIteratorSpecial<dimension, CoordType, 0> &other)
-        : level_(other.level_), kuhnIndex(other.kuhnIndex),
+        : nHypercubes_(other.nHypercubes_), kuhnIndex(other.kuhnIndex),
           backend(other.backend),
           backendEnd(other.backendEnd)
       {}
@@ -291,7 +291,7 @@ namespace Dune
         ++backend;
         if (backend == backendEnd)
         {
-          backend = BackendRefinement::eBegin(level_);
+          backend = BackendRefinement::eBegin(nHypercubes_);
           ++kuhnIndex;
         }
       }
@@ -303,7 +303,7 @@ namespace Dune
       {
         IndexVector indices = backend.vertexIndices();
 
-        int base = kuhnIndex * BackendRefinement::nVertices(level_);
+        int base = kuhnIndex * BackendRefinement::nVertices(nHypercubes_);
         indices += base;
 
         return indices;
@@ -314,7 +314,7 @@ namespace Dune
       RefinementIteratorSpecial<dimension, CoordType, 0>::
       index() const
       {
-        return kuhnIndex*BackendRefinement::nElements(level_) + backend.index();
+        return kuhnIndex*BackendRefinement::nElements(nHypercubes_) + backend.index();
       }
 
       template<int dimension, class CoordType>
@@ -357,7 +357,7 @@ namespace Dune
         typedef RefinementImp<dimension, CoordType> Refinement;
         typedef SubEntityIterator This;
 
-        SubEntityIterator(int level, bool end = false);
+        SubEntityIterator(int nHypercubes, bool end = false);
 
         bool equals(const This &other) const;
       protected:
@@ -369,8 +369,8 @@ namespace Dune
       template<int dimension, class CoordType>
       template<int codimension>
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
-      SubEntityIterator(int level, bool end)
-        : RefinementIteratorSpecial<dimension, CoordType, codimension>(level, end)
+      SubEntityIterator(int nHypercubes, bool end)
+        : RefinementIteratorSpecial<dimension, CoordType, codimension>(nHypercubes, end)
       {}
 
       template<int dimension, class CoordType>

@@ -76,13 +76,13 @@ namespace Dune
         typedef typename Codim<0>::SubEntityIterator ElementIterator;
         typedef FieldVector<int, dimension+1> IndexVector;
 
-        static int nVertices(int level);
-        static VertexIterator vBegin(int level);
-        static VertexIterator vEnd(int level);
+        static int nVertices(int nPyramids);
+        static VertexIterator vBegin(int nPyramids);
+        static VertexIterator vEnd(int nPyramids);
 
-        static int nElements(int level);
-        static ElementIterator eBegin(int level);
-        static ElementIterator eEnd(int level);
+        static int nElements(int nPyramids);
+        static ElementIterator eBegin(int nPyramids);
+        static ElementIterator eEnd(int nPyramids);
 
       private:
         friend class RefinementIteratorSpecial<dimension, CoordType, 0>;
@@ -104,49 +104,49 @@ namespace Dune
       template<int dimension, class CoordType>
       int
       RefinementImp<dimension, CoordType>::
-      nVertices(int level)
+      nVertices(int nPyramids)
       {
-        return BackendRefinement::nVertices(level) * nKuhnSimplices;
+        return BackendRefinement::nVertices(nPyramids) * nKuhnSimplices;
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vBegin(int level)
+      vBegin(int nPyramids)
       {
-        return VertexIterator(level);
+        return VertexIterator(nPyramids);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vEnd(int level)
+      vEnd(int nPyramids)
       {
-        return VertexIterator(level, true);
+        return VertexIterator(nPyramids, true);
       }
 
       template<int dimension, class CoordType>
       int
       RefinementImp<dimension, CoordType>::
-      nElements(int level)
+      nElements(int nPyramids)
       {
-        return BackendRefinement::nElements(level) * nKuhnSimplices;
+        return BackendRefinement::nElements(nPyramids) * nKuhnSimplices;
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eBegin(int level)
+      eBegin(int nPyramids)
       {
-        return ElementIterator(level);
+        return ElementIterator(nPyramids);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eEnd(int level)
+      eEnd(int nPyramids)
       {
-        return ElementIterator(level, true);
+        return ElementIterator(nPyramids, true);
       }
 
       // //////////////
@@ -163,7 +163,7 @@ namespace Dune
         typedef typename Refinement::CoordVector CoordVector;
         typedef typename Refinement::template Codim<dimension>::Geometry Geometry;
 
-        RefinementIteratorSpecial(int level, bool end = false);
+        RefinementIteratorSpecial(int nPyramids, bool end = false);
 
         void increment();
 
@@ -177,7 +177,7 @@ namespace Dune
         typedef typename BackendRefinement::template Codim<dimension>::SubEntityIterator BackendIterator;
         enum { nKuhnSimplices = 2 };
 
-        int level_;
+        int nPyramids_;
 
         int kuhnIndex;
         BackendIterator backend;
@@ -186,10 +186,10 @@ namespace Dune
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
-      RefinementIteratorSpecial(int level, bool end)
-        : level_(level), kuhnIndex(0),
-          backend(BackendRefinement::vBegin(level_)),
-          backendEnd(BackendRefinement::vEnd(level_))
+      RefinementIteratorSpecial(int nPyramids, bool end)
+        : nPyramids_(nPyramids), kuhnIndex(0),
+          backend(BackendRefinement::vBegin(nPyramids_)),
+          backendEnd(BackendRefinement::vEnd(nPyramids_))
       {
         if (end)
           kuhnIndex = nKuhnSimplices;
@@ -203,7 +203,7 @@ namespace Dune
         ++backend;
         if(backend == backendEnd)
         {
-          backend = BackendRefinement::vBegin(level_);
+          backend = BackendRefinement::vBegin(nPyramids_);
           ++kuhnIndex;
         }
       }
@@ -231,7 +231,7 @@ namespace Dune
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
       index() const
       {
-        return kuhnIndex*BackendRefinement::nVertices(level_) + backend.index();
+        return kuhnIndex*BackendRefinement::nVertices(nPyramids_) + backend.index();
       }
 
       // elements
@@ -244,7 +244,7 @@ namespace Dune
         typedef typename Refinement::CoordVector CoordVector;
         typedef typename Refinement::template Codim<0>::Geometry Geometry;
 
-        RefinementIteratorSpecial(int level, bool end = false);
+        RefinementIteratorSpecial(int nPyramids, bool end = false);
 
         void increment();
 
@@ -262,7 +262,7 @@ namespace Dune
         typedef typename BackendRefinement::template Codim<0>::SubEntityIterator BackendIterator;
         enum { nKuhnSimplices = 2};
 
-        int level_;
+        int nPyramids_;
 
         int kuhnIndex;
         BackendIterator backend;
@@ -271,10 +271,10 @@ namespace Dune
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, 0>::
-      RefinementIteratorSpecial(int level, bool end)
-        : level_(level), kuhnIndex(0),
-          backend(BackendRefinement::eBegin(level_)),
-          backendEnd(BackendRefinement::eEnd(level_))
+      RefinementIteratorSpecial(int nPyramids, bool end)
+        : nPyramids_(nPyramids), kuhnIndex(0),
+          backend(BackendRefinement::eBegin(nPyramids_)),
+          backendEnd(BackendRefinement::eEnd(nPyramids_))
       {
         if (end)
           kuhnIndex = nKuhnSimplices;
@@ -288,7 +288,7 @@ namespace Dune
         ++backend;
         if (backend == backendEnd)
         {
-          backend = BackendRefinement::eBegin(level_);
+          backend = BackendRefinement::eBegin(nPyramids_);
           ++kuhnIndex;
         }
       }
@@ -300,7 +300,7 @@ namespace Dune
       {
         IndexVector indices = backend.vertexIndices();
 
-        int base = kuhnIndex * BackendRefinement::nVertices(level_);
+        int base = kuhnIndex * BackendRefinement::nVertices(nPyramids_);
         indices += base;
 
         return indices;
@@ -311,7 +311,7 @@ namespace Dune
       RefinementIteratorSpecial<dimension, CoordType, 0>::
       index() const
       {
-        return kuhnIndex*BackendRefinement::nElements(level_) + backend.index();
+        return kuhnIndex*BackendRefinement::nElements(nPyramids_) + backend.index();
       }
 
       template<int dimension, class CoordType>
@@ -357,7 +357,7 @@ namespace Dune
         typedef RefinementImp<dimension, CoordType> Refinement;
         typedef SubEntityIterator This;
 
-        SubEntityIterator(int level, bool end = false);
+        SubEntityIterator(int nPyramids, bool end = false);
 
         bool equals(const This &other) const;
       protected:
@@ -369,8 +369,8 @@ namespace Dune
       template<int dimension, class CoordType>
       template<int codimension>
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
-      SubEntityIterator(int level, bool end)
-        : RefinementIteratorSpecial<dimension, CoordType, codimension>(level, end)
+      SubEntityIterator(int nPyramids, bool end)
+        : RefinementIteratorSpecial<dimension, CoordType, codimension>(nPyramids, end)
       {}
 
       template<int dimension, class CoordType>
