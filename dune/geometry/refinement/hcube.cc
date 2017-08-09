@@ -242,16 +242,11 @@ namespace Dune
 
         // vertices
         IndexVector vec;
-        std::array<unsigned int, dimension> v;
         for(int i = 0; i < nIndices; ++i)
         {
           std::array<unsigned int, dimension> alpha(asCommon().idx2multiidx(i));
           for (int d = 0; d < dimension; d++)
-          {
             vec[i] += (alpha[d]+e[d])*std::pow(asCommon()._nhypercubes+1, d);
-          }
-          // compute vertex index tuple from cell tuple
-//          vec[nIndices-1-i] = asCommon().vertexIdx(v);
         }
         return vec;
       }
