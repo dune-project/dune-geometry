@@ -281,6 +281,11 @@ namespace Dune
   // Refinement
   //
 
+  struct VirtualRefinementTag
+  {
+    enum {LEVEL=1, PER_AXIS=2};
+  };
+
   /*!
    * \brief VirtualRefinement base class
    *
@@ -317,28 +322,28 @@ namespace Dune
     typedef SubEntityIteratorBack<0> ElementIteratorBack;
 
     //! Get the number of Vertices
-    virtual int nVertices(int level) const = 0;
+    virtual int nVertices(int level, unsigned int tag=VirtualRefinementTag::LEVEL) const = 0;
     //! Get a VertexIterator
-    VertexIterator vBegin(int level) const;
+    VertexIterator vBegin(int level, unsigned int tag=VirtualRefinementTag::LEVEL) const;
     //! Get a VertexIterator
-    VertexIterator vEnd(int level) const;
+    VertexIterator vEnd(int level, unsigned int tag=VirtualRefinementTag::LEVEL) const;
 
     //! Get the number of Elements
-    virtual int nElements(int level) const = 0;
+    virtual int nElements(int level, unsigned int tag=VirtualRefinementTag::LEVEL) const = 0;
     //! Get an ElementIterator
-    ElementIterator eBegin(int level) const;
+    ElementIterator eBegin(int level, unsigned int tag=VirtualRefinementTag::LEVEL) const;
     //! Get an ElementIterator
-    ElementIterator eEnd(int level) const;
+    ElementIterator eEnd(int level, unsigned int tag=VirtualRefinementTag::LEVEL) const;
 
     //! Destructor
     virtual ~VirtualRefinement()
     {}
 
   protected:
-    virtual VertexIteratorBack *vBeginBack(int level) const = 0;
-    virtual VertexIteratorBack *vEndBack(int level) const = 0;
-    virtual ElementIteratorBack *eBeginBack(int level) const = 0;
-    virtual ElementIteratorBack *eEndBack(int level) const = 0;
+    virtual VertexIteratorBack *vBeginBack(int level, unsigned int tag) const = 0;
+    virtual VertexIteratorBack *vEndBack(int level, unsigned int tag) const = 0;
+    virtual ElementIteratorBack *eBeginBack(int level, unsigned int tag) const = 0;
+    virtual ElementIteratorBack *eEndBack(int level, unsigned int tag) const = 0;
   };
 
   //! codim database of VirtualRefinement

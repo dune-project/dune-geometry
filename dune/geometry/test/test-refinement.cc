@@ -49,7 +49,8 @@ void collect(int &result, bool passed)
  */
 template <class ct, int dim>
 void testVirtualRefinement(int &result, const Dune::GeometryType& elementType,
-                           const Dune::GeometryType& coerceTo, int refinement)
+                           const Dune::GeometryType& coerceTo, int refinement,
+                           unsigned int tag)
 {
   std::cout << "Checking virtual refinement " << elementType << " -> "
             << coerceTo << " level " << refinement << std::endl;
@@ -65,8 +66,8 @@ void testVirtualRefinement(int &result, const Dune::GeometryType& elementType,
   Refinement & elementRefinement =
     Dune::buildRefinement<dim, ct>(elementType, coerceTo);
 
-  eIterator eSubEnd = elementRefinement.eEnd(refinement);
-  eIterator eSubIt  = elementRefinement.eBegin(refinement);
+  eIterator eSubEnd = elementRefinement.eEnd(refinement, tag);
+  eIterator eSubIt  = elementRefinement.eBegin(refinement, tag);
 
   for (; eSubIt != eSubEnd; ++eSubIt)
   {
@@ -82,8 +83,8 @@ void testVirtualRefinement(int &result, const Dune::GeometryType& elementType,
     }
   }
 
-  vIterator vSubEnd = elementRefinement.vEnd(refinement);
-  vIterator vSubIt  = elementRefinement.vBegin(refinement);
+  vIterator vSubEnd = elementRefinement.vEnd(refinement, tag);
+  vIterator vSubIt  = elementRefinement.vBegin(refinement, tag);
 
   for (; vSubIt != vSubEnd; ++vSubIt)
   {
@@ -157,90 +158,99 @@ int main(int argc, char** argv) try
   // test segment
   gt1.makeLine();
   gt2.makeLine();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,1>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,1>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,1>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Line::id,double,Line::id,1>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test triangle
   gt1.makeTriangle();
   gt2.makeTriangle();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,2>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,2>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,2>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Triangle::id,double,Triangle::id,2>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test quadrilateral
   gt1.makeQuadrilateral();
   gt2.makeQuadrilateral();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,2>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,2>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,2>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Square::id,double,Square::id,2>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test refinement of a quadrilateral by triangles
   gt2.makeTriangle();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,2>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,2>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,2>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Square::id,double,Triangle::id,2>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test tetrahedron
   gt1.makeTetrahedron();
   gt2.makeTetrahedron();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,3>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,3>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,3>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Tet::id,double,Tet::id,3>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test pyramid
   gt1.makePyramid();
   gt2.makeTetrahedron();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,3>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,3>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,3>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Pyramid::id,double,Tet::id,3>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test prism
   gt1.makePrism();
   gt2.makeTetrahedron();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,3>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,3>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,3>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Prism::id,double,Tet::id,3>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test hexahedron
   gt1.makeHexahedron();
   gt2.makeHexahedron();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,3>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,3>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,3>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Cube::id,double,Cube::id,3>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   // test refinement of hexahedron by tetrahedra
   gt1.makeHexahedron();
   gt2.makeTetrahedron();
-  for (unsigned int refinement = 1; refinement < 6; refinement++)
+  for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
-    testVirtualRefinement<double,3>(result, gt1, gt2, refinement);
+    testVirtualRefinement<double,3>(result, gt1, gt2, refinement, VirtualRefinementTag::LEVEL);
+    testVirtualRefinement<double,3>(result, gt1, gt2, 1<<refinement, VirtualRefinementTag::PER_AXIS);
     testStaticRefinementGeometry<Cube::id,double,Tet::id,3>
-      (result, refinement);
+      (result, 1<<refinement);
   }
 
   return result;
