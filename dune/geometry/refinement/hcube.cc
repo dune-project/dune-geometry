@@ -204,7 +204,7 @@ namespace Dune
         CoordVector c;
         for (int d = 0; d < dimension; d++)
         {
-          c[d] = v[d]*1.0 / asCommon()._nHyperubes;
+          c[d] = v[d]*1.0 / asCommon()._nHypercubes;
         }
         return c;
       }
@@ -244,9 +244,12 @@ namespace Dune
         IndexVector vec;
         for(int i = 0; i < nIndices; ++i)
         {
+          int base = 1;
           std::array<unsigned int, dimension> alpha(asCommon().idx2multiidx(i));
-          for (int d = 0; d < dimension; d++)
-            vec[i] += (alpha[d]+e[d])*std::pow(asCommon()._nHyperubes+1, d);
+          for (int d = 0; d < dimension; d++) {
+            vec[i] += (alpha[d] + e[d]) * base;
+            base *= asCommon()._nHypercubes+1;
+          }
         }
         return vec;
       }
@@ -260,7 +263,7 @@ namespace Dune
         CoordVector c;
         for (int d=0; d<dimension; d++)
         {
-          c[d] = (v[d]*1.0 + 0.5) / asCommon()._nHyperubes;
+          c[d] = (v[d]*1.0 + 0.5) / asCommon()._nHypercubes;
         }
         return c;
       }
@@ -287,18 +290,18 @@ namespace Dune
       private:
         friend class RefinementSubEntityIteratorSpecial<dimension, CoordType, codimension>;
         unsigned int _index;
-        unsigned int _nHyperubes;
+        unsigned int _nHypercubes;
 
         std::array<unsigned int, dimension>
         cellCoord(unsigned int idx) const
         {
-          return idx2coord(idx, _nHyperubes);
+          return idx2coord(idx, _nHypercubes);
         }
 
         std::array<unsigned int, dimension>
         vertexCoord(unsigned int idx) const
         {
-          return idx2coord(idx, _nHyperubes+1u);
+          return idx2coord(idx, _nHypercubes+1u);
         }
 
         std::array<unsigned int, dimension>
@@ -342,14 +345,14 @@ namespace Dune
         {
           std::array<unsigned int, dimension> alpha;
           for (unsigned int i = 0; i < dimension; ++i)
-            alpha[i] = (idx & (1u<<i))>>i;
+            alpha[i] = (idx >> i) & 1u;
           return alpha;
         }
 
         unsigned int
         vertexIdx(std::array<unsigned int, dimension> c) const
         {
-          return coord2idx(c, _nHyperubes+1u);
+          return coord2idx(c, _nHypercubes+1u);
         }
       };
 
@@ -358,7 +361,7 @@ namespace Dune
       template<int codimension>
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
       SubEntityIterator(unsigned int index, unsigned int nHyperubes)
-        : _index(index), _nHyperubes(nHyperubes)
+        : _index(index), _nHypercubes(nHyperubes)
       {}
 
       template<int dimension, class CoordType>
@@ -367,7 +370,7 @@ namespace Dune
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
       equals(const This &other) const
       {
-        return ((_index == other._index) && (_nHyperubes == other._nHyperubes));
+        return ((_index == other._index) && (_nHypercubes == other._nHypercubes));
       }
 
       template<int dimension, class CoordType>
@@ -393,7 +396,7 @@ namespace Dune
       typename RefinementImp<dimension, CoordType>::template Codim<codimension>::Geometry
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::geometry () const
       {
-        std::array<unsigned int,dimension> intCoords = idx2coord(_index,_nHyperubes);
+        std::array<unsigned int,dimension> intCoords = idx2coord(_index,_nHypercubes);
 
         Dune::FieldVector<CoordType,dimension> lower;
         Dune::FieldVector<CoordType,dimension> upper;
@@ -403,12 +406,12 @@ namespace Dune
         if (codimension == 0) {
           for (size_t j = 0; j < dimension; j++)
           {
-            lower[j] = double(intCoords[j])     / double(_nHyperubes);
-            upper[j] = double(intCoords[j] + 1) / double(_nHyperubes);
+            lower[j] = double(intCoords[j])     / double(_nHypercubes);
+            upper[j] = double(intCoords[j] + 1) / double(_nHypercubes);
           }
         } else {
           for (size_t j = 0; j < dimension; j++)
-            lower[j] = upper[j] = double(intCoords[j]) / double(_nHyperubes);
+            lower[j] = upper[j] = double(intCoords[j]) / double(_nHypercubes);
         }
 
         return typename RefinementImp<dimension,
