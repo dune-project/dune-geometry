@@ -58,7 +58,7 @@ namespace Dune
      *
      * See \ref HCubeRefinement.
      */
-    namespace HCubeArbitraryRefinement
+    namespace HCube
     {
       /*!
        * \brief \ref Refinement implementation for hypercubes
@@ -438,7 +438,7 @@ namespace Dune
             )>::type
         >
     {
-      typedef HCubeArbitraryRefinement::RefinementImp<dim, CoordType> Imp;
+      typedef HCube::RefinementImp<dim, CoordType> Imp;
     };
 #endif
 
