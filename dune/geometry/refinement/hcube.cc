@@ -84,13 +84,13 @@ namespace Dune
         typedef typename Codim<0>::SubEntityIterator ElementIterator;
         typedef FieldVector<int, (1<<dimension)> IndexVector;
 
-        static unsigned nVertices(unsigned nhypercubes);
-        static VertexIterator vBegin(unsigned nhypercubes);
-        static VertexIterator vEnd(unsigned nhypercubes);
+        static unsigned nVertices(unsigned nHyperubes);
+        static VertexIterator vBegin(unsigned nHyperubes);
+        static VertexIterator vEnd(unsigned nHyperubes);
 
-        static unsigned nElements(unsigned nhypercubes);
-        static ElementIterator eBegin(unsigned nhypercubes);
-        static ElementIterator eEnd(unsigned nhypercubes);
+        static unsigned nElements(unsigned nHyperubes);
+        static ElementIterator eBegin(unsigned nHyperubes);
+        static ElementIterator eEnd(unsigned nHyperubes);
       };
 
       template<int dimension, class CoordType>
@@ -104,53 +104,53 @@ namespace Dune
       template<int dimension, class CoordType>
       unsigned
       RefinementImp<dimension, CoordType>::
-      nVertices(unsigned nhypercubes)
+      nVertices(unsigned nHyperubes)
       {
-        // return (nhypercubes + 1)^dim
-        return Power<dimension>::eval(nhypercubes+1u);
+        // return (nHyperubes + 1)^dim
+        return Power<dimension>::eval(nHyperubes+1u);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vBegin(unsigned nhypercubes)
+      vBegin(unsigned nHyperubes)
       {
-        return VertexIterator(0,nhypercubes);
+        return VertexIterator(0,nHyperubes);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vEnd(unsigned nhypercubes)
+      vEnd(unsigned nHyperubes)
       {
-        return VertexIterator(nVertices(nhypercubes),nhypercubes);
+        return VertexIterator(nVertices(nHyperubes),nHyperubes);
       }
 
       template<int dimension, class CoordType>
       unsigned
       RefinementImp<dimension, CoordType>::
-      nElements(unsigned nhypercubes)
+      nElements(unsigned nHyperubes)
       {
         static_assert(dimension >= 0,
                       "Negative dimension given, what the heck is that supposed to mean?");
-        // return nhypercubes^dim
-        return Power<dimension>::eval(nhypercubes);
+        // return nHyperubes^dim
+        return Power<dimension>::eval(nHyperubes);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eBegin(unsigned nhypercubes)
+      eBegin(unsigned nHyperubes)
       {
-        return ElementIterator(0,nhypercubes);
+        return ElementIterator(0,nHyperubes);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eEnd(unsigned nhypercubes)
+      eEnd(unsigned nHyperubes)
       {
-        return ElementIterator(nElements(nhypercubes),nhypercubes);
+        return ElementIterator(nElements(nHyperubes),nHyperubes);
       }
 
       //
@@ -204,7 +204,7 @@ namespace Dune
         CoordVector c;
         for (int d = 0; d < dimension; d++)
         {
-          c[d] = v[d]*1.0 / asCommon()._nhypercubes;
+          c[d] = v[d]*1.0 / asCommon()._nHyperubes;
         }
         return c;
       }
@@ -246,7 +246,7 @@ namespace Dune
         {
           std::array<unsigned int, dimension> alpha(asCommon().idx2multiidx(i));
           for (int d = 0; d < dimension; d++)
-            vec[i] += (alpha[d]+e[d])*std::pow(asCommon()._nhypercubes+1, d);
+            vec[i] += (alpha[d]+e[d])*std::pow(asCommon()._nHyperubes+1, d);
         }
         return vec;
       }
@@ -260,7 +260,7 @@ namespace Dune
         CoordVector c;
         for (int d=0; d<dimension; d++)
         {
-          c[d] = (v[d]*1.0 + 0.5) / asCommon()._nhypercubes;
+          c[d] = (v[d]*1.0 + 0.5) / asCommon()._nHyperubes;
         }
         return c;
       }
@@ -277,7 +277,7 @@ namespace Dune
         typedef RefinementImp<dimension, CoordType> Refinement;
         typedef typename Refinement::template Codim<codimension>::SubEntityIterator This;
 
-        SubEntityIterator(unsigned int index, unsigned int nhypercubes);
+        SubEntityIterator(unsigned int index, unsigned int nHyperubes);
 
         bool equals(const This &other) const;
         void increment();
@@ -287,18 +287,18 @@ namespace Dune
       private:
         friend class RefinementSubEntityIteratorSpecial<dimension, CoordType, codimension>;
         unsigned int _index;
-        unsigned int _nhypercubes;
+        unsigned int _nHyperubes;
 
         std::array<unsigned int, dimension>
         cellCoord(unsigned int idx) const
         {
-          return idx2coord(idx, _nhypercubes);
+          return idx2coord(idx, _nHyperubes);
         }
 
         std::array<unsigned int, dimension>
         vertexCoord(unsigned int idx) const
         {
-          return idx2coord(idx, _nhypercubes+1u);
+          return idx2coord(idx, _nHyperubes+1u);
         }
 
         std::array<unsigned int, dimension>
@@ -349,7 +349,7 @@ namespace Dune
         unsigned int
         vertexIdx(std::array<unsigned int, dimension> c) const
         {
-          return coord2idx(c, _nhypercubes+1u);
+          return coord2idx(c, _nHyperubes+1u);
         }
       };
 
@@ -357,8 +357,8 @@ namespace Dune
       template<int dimension, class CoordType>
       template<int codimension>
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
-      SubEntityIterator(unsigned int index, unsigned int nhypercubes)
-        : _index(index), _nhypercubes(nhypercubes)
+      SubEntityIterator(unsigned int index, unsigned int nHyperubes)
+        : _index(index), _nHyperubes(nHyperubes)
       {}
 
       template<int dimension, class CoordType>
@@ -367,7 +367,7 @@ namespace Dune
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
       equals(const This &other) const
       {
-        return ((_index == other._index) && (_nhypercubes == other._nhypercubes));
+        return ((_index == other._index) && (_nHyperubes == other._nHyperubes));
       }
 
       template<int dimension, class CoordType>
@@ -393,7 +393,7 @@ namespace Dune
       typename RefinementImp<dimension, CoordType>::template Codim<codimension>::Geometry
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::geometry () const
       {
-        std::array<unsigned int,dimension> intCoords = idx2coord(_index,_nhypercubes);
+        std::array<unsigned int,dimension> intCoords = idx2coord(_index,_nHyperubes);
 
         Dune::FieldVector<CoordType,dimension> lower;
         Dune::FieldVector<CoordType,dimension> upper;
@@ -403,12 +403,12 @@ namespace Dune
         if (codimension == 0) {
           for (size_t j = 0; j < dimension; j++)
           {
-            lower[j] = double(intCoords[j])     / double(_nhypercubes);
-            upper[j] = double(intCoords[j] + 1) / double(_nhypercubes);
+            lower[j] = double(intCoords[j])     / double(_nHyperubes);
+            upper[j] = double(intCoords[j] + 1) / double(_nHyperubes);
           }
         } else {
           for (size_t j = 0; j < dimension; j++)
-            lower[j] = upper[j] = double(intCoords[j]) / double(_nhypercubes);
+            lower[j] = upper[j] = double(intCoords[j]) / double(_nHyperubes);
         }
 
         return typename RefinementImp<dimension,
