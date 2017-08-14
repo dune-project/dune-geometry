@@ -431,13 +431,13 @@ namespace Dune {
         typedef typename Codim<0>::SubEntityIterator ElementIterator;
         typedef FieldVector<int, dimension+1> IndexVector;
 
-        static int nVertices(int nSimplices);
-        static VertexIterator vBegin(int nSimplices);
-        static VertexIterator vEnd(int nSimplices);
+        static int nVertices(int nIntervals);
+        static VertexIterator vBegin(int nIntervals);
+        static VertexIterator vEnd(int nIntervals);
 
-        static int nElements(int nSimplices);
-        static ElementIterator eBegin(int nSimplices);
-        static ElementIterator eEnd(int nSimplices);
+        static int nElements(int nIntervals);
+        static ElementIterator eBegin(int nIntervals);
+        static ElementIterator eEnd(int nIntervals);
       };
 
       template<int dimension, class CoordType>
@@ -452,49 +452,49 @@ namespace Dune {
       template<int dimension, class CoordType>
       int
       RefinementImp<dimension, CoordType>::
-      nVertices(int nSimplices)
+      nVertices(int nIntervals)
       {
-        return binomial(dimension + nSimplices, dimension);
+        return binomial(dimension + nIntervals, dimension);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vBegin(int nSimplices)
+      vBegin(int nIntervals)
       {
-        return VertexIterator(nSimplices);
+        return VertexIterator(nIntervals);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vEnd(int nSimplices)
+      vEnd(int nIntervals)
       {
-        return VertexIterator(nSimplices, true);
+        return VertexIterator(nIntervals, true);
       }
 
       template<int dimension, class CoordType>
       int
       RefinementImp<dimension, CoordType>::
-      nElements(int nSimplices)
+      nElements(int nIntervals)
       {
-        return Dune::Power<dimension>::eval(nSimplices);
+        return Dune::Power<dimension>::eval(nIntervals);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eBegin(int nSimplices)
+      eBegin(int nIntervals)
       {
-        return ElementIterator(nSimplices);
+        return ElementIterator(nIntervals);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eEnd(int nSimplices)
+      eEnd(int nIntervals)
       {
-        return ElementIterator(nSimplices, true);
+        return ElementIterator(nIntervals, true);
       }
 
       // //////////////
@@ -516,7 +516,7 @@ namespace Dune {
         typedef typename Refinement::template Codim<dimension>::Geometry Geometry;
         typedef RefinementIteratorSpecial<dimension, CoordType, dimension> This;
 
-        RefinementIteratorSpecial(int nSimplices, bool end = false);
+        RefinementIteratorSpecial(int nIntervals, bool end = false);
 
         void increment();
         bool equals(const This &other) const;
@@ -534,8 +534,8 @@ namespace Dune {
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, dimension>::
-      RefinementIteratorSpecial(int nSimplices, bool end)
-        : size(nSimplices)
+      RefinementIteratorSpecial(int nIntervals, bool end)
+        : size(nIntervals)
       {
         vertex[0] = (end) ? size + 1 : 0;
         for(int i = 1; i < dimension; ++ i)
@@ -607,7 +607,7 @@ namespace Dune {
         typedef typename Refinement::template Codim<0>::Geometry Geometry;
         typedef RefinementIteratorSpecial<dimension, CoordType, 0> This;
 
-        RefinementIteratorSpecial(int nSimplices, bool end = false);
+        RefinementIteratorSpecial(int nIntervals, bool end = false);
 
         void increment();
         bool equals(const This &other) const;
@@ -623,7 +623,7 @@ namespace Dune {
 
       protected:
         typedef FieldVector<int, dimension> Vertex;
-        enum { nKuhnSimplices = Factorial<dimension>::factorial };
+        enum { nKuhnIntervals = Factorial<dimension>::factorial };
 
         Vertex origin;
         int kuhnIndex;
@@ -633,13 +633,13 @@ namespace Dune {
 
       template<int dimension, class CoordType>
       RefinementIteratorSpecial<dimension, CoordType, 0>::
-      RefinementIteratorSpecial(int nSimplices, bool end)
-        : kuhnIndex(0), size(nSimplices), index_(0)
+      RefinementIteratorSpecial(int nIntervals, bool end)
+        : kuhnIndex(0), size(nIntervals), index_(0)
       {
         for(int i = 0; i < dimension; ++i)
           origin[i] = 0;
         if(end) {
-          index_ = Refinement::nElements(nSimplices);
+          index_ = Refinement::nElements(nIntervals);
           origin[0] = size;
         }
       }
@@ -655,7 +655,7 @@ namespace Dune {
 
         while(1) {
           ++kuhnIndex;
-          if(kuhnIndex == nKuhnSimplices) {
+          if(kuhnIndex == nKuhnIntervals) {
             kuhnIndex = 0;
             // increment origin
             for(int i = dimension - 1; i >= 0; --i) {
@@ -767,7 +767,7 @@ namespace Dune {
       public:
         typedef RefinementImp<dimension, CoordType> Refinement;
 
-        SubEntityIterator(int nSimplices, bool end = false);
+        SubEntityIterator(int nIntervals, bool end = false);
       };
 
 #ifndef DOXYGEN
@@ -775,8 +775,8 @@ namespace Dune {
       template<int dimension, class CoordType>
       template<int codimension>
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
-      SubEntityIterator(int nSimplices, bool end)
-        : RefinementIteratorSpecial<dimension, CoordType, codimension>(nSimplices, end)
+      SubEntityIterator(int nIntervals, bool end)
+        : RefinementIteratorSpecial<dimension, CoordType, codimension>(nIntervals, end)
       {}
 
 #endif
