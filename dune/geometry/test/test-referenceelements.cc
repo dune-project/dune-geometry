@@ -43,7 +43,7 @@ int main () try
     testcmp(hash_value(r1),0);
   }
 
-  const ReferenceElement<double,1>& referenceLine = ReferenceElements<double, 1>::general(type);
+  const Transitional::ReferenceElement<double,Dim<1>> referenceLine = ReferenceElements<double, 1>::general(type);
 
   // size(int c)
   testcmp(referenceLine.size(0),1);
@@ -63,7 +63,7 @@ int main () try
   test(referenceLine.type(1,1).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,1>::Codim<0>::Geometry referenceLineMapping = referenceLine.geometry< 0 >( 0 );
+  const ReferenceElements<double,1>::ReferenceElement::Codim<0>::Geometry referenceLineMapping = referenceLine.geometry< 0 >( 0 );
   referenceLineMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ int main () try
 
   type.makeTriangle();
 
-  const ReferenceElement<double,2>& referenceTriangle = ReferenceElements<double, 2>::general(type);
+  const auto referenceTriangle = referenceElement<double,2>(type);
 
   // size(int c)
   testcmp(referenceTriangle.size(0),1);
@@ -131,7 +131,7 @@ int main () try
   test(referenceTriangle.type(2,2).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,2>::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
+  const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
   referenceTriangleMapping.corner(0);
 
   // test the checkInside method
@@ -143,7 +143,7 @@ int main () try
 
   type.makeQuadrilateral();
 
-  const ReferenceElement<double,2>& referenceQuad = ReferenceElements<double, 2>::general(type);
+  const Transitional::ReferenceElement<double,Dim<2>> referenceQuad = referenceElement<double>(type,Dim<2>());
 
   // size(int c)
   testcmp(referenceQuad.size(0),1);
@@ -214,7 +214,7 @@ int main () try
 
 
   // test the 'geometry' method
-  const ReferenceElement<double,2>::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
+  const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
   referenceQuadMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,7 @@ int main () try
 
   type.makeTetrahedron();
 
-  const ReferenceElement<double,3>& referenceTetra = ReferenceElements<double, 3>::general(type);
+  const Transitional::ReferenceElement<double,Dim<3>> referenceTetra = referenceElement(double(),type,Dim<3>());
 
   // size(int c)
   testcmp(referenceTetra.size(0),1);
@@ -267,7 +267,7 @@ int main () try
     test(referenceTetra.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,3>::Codim<0>::Geometry referenceTetraMapping = referenceTetra.geometry< 0 >( 0 );
+  const decltype(referenceTetra)::Codim<0>::Geometry referenceTetraMapping = referenceTetra.geometry< 0 >( 0 );
   referenceTetraMapping.corner(0);
 
   // test the checkInside method
@@ -279,7 +279,7 @@ int main () try
 
   type.makePyramid();
 
-  const ReferenceElement<double,3>& referencePyramid = ReferenceElements<double, 3>::general(type);
+  const auto referencePyramid = ReferenceElements<double, 3>::general(type);
 
   // size(int c)
   testcmp(referencePyramid.size(0),1);
@@ -335,7 +335,7 @@ int main () try
     test(referencePyramid.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,3>::Codim<0>::Geometry referencePyramidMapping = referencePyramid.geometry< 0 >( 0 );
+  const auto referencePyramidMapping = referencePyramid.geometry< 0 >( 0 );
   referencePyramidMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -344,7 +344,7 @@ int main () try
 
   type.makePrism();
 
-  const ReferenceElement<double,3>& referencePrism = ReferenceElements<double, 3>::general(type);
+  const auto referencePrism = referenceElement<double,3>(type);
 
   // size(int c)
   testcmp(referencePrism.size(0),1);
@@ -400,7 +400,7 @@ int main () try
     test(referencePrism.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,3>::Codim<0>::Geometry referencePrismMapping = referencePrism.geometry< 0 >( 0 );
+  const auto referencePrismMapping = referencePrism.geometry< 0 >( 0 );
   referencePrismMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -409,7 +409,7 @@ int main () try
 
   type.makeHexahedron();
 
-  const ReferenceElement<double,3>& referenceHexa = ReferenceElements<double, 3>::general(type);
+  const auto referenceHexa = ReferenceElements<double, 3>::general(type);
 
   // size(int c)
   testcmp(referenceHexa.size(0),1);
@@ -452,7 +452,7 @@ int main () try
     test(referenceHexa.type(i,3).isVertex());
 
   // test the 'geometry' method
-  const ReferenceElement<double,3>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 );
+  const Transitional::ReferenceElement<double,Dim<3>>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 );
   referenceHexaMapping.corner(0);
 
   return errors>0 ? 1 : 0;
