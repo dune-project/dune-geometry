@@ -10,6 +10,7 @@ install(FILES
   generalvertexorder.hh
   multilineargeometry.hh
   quadraturerules.hh
+  referenceelementimplementation.hh
   referenceelements.hh
   refinement.hh
   topologyfactory.hh
@@ -25,5 +26,5 @@ install(FILES test/checkgeometry.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/test)
 
 dune_add_library(geometry OBJECT
-  referenceelements.cc
+  referenceelementimplementation.cc
   )
