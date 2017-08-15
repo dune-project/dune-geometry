@@ -55,9 +55,23 @@ namespace Dune {
 
     public:
 
+#ifndef DOXYGEN
+
       /** \brief Collection of types depending on the codimension */
       template<int codim>
       using Codim = typename Implementation::template Codim<codim>;
+
+#else
+
+      /** \brief Collection of types depending on the codimension */
+      template< int codim >
+      struct Codim
+      {
+        //! type of geometry embedding a subentity into the reference element
+        using Geometry = implementation-defined;
+      };
+
+#endif // DOXYGEN
 
       //! The coordinate field type.
       using ctype = typename Implementation::ctype;
