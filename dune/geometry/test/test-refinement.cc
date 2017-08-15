@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <ostream>
+#include <typeinfo>
 
 #include <dune/geometry/test/checkgeometry.hh>
 #include <dune/geometry/referenceelements.hh>
@@ -44,6 +45,12 @@ void collect(int &result, bool passed)
   }
 }
 
+template<class TAG>
+std::string getRefinementTagType(TAG);
+template<> std::string getRefinementTagType<VirtualRefinementTag::Level>(VirtualRefinementTag::Level)
+{ return "Level";}
+template<> std::string getRefinementTagType<VirtualRefinementTag::PerAxis>(VirtualRefinementTag::PerAxis)
+{ return "PerAxis";}
 /*!
  * \brief Test virtual refinement for an element with a run-time type
  */
@@ -53,7 +60,8 @@ void testVirtualRefinement(int &result, const Dune::GeometryType& elementType,
                            TAG tag)
 {
   std::cout << "Checking virtual refinement " << elementType << " -> "
-            << coerceTo << " level " << refinement << std::endl;
+            << coerceTo << " level " << refinement
+            << " " << getRefinementTagType(tag) << " Tag" << std::endl;
 
   const ReferenceElement<ct, dim> &refElem =
     ReferenceElements<ct, dim>::general(elementType);
@@ -110,6 +118,7 @@ void testStaticRefinementGeometry(int &result, int refinement, TAG tag)
   std::cout << "Checking static refinement geometry "
             << GeometryType(topologyId, dim) << " -> "
             << GeometryType(coerceToId, dim) << " level " << refinement
+            << " " << getRefinementTagType(tag) << " Tag"
             << std::endl;
 
   typedef Dune::StaticRefinement<topologyId, ct, coerceToId, dim> Refinement;
