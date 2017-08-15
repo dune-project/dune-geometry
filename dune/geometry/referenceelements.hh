@@ -26,6 +26,37 @@ namespace Dune
 
 #ifndef DOXYGEN
 
+
+    template<typename ctype, int dim>
+    class DeprecatedReferenceElement
+      : public ReferenceElement<ReferenceElementImplementation<ctype,dim>>
+    {
+
+    protected:
+
+      DeprecatedReferenceElement() = default;
+
+    public:
+
+      DeprecatedReferenceElement(const DeprecatedReferenceElement&) = delete;
+      DeprecatedReferenceElement& operator=(const DeprecatedReferenceElement&) = delete;
+
+      DeprecatedReferenceElement(const ReferenceElementImplementation<ctype,dim>& impl)
+        : ReferenceElement<ReferenceElementImplementation<ctype,dim>>(impl)
+      {}
+
+    };
+
+
+    template<typename ctype, int dim>
+    class ConstructibleDeprecatedReferenceElement
+      : public DeprecatedReferenceElement<ctype,dim>
+    {
+    public:
+      ConstructibleDeprecatedReferenceElement() = default;
+    };
+
+
     namespace Impl
     {
 
@@ -38,8 +69,11 @@ namespace Dune
         static const unsigned int numTopologies = (1u << dim);
 
         using Implementation   = ReferenceElementImplementation< ctype, dim >;
+        using ConstructibleDeprecatedReferenceElement = Dune::Geo::ConstructibleDeprecatedReferenceElement<ctype,dim>;
 
       public:
+
+        using DeprecatedReferenceElement = Dune::Geo::DeprecatedReferenceElement<ctype,dim>;
 
         using ReferenceElement = Dune::Geo::ReferenceElement< Implementation >;
         using value_type       = ReferenceElement;
@@ -90,10 +124,15 @@ namespace Dune
           return reference_elements_.data() + numTopologies;
         }
 
+        const DeprecatedReferenceElement& deprecated(const ReferenceElement& v) const
+        {
+          return reference_elements_[v.impl().topologyId()];
+        }
+
       private:
 
         std::array<Implementation,numTopologies> implementations_;
-        std::array<ReferenceElement,numTopologies> reference_elements_;
+        std::array<ConstructibleDeprecatedReferenceElement,numTopologies> reference_elements_;
 
       };
 
@@ -173,6 +212,14 @@ namespace Dune
       {
         return container().end();
       }
+
+#ifndef DOXYGEN
+      static const typename Container::DeprecatedReferenceElement&
+      deprecated(const ReferenceElement& v)
+      {
+        return container().deprecated(v);
+      }
+#endif // DOXYGEN
 
     private:
 
