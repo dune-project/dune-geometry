@@ -28,6 +28,8 @@ namespace Dune
   namespace Geo
   {
 
+#ifndef DOXYGEN
+
     // Internal Forward Declarations
     // -----------------------------
 
@@ -710,6 +712,8 @@ namespace Dune
           }
       }
     };
+
+#endif // DOXYGEN
 
   } // namespace Geo
 
