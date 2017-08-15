@@ -317,34 +317,40 @@ namespace Dune
     typedef SubEntityIteratorBack<0> ElementIteratorBack;
 
     //! Get the number of Vertices
-    virtual int nVertices(int level, VirtualRefinementTag::Level = {}) const = 0;
-    virtual int nVertices(int nIntervals,VirtualRefinementTag::PerAxis) const = 0;
+    DUNE_DEPRECATED_MSG("nVertices(int) is deprecated, use nVertices(Dune::VirtualRefinementTags::{Intervals|Levels})")
+    virtual int nVertices(int level) const = 0;
+    virtual int nVertices(Dune::VirtualRefinementTag::Intervals tag) const = 0;
     //! Get a VertexIterator
-    VertexIterator vBegin(int level,VirtualRefinementTag::Level = {}) const;
-    VertexIterator vBegin(int nIntervals,VirtualRefinementTag::PerAxis) const;
+    DUNE_DEPRECATED_MSG("vBegin(int) is deprecated, use vBegin(Dune::VirtualRefinementTags::{Intervals|Levels})")
+    VertexIterator vBegin(int level) const;
+    VertexIterator vBegin(Dune::VirtualRefinementTag::Intervals tag) const;
     //! Get a VertexIterator
-    VertexIterator vEnd(int level,VirtualRefinementTag::Level = {}) const;
-    VertexIterator vEnd(int nIntervals,VirtualRefinementTag::PerAxis) const;
+    DUNE_DEPRECATED_MSG("vEnd(int) is deprecated, use vEnd(Dune::VirtualRefinementTags::{Intervals|Levels})")
+    VertexIterator vEnd(int level) const;
+    VertexIterator vEnd(Dune::VirtualRefinementTag::Intervals tag) const;
 
     //! Get the number of Elements
-    virtual int nElements(int level,VirtualRefinementTag::Level = {}) const = 0;
-    virtual int nElements(int nIntervals,VirtualRefinementTag::PerAxis) const = 0;
+    DUNE_DEPRECATED_MSG("nElements(int) is deprecated, use nElements(Dune::VirtualRefinementTags::{Intervals|Levels})")
+    virtual int nElements(int level) const = 0;
+    virtual int nElements(Dune::VirtualRefinementTag::Intervals tag) const = 0;
     //! Get an ElementIterator
-    ElementIterator eBegin(int level,VirtualRefinementTag::Level = {}) const;
-    ElementIterator eBegin(int nIntervals,VirtualRefinementTag::PerAxis) const;
+    DUNE_DEPRECATED_MSG("eBegin(int) is deprecated, use eBegin(Dune::VirtualRefinementTags::{Intervals|Levels})")
+    ElementIterator eBegin(int level) const;
+    ElementIterator eBegin(Dune::VirtualRefinementTag::Intervals tag) const;
     //! Get an ElementIterator
-    ElementIterator eEnd(int level,VirtualRefinementTag::Level = {}) const;
-    ElementIterator eEnd(int nIntervals,VirtualRefinementTag::PerAxis) const;
+    DUNE_DEPRECATED_MSG("eEnd(int) is deprecated, use eEnd(Dune::VirtualRefinementTags::{Intervals|Levels})")
+    ElementIterator eEnd(int level) const;
+    ElementIterator eEnd(Dune::VirtualRefinementTag::Intervals tag) const;
 
     //! Destructor
     virtual ~VirtualRefinement()
     {}
 
   protected:
-    virtual VertexIteratorBack *vBeginBack(int nIntervals) const = 0;
-    virtual VertexIteratorBack *vEndBack(int nIntervals) const = 0;
-    virtual ElementIteratorBack *eBeginBack(int nIntervals) const = 0;
-    virtual ElementIteratorBack *eEndBack(int nIntervals) const = 0;
+    virtual VertexIteratorBack *vBeginBack(Dune::VirtualRefinementTag::Intervals tag) const = 0;
+    virtual VertexIteratorBack *vEndBack(Dune::VirtualRefinementTag::Intervals tag) const = 0;
+    virtual ElementIteratorBack *eBeginBack(Dune::VirtualRefinementTag::Intervals tag) const = 0;
+    virtual ElementIteratorBack *eEndBack(Dune::VirtualRefinementTag::Intervals tag) const = 0;
   };
 
   //! codim database of VirtualRefinement

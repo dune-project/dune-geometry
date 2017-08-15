@@ -1,4 +1,5 @@
 install(FILES
+  virtualrefinementtags.hh
   base.cc
   hcube.cc
   hcubetriangulation.cc
