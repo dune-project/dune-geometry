@@ -293,11 +293,6 @@ namespace Dune {
 
   }
 
-  // make type signature of wrapper compatible with old implementation
-  template<typename ctype, int dim>
-  using ReferenceElement = Geo::DeprecatedReferenceElement<ctype,dim>;
-
-
 }
 
 

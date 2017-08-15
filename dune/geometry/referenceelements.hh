@@ -238,8 +238,50 @@ namespace Dune
   using Geo::ReferenceElements;
 
 
+#ifdef DOXYGEN
+
+  //! Returns a reference element for the objects t....
+  /**
+   * \ingroup GeometryReferenceElements
+   * The freestanding function referenceElement is a generic entry point
+   * for getting reference elements for arbitrary objects that support the
+   * operation. As it relies on argument-dependent lookup, the function should
+   * be called without any qualifying namespace. The returned object is guaranteed
+   * to have value semantics, so you can copy it around and store it by value.
+   *
+   * The grid geometries in dune-grid support this function, and thus most people
+   * will use this function as
+   *
+     \code
+     for (const auto& cell : elements(grid_view))
+       {
+         auto geo = cell.geometry();
+         auto ref_el = referenceElement(geo);
+         // do some work...
+       }
+     \endcode
+   *
+   * This does of course also work for entities of other codimensions.
+   */
+  template<typename... T>
+  auto referenceElement(T&&... t);
+
+#endif
+
 
   //! Returns a reference element of dimension dim for the given geometry type and coordinate field type.
+  /**
+   * This function allows you to obtain a reference element for a given coordinate type, dimension and
+   * GeometryType:
+   *
+     \code
+     auto gt = ...;
+     auto ref_el = referenceElement<ctype,dim>(gt);
+     auto ref_el = referenceElement<ctype>(gt,Dune::Dim<dim>());
+     \endcode
+   *
+   * \ingroup GeometryReferenceElements
+   */
   template<typename T, int dim>
   auto referenceElement(const Dune::GeometryType& gt, Dune::Dim<dim> = {})
   {
@@ -248,11 +290,195 @@ namespace Dune
 
 
   //! Returns a reference element of dimension dim for the given geometry type and coordinate field type.
+  /**
+   * This function allows you to obtain a reference element for a given coordinate type, dimension and
+   * GeometryType:
+   *
+     \code
+     auto gt = ...;
+     auto ref_el = referenceElement(ctype(),gt,Dune::Dim<dim>());
+     \endcode
+   *
+   * \ingroup GeometryReferenceElements
+   */
   template<typename T, int dim>
   auto referenceElement(const T&, std::enable_if_t<IsNumber<std::decay_t<T>>::value,const Dune::GeometryType&> gt, Dune::Dim<dim>)
   {
     return ReferenceElements<T,dim>::general(gt);
   }
+
+
+#ifndef DOXYGEN
+
+  // helpers for the ReferenceElement<> meta function
+
+  namespace Impl {
+
+    // checks whether the template argument pack T matches the pattern <number_type,Dim<int>>
+
+    template<typename... T>
+    struct MatchesDefaultReferenceElementSignature
+      : public std::false_type
+    {};
+
+    template<typename T, int dim>
+    struct MatchesDefaultReferenceElementSignature<T,Dim<dim>>
+      : public std::integral_constant<bool,IsNumber<T>::value>
+    {};
+
+    // helper for pattern matching on T and delaying the application until a time when
+    // we can be sure that doing so does not cause a compiler error
+
+    template<typename... T>
+    struct DelayDefaultReferenceElement
+    {};
+
+    template<typename T, int dim>
+    struct DelayDefaultReferenceElement<T,Dim<dim>>
+    {
+      using type = typename Dune::Geo::ReferenceElements<T,dim>::ReferenceElement;
+    };
+
+  }
+
+  // helper for delaying the type lookup via referenceElement() until we have excluded the
+  // special case of referring to a default reference element by field type and dimension
+  // again, this is necessary to avoid compiler errors because the evaluation does not happen
+  // in SFINAE context
+  // this is placed directly in namespace Dune to avoid any weird surprises
+
+  template<typename... T>
+  struct DelayReferenceElementLookup
+  {
+    using type = decltype(referenceElement(std::declval<T>()...));
+  };
+
+#endif // DOXYGEN
+
+  namespace Transitional {
+
+#ifndef DOXYGEN
+
+    // this abomination checks whether the template signature matches the special case
+    // ReferenceElement<number_type,Dune::Dim<int>> and otherwise defers the type lookup
+    // to a decltype on a call to referenceElement(std::declval<T>())
+
+    template<typename... T>
+    using ReferenceElement = typename std::conditional<
+      Impl::MatchesDefaultReferenceElementSignature<T...>::value,
+      Impl::DelayDefaultReferenceElement<T...>,
+      DelayReferenceElementLookup<T...>
+      >::type::type;
+
+#else // DOXYGEN
+
+    //! Returns the type of reference element for the argument types T...
+    /**
+     * This type alias can be used to get the type of a reference element if you
+     * want to store the element as a class member or need to access nested type
+     * information. Normally, it will return the type of reference element that a
+     * call to referenceElement(T...) would return, for example for a geometry:
+     *
+       \code
+       Cell::Geometry geo = cell.geometry();
+       Dune::ReferenceElement<Cell::Geometry> ref_el = referenceElement(geo);
+       \endcode
+     *
+     * There is also a special shorthand signature for the default reference elements:
+     *
+       \code
+       constexpr int dim = ...;
+       auto geometry_type = ...;
+       Dune::ReferenceElement<double,Dune::Dim<dim>> = referenceElement<double,dim>(geometry_type);
+       \endcode
+     *
+     * \ingroup GeometryReferenceElements
+     * \sa Dune::ReferenceElement
+     */
+    template<typename... T>
+    using ReferenceElement = unspecified-type;
+
+#endif //DOXYGEN
+
+  }
+
+#ifndef DOXYGEN
+
+  namespace Impl {
+
+    // helpers for triggering a deprecation warning for occurences of the old
+    // ReferenceElement syntax (Dune::ReferenceElement<T,int>)
+
+    // this looks a little weird, encoding the type in the return type of a nested function,
+    // but it was the only reliable way to trigger the warning iff the compiler encounters
+    // an invalid use. Other solutions either miss some (or all) uses or trigger false alarms.
+
+    template<typename T>
+    struct ValidReferenceElementTypeSignature
+    {
+      Transitional::ReferenceElement<T> check();
+    };
+
+    template<typename T>
+    struct DeprecatedReferenceElementTypeSignature
+    {
+      DUNE_DEPRECATED_MSG("Dune::ReferenceElement<T,int> is deprecated, please use Dune::ReferenceElement<Geometry> (if you have a geometry), Dune::ReferenceElements<T,int>::ReferenceElement or Dune::Transitional::ReferenceElement<T,Dune::Dim<int>> instead. After Dune 2.6, you will be able to use Dune::ReferenceElement<T,Dune::Dim<int>>.") T check();
+    };
+
+  } // namespace Impl
+
+  // This just makes sure the user doesn't use invalid syntax (by checking against the -1 default for
+  // the dimension, and then either hands back the old-style type along with a deprecation warning or
+  // forwards to the transitional version
+  template<typename T, int dim = -1>
+  using ReferenceElement = decltype(
+    std::declval<
+      typename std::conditional<
+        dim == -1,
+        Impl::ValidReferenceElementTypeSignature<T>,
+        Impl::DeprecatedReferenceElementTypeSignature<Geo::DeprecatedReferenceElement<T,dim>>
+        >::type
+      >().check());
+
+#else // DOXYGEN
+
+  //! Returns the type of reference element for the argument type T.
+  /**
+   * This type alias can be used to get the type of a reference element if you
+   * want to store the element as a class member or need to access nested type
+   * information. Normally, it will return the type of reference element that a
+   * call to referenceElement(T) would return, for example for a geometry:
+   *
+     \code
+     Cell::Geometry geo = cell.geometry();
+     Dune::ReferenceElement<Cell::Geometry> ref_el = referenceElement(geo);
+     \endcode
+   *
+   * In the long run, we want to support multiple types T here, but for now that
+   * does not work due to backwards compatibility reasons. You can also still obtain
+   * the type of a standard reference element using `Dune::ReferenceElement<ctype,dim>`,
+   * but this is deprecated in DUNE 2.6.
+   * If you need support for `ReferenceElement` with multiple type arguments, you can use
+   * `Dune::Transitional::ReferenceElement` for now, which supports multiple types, but not
+   * the backwards compatibility mode and will become the default after the release of DUNE 2.6.
+   * There is also a special shorthand signature for the default reference elements:
+   *
+   * \deprecated Using the syntax `Dune::ReferenceElement<ctype,dim>` is deprecated in DUNE 2.6.
+   *             You have the following alternatives:
+   *             - Most of the time, you will want to use `Dune::ReferenceElement<Geometry>` because
+   *               you already have a geometry type available.
+   *             - `Dune::ReferenceElements<ctype,dim>::ReferenceElement`.
+   *             - `Dune::Transitional::ReferenceElement<ctype,Dune::Dim<dim>>`. This will become
+   *               available as `Dune::ReferenceElement<ctype,Dune::Dim<dim>>` after the release of
+   *               DUNE 2.6.
+   *
+   * \ingroup GeometryReferenceElements
+   * \sa Dune::Transitional::ReferenceElement
+   */
+  template<typename T, int dim>
+  using ReferenceElement = unspecified-type;
+
+#endif // DOXYGEN
 
 
 
