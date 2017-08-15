@@ -1,6 +1,8 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENT_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENT_HH
 
+#include <dune/common/deprecated.hh>
+
 #include <dune/geometry/type.hh>
 
 namespace Dune {
@@ -18,6 +20,13 @@ namespace Dune {
     template<typename ctype, int dim>
     class ReferenceElementImplementation;
 
+    // forward declaration for deprecation check reference element type
+    template<typename ctype, int dim>
+    class DeprecatedReferenceElement;
+
+    // forward declaration for backwards compatibility conversion
+    template<typename ctype, int dim>
+    struct ReferenceElements;
 
     // ReferenceElement
     // ----------------
@@ -217,6 +226,16 @@ namespace Dune {
         return *_impl;
       }
 
+#ifndef DOXYGEN
+
+      DUNE_DEPRECATED_MSG("Capturing reference elements by reference is deprecated in DUNE 2.6. Please store a copy instead.")
+      operator const DeprecatedReferenceElement<ctype,dimension>&() const
+      {
+        return ReferenceElements<ctype,dimension>::deprecated(*this);
+      }
+
+#endif // DOXYGEN
+
     private:
 
       // The implementation must be a friend to construct a wrapper around itself.
@@ -243,7 +262,7 @@ namespace Dune {
 
   // make type signature of wrapper compatible with old implementation
   template<typename ctype, int dim>
-  using ReferenceElement = Geo::ReferenceElement<Geo::ReferenceElementImplementation<ctype,dim>>;
+  using ReferenceElement = Geo::DeprecatedReferenceElement<ctype,dim>;
 
 
 }
