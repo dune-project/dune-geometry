@@ -66,10 +66,10 @@ namespace Dune {
    */
   template<std::size_t dim, class Index_ = std::size_t>
   class GeneralVertexOrder {
-    typedef ReferenceElement<double, dim> RefElem;
     typedef ReferenceElements<double, dim> RefElems;
+    typedef typename RefElems::ReferenceElement RefElem;
 
-    const RefElem& refelem;
+    RefElem refelem;
     GeometryType gt;
     std::vector<Index_> vertexOrder;
 
