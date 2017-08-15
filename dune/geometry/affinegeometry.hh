@@ -21,12 +21,16 @@ namespace Dune
   // External Forward Declarations
   // -----------------------------
 
-  template< class ctype, int dim >
-  class ReferenceElementImplementation;
+  namespace Geo
+  {
 
-  template< class ctype, int dim >
-  struct ReferenceElements;
+    template< class ctype, int dim >
+    class ReferenceElementImplementation;
 
+    template< class ctype, int dim >
+    struct ReferenceElements;
+
+  }
 
 
   namespace Impl
@@ -484,9 +488,9 @@ namespace Dune
 
   private:
     //! type of reference element
-    typedef Dune::ReferenceElementImplementation< ctype, mydimension > ReferenceElement;
+    typedef Dune::Geo::ReferenceElementImplementation< ctype, mydimension > ReferenceElement;
 
-    typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
+    typedef Dune::Geo::ReferenceElements< ctype, mydimension > ReferenceElements;
 
     // Helper class to compute a matrix pseudo inverse
     typedef Impl::FieldMatrixHelper< ct > MatrixHelper;
