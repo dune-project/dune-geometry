@@ -381,16 +381,9 @@ namespace Dune
 
     private:
 
-      typedef ReferenceElementImplementation< ctype, dim > This;
-
       friend class Impl::ReferenceElementContainer< ctype, dim >;
 
       struct SubEntityInfo;
-
-      // make copy constructor private
-      ReferenceElementImplementation ( const This & );
-
-      ReferenceElementImplementation () {}
 
       template< int codim > struct CreateGeometries;
 
@@ -402,6 +395,12 @@ namespace Dune
         //! type of geometry embedding a subentity into the reference element
         typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
       };
+
+      // ReferenceElement cannot be copied.
+      ReferenceElementImplementation ( const ReferenceElementImplementation& ) = delete;
+
+      // ReferenceElementImplementation cannot be copied.
+      ReferenceElementImplementation& operator= ( const ReferenceElementImplementation& ) = delete;
 
       /** \brief number of subentities of codimension c
        *
