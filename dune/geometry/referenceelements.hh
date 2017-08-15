@@ -236,6 +236,7 @@ namespace Dune
 
   } // namespace Geo
 
+  //! Make the ReferenceElements container available in the old location.
   using Geo::ReferenceElements;
 
 } // namespace Dune
