@@ -20,17 +20,6 @@
 namespace Dune
 {
 
-  // External Forward Declarations
-  // -----------------------------
-
-  template< class ctype, int dim >
-  class ReferenceElement;
-
-  template< class ctype, int dim >
-  struct ReferenceElements;
-
-
-
   // MultiLinearGeometryTraits
   // -------------------------
 
