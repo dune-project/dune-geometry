@@ -48,7 +48,7 @@ map ( const Dune::FieldMatrix< ctype, mydim, mydim > &A,
 
 
 template< class ctype, int mydim, int cdim, class Traits >
-static bool testMultiLinearGeometry ( const Dune::ReferenceElement< ctype, mydim > &refElement,
+static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
                                       const Dune::FieldMatrix< ctype, mydim, mydim > &A,
                                       const Dune::FieldMatrix< ctype, cdim, cdim > &B,
                                       const Traits &traits )
@@ -168,7 +168,7 @@ template< class ctype, int mydim, int cdim, class Traits >
 static bool testMultiLinearGeometry ( Dune::GeometryType gt,
                                       const Traits &traits )
 {
-  const Dune::ReferenceElement< ctype, mydim > &refElement = Dune::ReferenceElements< ctype, mydim >::general( gt );
+  auto refElement = Dune::referenceElement< ctype, mydim >( gt );
 
   Dune::FieldMatrix< ctype, mydim, mydim > A;
   Dune::FieldMatrix< ctype, cdim, cdim > B;
@@ -201,7 +201,6 @@ template<class ctype, class Traits>
 static bool testNonLinearGeometry(const Traits &traits)
 {
   const unsigned dim = 2;
-  typedef Dune::ReferenceElement<ctype,dim> ReferenceElement;
   typedef Dune::FieldVector<ctype,dim> Vector;
   typedef Dune::MultiLinearGeometry<ctype,dim,dim,Traits> Geometry;
   const ctype epsilon(ctype(16) * std::numeric_limits<ctype>::epsilon());
@@ -211,7 +210,7 @@ static bool testNonLinearGeometry(const Traits &traits)
 
   Dune::GeometryType quadrilateral;
   quadrilateral.makeQuadrilateral();
-  const ReferenceElement& reference(Dune::ReferenceElements<ctype,dim>::general(quadrilateral));
+  auto reference = Dune::referenceElement<ctype,dim>(quadrilateral);
 
   std::vector<Vector> corners = {{0,0},
                                  {2,0},
