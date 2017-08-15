@@ -12,8 +12,10 @@
 #include <vector>
 #include <array>
 
+#include <dune/common/typetraits.hh>
 #include <dune/common/visibility.hh>
 
+#include <dune/geometry/dimension.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/referenceelement.hh>
 #include <dune/geometry/referenceelementimplementation.hh>
@@ -234,6 +236,25 @@ namespace Dune
 
   //! Make the ReferenceElements container available in the old location.
   using Geo::ReferenceElements;
+
+
+
+  //! Returns a reference element of dimension dim for the given geometry type and coordinate field type.
+  template<typename T, int dim>
+  auto referenceElement(const Dune::GeometryType& gt, Dune::Dim<dim> = {})
+  {
+    return ReferenceElements<T,dim>::general(gt);
+  }
+
+
+  //! Returns a reference element of dimension dim for the given geometry type and coordinate field type.
+  template<typename T, int dim>
+  auto referenceElement(const T&, std::enable_if_t<IsNumber<std::decay_t<T>>::value,const Dune::GeometryType&> gt, Dune::Dim<dim>)
+  {
+    return ReferenceElements<T,dim>::general(gt);
+  }
+
+
 
 } // namespace Dune
 
