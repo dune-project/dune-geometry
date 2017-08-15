@@ -10,10 +10,12 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <array>
 
 #include <dune/common/visibility.hh>
 
 #include <dune/geometry/type.hh>
+#include <dune/geometry/referenceelement.hh>
 #include <dune/geometry/referenceelementimplementation.hh>
 
 namespace Dune
@@ -35,47 +37,64 @@ namespace Dune
       {
         static const unsigned int numTopologies = (1u << dim);
 
+        using Implementation   = ReferenceElementImplementation< ctype, dim >;
+
       public:
-        typedef ReferenceElement< ctype, dim > value_type;
-        typedef const value_type *const_iterator;
+
+        using ReferenceElement = Dune::Geo::ReferenceElement< Implementation >;
+        using value_type       = ReferenceElement;
+        using const_iterator   = const value_type*;
 
         ReferenceElementContainer ()
         {
           for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
-            values_[ topologyId ].initialize( topologyId );
+            {
+              implementations_[ topologyId ].initialize( topologyId );
+              reference_elements_[ topologyId ].setImplementation( implementations_[ topologyId ] );
+            }
         }
 
         const value_type &operator() ( const GeometryType &type ) const
         {
           assert( type.dim() == dim );
-          return values_[ type.id() ];
+          return reference_elements_[ type.id() ];
         }
 
         const value_type &simplex () const
         {
-          return values_[ Dune::Impl::SimplexTopology< dim >::type::id ];
+          return reference_elements_[ Dune::Impl::SimplexTopology< dim >::type::id ];
         }
 
         const value_type &cube () const
         {
-          return values_[ Dune::Impl::CubeTopology< dim >::type::id ];
+          return reference_elements_[ Dune::Impl::CubeTopology< dim >::type::id ];
         }
 
         const value_type &pyramid () const
         {
-          return values_[ Dune::Impl::PyramidTopology< dim >::type::id ];
+          return reference_elements_[ Dune::Impl::PyramidTopology< dim >::type::id ];
         }
 
         const value_type &prism () const
         {
-          return values_[ Dune::Impl::PrismTopology< dim >::type::id ];
+          return reference_elements_[ Dune::Impl::PrismTopology< dim >::type::id ];
         }
 
-        const_iterator begin () const { return values_; }
-        const_iterator end () const { return values_ + numTopologies; }
+        const_iterator begin () const
+        {
+          return reference_elements_.data();
+        }
+
+        const_iterator end () const
+        {
+          return reference_elements_.data() + numTopologies;
+        }
 
       private:
-        value_type values_[ numTopologies ];
+
+        std::array<Implementation,numTopologies> implementations_;
+        std::array<ReferenceElement,numTopologies> reference_elements_;
+
       };
 
 
@@ -101,7 +120,6 @@ namespace Dune
     template< class ctype_, int dim >
     struct ReferenceElements
     {
-      typedef typename Impl::ReferenceElementContainer< ctype, dim >::const_iterator Iterator;
 
       //! The coordinate field type of the contained reference elements.
       using ctype = ctype_;
@@ -112,33 +130,55 @@ namespace Dune
       //! The dimension of the contained reference elements.
       static constexpr int dimension = dim;
 
+    private:
+
+      using Container = Impl::ReferenceElementContainer< ctype, dim >;
+
+    public:
+
+      //! The reference element type.
+      using ReferenceElement = typename Container::ReferenceElement;
+
+      //! Iterator over available reference elements.
+      using Iterator         = typename Container::const_iterator;
+
+      //! Iterator over available reference elements.
+      using iterator         = Iterator;
 
       //! get general reference elements
-      static const ReferenceElement< ctype, dim > &
-      general ( const GeometryType &type )
+      static const ReferenceElement&
+      general ( const GeometryType& type )
       {
         return container() ( type );
       }
 
       //! get simplex reference elements
-      static const ReferenceElement< ctype, dim > &simplex ()
+      static const ReferenceElement& simplex ()
       {
         return container().simplex();
       }
 
       //! get hypercube reference elements
-      static const ReferenceElement< ctype, dim > &cube ()
+      static const ReferenceElement& cube ()
       {
         return container().cube();
       }
 
-      static Iterator begin () { return container().begin(); }
-      static Iterator end () { return container().end(); }
+      static Iterator begin ()
+      {
+        return container().begin();
+      }
+
+      static Iterator end ()
+      {
+        return container().end();
+      }
 
     private:
-      DUNE_EXPORT static const Impl::ReferenceElementContainer< ctype, dim > &container ()
+
+      DUNE_EXPORT static const Container& container ()
       {
-        static Impl::ReferenceElementContainer< ctype, dim > container;
+        static Container container;
         return container;
       }
     };

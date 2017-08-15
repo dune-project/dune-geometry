@@ -18,6 +18,7 @@
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
 
+#include <dune/geometry/referenceelement.hh>
 #include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/type.hh>
 
@@ -402,6 +403,9 @@ namespace Dune
       // ReferenceElementImplementation cannot be copied.
       ReferenceElementImplementation& operator= ( const ReferenceElementImplementation& ) = delete;
 
+      // ReferenceElementImplementation is default-constructible (required for storage in std::array)
+      ReferenceElementImplementation () = default;
+
       /** \brief number of subentities of codimension c
        *
        *  \param[in]  c  codimension whose size is desired
@@ -678,13 +682,13 @@ namespace Dune
     struct ReferenceElementImplementation< ctype, dim >::CreateGeometries
     {
       template< int cc >
-      static const ReferenceElementImplementation< ctype, dim-cc > &
+      static typename ReferenceElements< ctype, dim-cc >::ReferenceElement
       subRefElement( const ReferenceElementImplementation< ctype, dim > &refElement, int i, std::integral_constant< int, cc > )
       {
         return ReferenceElements< ctype, dim-cc >::general( refElement.type( i, cc ) );
       }
 
-      static const ReferenceElementImplementation< ctype, dim > &
+      static typename ReferenceElements< ctype, dim >::ReferenceElement
       subRefElement( const ReferenceElementImplementation< ctype, dim > &refElement, int i, std::integral_constant< int, 0 > )
       {
         DUNE_UNUSED_PARAMETER(i);
@@ -707,13 +711,7 @@ namespace Dune
       }
     };
 
-    // Temporarily provide old name for backwards compatibility
-    template<typename ctype, int dim>
-    using ReferenceElement = ReferenceElementImplementation<ctype,dim>;
-
   } // namespace Geo
-
-  using Geo::ReferenceElement;
 
 } // namespace Dune
 

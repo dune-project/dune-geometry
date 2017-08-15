@@ -10,6 +10,7 @@ install(FILES
   generalvertexorder.hh
   multilineargeometry.hh
   quadraturerules.hh
+  referenceelement.hh
   referenceelementimplementation.hh
   referenceelements.hh
   refinement.hh

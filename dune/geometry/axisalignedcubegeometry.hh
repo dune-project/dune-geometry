@@ -278,7 +278,7 @@ namespace Dune {
       return true;
     }
 
-    friend const ReferenceElement< ctype, dim > &referenceElement ( const AxisAlignedCubeGeometry &geometry )
+    friend ReferenceElement< ctype, dim > referenceElement ( const AxisAlignedCubeGeometry &geometry )
     {
       return ReferenceElements< ctype, dim >::cube();
     }

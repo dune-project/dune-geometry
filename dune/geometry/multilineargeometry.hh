@@ -199,8 +199,14 @@ namespace Dune
     //! type of jacobian inverse transposed
     class JacobianInverseTransposed;
 
+  protected:
+
+    typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
+
+  public:
+
     //! type of reference element
-    typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
+    typedef typename ReferenceElements::ReferenceElement ReferenceElement;
 
   private:
     static const bool hasSingleGeometryType = Traits::template hasSingleGeometryType< mydimension >::v;
@@ -208,8 +214,6 @@ namespace Dune
   protected:
     typedef typename Traits::MatrixHelper MatrixHelper;
     typedef typename std::conditional< hasSingleGeometryType, std::integral_constant< unsigned int, Traits::template hasSingleGeometryType< mydimension >::topologyId >, unsigned int >::type TopologyId;
-
-    typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 
   public:
     /** \brief constructor
@@ -224,7 +228,7 @@ namespace Dune
     template< class Corners >
     MultiLinearGeometry ( const ReferenceElement &refElement,
                           const Corners &corners )
-      : refElement_( &refElement ),
+      : refElement_( refElement ),
         corners_( corners )
     {}
 
@@ -240,7 +244,7 @@ namespace Dune
     template< class Corners >
     MultiLinearGeometry ( Dune::GeometryType gt,
                           const Corners &corners )
-      : refElement_( &ReferenceElements::general( gt ) ),
+      : refElement_( ReferenceElements::general( gt ) ),
         corners_( corners )
     {}
 
@@ -369,10 +373,17 @@ namespace Dune
      */
     JacobianInverseTransposed jacobianInverseTransposed ( const LocalCoordinate &local ) const;
 
-    friend const ReferenceElement &referenceElement ( const MultiLinearGeometry &geometry ) { return geometry.refElement(); }
+    friend ReferenceElement referenceElement ( const MultiLinearGeometry &geometry )
+    {
+      return geometry.refElement();
+    }
 
   protected:
-    const ReferenceElement &refElement () const { return *refElement_; }
+
+    ReferenceElement refElement () const
+    {
+      return refElement_;
+    }
 
     TopologyId topologyId () const
     {
@@ -420,7 +431,7 @@ namespace Dune
     TopologyId topologyId ( std::integral_constant< bool, true > ) const { return TopologyId(); }
     unsigned int topologyId ( std::integral_constant< bool, false > ) const { return refElement().type().id(); }
 
-    const ReferenceElement *refElement_;
+    ReferenceElement refElement_;
     typename Traits::template CornerStorage< mydimension, coorddimension >::Type corners_;
   };
 
