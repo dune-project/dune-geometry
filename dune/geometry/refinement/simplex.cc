@@ -738,8 +738,7 @@ namespace Dune {
       {
         std::vector<CoordVector> corners(dimension+1);
         CoordVector v;
-        const ReferenceElement<CoordType, dimension> &refelem =
-          ReferenceElements<CoordType, dimension>::simplex();
+        auto refelem = ReferenceElements<CoordType, dimension>::simplex();
         for(int i = 0; i <= dimension; ++i)
           corners[i] = global(refelem.position(i, dimension));
         return Geometry(refelem.type(), corners);
