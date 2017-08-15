@@ -54,28 +54,28 @@ namespace Dune
             }
         }
 
-        const value_type &operator() ( const GeometryType &type ) const
+        const ReferenceElement& operator() ( const GeometryType &type ) const
         {
           assert( type.dim() == dim );
           return reference_elements_[ type.id() ];
         }
 
-        const value_type &simplex () const
+        const ReferenceElement& simplex () const
         {
           return reference_elements_[ Dune::Impl::SimplexTopology< dim >::type::id ];
         }
 
-        const value_type &cube () const
+        const ReferenceElement& cube () const
         {
           return reference_elements_[ Dune::Impl::CubeTopology< dim >::type::id ];
         }
 
-        const value_type &pyramid () const
+        const ReferenceElement& pyramid () const
         {
           return reference_elements_[ Dune::Impl::PyramidTopology< dim >::type::id ];
         }
 
-        const value_type &prism () const
+        const ReferenceElement& prism () const
         {
           return reference_elements_[ Dune::Impl::PrismTopology< dim >::type::id ];
         }
