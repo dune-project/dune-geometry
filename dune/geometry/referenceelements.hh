@@ -98,10 +98,20 @@ namespace Dune
      *
      *  \ingroup GeometryReferenceElements
      */
-    template< class ctype, int dim >
+    template< class ctype_, int dim >
     struct ReferenceElements
     {
       typedef typename Impl::ReferenceElementContainer< ctype, dim >::const_iterator Iterator;
+
+      //! The coordinate field type of the contained reference elements.
+      using ctype = ctype_;
+
+      //! The coordinate field type of the contained reference elements.
+      using CoordinateField = ctype;
+
+      //! The dimension of the contained reference elements.
+      static constexpr int dimension = dim;
+
 
       //! get general reference elements
       static const ReferenceElement< ctype, dim > &

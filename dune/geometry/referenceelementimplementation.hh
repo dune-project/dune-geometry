@@ -361,9 +361,26 @@ namespace Dune
      *  \tparam dim    dimension of the reference element
      *
      */
-    template< class ctype, int dim >
+    template< class ctype_, int dim >
     class ReferenceElementImplementation
     {
+
+    public:
+
+      //! The coordinate field type.
+      using ctype = ctype_;
+
+      //! The coordinate field type.
+      using CoordinateField = ctype;
+
+      //! The coordinate type.
+      using Coordinate = Dune::FieldVector<ctype,dim>;
+
+      //! The dimension of the reference element.
+      static constexpr int dimension = dim;
+
+    private:
+
       typedef ReferenceElementImplementation< ctype, dim > This;
 
       friend class Impl::ReferenceElementContainer< ctype, dim >;
@@ -458,7 +475,7 @@ namespace Dune
        *  \param[in]  i   number of subentity E (0 <= i < size( c ))
        *  \param[in]  c   codimension of subentity E
        */
-      const FieldVector< ctype, dim > &position( int i, int c ) const
+      const Coordinate &position( int i, int c ) const
       {
         assert( (c >= 0) && (c <= dim) );
         return baryCenters_[ c ][ i ];
@@ -471,7 +488,7 @@ namespace Dune
        *
        *  \param[in]  local  coordinates of the point
        */
-      bool checkInside ( const FieldVector< ctype, dim > &local ) const
+      bool checkInside ( const Coordinate &local ) const
       {
         const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
         return Impl::template checkInside< ctype, dim >( type().id(), dim, local, tolerance );
@@ -507,7 +524,7 @@ namespace Dune
        *
        *  \param[in]  face  index of the face, whose normal is desired
        */
-      const FieldVector< ctype, dim > &integrationOuterNormal ( int face ) const
+      const Coordinate &integrationOuterNormal ( int face ) const
       {
         assert( (face >= 0) && (face < int( integrationNormals_.size() )) );
         return integrationNormals_[ face ];
@@ -538,7 +555,7 @@ namespace Dune
             baryCenters_[ codim ].resize( size(codim) );
             for( int i = 0; i < size( codim ); ++i )
               {
-                baryCenters_[ codim ][ i ] = FieldVector< ctype, dim >( ctype( 0 ) );
+                baryCenters_[ codim ][ i ] = Coordinate( ctype( 0 ) );
                 const unsigned int numCorners = size( i, codim, dim );
                 for( unsigned int j = 0; j < numCorners; ++j )
                   baryCenters_[ codim ][ i ] += baryCenters_[ dim ][ subEntity( i, codim, j, dim ) ];
@@ -570,8 +587,8 @@ namespace Dune
       /** \brief The reference element volume */
       ctype volume_;
 
-      std::vector< FieldVector< ctype, dim > > baryCenters_[ dim+1 ];
-      std::vector< FieldVector< ctype, dim > > integrationNormals_;
+      std::vector< Coordinate > baryCenters_[ dim+1 ];
+      std::vector< Coordinate > integrationNormals_;
 
       /** \brief Stores all subentities of all codimensions */
       GeometryTable geometries_;
