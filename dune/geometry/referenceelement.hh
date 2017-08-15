@@ -236,6 +236,25 @@ namespace Dune {
 
 #endif // DOXYGEN
 
+
+      //! Compares for equality with another reference element.
+      bool operator==(const ReferenceElement& r) const
+      {
+        return _impl == r._impl;
+      }
+
+      //! Compares for inequality with another reference element.
+      bool operator!=(const ReferenceElement& r) const
+      {
+        return not (*this == r);
+      }
+
+      //! Yields a hash value suitable for storing the reference element a in hash table
+      friend std::size_t hash_value(const ReferenceElement& r)
+      {
+        return reinterpret_cast<std::size_t>(r._impl);
+      }
+
     private:
 
       // The implementation must be a friend to construct a wrapper around itself.
