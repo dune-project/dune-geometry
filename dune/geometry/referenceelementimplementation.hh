@@ -535,10 +535,18 @@ namespace Dune
         return integrationNormals_[ face ];
       }
 
+      /** \brief Returns the topology id of the underlying geometry type. */
+      unsigned int topologyId() const
+      {
+        return topologyId_;
+      }
+
     private:
       void initialize ( unsigned int topologyId )
       {
         assert( topologyId < Impl::numTopologies( dim ) );
+
+        topologyId_ = topologyId;
 
         // set up subentities
         for( int codim = 0; codim <= dim; ++codim )
@@ -591,6 +599,8 @@ namespace Dune
 
       /** \brief The reference element volume */
       ctype volume_;
+
+      unsigned int topologyId_;
 
       std::vector< Coordinate > baryCenters_[ dim+1 ];
       std::vector< Coordinate > integrationNormals_;
