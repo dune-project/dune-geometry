@@ -34,6 +34,15 @@ int main () try
 
   type.makeLine();
 
+  {
+    // check default constructibility and comparison operators
+    ReferenceElements<double,1>::ReferenceElement r1, r2;
+    test(r1 == r2);
+    test(not (r1 != r2));
+    // check hash value
+    testcmp(hash_value(r1),0);
+  }
+
   const ReferenceElement<double,1>& referenceLine = ReferenceElements<double, 1>::general(type);
 
   // size(int c)
