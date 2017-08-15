@@ -250,8 +250,29 @@ namespace Dune
    * The freestanding function referenceElement is a generic entry point
    * for getting reference elements for arbitrary objects that support the
    * operation. As it relies on argument-dependent lookup, the function should
-   * be called without any qualifying namespace. The returned object is guaranteed
-   * to have value semantics, so you can copy it around and store it by value.
+   * be called without any qualifying namespace. Note, however, that the versions
+   * of referenceElement() for a dimension and GeometryType with explicit template
+   * arguments cannot be found by ADL, so you have to explicitly pull them in or
+   * qualify the call using `Dune::`:
+   *
+     \code
+     {
+       // option 1: using
+       using Dune::referenceElement;
+       auto ref_el = referenceElement<double,dim>(geometry_type);
+     }
+     {
+       // option 2: explicitly put in Dune::
+       auto ref_el = Dune::referenceElement<double,dim>(geometry_type);
+     }
+     {
+       // option 3: use version without explicit template arguments
+       auto ref_el = referenceElement(double(),geometry_type,Dune::Dim<dim>());
+     }
+     \endcode
+   *
+   * The returned object is guaranteed to have value semantics, so you can copy it
+   * around and store it by value.
    *
    * The grid geometries in dune-grid support this function, and thus most people
    * will use this function as
@@ -280,6 +301,7 @@ namespace Dune
    *
      \code
      auto gt = ...;
+     using Dune::referenceElement;
      auto ref_el = referenceElement<ctype,dim>(gt);
      auto ref_el = referenceElement<ctype>(gt,Dune::Dim<dim>());
      \endcode
@@ -300,6 +322,7 @@ namespace Dune
    *
      \code
      auto gt = ...;
+     using Dune::referenceElement;
      auto ref_el = referenceElement(ctype(),gt,Dune::Dim<dim>());
      \endcode
    *
