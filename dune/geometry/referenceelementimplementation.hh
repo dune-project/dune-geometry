@@ -30,8 +30,11 @@ namespace Dune
     // Internal Forward Declarations
     // -----------------------------
 
-    template< class ctype, int dim >
-    class ReferenceElementContainer;
+    namespace Impl
+    {
+      template< class ctype, int dim >
+      class ReferenceElementContainer;
+    }
 
     template< class ctype, int dim >
     struct ReferenceElements;
@@ -363,7 +366,7 @@ namespace Dune
     {
       typedef ReferenceElementImplementation< ctype, dim > This;
 
-      friend class ReferenceElementContainer< ctype, dim >;
+      friend class Impl::ReferenceElementContainer< ctype, dim >;
 
       struct SubEntityInfo;
 
