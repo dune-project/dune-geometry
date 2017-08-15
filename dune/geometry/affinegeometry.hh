@@ -22,7 +22,7 @@ namespace Dune
   // -----------------------------
 
   template< class ctype, int dim >
-  class ReferenceElement;
+  class ReferenceElementImplementation;
 
   template< class ctype, int dim >
   struct ReferenceElements;
@@ -484,7 +484,7 @@ namespace Dune
 
   private:
     //! type of reference element
-    typedef Dune::ReferenceElement< ctype, mydimension > ReferenceElement;
+    typedef Dune::ReferenceElementImplementation< ctype, mydimension > ReferenceElement;
 
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
 

@@ -331,7 +331,7 @@ namespace Dune
   // ReferenceElement
   // ----------------
 
-  /** \class ReferenceElement
+  /** \class ReferenceElementImplementation
    *  \ingroup GeometryReferenceElements
    *  \brief This class provides access to geometric and topological
    *  properties of a reference element.
@@ -350,18 +350,18 @@ namespace Dune
    *
    */
   template< class ctype, int dim >
-  class ReferenceElement
+  class ReferenceElementImplementation
   {
-    typedef ReferenceElement< ctype, dim > This;
+    typedef ReferenceElementImplementation< ctype, dim > This;
 
     friend class ReferenceElementContainer< ctype, dim >;
 
     struct SubEntityInfo;
 
     // make copy constructor private
-    ReferenceElement ( const This & );
+    ReferenceElementImplementation ( const This & );
 
-    ReferenceElement () {}
+    ReferenceElementImplementation () {}
 
     template< int codim > struct CreateGeometries;
 
@@ -569,7 +569,7 @@ namespace Dune
 
   /** \brief topological information about the subentities of a reference element */
   template< class ctype, int dim >
-  struct ReferenceElement< ctype, dim >::SubEntityInfo
+  struct ReferenceElementImplementation< ctype, dim >::SubEntityInfo
   {
     SubEntityInfo ()
       : numbering_( nullptr )
@@ -647,23 +647,23 @@ namespace Dune
 
   template< class ctype, int dim >
   template< int codim >
-  struct ReferenceElement< ctype, dim >::CreateGeometries
+  struct ReferenceElementImplementation< ctype, dim >::CreateGeometries
   {
     template< int cc >
-    static const ReferenceElement< ctype, dim-cc > &
-    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, std::integral_constant< int, cc > )
+    static const ReferenceElementImplementation< ctype, dim-cc > &
+    subRefElement( const ReferenceElementImplementation< ctype, dim > &refElement, int i, std::integral_constant< int, cc > )
     {
       return ReferenceElements< ctype, dim-cc >::general( refElement.type( i, cc ) );
     }
 
-    static const ReferenceElement< ctype, dim > &
-    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, std::integral_constant< int, 0 > )
+    static const ReferenceElementImplementation< ctype, dim > &
+    subRefElement( const ReferenceElementImplementation< ctype, dim > &refElement, int i, std::integral_constant< int, 0 > )
     {
       DUNE_UNUSED_PARAMETER(i);
       return refElement;
     }
 
-    static void apply ( const ReferenceElement< ctype, dim > &refElement, GeometryTable &geometries )
+    static void apply ( const ReferenceElementImplementation< ctype, dim > &refElement, GeometryTable &geometries )
     {
       const int size = refElement.size( codim );
       std::vector< FieldVector< ctype, dim > > origins( size );
@@ -679,6 +679,10 @@ namespace Dune
     }
   };
 
+
+  // Temporarily provide old name for backwards compatibility
+  template<typename ctype, int dim>
+  using ReferenceElement = ReferenceElementImplementation<ctype,dim>;
 
 
   // ReferenceElementContainer
