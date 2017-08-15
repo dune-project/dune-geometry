@@ -10,8 +10,8 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <array>
 
-#include <dune/common/array.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/hybridutilities.hh>

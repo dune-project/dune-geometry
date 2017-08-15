@@ -11,7 +11,6 @@
 #include <utility>
 #include <vector>
 
-#include <dune/common/array.hh>
 #include <dune/common/visibility.hh>
 
 #include <dune/geometry/type.hh>
