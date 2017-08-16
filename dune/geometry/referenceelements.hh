@@ -289,7 +289,7 @@ namespace Dune
    * This does of course also work for entities of other codimensions.
    */
   template<typename... T>
-  auto referenceElement(T&&... t);
+  unspecified-value-type referenceElement(T&&... t);
 
 #endif
 
