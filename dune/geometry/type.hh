@@ -267,6 +267,9 @@ namespace Dune
    * This class has to be extended if a grid implementation with new entity types
    * is added to DUNE.
    *
+   * GeometryType is a C++ "literal type" and can be used in `constexpr` context if created
+   * with a `constexpr` constructor.
+   *
    * \ingroup GeometryType
    */
   class GeometryType
@@ -307,7 +310,7 @@ namespace Dune
     /*@{*/
 
     /** \brief Default constructor, not initializing anything */
-    GeometryType ()
+    constexpr GeometryType ()
       : topologyId_(0), dim_(0), none_(true)
     {}
 
@@ -352,7 +355,7 @@ namespace Dune
      *       the TypologyType, users are encouraged to use the
      *       GeometryType(TopologyType t) constructor.
      */
-    GeometryType(unsigned int topologyId, unsigned int dim)
+    constexpr GeometryType(unsigned int topologyId, unsigned int dim)
       : topologyId_(topologyId), dim_(dim), none_(false)
     {}
 
@@ -368,14 +371,14 @@ namespace Dune
      */
     template<class TopologyType,
       class = Dune::void_t<decltype(TopologyType::dimension), decltype(TopologyType::id)>>
-    explicit GeometryType(TopologyType t)
+    explicit constexpr GeometryType(TopologyType t)
       : topologyId_(TopologyType::id), dim_(TopologyType::dimension), none_(false)
     {
       DUNE_UNUSED_PARAMETER(t);
     }
 
     /** \brief Constructor for vertices and segments */
-    explicit GeometryType(unsigned int dim)
+    explicit constexpr GeometryType(unsigned int dim)
       : topologyId_(0), dim_(dim), none_(false)
     {
       assert(dim < 2);
@@ -385,7 +388,7 @@ namespace Dune
     // We need this constructor for "int" and "unsigned int",
     // because otherwise GeometryType(int) would try to call the
     // generic GeometryType(TopologyType) constructor
-    explicit GeometryType(int dim)
+    explicit constexpr GeometryType(int dim)
       : topologyId_(0), dim_(dim), none_(false)
     {
       assert(dim < 2);
@@ -482,67 +485,67 @@ namespace Dune
     /** @name Query Methods */
     /*@{*/
     /** \brief Return true if entity is a vertex */
-    bool isVertex() const {
+    constexpr bool isVertex() const {
       return dim_==0;
     }
 
     /** \brief Return true if entity is a line segment */
-    bool isLine() const {
+    constexpr bool isLine() const {
       return dim_==1;
     }
 
     /** \brief Return true if entity is a triangle */
-    bool isTriangle() const {
+    constexpr bool isTriangle() const {
       return ! none_ && dim_==2 && (topologyId_ | 1) == b0001;
     }
 
     /** \brief Return true if entity is a quadrilateral */
-    bool isQuadrilateral() const {
+    constexpr bool isQuadrilateral() const {
       return ! none_ && dim_==2 && (topologyId_ | 1) == b0011;
     }
 
     /** \brief Return true if entity is a tetrahedron */
-    bool isTetrahedron() const {
+    constexpr bool isTetrahedron() const {
       return ! none_ && dim_==3 && (topologyId_ | 1) == b0001;
     }
 
     /** \brief Return true if entity is a pyramid */
-    bool isPyramid() const {
+    constexpr bool isPyramid() const {
       return ! none_ && dim_==3 && (topologyId_ | 1) == b0011;
     }
 
     /** \brief Return true if entity is a prism */
-    bool isPrism() const {
+    constexpr bool isPrism() const {
       return ! none_ && dim_==3 && (topologyId_ | 1) == b0101;
     }
 
     /** \brief Return true if entity is a hexahedron */
-    bool isHexahedron() const {
+    constexpr bool isHexahedron() const {
       return ! none_ && dim_==3 && (topologyId_ | 1) == b0111;
     }
 
     /** \brief Return true if entity is a simplex of any dimension */
-    bool isSimplex() const {
+    constexpr bool isSimplex() const {
       return ! none_ && (topologyId_ | 1) == 1;
     }
 
     /** \brief Return true if entity is a cube of any dimension */
-    bool isCube() const {
+    constexpr bool isCube() const {
       return ! none_ && ((topologyId_ ^ ((1 << dim_)-1)) >> 1 == 0);
     }
 
     /** \brief Return true if entity is a singular of any dimension */
-    bool isNone() const {
+    constexpr bool isNone() const {
       return none_;
     }
 
     /** \brief Return dimension of the type */
-    unsigned int dim() const {
+    constexpr unsigned int dim() const {
       return dim_;
     }
 
     /** \brief Return the topology id of the type */
-    unsigned int id() const {
+    constexpr unsigned int id() const {
       return topologyId_;
     }
 
@@ -554,7 +557,7 @@ namespace Dune
     /** \brief Check for equality. This method knows that in dimension 0 and 1
      *  all BasicTypes are equal.
      */
-    bool operator==(const GeometryType& other) const {
+    constexpr bool operator==(const GeometryType& other) const {
       return ( ( none_ == other.none_ )
                && ( ( none_ == true )
                     || ( ( dim_ == other.dim_ )
@@ -565,12 +568,12 @@ namespace Dune
     }
 
     /** \brief Check for inequality */
-    bool operator!=(const GeometryType& other) const {
+    constexpr bool operator!=(const GeometryType& other) const {
       return ! ((*this)==other);
     }
 
     /** \brief less-than operation for use with maps */
-    bool operator < (const GeometryType& other) const {
+    constexpr bool operator < (const GeometryType& other) const {
       return ( ( none_ < other.none_ )
                || ( !( other.none_ < none_ )
                     && ( ( dim_ < other.dim_ )
