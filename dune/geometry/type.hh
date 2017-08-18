@@ -346,6 +346,17 @@ namespace Dune
       }
     }
 
+
+    /** \brief Constructor, using the topologyId (integer), the dimension and a flag for type none.
+     * \note With this constructor, you can easily create an invalid GeometryType,
+     *       it is mostly here for internal use!
+     *       the TypologyType, users are encouraged to use the
+     *       GeometryType(TopologyType t) constructor.
+     */
+    constexpr GeometryType(unsigned int topologyId, unsigned int dim, bool none)
+      : topologyId_(topologyId), dim_(dim), none_(none)
+    {}
+
     /** \brief Constructor, using the topologyId (integer) and the dimension
      * \note the topologyId is a binary encoded representation of
      *       the TypologyType, users are encouraged to use the
@@ -389,6 +400,79 @@ namespace Dune
     {
       assert(dim < 2);
     }
+
+
+    /** @name Factory functions */
+    /*@{*/
+
+    //! Returns a GeometryType representing a vertex.
+    static constexpr GeometryType Vertex()
+    {
+      return GeometryType(0,0,false);
+    }
+
+    //! Returns a GeometryType representing a line.
+    static constexpr GeometryType Line()
+    {
+      return GeometryType(0,1,false);
+    }
+
+    //! Returns a GeometryType representing a triangle.
+    static constexpr GeometryType Triangle()
+    {
+      return Simplex(2);
+    }
+
+    //! Returns a GeometryType representing a quadrilateral (a square).
+    static constexpr GeometryType Quadrilateral()
+    {
+      return Cube(2);
+    }
+
+    //! Returns a GeometryType representing a tetrahedron.
+    static constexpr GeometryType Tetrahedron()
+    {
+      return Simplex(3);
+    }
+
+    //! Returns a GeometryType representing a 3D pyramid.
+    static constexpr GeometryType Pyramid()
+    {
+      return GeometryType(b0011,3,false);
+    }
+
+    //! Returns a GeometryType representing a 3D prism.
+    static constexpr GeometryType Prism()
+    {
+      return GeometryType(b0101,3,false);
+    }
+
+    //! Returns a GeometryType representing a hexahedron.
+    static constexpr GeometryType Hexahedron()
+    {
+      return Cube(3);
+    }
+
+    //! Returns a GeometryType representing a simplex of dimension `dim`.
+    static constexpr GeometryType Simplex(unsigned int dim)
+    {
+      return GeometryType(0,dim,false);
+    }
+
+    //! Returns a GeometryType representing a hypercube of dimension `dim`.
+    static constexpr GeometryType Cube(unsigned int dim)
+    {
+      return GeometryType(((dim>1) ? ((1 << dim) - 1) : 0),dim,false);
+    }
+
+    //! Returns a GeometryType representing a singular of dimension `dim`.
+    static constexpr GeometryType None(unsigned int dim)
+    {
+      return GeometryType(0,dim,true);
+    }
+
+    /*@}*/
+
 
     /** @name Setup Methods */
     /*@{*/
