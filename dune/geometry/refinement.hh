@@ -248,7 +248,6 @@
 // The interface (template<...> class StaticRefinement) is not included here
 // since it derives from parts which I consider implementation.  Look
 // into refinement/base.cc if the documentation is above is not enough.
-#include "refinement/virtualrefinementtags.hh"
 #include "refinement/base.cc"
 
 #include "refinement/hcube.cc"
