@@ -348,12 +348,6 @@ namespace Dune
             alpha[i] = (idx >> i) & 1u;
           return alpha;
         }
-
-        unsigned int
-        vertexIdx(std::array<unsigned int, dimension> c) const
-        {
-          return coord2idx(c, _nIntervals+1u);
-        }
       };
 
 #ifndef DOXYGEN
