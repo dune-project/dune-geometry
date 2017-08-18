@@ -13,6 +13,7 @@
 
 #include <dune/common/deprecated.hh>
 #include <dune/common/exceptions.hh>
+#include <dune/common/keywords.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
 
@@ -350,6 +351,17 @@ namespace Dune
       }
     }
 
+
+    /** \brief Constructor, using the topologyId (integer), the dimension and a flag for type none.
+     * \note With this constructor, you can easily create an invalid GeometryType,
+     *       it is mostly here for internal use!
+     *       the TypologyType, users are encouraged to use the
+     *       GeometryType(TopologyType t) constructor.
+     */
+    constexpr GeometryType(unsigned int topologyId, unsigned int dim, bool none)
+      : topologyId_(topologyId), dim_(dim), none_(none)
+    {}
+
     /** \brief Constructor, using the topologyId (integer) and the dimension
      * \note the topologyId is a binary encoded representation of
      *       the TypologyType, users are encouraged to use the
@@ -647,6 +659,98 @@ namespace Dune
     }
     return s;
   }
+
+
+
+  //! Predefined GeometryTypes for common geometries
+  /**
+   * \ingroup GeometryType
+   * \related GeometryType
+   */
+  namespace GeometryTypes {
+
+    //! Returns a GeometryType representing a simplex of dimension `dim`.
+      /**
+       * \ingroup GeometryType
+       */
+    inline constexpr GeometryType simplex(unsigned int dim)
+    {
+      return GeometryType(0,dim,false);
+    }
+
+    //! Returns a GeometryType representing a hypercube of dimension `dim`.
+      /**
+       * \ingroup GeometryType
+       */
+    inline constexpr GeometryType cube(unsigned int dim)
+    {
+      return GeometryType(((dim>1) ? ((1 << dim) - 1) : 0),dim,false);
+    }
+
+    //! Returns a GeometryType representing a singular of dimension `dim`.
+      /**
+       * \ingroup GeometryType
+       */
+    inline constexpr GeometryType none(unsigned int dim)
+    {
+      return GeometryType(0,dim,true);
+    }
+
+#if !DUNE_HAVE_CXX_INLINE_VARIABLES
+    namespace {
+#endif
+
+      //! GeometryType representing a vertex.
+      DUNE_INLINE_VARIABLE constexpr GeometryType vertex = GeometryType(0,0,false);
+
+      //! GeometryType representing a line.
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType line = GeometryType(0,1,false);
+
+      //! GeometryType representing a triangle.
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType triangle = simplex(2);
+
+      //! GeometryType representing a quadrilateral (a square).
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType quadrilateral = cube(2);
+
+      //! GeometryType representing a tetrahedron.
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType tetrahedron = simplex(3);
+
+      //! GeometryType representing a 3D pyramid.
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType pyramid = GeometryType(0b0011,3,false);
+
+      //! GeometryType representing a 3D prism.
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType prism = GeometryType(0b0101,3,false);
+
+      //! GeometryType representing a hexahedron.
+      /**
+       * \ingroup GeometryType
+       */
+      DUNE_INLINE_VARIABLE constexpr GeometryType hexahedron = cube(3);
+
+#if !DUNE_HAVE_CXX_INLINE_VARIABLES
+    }
+#endif
+
+  }
+
 
 } // namespace Dune
 
