@@ -84,13 +84,13 @@ namespace Dune
         typedef typename Codim<0>::SubEntityIterator ElementIterator;
         typedef FieldVector<int, (1<<dimension)> IndexVector;
 
-        static unsigned nVertices(unsigned nHyperubes);
-        static VertexIterator vBegin(unsigned nHyperubes);
-        static VertexIterator vEnd(unsigned nHyperubes);
+        static unsigned nVertices(unsigned nIntervals);
+        static VertexIterator vBegin(unsigned nIntervals);
+        static VertexIterator vEnd(unsigned nIntervals);
 
-        static unsigned nElements(unsigned nHyperubes);
-        static ElementIterator eBegin(unsigned nHyperubes);
-        static ElementIterator eEnd(unsigned nHyperubes);
+        static unsigned nElements(unsigned nIntervals);
+        static ElementIterator eBegin(unsigned nIntervals);
+        static ElementIterator eEnd(unsigned nIntervals);
       };
 
       template<int dimension, class CoordType>
@@ -104,53 +104,53 @@ namespace Dune
       template<int dimension, class CoordType>
       unsigned
       RefinementImp<dimension, CoordType>::
-      nVertices(unsigned nHyperubes)
+      nVertices(unsigned nIntervals)
       {
-        // return (nHyperubes + 1)^dim
-        return Power<dimension>::eval(nHyperubes+1u);
+        // return (nIntervals + 1)^dim
+        return Power<dimension>::eval(nIntervals+1u);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vBegin(unsigned nHyperubes)
+      vBegin(unsigned nIntervals)
       {
-        return VertexIterator(0,nHyperubes);
+        return VertexIterator(0,nIntervals);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::VertexIterator
       RefinementImp<dimension, CoordType>::
-      vEnd(unsigned nHyperubes)
+      vEnd(unsigned nIntervals)
       {
-        return VertexIterator(nVertices(nHyperubes),nHyperubes);
+        return VertexIterator(nVertices(nIntervals),nIntervals);
       }
 
       template<int dimension, class CoordType>
       unsigned
       RefinementImp<dimension, CoordType>::
-      nElements(unsigned nHyperubes)
+      nElements(unsigned nIntervals)
       {
         static_assert(dimension >= 0,
                       "Negative dimension given, what the heck is that supposed to mean?");
-        // return nHyperubes^dim
-        return Power<dimension>::eval(nHyperubes);
+        // return nIntervals^dim
+        return Power<dimension>::eval(nIntervals);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eBegin(unsigned nHyperubes)
+      eBegin(unsigned nIntervals)
       {
-        return ElementIterator(0,nHyperubes);
+        return ElementIterator(0,nIntervals);
       }
 
       template<int dimension, class CoordType>
       typename RefinementImp<dimension, CoordType>::ElementIterator
       RefinementImp<dimension, CoordType>::
-      eEnd(unsigned nHyperubes)
+      eEnd(unsigned nIntervals)
       {
-        return ElementIterator(nElements(nHyperubes),nHyperubes);
+        return ElementIterator(nElements(nIntervals),nIntervals);
       }
 
       //
@@ -280,7 +280,7 @@ namespace Dune
         typedef RefinementImp<dimension, CoordType> Refinement;
         typedef typename Refinement::template Codim<codimension>::SubEntityIterator This;
 
-        SubEntityIterator(unsigned int index, unsigned int nHyperubes);
+        SubEntityIterator(unsigned int index, unsigned int nIntervals);
 
         bool equals(const This &other) const;
         void increment();
@@ -360,8 +360,8 @@ namespace Dune
       template<int dimension, class CoordType>
       template<int codimension>
       RefinementImp<dimension, CoordType>::Codim<codimension>::SubEntityIterator::
-      SubEntityIterator(unsigned int index, unsigned int nHyperubes)
-        : _index(index), _nIntervals(nHyperubes)
+      SubEntityIterator(unsigned int index, unsigned int nIntervals)
+        : _index(index), _nIntervals(nIntervals)
       {}
 
       template<int dimension, class CoordType>
