@@ -701,6 +701,9 @@ namespace Dune
 #endif
 
       //! GeometryType representing a vertex.
+      /**
+       * \ingroup GeometryType
+       */
       DUNE_INLINE_VARIABLE constexpr GeometryType vertex = GeometryType(0,0,false);
 
       //! GeometryType representing a line.
