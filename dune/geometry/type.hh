@@ -398,6 +398,7 @@ namespace Dune
     /*@{*/
 
     /** \brief Make a vertex */
+    DUNE_DEPRECATED_MSG("makeVertex() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::vertex instead")
     void makeVertex() {
       none_  = false;
       dim_ = 0;
@@ -405,6 +406,7 @@ namespace Dune
     }
 
     /** \brief Make a line segment */
+    DUNE_DEPRECATED_MSG("makeLine() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::line instead")
     void makeLine() {
       none_  = false;
       dim_ = 1;
@@ -412,21 +414,25 @@ namespace Dune
     }
 
     /** \brief Make a triangle */
+    DUNE_DEPRECATED_MSG("makeTriangle() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::triangle instead")
     void makeTriangle() {
       makeSimplex(2);
     }
 
     /** \brief Make a quadrilateral */
+    DUNE_DEPRECATED_MSG("makeQuadrilateral() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::quadrilateral instead")
     void makeQuadrilateral() {
       makeCube(2);
     }
 
     /** \brief Make a tetrahedron */
+    DUNE_DEPRECATED_MSG("makeTetrahedron() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::tetrahedron instead")
     void makeTetrahedron() {
       makeSimplex(3);
     }
 
     /** \brief Make a pyramid */
+    DUNE_DEPRECATED_MSG("makePyramid() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::pyramid instead")
     void makePyramid() {
       none_  = false;
       dim_ = 3;
@@ -434,6 +440,7 @@ namespace Dune
     }
 
     /** \brief Make a prism */
+    DUNE_DEPRECATED_MSG("makePrism() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::prism instead")
     void makePrism() {
       none_  = false;
       dim_ = 3;
@@ -441,11 +448,13 @@ namespace Dune
     }
 
     /** \brief Make a hexahedron */
+    DUNE_DEPRECATED_MSG("makeHexahedron() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::hexahedron instead")
     void makeHexahedron() {
       makeCube(3);
     }
 
     /** \brief Make a simplex of given dimension */
+    DUNE_DEPRECATED_MSG("makeSimplex(dim) is deprecated in DUNE 2.6, please use Dune::GeometryTypes::simplex(dim) instead")
     void makeSimplex(unsigned int dim) {
       none_  = false;
       dim_ = dim;
@@ -453,6 +462,7 @@ namespace Dune
     }
 
     /** \brief Make a hypercube of given dimension */
+    DUNE_DEPRECATED_MSG("makeCube(dim) is deprecated in DUNE 2.6, please use Dune::GeometryTypes::cube(dim) instead")
     void makeCube(unsigned int dim) {
       none_  = false;
       dim_ = dim;
@@ -460,6 +470,7 @@ namespace Dune
     }
 
     /** \brief Make a singular of given dimension */
+    DUNE_DEPRECATED_MSG("makeNone(dim) is deprecated in DUNE 2.6, please use Dune::GeometryTypes::none(dim) instead")
     void makeNone(unsigned int dim) {
       none_ = true;
       dim_ = dim;
