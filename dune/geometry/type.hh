@@ -302,6 +302,10 @@ namespace Dune
     bool none_ : 1;
 
   public:
+
+    /** @name Constructors */
+    /*@{*/
+
     /** \brief Default constructor, not initializing anything */
     GeometryType ()
       : topologyId_(0), dim_(0), none_(true)
@@ -386,6 +390,9 @@ namespace Dune
     {
       assert(dim < 2);
     }
+
+    /** @} */
+
 
     /** @name Setup Methods */
     /*@{*/
@@ -541,6 +548,9 @@ namespace Dune
 
     /*@}*/
 
+
+    /** @name Comparison operators */
+
     /** \brief Check for equality. This method knows that in dimension 0 and 1
      *  all BasicTypes are equal.
      */
@@ -571,6 +581,9 @@ namespace Dune
                     )
                );
     }
+
+    /*@}*/
+
   };
 
   /** \brief Prints the type to an output stream */
