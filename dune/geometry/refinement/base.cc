@@ -83,7 +83,10 @@ namespace Dune
 
 
   /*!
-   * \brief Holds the number of refined intervals per axis needed for virtual and static refinement
+   * \brief Holds the number of refined intervals per axis needed for virtual and static refinement.
+   *
+   * To use this class, call either refinementIntervals() or refinementLevels(). The first on will just pass
+   * its input to the constructor, the latter one will  to be consistent with the meaning of levels in a grid context
    */
   class RefinementIntervals{
     int intervals_=1;
