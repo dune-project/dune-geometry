@@ -82,6 +82,9 @@ namespace Dune
   } // namespace RefinementImp
 
 
+  /*!
+   * \brief Holds the number of refined intervals per axis needed for virtual and static refinement
+   */
   class RefinementIntervals{
     int intervals_=1;
 
@@ -91,13 +94,23 @@ namespace Dune
     int intervals() const { return intervals_; }
   };
 
-  inline RefinementIntervals refinementIntervals(int i)
+  /*!
+   * \brief Creates a RefinementIntervals object
+   *
+   * \param intervals Number of refined intervals per axis
+   */
+  inline RefinementIntervals refinementIntervals(int intervals)
   {
-    return RefinementIntervals{i};
+    return RefinementIntervals{intervals};
   }
-  inline RefinementIntervals refinementLevels(int l)
+  /*!
+   * \brief Creates a RefinementIntervals object
+   *
+   * \param levels Number of refinement levels, translates to \f$2^{levels}\f$ intervals per axis
+   */
+  inline RefinementIntervals refinementLevels(int levels)
   {
-    return RefinementIntervals{1<<l};
+    return RefinementIntervals{1<<levels};
   }
 
   // ///////////////
@@ -176,6 +189,11 @@ namespace Dune
     {
       return RefinementImp::nVertices(1<<level);
     }
+    /*!
+     * \brief Get the number of Vertices
+     *
+     * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
+     */
     static int nVertices(Dune::RefinementIntervals tag)
     {
       return RefinementImp::nVertices(tag.intervals());
@@ -186,6 +204,11 @@ namespace Dune
     {
       return RefinementImp::vBegin(1<<level);
     }
+    /*!
+     * \brief Get a VertexIterator
+     *
+     * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
+     */
     static VertexIterator vBegin(Dune::RefinementIntervals tag)
     {
       return RefinementImp::vBegin(tag.intervals());
@@ -196,6 +219,11 @@ namespace Dune
     {
       return RefinementImp::vEnd(1<<level);
     }
+    /*!
+     * \brief Get a VertexIterator
+     *
+     * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
+     */
     static VertexIterator vEnd(Dune::RefinementIntervals tag)
     {
       return RefinementImp::vEnd(tag.intervals());
@@ -207,6 +235,11 @@ namespace Dune
     {
       return RefinementImp::nElements(1<<level);
     }
+    /*!
+     * \brief Get the number of Elements
+     *
+     * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
+     */
     static int nElements(Dune::RefinementIntervals tag)
     {
       return RefinementImp::nElements(tag.intervals());
@@ -217,6 +250,11 @@ namespace Dune
     {
       return RefinementImp::eBegin(1<<level);
     }
+    /*!
+     * \brief Get an ElementIterator
+     *
+     * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
+     */
     static ElementIterator eBegin(Dune::RefinementIntervals tag)
     {
       return RefinementImp::eBegin(tag.intervals());
@@ -227,6 +265,11 @@ namespace Dune
     {
       return RefinementImp::eEnd(1<<level);
     }
+    /*!
+     * \brief Get an ElementIterator
+     *
+     * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
+     */
     static ElementIterator eEnd(Dune::RefinementIntervals tag)
     {
       return RefinementImp::eEnd(tag.intervals());
