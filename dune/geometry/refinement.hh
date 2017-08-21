@@ -26,7 +26,7 @@
  * \subsection Can_do What Refinement can do for you
  * <!---------------------------------------------->
  *
- * For a given geometry type and refinement level, %Refinement will
+ * For a given geometry type and number of refined intervals, %Refinement will
  * - assign consecutive integer indices starting at 0 to each
  *   subvertex,
  * - assign consecutive integer indices starting at 0 to each
@@ -78,13 +78,13 @@
  *   typedef ImplementationDefined IndexVector; // These are FieldVectors
  *   typedef ImplementationDefined CoordVector;
  *
- *   static int nVertices(int level);
- *   static VertexIterator vBegin(int level);
- *   static VertexIterator vEnd(int level);
+ *   static int nVertices(Dune::RefinementIntervals intervals);
+ *   static VertexIterator vBegin(Dune::RefinementIntervals intervals);
+ *   static VertexIterator vEnd(Dune::RefinementIntervals intervals);
  *
- *   static int nElements(int level);
- *   static ElementIterator eBegin(int level);
- *   static ElementIterator eEnd(int level);
+ *   static int nElements(Dune::RefinementIntervals intervals);
+ *   static ElementIterator eBegin(Dune::RefinementIntervals intervals);
+ *   static ElementIterator eEnd(Dune::RefinementIntervals intervals);
  * }
  * \endcode
  *
@@ -138,8 +138,8 @@
  *
  * int main()
  * {
- *   const int refinementlevel = 2;
- *   cout << "Using refinementlevel = " << refinementlevel << endl << endl;
+ *   const Dune::RefinementIntervals refinementlevel = Dune::refinementLevels(2); // equivalent: Dune::refinementIntervals(4)
+ *   cout << "Using refinementlevel = " << refinementlevel.intervals() << endl << endl;
  *
  *   // get Number of Vertices
  *   cout << "Number of Vertices: "

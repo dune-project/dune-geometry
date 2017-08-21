@@ -62,11 +62,11 @@
  * - Since the methods of VirtualRefinement are virtual (or use virtual
  *   methods themself) they have to be called like
  *   \code
- * refinementInstace.nElements(level);
+ * refinementInstace.nElements(Dune::refinementIntervals(n));
  *   \endcode
  *   instead of
  *   \code
- * RefinementTypedef::nElements(level);
+ * RefinementTypedef::nElements(Dune::refinementIntervals(n));
  *   \endcode
  *
  * - IndexVector is a std::vector instead of a FieldVector since the
@@ -90,12 +90,12 @@
  *   typedef IndexVector; // This is a std::vector
  *   typedef CoordVector; // This is a FieldVector
  *
- *   virtual int nVertices(int level) const;
- *   VertexIterator vBegin(int level) const;
- *   VertexIterator vEnd(int level) const;
- *   virtual int nElements(int level) const;
- *   ElementIterator eBegin(int level) const;
- *   ElementIterator eEnd(int level) const;
+ *   virtual int nVertices(Dune::RefinementIntervals intervals) const;
+ *   VertexIterator vBegin(Dune::RefinementIntervals intervals) const;
+ *   VertexIterator vEnd(Dune::RefinementIntervals intervals) const;
+ *   virtual int nElements(Dune::RefinementIntervals intervals) const;
+ *   ElementIterator eBegin(Dune::RefinementIntervals intervals) const;
+ *   ElementIterator eEnd(Dune::RefinementIntervals intervals) const;
  * };
  * \endcode
  *
