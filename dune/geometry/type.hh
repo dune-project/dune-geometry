@@ -696,7 +696,7 @@ namespace Dune
       return GeometryType(0,dim,true);
     }
 
-#if !DUNE_HAVE_CXX_INLINE_VARIABLES
+#ifndef __cpp_inline_variables
     namespace {
 #endif
 
@@ -748,7 +748,7 @@ namespace Dune
        */
       DUNE_INLINE_VARIABLE constexpr GeometryType hexahedron = cube(3);
 
-#if !DUNE_HAVE_CXX_INLINE_VARIABLES
+#ifndef __cpp_inline_variables
     }
 #endif
 
