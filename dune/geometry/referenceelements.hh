@@ -393,7 +393,7 @@ namespace Dune
      * This type alias can be used to get the type of a reference element if you
      * want to store the element as a class member or need to access nested type
      * information. Normally, it will return the type of reference element that a
-     * call to referenceElement(T...) would return, for example for a geometry:
+     * call to `referenceElement(T...)` would return, for example for a geometry:
      *
        \code
        Cell::Geometry geo = cell.geometry();
@@ -463,7 +463,7 @@ namespace Dune
    * This type alias can be used to get the type of a reference element if you
    * want to store the element as a class member or need to access nested type
    * information. Normally, it will return the type of reference element that a
-   * call to referenceElement(T) would return, for example for a geometry:
+   * call to `referenceElement(T)` would return, for example for a geometry:
    *
      \code
      Cell::Geometry geo = cell.geometry();
@@ -472,20 +472,20 @@ namespace Dune
    *
    * In the long run, we want to support multiple types T here, but for now that
    * does not work due to backwards compatibility reasons. You can also still obtain
-   * the type of a standard reference element using `Dune::ReferenceElement<ctype,dim>`,
+   * the type of a standard reference element using Dune::ReferenceElement<ctype,dim>,
    * but this is deprecated in DUNE 2.6.
-   * If you need support for `ReferenceElement` with multiple type arguments, you can use
-   * `Dune::Transitional::ReferenceElement` for now, which supports multiple types, but not
+   * If you need support for ReferenceElement with multiple type arguments, you can use
+   * Dune::Transitional::ReferenceElement for now, which supports multiple types, but not
    * the backwards compatibility mode and will become the default after the release of DUNE 2.6.
    * There is also a special shorthand signature for the default reference elements:
    *
-   * \deprecated Using the syntax `Dune::ReferenceElement<ctype,dim>` is deprecated in DUNE 2.6.
+   * \deprecated Using the syntax Dune::ReferenceElement<ctype,dim> is deprecated in DUNE 2.6.
    *             You have the following alternatives:
-   *             - Most of the time, you will want to use `Dune::ReferenceElement<Geometry>` because
+   *             - Most of the time, you will want to use Dune::ReferenceElement<Geometry> because
    *               you already have a geometry type available.
-   *             - `Dune::ReferenceElements<ctype,dim>::ReferenceElement`.
-   *             - `Dune::Transitional::ReferenceElement<ctype,Dune::Dim<dim>>`. This will become
-   *               available as `Dune::ReferenceElement<ctype,Dune::Dim<dim>>` after the release of
+   *             - Dune::ReferenceElements<ctype,dim>::ReferenceElement.
+   *             - Dune::Transitional::ReferenceElement<ctype,Dune::Dim<dim>>. This will become
+   *               available as Dune::ReferenceElement<ctype,Dune::Dim<dim>> after the release of
    *               DUNE 2.6.
    *
    * \ingroup GeometryReferenceElements
