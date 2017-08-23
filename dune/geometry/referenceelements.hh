@@ -13,6 +13,7 @@
 #include <array>
 
 #include <dune/common/typetraits.hh>
+#include <dune/common/std/type_traits.hh>
 #include <dune/common/visibility.hh>
 
 #include <dune/geometry/dimension.hh>
@@ -341,44 +342,32 @@ namespace Dune
 
   namespace Impl {
 
-    // checks whether the template argument pack T matches the pattern <number_type,Dim<int>>
+    // Evaluates to the correct reference element iff <T...> matches the pattern <number_type,Dim<int>>
+    // otherwise, it's ill-formed. Should be used with detected_or and friends.
 
     template<typename... T>
-    struct MatchesDefaultReferenceElementSignature
-      : public std::false_type
-    {};
+    struct DefaultReferenceElementExtractor;
 
-    template<typename T, int dim>
-    struct MatchesDefaultReferenceElementSignature<T,Dim<dim>>
-      : public std::integral_constant<bool,IsNumber<T>::value>
-    {};
-
-    // helper for pattern matching on T and delaying the application until a time when
-    // we can be sure that doing so does not cause a compiler error
-
-    template<typename... T>
-    struct DelayDefaultReferenceElement
-    {};
-
-    template<typename T, int dim>
-    struct DelayDefaultReferenceElement<T,Dim<dim>>
+    template<typename T, typename std::enable_if<IsNumber<T>::value,int>::type dim>
+    struct DefaultReferenceElementExtractor<T,Dim<dim>>
     {
       using type = typename Dune::Geo::ReferenceElements<T,dim>::ReferenceElement;
     };
 
+    template<typename... T>
+    using DefaultReferenceElement = typename DefaultReferenceElementExtractor<T...>::type;
+
   }
 
-  // helper for delaying the type lookup via referenceElement() until we have excluded the
-  // special case of referring to a default reference element by field type and dimension
-  // again, this is necessary to avoid compiler errors because the evaluation does not happen
-  // in SFINAE context
+  // looks up the type of a reference element by trying to instantiate the correct overload
+  // of referenceElement() for the given arguments. This will fail if there is no valid
+  // overload and should be used with detected_or or some other utility that places the
+  // instantation in SFINAE context.
+  //
   // this is placed directly in namespace Dune to avoid any weird surprises
 
   template<typename... T>
-  struct DelayReferenceElementLookup
-  {
-    using type = decltype(referenceElement(std::declval<T>()...));
-  };
+  using LookupReferenceElement = decltype(referenceElement(std::declval<T>()...));
 
 #endif // DOXYGEN
 
@@ -391,11 +380,11 @@ namespace Dune
     // to a decltype on a call to referenceElement(std::declval<T>())
 
     template<typename... T>
-    using ReferenceElement = typename std::conditional<
-      Impl::MatchesDefaultReferenceElementSignature<T...>::value,
-      Impl::DelayDefaultReferenceElement<T...>,
-      DelayReferenceElementLookup<T...>
-      >::type::type;
+    using ReferenceElement = Std::detected_or_t<
+      Std::detected_t<LookupReferenceElement,T...>,
+      Impl::DefaultReferenceElement,
+      T...
+      >;
 
 #else // DOXYGEN
 
