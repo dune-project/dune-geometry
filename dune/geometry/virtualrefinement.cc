@@ -35,7 +35,14 @@ namespace Dune
   VirtualRefinement<dimension, CoordType>::
   vBegin(int level) const
   {
-    return VertexIterator(vBeginBack(level));
+    return VertexIterator(vBeginBack(Dune::refinementIntervals(1<<level)));
+  }
+  template<int dimension, class CoordType>
+  typename VirtualRefinement<dimension, CoordType>::VertexIterator
+  VirtualRefinement<dimension, CoordType>::
+  vBegin(Dune::RefinementIntervals tag) const
+  {
+    return VertexIterator(vBeginBack(tag));
   }
 
   template<int dimension, class CoordType>
@@ -43,7 +50,14 @@ namespace Dune
   VirtualRefinement<dimension, CoordType>::
   vEnd(int level) const
   {
-    return VertexIterator(vEndBack(level));
+    return VertexIterator(vEndBack(Dune::refinementIntervals(1<<level)));
+  }
+  template<int dimension, class CoordType>
+  typename VirtualRefinement<dimension, CoordType>::VertexIterator
+  VirtualRefinement<dimension, CoordType>::
+  vEnd(Dune::RefinementIntervals tag) const
+  {
+    return VertexIterator(vEndBack(tag));
   }
 
   template<int dimension, class CoordType>
@@ -51,7 +65,14 @@ namespace Dune
   VirtualRefinement<dimension, CoordType>::
   eBegin(int level) const
   {
-    return ElementIterator(eBeginBack(level));
+    return ElementIterator(eBeginBack(Dune::refinementIntervals(1<<level)));
+  }
+  template<int dimension, class CoordType>
+  typename VirtualRefinement<dimension, CoordType>::ElementIterator
+  VirtualRefinement<dimension, CoordType>::
+  eBegin(Dune::RefinementIntervals tag) const
+  {
+    return ElementIterator(eBeginBack(tag));
   }
 
   template<int dimension, class CoordType>
@@ -59,7 +80,14 @@ namespace Dune
   VirtualRefinement<dimension, CoordType>::
   eEnd(int level) const
   {
-    return ElementIterator(eEndBack(level));
+    return ElementIterator(eEndBack(Dune::refinementIntervals(1<<level)));
+  }
+  template<int dimension, class CoordType>
+  typename VirtualRefinement<dimension, CoordType>::ElementIterator
+  VirtualRefinement<dimension, CoordType>::
+  eEnd(Dune::RefinementIntervals tag) const
+  {
+    return ElementIterator(eEndBack(tag));
   }
 
   //
@@ -264,17 +292,22 @@ namespace Dune
     template<int codimension>
     class SubEntityIteratorBack;
 
+    DUNE_DEPRECATED_MSG("nVertices(int) is deprecated, use nVertices(Dune::RefinementImp::{Intervals|Levels})")
     int nVertices(int level) const;
+    int nVertices(Dune::RefinementIntervals tag) const;
+
+    DUNE_DEPRECATED_MSG("nElements(int) is deprecated, use nElements(Dune::RefinementImp::{Intervals|Levels})")
     int nElements(int level) const;
+    int nElements(Dune::RefinementIntervals tag) const;
 
     static VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension> &instance();
   private:
     VirtualRefinementImp() {}
 
-    typename VirtualRefinement::VertexIteratorBack *vBeginBack(int level) const;
-    typename VirtualRefinement::VertexIteratorBack *vEndBack(int level) const;
-    typename VirtualRefinement::ElementIteratorBack *eBeginBack(int level) const;
-    typename VirtualRefinement::ElementIteratorBack *eEndBack(int level) const;
+    typename VirtualRefinement::VertexIteratorBack *vBeginBack(Dune::RefinementIntervals tag) const;
+    typename VirtualRefinement::VertexIteratorBack *vEndBack(Dune::RefinementIntervals tag) const;
+    typename VirtualRefinement::ElementIteratorBack *eBeginBack(Dune::RefinementIntervals tag) const;
+    typename VirtualRefinement::ElementIteratorBack *eEndBack(Dune::RefinementIntervals tag) const;
   };
 
   template<unsigned topologyId, class CoordType,
@@ -291,43 +324,64 @@ namespace Dune
   int VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::
   nVertices(int level) const
   {
-    return StaticRefinement::nVertices(level);
+    return StaticRefinement::nVertices(Dune::refinementIntervals(1<<level));
+  }
+  template<unsigned topologyId, class CoordType,
+      unsigned coerceToId, int dimension>
+  int VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::
+  nVertices(Dune::RefinementIntervals tag) const
+  {
+    return StaticRefinement::nVertices(tag);
   }
 
   template<unsigned topologyId, class CoordType,
       unsigned coerceToId, int dimension>
   typename VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::VirtualRefinement::VertexIteratorBack *
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::
-  vBeginBack(int level) const
-  { return new SubEntityIteratorBack<dimension>(StaticRefinement::vBegin(level)); }
+  vBeginBack(Dune::RefinementIntervals tag) const
+  {
+    return new SubEntityIteratorBack<dimension>(StaticRefinement::vBegin(tag));
+  }
 
   template<unsigned topologyId, class CoordType,
       unsigned coerceToId, int dimension>
   typename VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::VirtualRefinement::VertexIteratorBack *
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::
-  vEndBack(int level) const
-  { return new SubEntityIteratorBack<dimension>(StaticRefinement::vEnd(level)); }
+  vEndBack(Dune::RefinementIntervals tag) const
+  {
+    return new SubEntityIteratorBack<dimension>(StaticRefinement::vEnd(tag));
+  }
 
   template<unsigned topologyId, class CoordType,
       unsigned coerceToId, int dimension>
   int VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::nElements(int level) const
   {
-    return StaticRefinement::nElements(level);
+    return StaticRefinement::nElements(Dune::refinementIntervals(1<<level));
+  }
+  template<unsigned topologyId, class CoordType,
+      unsigned coerceToId, int dimension>
+  int VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::nElements(Dune::RefinementIntervals tag) const
+  {
+    return StaticRefinement::nElements(tag);
   }
 
   template<unsigned topologyId, class CoordType,
       unsigned coerceToId, int dimension>
   typename VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::VirtualRefinement::ElementIteratorBack *
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::
-  eBeginBack(int level) const
-  { return new SubEntityIteratorBack<0>(StaticRefinement::eBegin(level)); }
+  eBeginBack(Dune::RefinementIntervals tag) const
+  {
+    return new SubEntityIteratorBack<0>(StaticRefinement::eBegin(tag));
+  }
 
   template<unsigned topologyId, class CoordType,
       unsigned coerceToId, int dimension>
   typename VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::VirtualRefinement::ElementIteratorBack *
   VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension>::
-  eEndBack(int level) const
-  { return new SubEntityIteratorBack<0>(StaticRefinement::eEnd(level)); }
+  eEndBack(Dune::RefinementIntervals tag) const
+  {
+    return new SubEntityIteratorBack<0>(StaticRefinement::eEnd(tag));
+  };
 
   //
   // The iterator backend implementation
