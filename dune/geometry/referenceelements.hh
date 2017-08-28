@@ -10,777 +10,493 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <array>
 
-#include <dune/common/array.hh>
-#include <dune/common/fmatrix.hh>
-#include <dune/common/fvector.hh>
-#include <dune/common/hybridutilities.hh>
 #include <dune/common/typetraits.hh>
+#include <dune/common/std/type_traits.hh>
 #include <dune/common/visibility.hh>
-#include <dune/common/unused.hh>
 
-#include <dune/geometry/affinegeometry.hh>
+#include <dune/geometry/dimension.hh>
 #include <dune/geometry/type.hh>
+#include <dune/geometry/referenceelement.hh>
+#include <dune/geometry/referenceelementimplementation.hh>
 
 namespace Dune
 {
 
-  // Internal Forward Declarations
-  // -----------------------------
-
-  template< class ctype, int dim >
-  class ReferenceElementContainer;
-
-  template< class ctype, int dim >
-  struct ReferenceElements;
-
-
-
-  namespace Impl
+  namespace Geo
   {
 
-    /** \brief Compute the number of subentities of a given codimension */
-    unsigned int size ( unsigned int topologyId, int dim, int codim );
+#ifndef DOXYGEN
 
 
-
-    /** \brief Compute the topology id of a given subentity
-     *
-     * \param topologyId Topology id of entity
-     * \param dim Dimension of entity
-     * \param codim Codimension of the subentity that we are interested in
-     * \param i Number of the subentity that we are interested in
-     */
-    unsigned int subTopologyId ( unsigned int topologyId, int dim, int codim, unsigned int i );
-
-
-
-    // subTopologyNumbering
-    // --------------------
-
-    void subTopologyNumbering ( unsigned int topologyId, int dim, int codim, unsigned int i, int subcodim,
-                                unsigned int *beginOut, unsigned int *endOut );
-
-
-
-
-    // checkInside
-    // -----------
-
-    template< class ct, int cdim >
-    inline bool
-    checkInside ( unsigned int topologyId, int dim, const FieldVector< ct, cdim > &x, ct tolerance, ct factor = ct( 1 ) )
+    template<typename ctype, int dim>
+    class DeprecatedReferenceElement
+      : public ReferenceElement<ReferenceElementImplementation<ctype,dim>>
     {
-      assert( (dim >= 0) && (dim <= cdim) );
-      assert( topologyId < numTopologies( dim ) );
 
-      if( dim > 0 )
-      {
-        const ct baseFactor = (isPrism( topologyId, dim ) ? factor : factor - x[ dim-1 ]);
-        if( (x[ dim-1 ] > -tolerance) && (factor - x[ dim-1 ] > -tolerance) )
-          return checkInside< ct, cdim >( baseTopologyId( topologyId, dim ), dim-1, x, tolerance, baseFactor );
-        else
-          return false;
-      }
-      else
-        return true;
-    }
+    protected:
+
+      DeprecatedReferenceElement() = default;
+
+    public:
+
+      DeprecatedReferenceElement(const DeprecatedReferenceElement&) = delete;
+      DeprecatedReferenceElement& operator=(const DeprecatedReferenceElement&) = delete;
+
+      DeprecatedReferenceElement(const ReferenceElementImplementation<ctype,dim>& impl)
+        : ReferenceElement<ReferenceElementImplementation<ctype,dim>>(impl)
+      {}
+
+    };
 
 
-
-    // referenceCorners
-    // ----------------
-
-    template< class ct, int cdim >
-    inline unsigned int
-    referenceCorners ( unsigned int topologyId, int dim, FieldVector< ct, cdim > *corners )
+    template<typename ctype, int dim>
+    class ConstructibleDeprecatedReferenceElement
+      : public DeprecatedReferenceElement<ctype,dim>
     {
-      assert( (dim >= 0) && (dim <= cdim) );
-      assert( topologyId < numTopologies( dim ) );
-
-      if( dim > 0 )
-      {
-        const unsigned int nBaseCorners
-          = referenceCorners( baseTopologyId( topologyId, dim ), dim-1, corners );
-        assert( nBaseCorners == size( baseTopologyId( topologyId, dim ), dim-1, dim-1 ) );
-        if( isPrism( topologyId, dim ) )
-        {
-          std::copy( corners, corners + nBaseCorners, corners + nBaseCorners );
-          for( unsigned int i = 0; i < nBaseCorners; ++i )
-            corners[ i+nBaseCorners ][ dim-1 ] = ct( 1 );
-          return 2*nBaseCorners;
-        }
-        else
-        {
-          corners[ nBaseCorners ] = FieldVector< ct, cdim >( ct( 0 ) );
-          corners[ nBaseCorners ][ dim-1 ] = ct( 1 );
-          return nBaseCorners+1;
-        }
-      }
-      else
-      {
-        *corners = FieldVector< ct, cdim >( ct( 0 ) );
-        return 1;
-      }
-    }
+    public:
+      ConstructibleDeprecatedReferenceElement() = default;
+    };
 
 
-
-    // referenceVolume
-    // ---------------
-
-    unsigned long referenceVolumeInverse ( unsigned int topologyId, int dim );
-
-    template< class ct >
-    inline ct referenceVolume ( unsigned int topologyId, int dim )
+    namespace Impl
     {
-      return ct( 1 ) / ct( referenceVolumeInverse( topologyId, dim ) );
-    }
 
+      // ReferenceElementContainer
+      // -------------------------
 
-
-    // referenceOrigins
-    // ----------------
-
-    template< class ct, int cdim >
-    inline unsigned int
-    referenceOrigins ( unsigned int topologyId, int dim, int codim, FieldVector< ct, cdim > *origins )
-    {
-      assert( (dim >= 0) && (dim <= cdim) );
-      assert( topologyId < numTopologies( dim ) );
-      assert( (codim >= 0) && (codim <= dim) );
-
-      if( codim > 0 )
+      template< class ctype, int dim >
+      class ReferenceElementContainer
       {
-        const unsigned int baseId = baseTopologyId( topologyId, dim );
-        if( isPrism( topologyId, dim ) )
+        static const unsigned int numTopologies = (1u << dim);
+
+        using Implementation   = ReferenceElementImplementation< ctype, dim >;
+        using ConstructibleDeprecatedReferenceElement = Dune::Geo::ConstructibleDeprecatedReferenceElement<ctype,dim>;
+
+      public:
+
+        using DeprecatedReferenceElement = Dune::Geo::DeprecatedReferenceElement<ctype,dim>;
+
+        using ReferenceElement = Dune::Geo::ReferenceElement< Implementation >;
+        using value_type       = ReferenceElement;
+        using const_iterator   = const value_type*;
+
+        ReferenceElementContainer ()
         {
-          const unsigned int n = (codim < dim ? referenceOrigins( baseId, dim-1, codim, origins ) : 0);
-          const unsigned int m = referenceOrigins( baseId, dim-1, codim-1, origins+n );
-          for( unsigned int i = 0; i < m; ++i )
-          {
-            origins[ n+m+i ] = origins[ n+i ];
-            origins[ n+m+i ][ dim-1 ] = ct( 1 );
-          }
-          return n+2*m;
-        }
-        else
-        {
-          const unsigned int m = referenceOrigins( baseId, dim-1, codim-1, origins );
-          if( codim == dim )
-          {
-            origins[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
-            origins[ m ][ dim-1 ] = ct( 1 );
-            return m+1;
-          }
-          else
-            return m+referenceOrigins( baseId, dim-1, codim, origins+m );
-        }
-      }
-      else
-      {
-        origins[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
-        return 1;
-      }
-    }
-
-
-
-    // referenceEmbeddings
-    // -------------------
-
-    template< class ct, int cdim, int mydim >
-    inline unsigned int
-    referenceEmbeddings ( unsigned int topologyId, int dim, int codim,
-                          FieldVector< ct, cdim > *origins,
-                          FieldMatrix< ct, mydim, cdim > *jacobianTransposeds )
-    {
-      assert( (0 <= codim) && (codim <= dim) && (dim <= cdim) );
-      assert( (dim - codim <= mydim) && (mydim <= cdim) );
-      assert( topologyId < numTopologies( dim ) );
-
-      if( codim > 0 )
-      {
-        const unsigned int baseId = baseTopologyId( topologyId, dim );
-        if( isPrism( topologyId, dim ) )
-        {
-          const unsigned int n = (codim < dim ? referenceEmbeddings( baseId, dim-1, codim, origins, jacobianTransposeds ) : 0);
-          for( unsigned int i = 0; i < n; ++i )
-            jacobianTransposeds[ i ][ dim-codim-1 ][ dim-1 ] = ct( 1 );
-
-          const unsigned int m = referenceEmbeddings( baseId, dim-1, codim-1, origins+n, jacobianTransposeds+n );
-          std::copy( origins+n, origins+n+m, origins+n+m );
-          std::copy( jacobianTransposeds+n, jacobianTransposeds+n+m, jacobianTransposeds+n+m );
-          for( unsigned int i = 0; i < m; ++i )
-            origins[ n+m+i ][ dim-1 ] = ct( 1 );
-
-          return n+2*m;
-        }
-        else
-        {
-          const unsigned int m = referenceEmbeddings( baseId, dim-1, codim-1, origins, jacobianTransposeds );
-          if( codim == dim )
-          {
-            origins[ m ] = FieldVector< ct, cdim >( ct( 0 ) );
-            origins[ m ][ dim-1 ] = ct( 1 );
-            jacobianTransposeds[ m ] = FieldMatrix< ct, mydim, cdim >( ct( 0 ) );
-            return m+1;
-          }
-          else
-          {
-            const unsigned int n = referenceEmbeddings( baseId, dim-1, codim, origins+m, jacobianTransposeds+m );
-            for( unsigned int i = 0; i < n; ++i )
+          for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
             {
-              for( int k = 0; k < dim-1; ++k )
-                jacobianTransposeds[ m+i ][ dim-codim-1 ][ k ] = -origins[ m+i ][ k ];
-              jacobianTransposeds[ m+i ][ dim-codim-1 ][ dim-1 ] = ct( 1 );
+              implementations_[ topologyId ].initialize( topologyId );
+              reference_elements_[ topologyId ].setImplementation( implementations_[ topologyId ] );
             }
-            return m+n;
-          }
         }
-      }
-      else
-      {
-        origins[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
-        jacobianTransposeds[ 0 ] = FieldMatrix< ct, mydim, cdim >( ct( 0 ) );
-        for( int k = 0; k < dim; ++k )
-          jacobianTransposeds[ 0 ][ k ][ k ] = ct( 1 );
-        return 1;
-      }
-    }
+
+        const ReferenceElement& operator() ( const GeometryType &type ) const
+        {
+          assert( type.dim() == dim );
+          return reference_elements_[ type.id() ];
+        }
+
+        const ReferenceElement& simplex () const
+        {
+          return reference_elements_[ Dune::Impl::SimplexTopology< dim >::type::id ];
+        }
+
+        const ReferenceElement& cube () const
+        {
+          return reference_elements_[ Dune::Impl::CubeTopology< dim >::type::id ];
+        }
+
+        const ReferenceElement& pyramid () const
+        {
+          return reference_elements_[ Dune::Impl::PyramidTopology< dim >::type::id ];
+        }
+
+        const ReferenceElement& prism () const
+        {
+          return reference_elements_[ Dune::Impl::PrismTopology< dim >::type::id ];
+        }
+
+        const_iterator begin () const
+        {
+          return reference_elements_.data();
+        }
+
+        const_iterator end () const
+        {
+          return reference_elements_.data() + numTopologies;
+        }
+
+        // here, we make sure to actually return a const reference to something
+        // that is guaranteed not to become invalid, as otherwise, we might run
+        // straight into debugging hell when a user binds the return value to a
+        // const ref and the temporary goes out of scope.
+        const DeprecatedReferenceElement& deprecated(const ReferenceElement& v) const
+        {
+          return reference_elements_[v.impl().type(0,0).id()];
+        }
+
+      private:
+
+        std::array<Implementation,numTopologies> implementations_;
+        std::array<ConstructibleDeprecatedReferenceElement,numTopologies> reference_elements_;
+
+      };
 
 
+    } // namespace Impl
 
-    // referenceIntegrationOuterNormals
-    // --------------------------------
 
-    template< class ct, int cdim >
-    inline unsigned int
-    referenceIntegrationOuterNormals ( unsigned int topologyId, int dim,
-                                       const FieldVector< ct, cdim > *origins,
-                                       FieldVector< ct, cdim > *normals )
+#endif // DOXYGEN
+
+
+    // ReferenceElements
+    // ------------------------
+
+    /** \brief Class providing access to the singletons of the
+     *  reference elements
+     *
+     *  Special methods are available for
+     *  simplex and cube elements of any dimension.
+     *  The method general can be used to obtain the reference element
+     *  for a given geometry type.
+     *
+     *  \ingroup GeometryReferenceElements
+     */
+    template< class ctype_, int dim >
+    struct ReferenceElements
     {
-      assert( (dim > 0) && (dim <= cdim) );
-      assert( topologyId < numTopologies( dim ) );
 
-      if( dim > 1 )
+      //! The coordinate field type of the contained reference elements.
+      using ctype = ctype_;
+
+      //! The coordinate field type of the contained reference elements.
+      using CoordinateField = ctype;
+
+      //! The dimension of the contained reference elements.
+      static constexpr int dimension = dim;
+
+    private:
+
+      using Container = Impl::ReferenceElementContainer< ctype, dim >;
+
+    public:
+
+      //! The reference element type.
+      using ReferenceElement = typename Container::ReferenceElement;
+
+      //! Iterator over available reference elements.
+      using Iterator         = typename Container::const_iterator;
+
+      //! Iterator over available reference elements.
+      using iterator         = Iterator;
+
+      //! get general reference elements
+      static const ReferenceElement&
+      general ( const GeometryType& type )
       {
-        const unsigned int baseId = baseTopologyId( topologyId, dim );
-        if( isPrism( topologyId, dim ) )
-        {
-          const unsigned int numBaseFaces
-            = referenceIntegrationOuterNormals( baseId, dim-1, origins, normals );
-
-          for( unsigned int i = 0; i < 2; ++i )
-          {
-            normals[ numBaseFaces+i ] = FieldVector< ct, cdim >( ct( 0 ) );
-            normals[ numBaseFaces+i ][ dim-1 ] = ct( 2*int( i )-1 );
-          }
-
-          return numBaseFaces+2;
-        }
-        else
-        {
-          normals[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
-          normals[ 0 ][ dim-1 ] = ct( -1 );
-
-          const unsigned int numBaseFaces
-            = referenceIntegrationOuterNormals( baseId, dim-1, origins+1, normals+1 );
-          for( unsigned int i = 1; i <= numBaseFaces; ++i )
-            normals[ i ][ dim-1 ] = normals[ i ]*origins[ i ];
-
-          return numBaseFaces+1;
-        }
+        return container() ( type );
       }
-      else
+
+      //! get simplex reference elements
+      static const ReferenceElement& simplex ()
       {
-        for( unsigned int i = 0; i < 2; ++i )
-        {
-          normals[ i ] = FieldVector< ct, cdim >( ct( 0 ) );
-          normals[ i ][ 0 ] = ct( 2*int( i )-1 );
-        }
-
-        return 2;
+        return container().simplex();
       }
-    }
 
-    template< class ct, int cdim >
-    inline unsigned int
-    referenceIntegrationOuterNormals ( unsigned int topologyId, int dim,
-                                       FieldVector< ct, cdim > *normals )
+      //! get hypercube reference elements
+      static const ReferenceElement& cube ()
+      {
+        return container().cube();
+      }
+
+      static Iterator begin ()
+      {
+        return container().begin();
+      }
+
+      static Iterator end ()
+      {
+        return container().end();
+      }
+
+#ifndef DOXYGEN
+      static const typename Container::DeprecatedReferenceElement&
+      deprecated(const ReferenceElement& v)
+      {
+        return container().deprecated(v);
+      }
+#endif // DOXYGEN
+
+    private:
+
+      DUNE_EXPORT static const Container& container ()
+      {
+        static Container container;
+        return container;
+      }
+    };
+
+  } // namespace Geo
+
+  //! Make the ReferenceElements container available in the old location.
+  using Geo::ReferenceElements;
+
+
+#ifdef DOXYGEN
+
+  //! Returns a reference element for the objects t....
+  /**
+   * \ingroup GeometryReferenceElements
+   * The freestanding function referenceElement is a generic entry point
+   * for getting reference elements for arbitrary objects that support the
+   * operation. As it relies on argument-dependent lookup, the function should
+   * be called without any qualifying namespace. Note, however, that the versions
+   * of referenceElement() for a dimension and GeometryType with explicit template
+   * arguments cannot be found by ADL, so you have to explicitly pull them in or
+   * qualify the call using `Dune::`:
+   *
+     \code
+     {
+       // option 1: using
+       using Dune::referenceElement;
+       auto ref_el = referenceElement<double,dim>(geometry_type);
+     }
+     {
+       // option 2: explicitly put in Dune::
+       auto ref_el = Dune::referenceElement<double,dim>(geometry_type);
+     }
+     {
+       // option 3: use version without explicit template arguments
+       auto ref_el = referenceElement(double(),geometry_type,Dune::Dim<dim>());
+     }
+     \endcode
+   *
+   * The returned object is guaranteed to have value semantics, so you can copy it
+   * around and store it by value.
+   *
+   * The grid geometries in dune-grid support this function, and thus most people
+   * will use this function as
+   *
+     \code
+     for (const auto& cell : elements(grid_view))
+       {
+         auto geo = cell.geometry();
+         auto ref_el = referenceElement(geo);
+         // do some work...
+       }
+     \endcode
+   *
+   * This does of course also work for entities of other codimensions.
+   */
+  template<typename... T>
+  unspecified-value-type referenceElement(T&&... t);
+
+#endif
+
+
+  //! Returns a reference element of dimension dim for the given geometry type and coordinate field type.
+  /**
+   * This function allows you to obtain a reference element for a given coordinate type, dimension and
+   * GeometryType:
+   *
+     \code
+     auto gt = ...;
+     using Dune::referenceElement;
+     auto ref_el = referenceElement<ctype,dim>(gt);
+     auto ref_el = referenceElement<ctype>(gt,Dune::Dim<dim>());
+     \endcode
+   *
+   * \ingroup GeometryReferenceElements
+   */
+  template<typename T, int dim>
+  auto referenceElement(const Dune::GeometryType& gt, Dune::Dim<dim> = {})
+  {
+    return ReferenceElements<T,dim>::general(gt);
+  }
+
+
+  //! Returns a reference element of dimension dim for the given geometry type and coordinate field type.
+  /**
+   * This function allows you to obtain a reference element for a given coordinate type, dimension and
+   * GeometryType:
+   *
+     \code
+     auto gt = ...;
+     using Dune::referenceElement;
+     auto ref_el = referenceElement(ctype(),gt,Dune::Dim<dim>());
+     \endcode
+   *
+   * \ingroup GeometryReferenceElements
+   */
+  template<typename T, int dim>
+  auto referenceElement(const T&, std::enable_if_t<IsNumber<std::decay_t<T>>::value,const Dune::GeometryType&> gt, Dune::Dim<dim>)
+  {
+    return ReferenceElements<T,dim>::general(gt);
+  }
+
+
+#ifndef DOXYGEN
+
+  // helpers for the ReferenceElement<> meta function
+
+  namespace Impl {
+
+    // Evaluates to the correct reference element iff <T...> matches the pattern <number_type,Dim<int>>
+    // otherwise, it's ill-formed. Should be used with detected_or and friends.
+
+    template<typename... T>
+    struct DefaultReferenceElementExtractor;
+
+    template<typename T, typename std::enable_if<IsNumber<T>::value,int>::type dim>
+    struct DefaultReferenceElementExtractor<T,Dim<dim>>
     {
-      assert( (dim > 0) && (dim <= cdim) );
+      using type = typename Dune::Geo::ReferenceElements<T,dim>::ReferenceElement;
+    };
 
-      FieldVector< ct, cdim > *origins
-        = new FieldVector< ct, cdim >[ size( topologyId, dim, 1 ) ];
-      referenceOrigins( topologyId, dim, 1, origins );
+    template<typename... T>
+    using DefaultReferenceElement = typename DefaultReferenceElementExtractor<T...>::type;
 
-      const unsigned int numFaces
-        = referenceIntegrationOuterNormals( topologyId, dim, origins, normals );
-      assert( numFaces == size( topologyId, dim, 1 ) );
+  }
 
-      delete[] origins;
+  // looks up the type of a reference element by trying to instantiate the correct overload
+  // of referenceElement() for the given arguments. This will fail if there is no valid
+  // overload and should be used with detected_or or some other utility that places the
+  // instantation in SFINAE context.
+  //
+  // this is placed directly in namespace Dune to avoid any weird surprises
 
-      return numFaces;
-    }
+  template<typename... T>
+  using LookupReferenceElement = decltype(referenceElement(std::declval<T>()...));
+
+#endif // DOXYGEN
+
+  namespace Transitional {
+
+#ifndef DOXYGEN
+
+    // this abomination checks whether the template signature matches the special case
+    // ReferenceElement<number_type,Dune::Dim<int>> and otherwise defers the type lookup
+    // to a decltype on a call to referenceElement(std::declval<T>())
+
+    template<typename... T>
+    using ReferenceElement = Std::detected_or_t<
+      Std::detected_t<LookupReferenceElement,T...>,
+      Impl::DefaultReferenceElement,
+      T...
+      >;
+
+#else // DOXYGEN
+
+    //! Returns the type of reference element for the argument types T...
+    /**
+     * This type alias can be used to get the type of a reference element if you
+     * want to store the element as a class member or need to access nested type
+     * information. Normally, it will return the type of reference element that a
+     * call to `referenceElement(T...)` would return, for example for a geometry:
+     *
+       \code
+       Cell::Geometry geo = cell.geometry();
+       Dune::ReferenceElement<Cell::Geometry> ref_el = referenceElement(geo);
+       \endcode
+     *
+     * There is also a special shorthand signature for the default reference elements:
+     *
+       \code
+       constexpr int dim = ...;
+       auto geometry_type = ...;
+       Dune::ReferenceElement<double,Dune::Dim<dim>> = referenceElement<double,dim>(geometry_type);
+       \endcode
+     *
+     * \ingroup GeometryReferenceElements
+     * \sa Dune::ReferenceElement
+     */
+    template<typename... T>
+    using ReferenceElement = unspecified-type;
+
+#endif //DOXYGEN
+
+  }
+
+#ifndef DOXYGEN
+
+  namespace Impl {
+
+    // helpers for triggering a deprecation warning for occurences of the old
+    // ReferenceElement syntax (Dune::ReferenceElement<T,int>)
+
+    // this looks a little weird, encoding the type in the return type of a nested function,
+    // but it was the only reliable way to trigger the warning iff the compiler encounters
+    // an invalid use. Other solutions either miss some (or all) uses or trigger false alarms.
+
+    template<typename T>
+    struct ValidReferenceElementTypeSignature
+    {
+      Transitional::ReferenceElement<T> check();
+    };
+
+    template<typename T>
+    struct DeprecatedReferenceElementTypeSignature
+    {
+      DUNE_DEPRECATED_MSG("Dune::ReferenceElement<T,int> is deprecated, please use Dune::ReferenceElement<Geometry> (if you have a geometry), Dune::ReferenceElements<T,int>::ReferenceElement or Dune::Transitional::ReferenceElement<T,Dune::Dim<int>> instead. After Dune 2.6, you will be able to use Dune::ReferenceElement<T,Dune::Dim<int>>.") T check();
+    };
 
   } // namespace Impl
 
+  // This just makes sure the user doesn't use invalid syntax (by checking against the -1 default for
+  // the dimension, and then either hands back the old-style type along with a deprecation warning or
+  // forwards to the transitional version
+  template<typename T, int dim = -1>
+  using ReferenceElement = decltype(
+    std::declval<
+      typename std::conditional<
+        dim == -1,
+        Impl::ValidReferenceElementTypeSignature<T>,
+        Impl::DeprecatedReferenceElementTypeSignature<Geo::DeprecatedReferenceElement<T,dim>>
+        >::type
+      >().check());
 
+#else // DOXYGEN
 
-  // ReferenceElement
-  // ----------------
-
-  /** \class ReferenceElement
-   *  \ingroup GeometryReferenceElements
-   *  \brief This class provides access to geometric and topological
-   *  properties of a reference element.
+  //! Returns the type of reference element for the argument type T.
+  /**
+   * This type alias can be used to get the type of a reference element if you
+   * want to store the element as a class member or need to access nested type
+   * information. Normally, it will return the type of reference element that a
+   * call to `referenceElement(T)` would return, for example for a geometry:
    *
-   *  This includes its type,
-   *  the number of subentities, the volume, and a method for checking
-   *  if a point is contained in the reference element.
-   *  The embedding of each subentity into the reference element is also
-   *  provided.
+     \code
+     Cell::Geometry geo = cell.geometry();
+     Dune::ReferenceElement<Cell::Geometry> ref_el = referenceElement(geo);
+     \endcode
    *
-   *  A singleton of this class for a given geometry type can be accessed
-   *  through the ReferenceElements class.
-
-   *  \tparam ctype  field type for coordinates
-   *  \tparam dim    dimension of the reference element
+   * In the long run, we want to support multiple types T here, but for now that
+   * does not work due to backwards compatibility reasons. You can also still obtain
+   * the type of a standard reference element using Dune::ReferenceElement<ctype,dim>,
+   * but this is deprecated in DUNE 2.6.
+   * If you need support for ReferenceElement with multiple type arguments, you can use
+   * Dune::Transitional::ReferenceElement for now, which supports multiple types, but not
+   * the backwards compatibility mode and will become the default after the release of DUNE 2.6.
+   * There is also a special shorthand signature for the default reference elements:
    *
+   * \deprecated Using the syntax Dune::ReferenceElement<ctype,dim> is deprecated in DUNE 2.6.
+   *             You have the following alternatives:
+   *             - Most of the time, you will want to use Dune::ReferenceElement<Geometry> because
+   *               you already have a geometry type available.
+   *             - Dune::ReferenceElements<ctype,dim>::ReferenceElement.
+   *             - Dune::Transitional::ReferenceElement<ctype,Dune::Dim<dim>>. This will become
+   *               available as Dune::ReferenceElement<ctype,Dune::Dim<dim>> after the release of
+   *               DUNE 2.6.
+   *
+   * \ingroup GeometryReferenceElements
+   * \sa Dune::Transitional::ReferenceElement
    */
-  template< class ctype, int dim >
-  class ReferenceElement
-  {
-    typedef ReferenceElement< ctype, dim > This;
+  template<typename T, int dim>
+  using ReferenceElement = unspecified-type;
 
-    friend class ReferenceElementContainer< ctype, dim >;
+#endif // DOXYGEN
 
-    struct SubEntityInfo;
 
-    // make copy constructor private
-    ReferenceElement ( const This & );
-
-    ReferenceElement () {}
-
-    template< int codim > struct CreateGeometries;
-
-  public:
-    /** \brief Collection of types depending on the codimension */
-    template< int codim >
-    struct Codim
-    {
-      //! type of geometry embedding a subentity into the reference element
-      typedef AffineGeometry< ctype, dim-codim, dim > Geometry;
-    };
-
-    /** \brief number of subentities of codimension c
-     *
-     *  \param[in]  c  codimension whose size is desired
-     */
-    int size ( int c ) const
-    {
-      assert( (c >= 0) && (c <= dim) );
-      return info_[ c ].size();
-    }
-
-    /** \brief number of subentities of codimension cc of subentity (i,c)
-     *
-     *  Denote by E the i-th subentity of codimension c of the current
-     *  reference element. This method returns the number of subentities
-     *  of codimension cc of the current reference element, that are also
-     *  a subentity of E.
-     *
-     *  \param[in]  i   number of subentity E (0 <= i < size( c ))
-     *  \param[in]  c   codimension of subentity E
-     *  \param[in]  cc  codimension whose size is desired (c <= cc <= dim)
-     */
-    int size ( int i, int c, int cc ) const
-    {
-      assert( (i >= 0) && (i < size( c )) );
-      return info_[ c ][ i ].size( cc );
-    }
-
-    /** \brief obtain number of ii-th subentity with codim cc of (i,c)
-     *
-     *  Denote by E the i-th subentity of codimension c of the current
-     *  reference element. And denote by S the ii-th subentity of codimension
-     *  (cc-c) of E. Then, S is a also a subentity of codimension c of the current
-     *  reference element. This method returns the number of S with respect
-     *  to the current reference element.
-     *
-     *  \param[in]  i   number of subentity E (0 <= i < size( c ))
-     *  \param[in]  c   codimension of subentity E
-     *  \param[in]  ii  number of subentity S (with respect to E)
-     *  \param[in]  cc  codimension of subentity S (c <= cc <= dim)
-     */
-    int subEntity ( int i, int c, int ii, int cc ) const
-    {
-      assert( (i >= 0) && (i < size( c )) );
-      return info_[ c ][ i ].number( ii, cc );
-    }
-
-    /** \brief obtain the type of subentity (i,c)
-     *
-     *  Denote by E the i-th subentity of codimension c of the current
-     *  reference element. This method returns the GeometryType of E.
-     *
-     *  \param[in]  i      number of subentity E (0 <= i < size( c ))
-     *  \param[in]  c      codimension of subentity E
-     */
-    const GeometryType &type ( int i, int c ) const
-    {
-      assert( (i >= 0) && (i < size( c )) );
-      return info_[ c ][ i ].type();
-    }
-
-    /** \brief obtain the type of this reference element */
-    const GeometryType &type () const { return type( 0, 0 ); }
-
-    /** \brief position of the barycenter of entity (i,c)
-     *
-     *  Denote by E the i-th subentity of codimension c of the current
-     *  reference element. This method returns the coordinates of
-     *  the center of gravity of E within the current reference element.
-     *
-     *  \param[in]  i   number of subentity E (0 <= i < size( c ))
-     *  \param[in]  c   codimension of subentity E
-     */
-    const FieldVector< ctype, dim > &position( int i, int c ) const
-    {
-      assert( (c >= 0) && (c <= dim) );
-      return baryCenters_[ c ][ i ];
-    }
-
-    /** \brief check if a coordinate is in the reference element
-     *
-     *  This method returns true if the given local coordinate is within this
-     *  reference element.
-     *
-     *  \param[in]  local  coordinates of the point
-     */
-    bool checkInside ( const FieldVector< ctype, dim > &local ) const
-    {
-      const ctype tolerance = ctype( 64 ) * std::numeric_limits< ctype >::epsilon();
-      return Impl::template checkInside< ctype, dim >( type().id(), dim, local, tolerance );
-    }
-
-    /** \brief obtain the embedding of subentity (i,codim) into the reference
-     *         element
-     *
-     *  Denote by E the i-th subentity of codimension codim of the current
-     *  reference element. This method returns a \ref Dune::AffineGeometry
-     *  that maps the reference element of E into the current reference element.
-     *
-     *  \tparam     codim  codimension of subentity E
-     *
-     *  \param[in]  i      number of subentity E (0 <= i < size( codim ))
-     */
-    template< int codim >
-    typename Codim< codim >::Geometry geometry ( int i ) const
-    {
-      return std::get< codim >( geometries_ )[ i ];
-    }
-
-    /** \brief obtain the volume of the reference element */
-    ctype volume () const
-    {
-      return volume_;
-    }
-
-    /** \brief obtain the integration outer normal of the reference element
-     *
-     *  The integration outer normal is the outer normal whose length coincides
-     *  with the face's integration element.
-     *
-     *  \param[in]  face  index of the face, whose normal is desired
-     */
-    const FieldVector< ctype, dim > &integrationOuterNormal ( int face ) const
-    {
-      assert( (face >= 0) && (face < int( integrationNormals_.size() )) );
-      return integrationNormals_[ face ];
-    }
-
-  private:
-    void initialize ( unsigned int topologyId )
-    {
-      assert( topologyId < Impl::numTopologies( dim ) );
-
-      // set up subentities
-      for( int codim = 0; codim <= dim; ++codim )
-      {
-        const unsigned int size = Impl::size( topologyId, dim, codim );
-        info_[ codim ].resize( size );
-        for( unsigned int i = 0; i < size; ++i )
-          info_[ codim ][ i ].initialize( topologyId, codim, i );
-      }
-
-      // compute corners
-      const unsigned int numVertices = size( dim );
-      baryCenters_[ dim ].resize( numVertices );
-      Impl::referenceCorners( topologyId, dim, &(baryCenters_[ dim ][ 0 ]) );
-
-      // compute barycenters
-      for( int codim = 0; codim < dim; ++codim )
-      {
-        baryCenters_[ codim ].resize( size(codim) );
-        for( int i = 0; i < size( codim ); ++i )
-        {
-          baryCenters_[ codim ][ i ] = FieldVector< ctype, dim >( ctype( 0 ) );
-          const unsigned int numCorners = size( i, codim, dim );
-          for( unsigned int j = 0; j < numCorners; ++j )
-            baryCenters_[ codim ][ i ] += baryCenters_[ dim ][ subEntity( i, codim, j, dim ) ];
-          baryCenters_[ codim ][ i ] *= ctype( 1 ) / ctype( numCorners );
-        }
-      }
-
-      // compute reference element volume
-      volume_ = Impl::template referenceVolume< ctype >( topologyId, dim );
-
-      // compute integration outer normals
-      if( dim > 0 )
-      {
-        integrationNormals_.resize( size( 1 ) );
-        Impl::referenceIntegrationOuterNormals( topologyId, dim, &(integrationNormals_[ 0 ]) );
-      }
-
-      // set up geometries
-      Hybrid::forEach( std::make_index_sequence< dim+1 >{}, [ & ]( auto i ){ CreateGeometries< i >::apply( *this, geometries_ ); } );
-    }
-
-    template< int... codim >
-    static std::tuple< std::vector< typename Codim< codim >::Geometry >... >
-    makeGeometryTable ( std::integer_sequence< int, codim... > );
-
-    /** \brief Type to store all subentities of all codimensions */
-    typedef decltype( makeGeometryTable( std::make_integer_sequence< int, dim+1 >() ) ) GeometryTable;
-
-    /** \brief The reference element volume */
-    ctype volume_;
-
-    std::vector< FieldVector< ctype, dim > > baryCenters_[ dim+1 ];
-    std::vector< FieldVector< ctype, dim > > integrationNormals_;
-
-    /** \brief Stores all subentities of all codimensions */
-    GeometryTable geometries_;
-
-    std::vector< SubEntityInfo > info_[ dim+1 ];
-  };
-
-  /** \brief topological information about the subentities of a reference element */
-  template< class ctype, int dim >
-  struct ReferenceElement< ctype, dim >::SubEntityInfo
-  {
-    SubEntityInfo ()
-      : numbering_( nullptr )
-    {
-      std::fill( offset_.begin(), offset_.end(), 0 );
-    }
-
-    SubEntityInfo ( const SubEntityInfo &other )
-      : offset_( other.offset_ ),
-        type_( other.type_ )
-    {
-      numbering_ = allocate();
-      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
-    }
-
-    ~SubEntityInfo () { deallocate( numbering_ ); }
-
-    const SubEntityInfo &operator= ( const SubEntityInfo &other )
-    {
-      type_ = other.type_;
-      offset_ = other.offset_;
-
-      deallocate( numbering_ );
-      numbering_ = allocate();
-      std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
-
-      return *this;
-    }
-
-    int size ( int cc ) const
-    {
-      assert( (cc >= codim()) && (cc <= dim) );
-      return (offset_[ cc+1 ] - offset_[ cc ]);
-    }
-
-    int number ( int ii, int cc ) const
-    {
-      assert( (ii >= 0) && (ii < size( cc )) );
-      return numbering_[ offset_[ cc ] + ii ];
-    }
-
-    const GeometryType &type () const { return type_; }
-
-    void initialize ( unsigned int topologyId, int codim, unsigned int i )
-    {
-      const unsigned int subId = Impl::subTopologyId( topologyId, dim, codim, i );
-      type_ = GeometryType( subId, dim-codim );
-
-      // compute offsets
-      for( int cc = 0; cc <= codim; ++cc )
-        offset_[ cc ] = 0;
-      for( int cc = codim; cc <= dim; ++cc )
-        offset_[ cc+1 ] = offset_[ cc ] + Impl::size( subId, dim-codim, cc-codim );
-
-      // compute subnumbering
-      deallocate( numbering_ );
-      numbering_ = allocate();
-      for( int cc = codim; cc <= dim; ++cc )
-        Impl::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
-    }
-
-  protected:
-    int codim () const { return dim - type().dim(); }
-
-    unsigned int *allocate () { return (capacity() != 0 ? new unsigned int[ capacity() ] : nullptr); }
-    void deallocate ( unsigned int *ptr ) { delete[] ptr; }
-    unsigned int capacity () const { return offset_[ dim+1 ]; }
-
-  private:
-    unsigned int *numbering_;
-    std::array< unsigned int, dim+2 > offset_;
-    GeometryType type_;
-  };
-
-
-  template< class ctype, int dim >
-  template< int codim >
-  struct ReferenceElement< ctype, dim >::CreateGeometries
-  {
-    template< int cc >
-    static const ReferenceElement< ctype, dim-cc > &
-    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, std::integral_constant< int, cc > )
-    {
-      return ReferenceElements< ctype, dim-cc >::general( refElement.type( i, cc ) );
-    }
-
-    static const ReferenceElement< ctype, dim > &
-    subRefElement( const ReferenceElement< ctype, dim > &refElement, int i, std::integral_constant< int, 0 > )
-    {
-      DUNE_UNUSED_PARAMETER(i);
-      return refElement;
-    }
-
-    static void apply ( const ReferenceElement< ctype, dim > &refElement, GeometryTable &geometries )
-    {
-      const int size = refElement.size( codim );
-      std::vector< FieldVector< ctype, dim > > origins( size );
-      std::vector< FieldMatrix< ctype, dim - codim, dim > > jacobianTransposeds( size );
-      Impl::referenceEmbeddings( refElement.type().id(), dim, codim, &(origins[ 0 ]), &(jacobianTransposeds[ 0 ]) );
-
-      std::get< codim >( geometries ).reserve( size );
-      for( int i = 0; i < size; ++i )
-      {
-        typename Codim< codim >::Geometry geometry( subRefElement( refElement, i, std::integral_constant< int, codim >() ), origins[ i ], jacobianTransposeds[ i ] );
-        std::get< codim >( geometries ).push_back( geometry );
-      }
-    }
-  };
-
-
-
-  // ReferenceElementContainer
-  // -------------------------
-
-  template< class ctype, int dim >
-  class ReferenceElementContainer
-  {
-    static const unsigned int numTopologies = (1u << dim);
-
-  public:
-    typedef ReferenceElement< ctype, dim > value_type;
-    typedef const value_type *const_iterator;
-
-    ReferenceElementContainer ()
-    {
-      for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
-        values_[ topologyId ].initialize( topologyId );
-    }
-
-    const value_type &operator() ( const GeometryType &type ) const
-    {
-      assert( type.dim() == dim );
-      return values_[ type.id() ];
-    }
-
-    const value_type &simplex () const
-    {
-      return values_[ Impl::SimplexTopology< dim >::type::id ];
-    }
-
-    const value_type &cube () const
-    {
-      return values_[ Impl::CubeTopology< dim >::type::id ];
-    }
-
-    const value_type &pyramid () const
-    {
-      return values_[ Impl::PyramidTopology< dim >::type::id ];
-    }
-
-    const value_type &prism () const
-    {
-      return values_[ Impl::PrismTopology< dim >::type::id ];
-    }
-
-    const_iterator begin () const { return values_; }
-    const_iterator end () const { return values_ + numTopologies; }
-
-  private:
-    value_type values_[ numTopologies ];
-  };
-
-
-
-  // ReferenceElements
-  // ------------------------
-
-  /** \brief Class providing access to the singletons of the
-   *  reference elements
-   *
-   *  Special methods are available for
-   *  simplex and cube elements of any dimension.
-   *  The method general can be used to obtain the reference element
-   *  for a given geometry type.
-   *
-   *  \ingroup GeometryReferenceElements
-   */
-  template< class ctype, int dim >
-  struct ReferenceElements
-  {
-    typedef typename ReferenceElementContainer< ctype, dim >::const_iterator Iterator;
-
-    //! get general reference elements
-    static const ReferenceElement< ctype, dim > &
-    general ( const GeometryType &type )
-    {
-      return container() ( type );
-    }
-
-    //! get simplex reference elements
-    static const ReferenceElement< ctype, dim > &simplex ()
-    {
-      return container().simplex();
-    }
-
-    //! get hypercube reference elements
-    static const ReferenceElement< ctype, dim > &cube ()
-    {
-      return container().cube();
-    }
-
-    static Iterator begin () { return container().begin(); }
-    static Iterator end () { return container().end(); }
-
-  private:
-    DUNE_EXPORT static const ReferenceElementContainer< ctype, dim > &container ()
-    {
-      static ReferenceElementContainer< ctype, dim > container;
-      return container;
-    }
-  };
 
 } // namespace Dune
 

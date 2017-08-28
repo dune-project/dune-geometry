@@ -56,8 +56,7 @@ void testVirtualRefinement(int &result, const Dune::GeometryType& elementType,
             << coerceTo << " intervals " << tag.intervals()
             << " " << refType << " tag" << std::endl;
 
-  const ReferenceElement<ct, dim> &refElem =
-    ReferenceElements<ct, dim>::general(elementType);
+  auto refElem = referenceElement<ct, dim>(elementType);
 
   typedef Dune::VirtualRefinement<dim, ct> Refinement;
   typedef typename Refinement::ElementIterator eIterator;

@@ -115,7 +115,8 @@ namespace Dune
     if( type.isNone() )
       return pass;
 
-    const ReferenceElement< ctype, mydim > &refElement = ReferenceElements< ctype, mydim >::general(type);
+    // make sure the reference element type lookup works
+    ReferenceElement< TestGeometry > refElement = referenceElement( geometry );
 
     // Test whether the return value of the method 'center' corresponds to the center of the
     // reference element.  That is the current definition of the method.
