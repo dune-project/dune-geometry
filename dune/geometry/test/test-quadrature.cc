@@ -10,6 +10,7 @@
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/quadraturerules.hh>
 #include <dune/geometry/quadraturerules/compositequadraturerule.hh>
+#include <dune/geometry/refinement.hh>
 
 bool success = true;
 
@@ -198,7 +199,7 @@ void checkCompositeRule(const Dune::GeometryType::BasicType &btype,
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
     const BaseQuad& baseQuad = Dune::QuadratureRules<ctype,dim>::rule(t, p, qt);
-    Quad quad = Quad(baseQuad, maxRefinement);
+    Quad quad = Quad(baseQuad, Dune::refinementLevels(maxRefinement));
 
     checkWeights(quad);
     checkQuadrature(quad);
