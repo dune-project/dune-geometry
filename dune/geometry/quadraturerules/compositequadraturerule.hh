@@ -24,9 +24,9 @@ namespace Dune {
     public:
     /** \brief Construct composite quadrature rule
      * \param quad Base quadrature rule.  Element type of this rule must be simplex
-     * \param refinement Number of uniform refinement steps
+     * \param intervals Number of refined intervals per axis
      */
-    CompositeQuadratureRule(const Dune::QuadratureRule<ctype,dim>& quad, int refinement)
+    CompositeQuadratureRule(const Dune::QuadratureRule<ctype,dim>& quad, const Dune::RefinementIntervals intervals)
       : QuadratureRule<ctype,dim>(quad.type(), quad.order())
     {
       // Currently only works for simplices, because we are using the StaticRefinement
@@ -40,8 +40,8 @@ namespace Dune {
 
       ctype volume = Dune::ReferenceElements<ctype,dim>::general(quad.type()).volume();
 
-      eIterator eSubEnd = Refinement::eEnd(refinement);
-      eIterator eSubIt  = Refinement::eBegin(refinement);
+      eIterator eSubEnd = Refinement::eEnd(intervals);
+      eIterator eSubIt  = Refinement::eBegin(intervals);
 
       for (; eSubIt != eSubEnd; ++eSubIt) {
 
@@ -58,6 +58,15 @@ namespace Dune {
       }
 
     }
+
+    /** \brief Construct composite quadrature rule
+     * \param quad Base quadrature rule.  Element type of this rule must be simplex
+     * \param refinement Number of uniform refinement steps
+     */
+    DUNE_DEPRECATED_MSG("CompositeQuadratureRule(QuadratureRule, int) is deprecated, use CompositeQuadratureRule(QuadratureRule, Dune::refinement{Intervals|Levels}(int))")
+    CompositeQuadratureRule(const Dune::QuadratureRule<ctype,dim>& quad, int refinement)
+        : CompositeQuadratureRule(quad, Dune::refinementLevels(refinement))
+    { }
 
   };
 
