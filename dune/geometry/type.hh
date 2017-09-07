@@ -283,8 +283,8 @@ namespace Dune
       cube,          //!< Cube element in any nonnegative dimension
       pyramid,       //!< Four sided pyramid in three dimensions
       prism,         //!< Prism element in three dimensions
-      extended,      //!< Other, more general geometry, representable as topologyId
-      none           //!< Generic element in any nonnegative dimension
+      extended,      //!< Other, more general topology, representable as topologyId
+      none           //!< Even more general topology, not representable by the GeometryType mechanisms at all
     };
 
     /** \brief A few binary constants */
