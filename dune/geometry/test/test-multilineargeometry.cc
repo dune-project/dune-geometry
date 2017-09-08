@@ -208,9 +208,7 @@ static bool testNonLinearGeometry(const Traits &traits)
   bool pass(true);
   std::cout << "Checking geometry (non-linear, quadrilateral): ";
 
-  Dune::GeometryType quadrilateral;
-  quadrilateral.makeQuadrilateral();
-  auto reference = Dune::referenceElement<ctype,dim>(quadrilateral);
+  auto reference = Dune::referenceElement<ctype,dim>(Dune::GeometryTypes::quadrilateral);
 
   std::vector<Vector> corners = {{0,0},
                                  {2,0},

@@ -10,9 +10,7 @@ int main ( int argc, char **argv )
   for( int dim = 0; dim < 10; ++dim )
   {
     Dune::GeometryType gt1( Dune::GeometryType::none, dim );
-
-    Dune::GeometryType gt2;
-    gt2.makeNone( dim );
+    Dune::GeometryType gt2 = Dune::GeometryTypes::none( dim );
 
     if ( ! gt1.isNone() )
     {

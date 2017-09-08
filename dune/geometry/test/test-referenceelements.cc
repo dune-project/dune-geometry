@@ -32,7 +32,7 @@ int main () try
   //   Test segment
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makeLine();
+  type = GeometryTypes::line;
 
   {
     // check default constructibility and comparison operators
@@ -70,7 +70,7 @@ int main () try
   //   Test triangle
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makeTriangle();
+  type = GeometryTypes::triangle;
 
   const auto referenceTriangle = referenceElement<double,2>(type);
 
@@ -141,7 +141,7 @@ int main () try
   //   Test quadrilateral
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makeQuadrilateral();
+  type = GeometryTypes::quadrilateral;
 
   const Transitional::ReferenceElement<double,Dim<2>> referenceQuad = referenceElement<double>(type,Dim<2>());
 
@@ -221,7 +221,7 @@ int main () try
   //   Test tetrahedron
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makeTetrahedron();
+  type = GeometryTypes::tetrahedron;
 
   const Transitional::ReferenceElement<double,Dim<3>> referenceTetra = referenceElement(double(),type,Dim<3>());
 
@@ -277,7 +277,7 @@ int main () try
   //   Test pyramid
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makePyramid();
+  type = GeometryTypes::pyramid;
 
   const auto referencePyramid = ReferenceElements<double, 3>::general(type);
 
@@ -342,7 +342,7 @@ int main () try
   //   Test prism
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makePrism();
+  type = GeometryTypes::prism;
 
   const auto referencePrism = referenceElement<double,3>(type);
 
@@ -407,7 +407,7 @@ int main () try
   //   Test hexahedron
   // //////////////////////////////////////////////////////////////////////////
 
-  type.makeHexahedron();
+  type = GeometryTypes::hexahedron;
 
   const auto referenceHexa = ReferenceElements<double, 3>::general(type);
 

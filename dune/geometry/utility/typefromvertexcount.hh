@@ -14,40 +14,31 @@ namespace Dune {
   inline
   GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices)
   {
-    GeometryType gt;
     switch (dim)
     {
       case 0 :
-        gt.makeVertex();
-        return gt;
+        return GeometryTypes::vertex;
       case 1 :
-        gt.makeLine();
-        return gt;
+        return GeometryTypes::line;
       case 2 :
         switch (vertices) {
           case 3 :
-            gt.makeSimplex(2);
-            return gt;
+            return GeometryTypes::triangle;
           case 4 :
-            gt.makeCube(2);
-            return gt;
+            return GeometryTypes::quadrilateral;
           default :
             DUNE_THROW(NotImplemented, "2d elements with " << vertices << " corners are not supported!");
         }
       case 3 :
         switch (vertices) {
           case 4 :
-            gt.makeSimplex(3);
-            return gt;
+            return GeometryTypes::tetrahedron;
           case 5 :
-            gt.makePyramid();
-            return gt;
+            return GeometryTypes::pyramid;
           case 6 :
-            gt.makePrism();
-            return gt;
+            return GeometryTypes::prism;
           case 8 :
-            gt.makeCube(3);
-            return gt;
+            return GeometryTypes::hexahedron;
           default :
             DUNE_THROW(NotImplemented, "3d elements with " << vertices << " corners are not supported!");
         }
