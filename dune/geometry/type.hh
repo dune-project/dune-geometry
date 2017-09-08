@@ -324,21 +324,21 @@ namespace Dune
       switch( basicType )
       {
       case GeometryType::simplex :
-        makeSimplex(dim);
+        topologyId_ = 0;
         break;
       case GeometryType::cube :
-        makeCube(dim);
+        topologyId_ = ((1 << dim) - 1);
         break;
       case GeometryType::pyramid :
         if (dim == 3)
-          makePyramid();
+          topologyId_ = 0b0011;
         else
           DUNE_THROW( RangeError,
                       "Invalid basic geometry type: no pyramids for dimension " << dim << "." );
         break;
       case GeometryType::prism :
         if (dim == 3)
-          makePrism();
+          topologyId_ = 0b0101;
         else
           DUNE_THROW( RangeError,
                       "Invalid basic geometry type: no prisms for dimension " << dim << "." );
@@ -431,19 +431,25 @@ namespace Dune
     /** \brief Make a triangle */
     DUNE_DEPRECATED_MSG("makeTriangle() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::triangle instead")
     void makeTriangle() {
-      makeSimplex(2);
+      none_  = false;
+      dim_ = 2;
+      topologyId_ = 0;
     }
 
     /** \brief Make a quadrilateral */
     DUNE_DEPRECATED_MSG("makeQuadrilateral() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::quadrilateral instead")
     void makeQuadrilateral() {
-      makeCube(2);
+      none_  = false;
+      dim_ = 2;
+      topologyId_ = 0b0011;
     }
 
     /** \brief Make a tetrahedron */
     DUNE_DEPRECATED_MSG("makeTetrahedron() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::tetrahedron instead")
     void makeTetrahedron() {
-      makeSimplex(3);
+      none_  = false;
+      dim_ = 3;
+      topologyId_ = 0;
     }
 
     /** \brief Make a pyramid */
@@ -465,7 +471,9 @@ namespace Dune
     /** \brief Make a hexahedron */
     DUNE_DEPRECATED_MSG("makeHexahedron() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::hexahedron instead")
     void makeHexahedron() {
-      makeCube(3);
+      none_  = false;
+      dim_ = 2;
+      topologyId_ = 0b0101;
     }
 
     /** \brief Make a simplex of given dimension */
