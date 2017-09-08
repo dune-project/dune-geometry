@@ -156,8 +156,7 @@ int main(int argc, char** argv) try
   GeometryType gt1, gt2;
 
   // test segment
-  gt1.makeLine();
-  gt2.makeLine();
+  gt1 = gt2 = GeometryTypes::line;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,1>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -169,8 +168,7 @@ int main(int argc, char** argv) try
   }
 
   // test triangle
-  gt1.makeTriangle();
-  gt2.makeTriangle();
+  gt1 = gt2 = GeometryTypes::triangle;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -182,8 +180,7 @@ int main(int argc, char** argv) try
   }
 
   // test quadrilateral
-  gt1.makeQuadrilateral();
-  gt2.makeQuadrilateral();
+  gt1 = gt2 = GeometryTypes::quadrilateral;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -195,7 +192,7 @@ int main(int argc, char** argv) try
   }
 
   // test refinement of a quadrilateral by triangles
-  gt2.makeTriangle();
+  gt2 = GeometryTypes::triangle;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -207,8 +204,7 @@ int main(int argc, char** argv) try
   }
 
   // test tetrahedron
-  gt1.makeTetrahedron();
-  gt2.makeTetrahedron();
+  gt1 = gt2 = GeometryTypes::tetrahedron;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -220,8 +216,8 @@ int main(int argc, char** argv) try
   }
 
   // test pyramid
-  gt1.makePyramid();
-  gt2.makeTetrahedron();
+  gt1 = GeometryTypes::pyramid;
+  gt2 = GeometryTypes::tetrahedron;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -233,8 +229,8 @@ int main(int argc, char** argv) try
   }
 
   // test prism
-  gt1.makePrism();
-  gt2.makeTetrahedron();
+  gt1 = GeometryTypes::prism;
+  gt2 = GeometryTypes::tetrahedron;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -246,8 +242,7 @@ int main(int argc, char** argv) try
   }
 
   // test hexahedron
-  gt1.makeHexahedron();
-  gt2.makeHexahedron();
+  gt1 = gt2 = GeometryTypes::hexahedron;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
@@ -259,8 +254,7 @@ int main(int argc, char** argv) try
   }
 
   // test refinement of hexahedron by tetrahedra
-  gt1.makeHexahedron();
-  gt2.makeTetrahedron();
+  gt1 = gt2 = GeometryTypes::hexahedron;
   for (unsigned int refinement = 0; refinement < 3; refinement++)
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
