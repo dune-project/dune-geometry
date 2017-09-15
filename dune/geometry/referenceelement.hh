@@ -140,14 +140,14 @@ namespace Dune {
        *  \param[in]  i      number of subentity E (0 <= i < size( c ))
        *  \param[in]  c      codimension of subentity E
        */
-      GeometryType type(int i, int c) const
+      decltype(auto) type(int i, int c) const
       {
         return _impl->type(i,c);
       }
 
 
       /** \brief obtain the type of this reference element */
-      GeometryType type() const
+      decltype(auto) type() const
       {
         return _impl->type();
       }
@@ -162,7 +162,7 @@ namespace Dune {
        *  \param[in]  i   number of subentity E (0 <= i < size( c ))
        *  \param[in]  c   codimension of subentity E
        */
-      Coordinate position(int i, int c) const
+      decltype(auto) position(int i, int c) const
       {
         return _impl->position(i,c);
       }
@@ -213,7 +213,7 @@ namespace Dune {
        *
        *  \param[in]  face  index of the face, whose normal is desired
        */
-      Coordinate integrationOuterNormal(int face) const
+      decltype(auto) integrationOuterNormal(int face) const
       {
         return _impl->integrationOuterNormal(face);
       }
