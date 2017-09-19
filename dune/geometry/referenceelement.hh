@@ -139,17 +139,27 @@ namespace Dune {
        *  Denote by E the i-th subentity of codimension c of the current
        *  reference element. This method returns the GeometryType of E.
        *
+       *  \deprecated After dune-2.6 the return value will no longer be
+       *              a reference but a copy. Code storing pointers
+       *              or references to the result must be adjusted.
+       *
        *  \param[in]  i      number of subentity E (0 <= i < size( c ))
        *  \param[in]  c      codimension of subentity E
        */
-      GeometryType type(int i, int c) const
+      decltype(auto) type(int i, int c) const
       {
         return _impl->type(i,c);
       }
 
 
-      /** \brief obtain the type of this reference element */
-      GeometryType type() const
+      /** \brief obtain the type of this reference element
+       *
+       *  \deprecated After dune-2.6 the return value will no longer be
+       *              a reference but a copy. Code storing pointers
+       *              or references to the result must be adjusted.
+       *
+       */
+      decltype(auto) type() const
       {
         return _impl->type();
       }
@@ -161,10 +171,14 @@ namespace Dune {
        *  reference element. This method returns the coordinates of
        *  the center of gravity of E within the current reference element.
        *
+       *  \deprecated After dune-2.6 the return value will no longer be
+       *              a reference but a copy. Code storing pointers
+       *              or references to the result must be adjusted.
+       *
        *  \param[in]  i   number of subentity E (0 <= i < size( c ))
        *  \param[in]  c   codimension of subentity E
        */
-      Coordinate position(int i, int c) const
+      decltype(auto) position(int i, int c) const
       {
         return _impl->position(i,c);
       }
@@ -213,9 +227,13 @@ namespace Dune {
        *  The integration outer normal is the outer normal whose length coincides
        *  with the face's integration element.
        *
+       *  \deprecated After dune-2.6 the return value will no longer be
+       *              a reference but a copy. Code storing pointers
+       *              or references to the result must be adjusted.
+       *
        *  \param[in]  face  index of the face, whose normal is desired
        */
-      Coordinate integrationOuterNormal(int face) const
+      decltype(auto) integrationOuterNormal(int face) const
       {
         return _impl->integrationOuterNormal(face);
       }
