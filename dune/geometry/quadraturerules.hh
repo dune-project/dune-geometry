@@ -226,6 +226,9 @@ namespace Dune {
     {
       return instance()._rule(t,p,qt);
     }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     //! @copydoc rule
     static const QuadratureRule& rule(const GeometryType::BasicType t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
@@ -233,6 +236,7 @@ namespace Dune {
       return instance()._rule(gt,p,qt);
     }
   };
+#pragma GCC diagnostic pop
 
 } // end namespace Dune
 
