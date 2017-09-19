@@ -276,9 +276,14 @@ namespace Dune
   class GeometryType
   {
   public:
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     /** \brief Each entity can be tagged by one of these basic types
      *  plus its space dimension */
-    enum BasicType {
+    enum
+    DUNE_DEPRECATED_MSG("BasicType is deprecated and will be removed after DUNE 2.6")
+    BasicType {
       simplex,       //!< Simplicial element in any nonnegative dimension
       cube,          //!< Cube element in any nonnegative dimension
       pyramid,       //!< Four sided pyramid in three dimensions
@@ -286,6 +291,7 @@ namespace Dune
       extended,      //!< Other, more general geometry, representable as topologyId
       none           //!< Generic element in any nonnegative dimension
     };
+#pragma GCC diagnostic pop
 
   private:
 
@@ -308,8 +314,11 @@ namespace Dune
       : topologyId_(0), dim_(0), none_(true)
     {}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     /** \brief Constructor, using the basic type and the dimension */
     GeometryType(BasicType basicType, unsigned int dim)
+      DUNE_DEPRECATED_MSG("The GeometryType constructor taking BasicType is deprecated and will be removed after DUNE 2.6")
       : topologyId_(0), dim_(dim), none_((basicType == GeometryType::none) ? true : false)
     {
       if (dim < 2)
@@ -343,7 +352,7 @@ namespace Dune
                     "Invalid basic geometry type: " << basicType << " for dimension " << dim << "." );
       }
     }
-
+#pragma GCC diagnostic pop
 
     /** \brief Constructor, using the topologyId (integer), the dimension and a flag for type none.
      * \note With this constructor, you can easily create an invalid GeometryType,
@@ -645,6 +654,8 @@ namespace Dune
     return s;
   }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   /** \brief Prints a GeometryType::BasicType to an output stream */
   inline std::ostream& operator<< (std::ostream& s, GeometryType::BasicType type)
   {
@@ -671,6 +682,7 @@ namespace Dune
     }
     return s;
   }
+#pragma GCC diagnostic pop
 
 
 
