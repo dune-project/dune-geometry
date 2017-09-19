@@ -276,7 +276,7 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,dim>;
     GaussQuadratureRule1D (int p)
-      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+      : QuadratureRule<ct,1>(GeometryTypes::line)
     {
       //! set up quadrature of given order in d dimensions
       std::vector< FieldVector<ct, dim> > _points;
@@ -338,7 +338,7 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,dim>;
     Jacobi1QuadratureRule1D (int p)
-      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+      : QuadratureRule<ct,1>(GeometryTypes::line)
     {
       //! set up quadrature of given order in d dimensions
       std::vector< FieldVector<ct, dim> > _points;
@@ -404,7 +404,7 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,dim>;
     Jacobi2QuadratureRule1D (int p)
-      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+      : QuadratureRule<ct,1>(GeometryTypes::line)
     {
       //! set up quadrature of given order in d dimensions
       std::vector< FieldVector<ct, dim> > _points;
@@ -471,7 +471,7 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,dim>;
     GaussLobattoQuadratureRule1D (int p)
-      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+      : QuadratureRule<ct,1>(GeometryTypes::line)
     {
       //! set up quadrature of given order in d dimensions
       std::vector< FieldVector<ct, dim> > _points;
@@ -665,7 +665,7 @@ namespace Dune {
     ~PrismQuadratureRule(){}
   private:
     friend class QuadratureRuleFactory<ct,d>;
-    PrismQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryType(GeometryType::prism, d))
+    PrismQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryTypes::prism)
     {
       int m=6;
       this->delivered_order = PrismQuadraturePointsSingleton<3>::prqp.order(m);

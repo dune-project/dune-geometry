@@ -140,7 +140,7 @@ namespace Dune {
     /** \brief Type of the cube.  Here: a hypercube of the correct dimension */
     GeometryType type() const
     {
-      return GeometryType(GeometryType::cube,dim);
+      return GeometryTypes::cube(dim);
     }
 
     /** \brief Map a point in local (element) coordinates to world coordinates */

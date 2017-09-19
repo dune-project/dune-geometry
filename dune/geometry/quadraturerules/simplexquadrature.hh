@@ -762,7 +762,7 @@ namespace Dune {
   };
 
   template<typename ct>
-  SimplexQuadratureRule<ct,2>::SimplexQuadratureRule(int p) : QuadratureRule<ct,2>(GeometryType(GeometryType::simplex, 2))
+  SimplexQuadratureRule<ct,2>::SimplexQuadratureRule(int p) : QuadratureRule<ct,2>(GeometryTypes::triangle)
   {
     int m;
     if (p>SimplexQuadraturePoints<2>::highest_order)
@@ -1039,7 +1039,7 @@ namespace Dune {
   };
 
   template<typename ct>
-  SimplexQuadratureRule<ct,3>::SimplexQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryType(GeometryType::simplex, 3))
+  SimplexQuadratureRule<ct,3>::SimplexQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryTypes::tetrahedron)
   {
     int m;
     if (p>SimplexQuadraturePoints<3>::highest_order)

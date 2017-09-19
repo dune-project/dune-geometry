@@ -51,7 +51,7 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
     const int pdim = (dim > 0 ? dim-1 : 0);
     if( direction < dim-1 )
     {
-      GeometryType nt( GeometryType::simplex, dim-1 );
+      Dune::GeometryType nt = Dune::GeometryTypes::simplex( dim-1 );
       if( dim > 0 )
         exact = analyticalSolution< ctype, pdim >( nt, p, direction );
       else
@@ -156,18 +156,17 @@ void checkWeights(const QuadratureRule &quad)
 }
 
 template<class ctype, int dim>
-void check(const Dune::GeometryType::BasicType &btype,
+void check(Dune::GeometryType type,
            unsigned int maxOrder,
            Dune::QuadratureType::Enum qt = Dune::QuadratureType::GaussLegendre)
 {
   typedef Dune::QuadratureRule<ctype, dim> Quad;
-  Dune::GeometryType t(btype,dim);
 
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
-    const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(t, p, qt);
-    if (quad.type() != t || unsigned(quad.order()) < p) {
-      std::cerr << "Error: Type mismatch! Requested Quadrature for " << t
+    const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(type, p, qt);
+    if (quad.type() != type || unsigned(quad.order()) < p) {
+      std::cerr << "Error: Type mismatch! Requested Quadrature for " << type
                 << " and order=" << p << "." << std::endl
                 << "\tGot Quadrature for " << quad.type() << " and order="
                 << quad.order() << std::endl;
@@ -177,16 +176,15 @@ void check(const Dune::GeometryType::BasicType &btype,
     checkWeights(quad);
     checkQuadrature(quad);
   }
-  if (dim>0 && (dim>3 ||
-                btype==Dune::GeometryType::cube ||
-                btype==Dune::GeometryType::simplex))
+  if (dim>0 && (dim>3 || type.isCube() || type.isSimplex()))
   {
-    check<ctype,((dim==0) ? 0 : dim-1)>(btype, maxOrder, qt);
+    type = type.isCube() ? Dune::GeometryTypes::cube(dim-1) : Dune::GeometryTypes::simplex(dim-1);
+    check<ctype,((dim==0) ? 0 : dim-1)>(type , maxOrder, qt);
   }
 }
 
 template<class ctype, int dim>
-void checkCompositeRule(const Dune::GeometryType::BasicType &btype,
+void checkCompositeRule(Dune::GeometryType type,
                         unsigned int maxOrder,
                         unsigned int maxRefinement,
                         Dune::QuadratureType::Enum qt = Dune::QuadratureType::GaussLegendre)
@@ -194,21 +192,18 @@ void checkCompositeRule(const Dune::GeometryType::BasicType &btype,
   typedef Dune::QuadratureRule<ctype, dim> BaseQuad;
   typedef Dune::CompositeQuadratureRule<ctype, dim> Quad;
 
-  Dune::GeometryType t(btype,dim);
-
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
-    const BaseQuad& baseQuad = Dune::QuadratureRules<ctype,dim>::rule(t, p, qt);
+    const BaseQuad& baseQuad = Dune::QuadratureRules<ctype,dim>::rule(type, p, qt);
     Quad quad = Quad(baseQuad, Dune::refinementLevels(maxRefinement));
 
     checkWeights(quad);
     checkQuadrature(quad);
   }
-  if (dim>0 && (dim>3 ||
-                btype==Dune::GeometryType::cube ||
-                btype==Dune::GeometryType::simplex))
+  if (dim>0 && (dim>3 || type.isCube() || type.isSimplex()))
   {
-    check<ctype,((dim==0) ? 0 : dim-1)>(btype, maxOrder, qt);
+    type = type.isCube() ? Dune::GeometryTypes::cube(dim-1) : Dune::GeometryTypes::simplex(dim-1);
+    check<ctype,((dim==0) ? 0 : dim-1)>(type, maxOrder, qt);
   }
 }
 
@@ -221,16 +216,16 @@ int main (int argc, char** argv)
     std::cout << "maxOrder = " << maxOrder << std::endl;
   }
   try {
-    check<double,4>(Dune::GeometryType::cube, maxOrder);
-    check<double,4>(Dune::GeometryType::cube, std::min(maxOrder, unsigned(31)),
+    check<double,4>(Dune::GeometryTypes::cube(4), maxOrder);
+    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(31)),
                     Dune::QuadratureType::GaussLobatto);
-    check<double,4>(Dune::GeometryType::simplex, maxOrder);
-    check<double,3>(Dune::GeometryType::prism, maxOrder);
-    check<double,3>(Dune::GeometryType::pyramid, maxOrder);
+    check<double,4>(Dune::GeometryTypes::simplex(4), maxOrder);
+    check<double,3>(Dune::GeometryTypes::prism, maxOrder);
+    check<double,3>(Dune::GeometryTypes::pyramid, maxOrder);
 
     unsigned int maxRefinement = 4;
 
-    checkCompositeRule<double,2>(Dune::GeometryType::simplex, maxOrder, maxRefinement);
+    checkCompositeRule<double,2>(Dune::GeometryTypes::triangle, maxOrder, maxRefinement);
   }
   catch( const Dune::Exception &e )
   {

@@ -12,7 +12,7 @@ namespace Dune {
 
     friend class QuadratureRuleFactory<ct,dim>;
 
-    PointQuadratureRule () : QuadratureRule<ct,0>(GeometryType(GeometryType::cube, 0))
+    PointQuadratureRule () : QuadratureRule<ct,0>(GeometryTypes::vertex)
     {
       FieldVector<ct, dim> point(0.0);
 
