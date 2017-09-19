@@ -65,27 +65,18 @@ namespace Dune
      * Geometry types from different dimensions my get the same index. If that
      * is not what you want, maybe you should look at GlobalGeometryTypeIndex.
      */
-    inline static std::size_t index(const GeometryType &gt)
+    inline static constexpr std::size_t index(const GeometryType &gt)
     {
-      if(gt.isNone())
-      {
-        return regular_size(gt.dim());
-      }
-      else
-      {
-        return gt.id() >> 1;
-      }
+      return gt.isNone() ?  regular_size(gt.dim()) : (gt.id() >> 1);
     }
 
     //! compute the geometry type for the given local index and dimension
-    inline static GeometryType type(std::size_t dim, std::size_t index) {
-      if(index == regular_size(dim))
-        return GeometryTypes::none(dim);
-      else {
+    inline static constexpr GeometryType type(std::size_t dim, std::size_t index) {
+      return (index == regular_size(dim)) ?
+        GeometryTypes::none(dim) :
         // the cast to unsigned makes sure this is interpreted as the topology
         // ID constructor
-        return GeometryType(static_cast< unsigned int >(index << 1), dim);
-      }
+        GeometryType(static_cast< unsigned int >(index << 1), dim);
     }
   };
 
@@ -139,7 +130,7 @@ namespace Dune
      * dimensions.  If that is not what you want, maybe you should look at
      * LocalGeometryTypeIndex.
      */
-    inline static std::size_t index(const GeometryType &gt)
+    inline static constexpr std::size_t index(const GeometryType &gt)
     {
       return offset(gt.dim()) + LocalGeometryTypeIndex::index(gt);
     }
