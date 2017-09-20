@@ -53,9 +53,8 @@ namespace Dune
     void tensorProduct(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
       typedef QuadratureRule<ctype,1> OneDQuadrature;
-      GeometryType onedType(GeometryType::cube,1);
       const OneDQuadrature & onedQuad =
-        QuadratureRules<ctype,1>::rule(onedType, order, qt);
+        QuadratureRules<ctype,1>::rule(GeometryTypes::line, order, qt);
 
       const unsigned int baseQuadSize = baseQuad.size();
       for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
@@ -109,9 +108,8 @@ namespace Dune
     void conicalProduct(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
       typedef QuadratureRule<ctype,1> OneDQuadrature;
-      GeometryType onedtype(GeometryType::cube,1);
       const OneDQuadrature & onedQuad =
-        QuadratureRules<ctype,1>::rule(onedtype, order + dim-1, qt);
+        QuadratureRules<ctype,1>::rule(GeometryTypes::line, order + dim-1, qt);
 
       const unsigned int baseQuadSize = baseQuad.size();
       for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
@@ -145,13 +143,12 @@ namespace Dune
       baseId.reset(dim-1);
       GeometryType baseType(baseId.to_ulong(), dim-1);
       unsigned order = QuadratureRules<ctype,dim-1>::maxOrder(baseType, qt);
-        GeometryType onedType(GeometryType::cube,1);
       if (isPrism)
         order = std::min
-          (order, QuadratureRules<ctype,1>::maxOrder(onedType, qt));
+          (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt));
       else
         order = std::min
-          (order, QuadratureRules<ctype,1>::maxOrder(onedType, qt)-(dim-1));
+          (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt)-(dim-1));
       return order;
     }
 
