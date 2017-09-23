@@ -381,7 +381,7 @@ namespace Dune
   eEndBack(Dune::RefinementIntervals tag) const
   {
     return new SubEntityIteratorBack<0>(StaticRefinement::eEnd(tag));
-  };
+  }
 
   //
   // The iterator backend implementation
