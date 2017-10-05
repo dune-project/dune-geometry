@@ -150,7 +150,7 @@ namespace Dune {
       if (dim == coorddim) {        // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = lower_[i] + local[i]*(upper_[i] - lower_[i]);
-      } if (dim == 0) {              // a vertex -- the other fast case
+      } else if (dim == 0) {              // a vertex -- the other fast case
         result = lower_;          // hope for named-return-type-optimization
       } else {          // slow case
         size_t lc=0;
@@ -237,7 +237,7 @@ namespace Dune {
       if (dim == coorddim) {         // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = (k & (1<<i)) ? upper_[i] : lower_[i];
-      } if (dim == 0) {         // vertex
+      } else if (dim == 0) {         // vertex
         result = lower_;            // rely on named return-type optimization
       } else {                // slow case
         unsigned int mask = 1;
