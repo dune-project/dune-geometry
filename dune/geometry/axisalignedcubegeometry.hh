@@ -8,6 +8,7 @@
     \brief A geometry implementation for axis-aligned hypercubes
  */
 
+#include <array>
 #include <bitset>
 
 #include <dune/common/fvector.hh>
@@ -43,9 +44,15 @@ namespace Dune {
    * \tparam CoordType Type used for single coordinate coefficients
    * \tparam dim Dimension of the cube
    * \tparam coorddim Dimension of the space that the cube lives in
+   * \tparam caching Whether geometric quantities should be pre-evaluated upon instantiation
    */
-  template <class CoordType, unsigned int dim, unsigned int coorddim>
+  template <class CoordType, unsigned int dim, unsigned int coorddim, bool caching=false>
   class AxisAlignedCubeGeometry
+  {};
+
+  /** The non-caching specialization of AxisAlignedCubeGeometry */
+  template <class CoordType, unsigned int dim, unsigned int coorddim>
+  class AxisAlignedCubeGeometry<CoordType, dim, coorddim, false>
   {
 
 
@@ -327,6 +334,100 @@ namespace Dune {
     Dune::FieldVector<ctype,coorddim> upper_;
 
     std::bitset<coorddim> axes_;
+  };
+
+
+  /** The caching specialization of AxisAlignedCubeGeometry */
+  template <class CoordType, unsigned int dim, unsigned int coorddim>
+  class AxisAlignedCubeGeometry<CoordType, dim, coorddim, true> :
+    public AxisAlignedCubeGeometry<CoordType, dim, coorddim, false>
+  {
+  public:
+    typedef AxisAlignedCubeGeometry<CoordType, dim, coorddim, false> BaseT;
+
+    /** \brief Constructor from a lower left and an upper right corner
+     *
+     *  \param lower Coordinates for the lower left corner.
+     *  \param upper Coordinates for the upper right corner.
+     *  \param axes Each bit set to 'true' here corresponds to a local coordinate axis.
+     *         In other words, precisely 'dim' bits must be set here.
+     */
+    AxisAlignedCubeGeometry(const Dune::FieldVector<CoordType,coorddim> lower,
+                            const Dune::FieldVector<CoordType,coorddim> upper,
+                            const std::bitset<coorddim>& axes)
+      : BaseT(lower, upper, axes)
+    {
+      // Pre-evaluate any quantities needed
+      typename BaseT::LocalCoordinate x;
+      jacobian_transposed_ = BaseT::jacobianTransposed(x);
+      jacobian_inverse_transposed_ = BaseT::jacobianInverseTransposed(x);
+      volume_ = BaseT::volume();
+      center_ = BaseT::center();
+      for (int i=0; i<1<<coorddim; ++i)
+        corners_[i] = BaseT::corner(i);
+    }
+
+    /** \brief Constructor from a lower left and an upper right corner
+
+        \note Only for dim==coorddim
+     */
+    AxisAlignedCubeGeometry(const Dune::FieldVector<CoordType,coorddim> lower,
+                            const Dune::FieldVector<CoordType,coorddim> upper)
+      : AxisAlignedCubeGeometry(lower, upper, std::bitset<coorddim>((1<<coorddim)-1))
+    {}
+
+    /** \brief Constructor from a single point only
+
+        \note Only for dim==0
+     */
+    AxisAlignedCubeGeometry(const Dune::FieldVector<CoordType,coorddim> lower)
+      : AxisAlignedCubeGeometry(lower, lower, std::bitset<coorddim>(0))
+    {}
+
+    /** \brief Jacobian transposed of the transformation from local to global coordinates */
+    typename BaseT::JacobianTransposed jacobianTransposed(DUNE_UNUSED const typename BaseT::LocalCoordinate& local) const
+    {
+      return jacobian_transposed_;
+    }
+
+    /** \brief Jacobian transposed of the transformation from local to global coordinates */
+    typename BaseT::JacobianInverseTransposed jacobianInverseTransposed(DUNE_UNUSED const typename BaseT::LocalCoordinate& local) const
+    {
+      return jacobian_inverse_transposed_;
+    }
+
+    /** \brief Return the integration element, i.e., the determinant term in the integral
+               transformation formula
+     */
+    typename BaseT::ctype integrationElement(DUNE_UNUSED const typename BaseT::LocalCoordinate& local) const
+    {
+      return volume_;
+    }
+
+    /** \brief Return center of mass of the element */
+    typename BaseT::GlobalCoordinate center() const
+    {
+      return center_;
+    }
+
+    /** \brief Return world coordinates of the k-th corner of the element */
+    typename BaseT::GlobalCoordinate corner(int k) const
+    {
+      return corners_[k];
+    }
+
+    /** \brief Return the element volume */
+    typename BaseT::ctype volume() const
+    {
+      return volume_;
+    }
+
+  private:
+    typename BaseT::JacobianTransposed jacobian_transposed_;
+    typename BaseT::JacobianInverseTransposed jacobian_inverse_transposed_;
+    typename BaseT::ctype volume_;
+    typename BaseT::GlobalCoordinate center_;
+    std::array<typename BaseT::GlobalCoordinate, 1<<coorddim> corners_;
   };
 
 } // namespace Dune
