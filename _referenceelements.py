@@ -84,6 +84,7 @@ try:
             except AttributeError:
                 self.weights_ = transform.get_vol(self.vertices_)*self.quadrature_.weights
             self.quadPoints_ = [ QPQuadPoint(p,w) for p,w in zip(self.points_,self.weights_) ]
+            self.points_ = self.points_.transpose().copy()
         def __call__(self,f,entity=None):
             if not entity:
                 if not self.entity_:
@@ -98,9 +99,10 @@ try:
                     "Quadrature constructed for a reference element of type="+self.rule_.type+\
                     " but used to compute an integral on an entity of type="+entity.type)
             ie = entity.geometry.integrationElement
-            f_e = lambda x:\
-                [f(entity(x[:,i]))*ie(x[:,i])\
-                        for i in range(x.shape[1]) ]
+            # f_e = lambda x:\
+            #     [f(entity(x[:,i]))*ie(x[:,i])\
+            #             for i in range(x.shape[1]) ]
+            f_e = lambda x: f(entity(x))*ie(x)
             return self.quad_.integrate(f_e,self.vertices_,self.quadrature_)
         def __iter__(self):
             return self.quadPoints_.__iter__()
