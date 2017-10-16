@@ -20,6 +20,8 @@ class DuneQuadrature:
     def __init__(self,rule,entity=None):
         self.rule_ = rule
         self.entity_ = entity
+        self.points_ = None
+        self.weights_ = None
     # should do this on the C++ side only the type of the return value of f
     # is unclear. Alternative: bring on the points/weights into python to avoid C++ callbacks
     def __call__(self,f,entity=None):
@@ -36,8 +38,13 @@ class DuneQuadrature:
                 "Quadrature constructed for a reference element of type="+self.rule_.type+\
                 " but used to compute an integral on an entity of type="+entity.type)
         ie = entity.geometry.integrationElement
-        return sum(f(entity(q.position))*q.weight*ie(q.position)
-                       for q in self.rule_)
+        if not self.points_:
+            self.points_, self.weights_ = self.rule_.fill()
+        return numpy.sum(f(entity(self.points_))*ie(self.points_)*self.weights_,axis=-1)
+    def get():
+        if not self.points_:
+            self.points_, self.weights_ = self.rule_.fill()
+        return self.points_, self.weights_
     def __iter__(self):
         return self.rule_.__iter__()
     @property
@@ -85,6 +92,8 @@ try:
                 self.weights_ = transform.get_vol(self.vertices_)*self.quadrature_.weights
             self.quadPoints_ = [ QPQuadPoint(p,w) for p,w in zip(self.points_,self.weights_) ]
             self.points_ = self.points_.transpose().copy()
+        def get():
+            return self.points_, self.weights_
         def __call__(self,f,entity=None):
             if not entity:
                 if not self.entity_:
