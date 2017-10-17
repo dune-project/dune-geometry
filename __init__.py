@@ -3,10 +3,12 @@ from ._referenceelements import *
 import numpy
 
 def _duneIntegrate(self,entity,f):
-    points,weights = self.fill()
-    ie = entity.geometry.integrationElement
-    return numpy.sum(f(entity(points))*\
-            entity.geometry.integrationElement(points)*weights,axis=-1)
+    points,weights = self.get()
+    try:
+        ie = entity.geometry.integrationElement
+    except AttributeError:
+        ie = geometry.integrationElement
+    return numpy.sum(f(entity(points))*ie(points)*weights,axis=-1)
 
 _duneQuadratureRules = {}
 def quadratureRule(geometryType, order):
