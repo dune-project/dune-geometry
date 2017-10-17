@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 try:
     import quadpy as qp
     import numpy
@@ -83,5 +87,5 @@ try:
     def quadpyRules(methods):
         return lambda entity: quadpyRule(entity.type, methods[entity.type])
 
-except ImportError:
-    pass
+except ImportError as e:
+    logger.warning('Unable to import quadpy: ' + " ".join(str(e).splitlines()))
