@@ -7,4 +7,19 @@
 PYBIND11_MODULE( _geometry, module )
 {
   Dune::CorePy::registerGeometryType( module );
+
+  // register geometry type contuctors
+  module.def( "simplex", [] ( int dim ) { return Dune::GeometryTypes::simplex( dim ); } );
+  module.def( "cube", [] ( int dim ) { return Dune::GeometryTypes::cube( dim ); } );
+  module.def( "none", [] ( int dim ) { return Dune::GeometryTypes::none( dim ); } );
+
+  // register predefined geometry types
+  module.attr( "vertex" ) = Dune::GeometryTypes::vertex;
+  module.attr( "line" ) = Dune::GeometryTypes::line;
+  module.attr( "triangle" ) = Dune::GeometryTypes::triangle;
+  module.attr( "quadrilateral" ) = Dune::GeometryTypes::quadrilateral;
+  module.attr( "tetrahedron" ) = Dune::GeometryTypes::tetrahedron;
+  module.attr( "pyramid" ) = Dune::GeometryTypes::pyramid;
+  module.attr( "prism" ) = Dune::GeometryTypes::prism;
+  module.attr( "hexahedron" ) = Dune::GeometryTypes::hexahedron;
 }
