@@ -15,6 +15,7 @@ try:
         @property
         def weight(self):
             return self.w_
+    _cache = {}
     class QPQuadPyQuadrature:
         def __init__(self,quad,order,method,vertices,transform):
             self.quad_ = quad
@@ -44,7 +45,12 @@ try:
         @property
         def order(self):
             return self.quadrature_.degree
-    def quadpyRule(gt,quadDescription):
+    def rule(gt,quadDescription):
+        try:
+            quad = _cache[(gt,quadDescription)]
+            return quad
+        except KeyError:
+            pass
         order, method = quadDescription
         dim = gt.dim
         if gt.isLine:
@@ -82,10 +88,12 @@ try:
             raise ValueError("no quadpy quadrature available for the geometryType " + str(gt))
         if not method and not order:
             return quad
-        return QPQuadPyQuadrature(quad,order,method,vertices,transform)
+        ret = QPQuadPyQuadrature(quad,order,method,vertices,transform)
+        _cache[(gt,quadDescription)] = ret
+        return ret
 
-    def quadpyRules(methods):
-        return lambda entity: quadpyRule(entity.type, methods[entity.type])
+    def rules(methods):
+        return lambda entity: rule(entity.type, methods[entity.type])
 
 except ImportError as e:
     logger.warning('Unable to import quadpy: ' + " ".join(str(e).splitlines()))
