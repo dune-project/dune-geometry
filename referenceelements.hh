@@ -15,7 +15,7 @@
 namespace Dune
 {
 
-  namespace CorePy
+  namespace Python
   {
 
     template< class RefElement, class... options >
@@ -43,7 +43,7 @@ namespace Dune
       }, pybind11::return_value_policy::reference );
     }
 
-  } // namespace CorePy
+  } // namespace Python
 
 } // namespace Dune
 

@@ -19,7 +19,7 @@
 namespace Dune
 {
 
-  namespace CorePy
+  namespace Python
   {
     template <class Rule>
     auto quadratureToNumpy(pybind11::object self)
@@ -116,7 +116,7 @@ namespace Dune
       return std::make_tuple( registerQuadratureRule< ctype >( scope, std::integral_constant< int, dim >() )... );
     }
 
-  } // namespace CorePy
+  } // namespace Python
 
 } // namespace Dune
 

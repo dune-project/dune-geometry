@@ -11,7 +11,7 @@
 namespace Dune
 {
 
-  namespace CorePy
+  namespace Python
   {
 
     pybind11::class_< GeometryType > registerGeometryType( pybind11::module scope )
@@ -40,7 +40,7 @@ namespace Dune
       return cls;
     }
 
-  } // namespace CorePy
+  } // namespace Python
 
 } // namespace Dune
 
