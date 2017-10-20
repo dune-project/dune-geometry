@@ -6,7 +6,7 @@
 
 PYBIND11_MODULE( _geometry, module )
 {
-  Dune::CorePy::registerGeometryType( module );
+  Dune::Python::registerGeometryType( module );
 
   // register geometry type contuctors
   module.def( "simplex", [] ( int dim ) { return Dune::GeometryTypes::simplex( dim ); } );
