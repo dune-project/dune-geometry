@@ -97,3 +97,4 @@ try:
 
 except ImportError as e:
     logger.warning('Unable to import quadpy: ' + " ".join(str(e).splitlines()))
+    raise ImportError("Unable to import quadpy module")
