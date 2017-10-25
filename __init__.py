@@ -8,7 +8,7 @@ def _duneIntegrate(self,entity,f):
         ie = entity.geometry.integrationElement
     except AttributeError:
         ie = geometry.integrationElement
-    return numpy.sum(f(entity(points))*ie(points)*weights,axis=-1)
+    return numpy.sum(f(entity,points)*ie(points)*weights,axis=-1)
 
 _duneQuadratureRules = {}
 def quadratureRule(geometryType, order):
