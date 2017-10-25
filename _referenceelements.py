@@ -8,9 +8,15 @@ def module(dim):
     m = generator.load(includes, typeName, typeHash)
     return m
 
+_duneReferenceElements = {}
 def referenceElement(geometryType):
     try:
         geometryType = geometryType.type
     except:
         pass
-    return module(geometryType.dim).general(geometryType)
+    try:
+        ref = _duneReferenceElements[geometryType]
+    except KeyError:
+        ref = module(geometryType.dim).general(geometryType)
+        _duneReferenceElements[geometryType] = ref
+    return ref
