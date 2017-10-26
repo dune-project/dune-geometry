@@ -38,7 +38,7 @@ try:
             return self.points_, self.weights_
         def apply(self,entity,f):
             ie = entity.geometry.integrationElement
-            f_e = lambda x: f(entity(x))*ie(x)
+            f_e = lambda x: f(entity,x)*ie(x)
             return self.quad_.integrate(f_e,self.vertices_,self.quadrature_)
         def __iter__(self):
             return self.quadPoints_.__iter__()
