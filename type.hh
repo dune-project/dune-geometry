@@ -34,6 +34,36 @@ namespace Dune
       cls.def( pybind11::self != pybind11::self );
       cls.def( "__hash__", [] ( const GeometryType &self ) { return self.id(); } );
 
+      cls.def( "__str__", [] ( const GeometryType &self ) -> std::string {
+          if( self.isNone() )
+            return "none(" + std::to_string( self.dim() ) + ")";
+          switch( self.dim() )
+          {
+          case 0:
+            return "vertex";
+          case 1:
+            return "line";
+          case 2:
+            return (self.isSimplex() ? "triangle" : "quadrilateral");
+          case 3:
+            if( self.isSimplex() )
+              return "tetrahedron";
+            else if( self.isHexahedron() )
+              return "hexahedron";
+            else if( self.isPyramid() )
+              return "pyramid";
+            else if( self.isPrism() )
+              return "prism";
+          default:
+            if( self.isSimplex() )
+              return "simplex(" + std::to_string( self.dim() ) + ")";
+            else if( self.isCube() )
+              return "cube(" + std::to_string( self.dim() ) + ")";
+            else
+              return "general(" + std::to_string( self.id() ) + ", " + std::to_string( self.dim() ) + ")";
+          }
+        } );
+
       cls.def_property_readonly( "dim", [] ( const GeometryType &self ) { return self.dim(); } );
       cls.def_property_readonly( "dimension", [] ( const GeometryType &self ) { return self.dim(); } );
 
