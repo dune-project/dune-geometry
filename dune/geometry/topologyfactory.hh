@@ -3,10 +3,13 @@
 #ifndef DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 #define DUNE_GEOMETRY_TOPOLOGYFACTORY_HH
 
-#include <vector>
-#include <map>
+#include <cassert>
 
-#include <dune/common/array.hh>
+#include <array>
+#include <map>
+#include <memory>
+#include <type_traits>
+#include <vector>
 
 #include <dune/geometry/type.hh>
 
@@ -87,17 +90,19 @@ namespace Dune
       assert( gt.id() < numTopologies );
       return instance().getObject( gt, key );
     }
+
     //! @copydoc TopologyFactory::create(const Key &key)
     template< class Topology >
-    static Object *create ( const Key &key )
+    static auto create ( const Key &key )
+      -> std::enable_if_t< Topology::dimension == dimension, Object * >
     {
-      static_assert((Topology::dimension == dimension),
-                    "Topology with incompatible dimension used");
       return instance().template getObject< Topology >( key );
     }
+
     //! @copydoc TopologyFactory::release
     static void release ( Object *object )
     {}
+
   private:
     static TopologySingletonFactory &instance ()
     {
@@ -106,50 +111,33 @@ namespace Dune
     }
 
     static const unsigned int numTopologies = (1 << dimension);
-    typedef std::array< Object *, numTopologies > Array;
+    typedef std::array< std::unique_ptr< Object, Factory::release >, numTopologies > Array;
     typedef std::map< Key, Array > Storage;
 
-    TopologySingletonFactory ()
-    {}
-    ~TopologySingletonFactory ()
-    {
-      const typename Storage::iterator end = storage_.end();
-      for( typename Storage::iterator it = storage_.begin(); it != end; ++it )
-      {
-        for( unsigned int topologyId = 0; topologyId < numTopologies; ++topologyId )
-        {
-          Object *&object = it->second[ topologyId ];
-          if( object != 0 )
-            Factory::release( object );
-          object = 0;
-        }
-      }
-    }
+    TopologySingletonFactory () = default;
 
-    Object *&find( const unsigned int topologyId, const Key &key )
+    Object *&find ( const unsigned int topologyId, const Key &key )
     {
-      typename Storage::iterator it = storage_.find( key );
-      if( it == storage_.end() )
-        it = storage_.insert( std::make_pair( key, fill_array<Object*, numTopologies>( nullptr ) ) ).first;
-      return it->second[ topologyId ];
+      return storage_.emplace( key ).first->second[ topologyId ];
     }
 
     Object *getObject ( const Dune::GeometryType &gt, const Key &key )
     {
       Object *&object = find( gt.id(), key );
-      if( object == 0 )
-        object = Factory::create( gt, key );
-      return object;
+      if( !object )
+        object.reset( Factory::create( gt, key ) );
+      return object.get();
     }
 
     template< class Topology >
     Object *getObject ( const Key &key )
     {
-      Object *&object = find(Topology::id,key);
-      if( object == 0 )
-        object = Factory::template create< Topology >( key );
-      return object;
+      Object *&object = find( Topology::id, key );
+      if( !object )
+        object.reset( Factory::template create< Topology >( key ) );
+      return object.get();
     }
+
     Storage storage_;
   };
 
