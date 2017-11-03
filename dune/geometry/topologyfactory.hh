@@ -128,7 +128,7 @@ namespace Dune
 
     Object *getObject ( const Dune::GeometryType &gt, const Key &key )
     {
-      Object *&object = find( gt.id(), key );
+      auto &object = find( gt.id(), key );
       if( !object )
         object.reset( Factory::create( gt, key ) );
       return object.get();
