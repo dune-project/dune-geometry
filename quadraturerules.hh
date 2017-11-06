@@ -22,6 +22,27 @@ namespace Dune
   namespace Python
   {
     template <class Rule>
+    auto quadratureToNumpy(const Rule &rule)
+    {
+      pybind11::array_t< double > p(
+          { static_cast< ssize_t >( Rule::d ), static_cast< ssize_t >( rule.size() ) },
+          {
+            static_cast< ssize_t >( reinterpret_cast< const char * >( &rule[ 0 ].position()[ 1 ] ) - reinterpret_cast< const char * >( &rule[ 0 ].position()[ 0 ] ) ),
+            static_cast< ssize_t >( reinterpret_cast< const char * >( &rule[ 1 ].position()[ 0 ] ) - reinterpret_cast< const char * >( &rule[ 0 ].position()[ 0 ] ) )
+          },
+          &rule[ 0 ].position()[ 0 ]
+        );
+      pybind11::array_t< double > w(
+          { static_cast< ssize_t >( rule.size() ) },
+          { static_cast< std::size_t >( reinterpret_cast< const char * >( &rule[ 1 ].weight() ) - reinterpret_cast< const char * >( &rule[ 0 ].weight() ) ) },
+          &rule[ 0 ].weight()
+        );
+
+      return std::make_pair( p, w );
+    }
+
+
+    template <class Rule>
     auto quadratureToNumpy(pybind11::object self)
     {
       const Rule &rule = pybind11::cast< const Rule & >( self );
