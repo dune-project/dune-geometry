@@ -8,6 +8,9 @@
   intervals`.  There are convenience functions `refinementIntervals(int
   intervals)` and `refinementLevels(int levels)` to construct parameters of
   type `RefinementIntervals`.
+
+- The class `GeometryType` has been cleaned up in major way:
+
   - The class and most of its methods are now `constexpr`.
 
   - There are new singletons and factory functions in the namespace `Dune::GeometryTypes`. These
