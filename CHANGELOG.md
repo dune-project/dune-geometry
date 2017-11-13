@@ -9,7 +9,11 @@
   intervals)` and `refinementLevels(int levels)` to construct parameters of
   type `RefinementIntervals`.
 
+    See core/dune-geometry!51
+
 - The class `GeometryType` has been cleaned up in major way:
+ 
+    See core/dune-geometry!64 and core/dune-geometry!55
 
   - The class and most of its methods are now `constexpr`.
 
@@ -24,6 +28,8 @@
 
 - The reference element interface has had a substantial overhaul that can break backwards
   compatibility in some corner cases.
+
+    See core/dune-geometry!52
 
   - `ReferenceElement` has value semantics now: You should store instances by value and can freely
     copy them around. Doing so is not more expensive than storing a const reference.
@@ -49,25 +55,25 @@
     you need to explicitely access the type, this is also available as
     `Dune::ReferenceElement<Geometry>`.
 
-  In short: If you can, use the following idiom to obtain a reference element for a geometry:
-  ```c++
-  auto ref_el = referenceElement(geometry);
-  ```
+      In short: If you can, use the following idiom to obtain a reference element for a geometry:
+      ```c++
+      auto ref_el = referenceElement(geometry);
+      ```
 
-  The change to the meaning of `Dune::ReferenceElement` can break compilation if you have function
-  overloads that partially specialize on it, e.g.
-  ```c++
-  template<typename ctype, int dim>
-  void f(const Dune::ReferenceElement<ctype,dim> ref_el)
-  {}
-  ```
-  Normally, you can just simplify this to the following code that also shows how to extract the
-  missing template parameters:
-  ```c++
-  template<typename RefEl>
-  void f(const RefEl ref_el)
-  {
-    using ctype = typename RefEl::CoordinateField;
-    constexpr auto dim = RefEl::dimension;
-  }
-  ```
+      The change to the meaning of `Dune::ReferenceElement` can break compilation if you have function
+      overloads that partially specialize on it, e.g.
+      ```c++
+      template<typename ctype, int dim>
+      void f(const Dune::ReferenceElement<ctype,dim> ref_el)
+      {}
+      ```
+      Normally, you can just simplify this to the following code that also shows how to extract the
+      missing template parameters:
+     ```c++
+      template<typename RefEl>
+      void f(const RefEl ref_el)
+      {
+        using ctype = typename RefEl::CoordinateField;
+        constexpr auto dim = RefEl::dimension;
+      }
+      ```
