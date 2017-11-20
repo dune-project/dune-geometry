@@ -90,4 +90,5 @@ try {
 catch (Dune::Exception & e)
 {
   std::cout << "Error: " << e.what() << std::endl;
+  return 1;
 }
