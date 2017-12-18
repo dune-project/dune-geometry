@@ -3,24 +3,25 @@ Copyright holders:
 2015--2016    Marco Agnese
 2012--2014    Markus Blatt
 2013--2014    Andreas Buhr
-2014--2016    Ansgar Burchardt
+2014--2017    Ansgar Burchardt
 2013          Benjamin Bykowski
-2011--2014    Andreas Dedner
+2011--2017    Andreas Dedner
 2012--2016    Christian Engwer
-2011--2016    Jorrit Fahlke
+2011--2017    Jorrit Fahlke
 2012          Bernd Flemisch
 2013          Christoph Gersbacher
 2016          Janick Gerstenberger
-2014--2016    Carsten Gräser
-2015--2016    Felix Gruber
+2015--2017    Felix Gruber
+2014--2017    Carsten Gräser
 2011--2016    Christoph Grüninger
-2013--2016    Dominic Kempf
+2013--2017    Dominic Kempf
 2012          Robert Klöfkorn
+2017          Marcel Koch
 2012--2014    Tobias Malkmus
-2012--2016    Steffen Müthing
-2011--2016    Martin Nolte
+2012--2017    Steffen Müthing
+2011--2017    Martin Nolte
 2011--2016    Elias Pipping
-2011--2016    Oliver Sander
+2011--2017    Oliver Sander
 
 The DUNE library and headers are licensed under version 2 of the GNU
 General Public License (see below), with a special exception for
