@@ -219,7 +219,7 @@ namespace Dune {
       else {
         // Since lower_==upper_ for unused coordinates, this always does the right thing
         for (size_t i=0; i<coorddim; i++)
-          result[i] = 0.5 * (lower_[i] + upper_[i]);
+          result[i] = CoordType(0.5) * (lower_[i] + upper_[i]);
       }
       return result;
     }
@@ -307,7 +307,7 @@ namespace Dune {
     void jacobianInverseTransposed ( DiagonalMatrix<ctype,dim> &jacobianInverseTransposed ) const
     {
       for (size_t i=0; i<dim; i++)
-        jacobianInverseTransposed.diagonal()[i] = 1.0 / (upper_[i] - lower_[i]);
+        jacobianInverseTransposed.diagonal()[i] = CoordType(1.0) / (upper_[i] - lower_[i]);
     }
 
     // jacobianInverseTransposed: slow case --> dense matrix
@@ -319,7 +319,7 @@ namespace Dune {
       size_t lc = 0;
       for (size_t i=0; i<coorddim; i++)
         if (axes_[i])
-          jacobianInverseTransposed[i][lc++] = 1.0 / (upper_[i] - lower_[i]);
+          jacobianInverseTransposed[i][lc++] = CoordType(1.0) / (upper_[i] - lower_[i]);
     }
 
     Dune::FieldVector<ctype,coorddim> lower_;
