@@ -26,3 +26,6 @@ dune_add_test(SOURCES test-refinement.cc
 
 dune_add_test(SOURCES test-constexpr-geometrytype.cc
               LINK_LIBRARIES dunegeometry)
+
+dune_add_test(SOURCES test-geometrytype-id.cc
+              LINK_LIBRARIES dunegeometry)
