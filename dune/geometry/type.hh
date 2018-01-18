@@ -294,14 +294,14 @@ namespace Dune
 
   private:
 
-    /** \brief Topology Id element */
-    unsigned int topologyId_;
-
     /** \brief Dimension of the element */
-    unsigned char dim_  : 7;
+    unsigned char dim_;
 
     /** \brief bool if this is none-type */
-    bool none_ : 1;
+    bool none_;
+
+    /** \brief Topology Id element */
+    unsigned int topologyId_;
 
   public:
 
@@ -310,14 +310,16 @@ namespace Dune
 
     /** \brief Default constructor, not initializing anything */
     constexpr GeometryType ()
-      : topologyId_(0), dim_(0), none_(true)
+      : dim_(0)
+      , none_(true)
+      , topologyId_(0)
     {}
 
     DUNE_NO_DEPRECATED_BEGIN
     /** \brief Constructor, using the basic type and the dimension */
     GeometryType(BasicType basicType, unsigned int dim)
       DUNE_DEPRECATED_MSG("The GeometryType constructor taking BasicType is deprecated and will be removed after DUNE 2.6")
-      : topologyId_(0), dim_(dim), none_((basicType == GeometryType::none) ? true : false)
+      : dim_(dim), none_((basicType == GeometryType::none) ? true : false), topologyId_(0)
     {
       if (dim < 2)
         return;
@@ -359,7 +361,9 @@ namespace Dune
      *       GeometryType(TopologyType t) constructor.
      */
     constexpr GeometryType(unsigned int topologyId, unsigned int dim, bool none)
-      : topologyId_(topologyId), dim_(dim), none_(none)
+      : dim_(dim)
+      , none_(none)
+      , topologyId_(topologyId)
     {}
 
     /** \brief Constructor, using the topologyId (integer) and the dimension
@@ -368,7 +372,9 @@ namespace Dune
      *       GeometryType(TopologyType t) constructor.
      */
     constexpr GeometryType(unsigned int topologyId, unsigned int dim)
-      : topologyId_(topologyId), dim_(dim), none_(false)
+      : dim_(dim)
+      , none_(false)
+      , topologyId_(topologyId)
     {}
 
     /** \brief Constructor from static TopologyType class
@@ -384,14 +390,18 @@ namespace Dune
     template<class TopologyType,
       class = Dune::void_t<decltype(TopologyType::dimension), decltype(TopologyType::id)>>
     explicit GeometryType(TopologyType t)
-      : topologyId_(TopologyType::id), dim_(TopologyType::dimension), none_(false)
+      : dim_(TopologyType::dimension)
+      , none_(false)
+      , topologyId_(TopologyType::id)
     {
       DUNE_UNUSED_PARAMETER(t);
     }
 
     /** \brief Constructor for vertices and segments */
     explicit GeometryType(unsigned int dim)
-      : topologyId_(0), dim_(dim), none_(false)
+      : dim_(dim)
+      , none_(false)
+      , topologyId_(0)
     {
       assert(dim < 2);
     }
@@ -401,7 +411,9 @@ namespace Dune
     // because otherwise GeometryType(int) would try to call the
     // generic GeometryType(TopologyType) constructor
     explicit GeometryType(int dim)
-      : topologyId_(0), dim_(dim), none_(false)
+      : dim_(dim)
+      , none_(false)
+      , topologyId_(0)
     {
       assert(dim < 2);
     }
