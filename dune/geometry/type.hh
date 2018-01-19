@@ -277,11 +277,9 @@ namespace Dune
   {
   public:
 
-    DUNE_NO_DEPRECATED_BEGIN
     /** \brief Each entity can be tagged by one of these basic types
      *  plus its space dimension */
     enum
-    DUNE_DEPRECATED_MSG("BasicType is deprecated and will be removed after DUNE 2.6")
     BasicType {
       simplex,       //!< Simplicial element in any nonnegative dimension
       cube,          //!< Cube element in any nonnegative dimension
@@ -290,7 +288,6 @@ namespace Dune
       extended,      //!< Other, more general topology, representable as topologyId
       none           //!< Even more general topology, cannot be specified by a topologyId. Two GeometryTypes with 'none' type are equal if and only if they have the same dimension.
     };
-    DUNE_NO_DEPRECATED_END
 
   private:
 
