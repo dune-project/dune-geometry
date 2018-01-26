@@ -20,8 +20,8 @@
   - There are new singletons and factory functions in the namespace `Dune::GeometryTypes`. These
     are now the official way to obtain a `GeometryType`.
 
-  - `GeometryType::BasicType` and the assorted constructor have been deprecated and will be removed
-    after the release of DUNE 2.6.
+  - The constructor taking a `GeometryType::BasicType` and a dimension has been deprecated and wil be
+    removed after the release of DUNE 2.6.
 
   - The assorted member functions `GeometryType::make...()` have been deprecated and will be removed
     after the release of DUNE 2.6.
