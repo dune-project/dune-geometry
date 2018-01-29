@@ -3,5 +3,3 @@ add_python_targets(geometry
   _referenceelements
   quadpy
 )
-
-dune_add_pybind11_module(NAME _geometry)
