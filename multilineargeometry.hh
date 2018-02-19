@@ -29,7 +29,7 @@ namespace Dune
       RegisterMemberFunctions() {}
       void operator()(pybind11::class_<MGeometry>& cls)
       {
-        cls.def("localPosition"            , &MGeometry::local);
+        cls.def("toLocal"                  , &MGeometry::local);
         cls.def("jacobianInverseTransposed", &MGeometry::jacobianInverseTransposed);
       }
     };
@@ -74,7 +74,7 @@ namespace Dune
             return new MGeometry( type, copyCorners );
           } ), "type"_a, "corners"_a );
 
-        // localPosition and jacobianInverseTransposed call
+        // toLocal and jacobianInverseTransposed call
         // MatrixHelper::template (xT)rightInvA<m, n> where n has to be >= m (static assert)
         std::conditional_t<(coorddim >= dim), RegisterMemberFunctions<MGeometry>, DoNothing<MGeometry> >{}(cls);
 
@@ -91,7 +91,7 @@ namespace Dune
               return geom.jacobianTransposed(local);
             });
 
-        cls.def("position",
+        cls.def("toGlobal",
             [](const MGeometry& geom, const typename MGeometry::LocalCoordinate& local) {
                 return geom.global(local);
               });
