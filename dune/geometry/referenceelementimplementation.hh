@@ -17,6 +17,7 @@
 #include <dune/common/hybridutilities.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
+#include <dune/common/iteratorrange.hh>
 
 #include <dune/geometry/referenceelement.hh>
 #include <dune/geometry/affinegeometry.hh>
@@ -454,6 +455,27 @@ namespace Dune
         return info_[ c ][ i ].number( ii, cc );
       }
 
+      /** \brief Obtain the range of numbers of subentities with codim cc of (i,c)
+       *
+       *  Denote by E the i-th subentity of codimension c of the current
+       *  reference element. This method returns a range of numbers of
+       *  all subentities of E with codimension cc. Notice that the sub-subentity
+       *  codimension as well as the numbers in the returned range are
+       *  given with respect to the reference element itself and not with
+       *  respect to E. For 0<=cc<c this will return an empty range.
+       *
+       *  \param[in]  i   number of subentity E (0 <= i < size( c ))
+       *  \param[in]  c   codimension of subentity E
+       *  \param[in]  cc  codimension of subentity S (0 <= cc <= dim)
+       *
+       *  \returns An iterable range of numbers of the sub-subentities.
+       */
+      auto subEntities ( int i, int c, int cc ) const
+      {
+        assert( (i >= 0) && (i < size( c )) );
+        return info_[ c ][ i ].numbers( cc );
+      }
+
       /** \brief obtain the type of subentity (i,c)
        *
        *  Denote by E the i-th subentity of codimension c of the current
@@ -605,6 +627,8 @@ namespace Dune
     template< class ctype, int dim >
     struct ReferenceElementImplementation< ctype, dim >::SubEntityInfo
     {
+      using NumberRange = typename Dune::IteratorRange<const unsigned int*>;
+
       SubEntityInfo ()
         : numbering_( nullptr )
       {
@@ -643,6 +667,11 @@ namespace Dune
       {
         assert( (ii >= 0) && (ii < size( cc )) );
         return numbering_[ offset_[ cc ] + ii ];
+      }
+
+      auto numbers ( int cc ) const
+      {
+        return NumberRange( numbering_ + offset_[ cc ], numbering_ + offset_[ cc+1 ] );
       }
 
       const GeometryType &type () const { return type_; }
