@@ -439,7 +439,7 @@ namespace Dune
        *
        *  Denote by E the i-th subentity of codimension c of the current
        *  reference element. And denote by S the ii-th subentity of codimension
-       *  (cc-c) of E. Then, S is a also a subentity of codimension c of the current
+       *  (cc-c) of E. Then, S is a also a subentity of codimension cc of the current
        *  reference element. This method returns the number of S with respect
        *  to the current reference element.
        *
