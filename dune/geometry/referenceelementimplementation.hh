@@ -426,8 +426,8 @@ namespace Dune
        *  a subentity of E.
        *
        *  \param[in]  i   number of subentity E (0 <= i < size( c ))
-       *  \param[in]  c   codimension of subentity E
-       *  \param[in]  cc  codimension whose size is desired (c <= cc <= dim)
+       *  \param[in]  c   codimension of subentity E (0 <= c <= dim)
+       *  \param[in]  cc  codimension whose size is desired (0 <= cc <= dim)
        */
       int size ( int i, int c, int cc ) const
       {
@@ -635,7 +635,7 @@ namespace Dune
 
       int size ( int cc ) const
       {
-        assert( (cc >= codim()) && (cc <= dim) );
+        assert( (cc >= 0) && (cc <= dim) );
         return (offset_[ cc+1 ] - offset_[ cc ]);
       }
 
