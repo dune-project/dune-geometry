@@ -329,8 +329,8 @@ namespace Dune
    *
    * \ingroup GeometryReferenceElements
    */
-  template<typename T, int dim>
-  auto referenceElement(const T&, std::enable_if_t<IsNumber<std::decay_t<T>>::value,const Dune::GeometryType&> gt, Dune::Dim<dim>)
+  template<typename T, int dim, std::enable_if_t<IsNumber<std::decay_t<T>>::value, int> = 0>
+  auto referenceElement(const T&, const Dune::GeometryType& gt, Dune::Dim<dim>)
   {
     return ReferenceElements<T,dim>::general(gt);
   }
