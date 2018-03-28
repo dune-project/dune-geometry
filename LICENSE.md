@@ -13,13 +13,13 @@ Copyright holders:
 2016          Janick Gerstenberger
 2015--2017    Felix Gruber
 2014--2017    Carsten Gräser
-2011--2016    Christoph Grüninger
+2011--2018    Christoph Grüninger
 2013--2017    Dominic Kempf
 2012          Robert Klöfkorn
 2017          Marcel Koch
 2012--2014    Tobias Malkmus
-2012--2017    Steffen Müthing
-2011--2017    Martin Nolte
+2012--2018    Steffen Müthing
+2011--2018    Martin Nolte
 2011--2016    Elias Pipping
 2011--2017    Oliver Sander
 
