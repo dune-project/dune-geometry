@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <functional>
 #include <iterator>
 #include <vector>
 
@@ -39,13 +38,11 @@ namespace Dune {
   void reduceOrder(const InIterator& inBegin, const InIterator& inEnd,
                    OutIterator outIt)
   {
-    typedef std::less<
-        typename std::iterator_traits<InIterator>::value_type
-        > less_t;
-    const less_t less = less_t();
-
     for(InIterator inIt = inBegin; inIt != inEnd; ++inIt, ++outIt)
-      *outIt = std::count_if(inBegin, inEnd, std::bind2nd(less, *inIt));
+      *outIt = std::count_if(inBegin, inEnd, [&](const auto& v)
+                             {
+                               return v < *inIt;
+                             });
   }
 
   //! Class providing information on the ordering of vertices
