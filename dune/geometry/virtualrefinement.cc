@@ -493,7 +493,7 @@ namespace Dune
     try {
       return backend == dynamic_cast<const This &>(other).backend;
     }
-    catch(std::bad_cast)
+    catch(const std::bad_cast&)
     {
       return false;
     }
