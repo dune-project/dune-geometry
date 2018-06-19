@@ -5,7 +5,7 @@
 - The enum `GeometryType::BasicType` is deprecated, and will be removed after Dune 2.6.
 
 - `VirtualRefinement` and `Refinement` now support arbitrary refinements, not
-  just powers of two.  Whereever you where passing a parameter `int levels`
+  just powers of two.  Wherever you where passing a parameter `int levels`
   (now deprecated), you should now pass a parameter `RefinementIntervals
   intervals`.  There are convenience functions `refinementIntervals(int
   intervals)` and `refinementLevels(int levels)` to construct parameters of
@@ -22,7 +22,7 @@
   - There are new singletons and factory functions in the namespace `Dune::GeometryTypes`. These
     are now the official way to obtain a `GeometryType`.
 
-  - The constructor taking a `GeometryType::BasicType` and a dimension has been deprecated and wil be
+  - The constructor taking a `GeometryType::BasicType` and a dimension has been deprecated and will be
     removed after the release of DUNE 2.6.
 
   - The assorted member functions `GeometryType::make...()` have been deprecated and will be removed
@@ -38,11 +38,11 @@
 
   - As a consequence of value semantics, `ReferenceElement` is default constructible now. A default
     constructed `ReferenceElement` may only be assigned another `ReferenceElement`; all other
-    oeprations cause undefined behavior. Moreover, instances are now comparable and hashable to
+    operations cause undefined behavior. Moreover, instances are now comparable and hashable to
     allow storing them in maps.
 
   - We have added code that tries to warn you if you are still storing a `ReferenceElement` by const
-    reference; please update all those occurences.
+    reference; please update all those occurrences.
 
   - The meaning of `Dune::ReferenceElement` has changed. It is not a type anymore, but an alias
     template that looks up the correct implementation for the given template arguments. For now,
@@ -54,7 +54,7 @@
   - You can now directly obtain a reference element for a given geometry using the free function
     `referenceElement(geometry)`. This function should be called without any namespace qualifiers to
     enable ADL and you should normally capture the return value of the function using `auto`, but if
-    you need to explicitely access the type, this is also available as
+    you need to explicitly access the type, this is also available as
     `Dune::ReferenceElement<Geometry>`.
 
       In short: If you can, use the following idiom to obtain a reference element for a geometry:
