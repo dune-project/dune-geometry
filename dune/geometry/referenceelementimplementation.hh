@@ -423,11 +423,11 @@ namespace Dune
        *  Denote by E the i-th subentity of codimension c of the current
        *  reference element. This method returns the number of subentities
        *  of codimension cc of the current reference element, that are also
-       *  a subentity of E.
+       *  a subentity of E. If cc<c this number is zero.
        *
        *  \param[in]  i   number of subentity E (0 <= i < size( c ))
-       *  \param[in]  c   codimension of subentity E
-       *  \param[in]  cc  codimension whose size is desired (c <= cc <= dim)
+       *  \param[in]  c   codimension of subentity E (0 <= c <= dim)
+       *  \param[in]  cc  codimension whose size is desired (0 <= cc <= dim)
        */
       int size ( int i, int c, int cc ) const
       {
@@ -439,7 +439,7 @@ namespace Dune
        *
        *  Denote by E the i-th subentity of codimension c of the current
        *  reference element. And denote by S the ii-th subentity of codimension
-       *  (cc-c) of E. Then, S is a also a subentity of codimension c of the current
+       *  (cc-c) of E. Then, S is a also a subentity of codimension cc of the current
        *  reference element. This method returns the number of S with respect
        *  to the current reference element.
        *
@@ -635,7 +635,7 @@ namespace Dune
 
       int size ( int cc ) const
       {
-        assert( (cc >= codim()) && (cc <= dim) );
+        assert( (cc >= 0) && (cc <= dim) );
         return (offset_[ cc+1 ] - offset_[ cc ]);
       }
 
