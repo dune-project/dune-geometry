@@ -35,7 +35,7 @@ namespace Dune {
   {
   public:
     /** \brief The highest quadrature order available */
-    enum { highest_order=31 };
+    enum { highest_order=~d };
 
   private:
     friend class QuadratureRuleFactory<ct,1>;
@@ -73,7 +73,7 @@ namespace Dune {
   {
     switch(p)
     {
-", scriptname, name, name, name, name, name, name, name, name, name, name, name, name),
+", scriptname, name, name, name, name, name, name, maxp, name, name, name, name, name, name),
 for i: 1 thru maxp/2+1 do block([],
   printf(fd,"    // order ~d,~d
     case ~d :
@@ -157,7 +157,7 @@ printf(fd,"    default :
 
   template<typename ct>
   ~aQuadratureRule<ct,1>::~aQuadratureRule (int p)
-      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+      : QuadratureRule<ct,1>(GeometryTypes::line)
   {
     //! set up quadrature of given order in d dimensions
     std::vector< FieldVector<ct,1> > _points;
