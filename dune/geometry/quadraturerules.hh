@@ -236,7 +236,7 @@ namespace Dune {
     //! singleton provider
     DUNE_EXPORT static QuadratureRules& instance()
     {
-      static QuadratureRules instance;
+      thread_local QuadratureRules instance;
       return instance;
     }
     //! private constructor
@@ -271,15 +271,15 @@ namespace Dune {
 // 0d rules
 #include "quadraturerules/pointquadrature.hh"
 // 1d rules
+#include "quadraturerules/gausslobattoquadrature.hh"
 #include "quadraturerules/gaussquadrature.hh"
 #include "quadraturerules/jacobi1quadrature.hh"
 #include "quadraturerules/jacobi2quadrature.hh"
-#include "quadraturerules/gausslobattoquadrature.hh"
 // 3d rules
 #include "quadraturerules/prismquadrature.hh"
 // general rules
-#include "quadraturerules/tensorproductquadrature.hh"
 #include "quadraturerules/simplexquadrature.hh"
+#include "quadraturerules/tensorproductquadrature.hh"
 
 #undef DUNE_INCLUDING_IMPLEMENTATION
 
@@ -440,22 +440,13 @@ namespace Dune {
   };
 
 #ifndef DUNE_NO_EXTERN_QUADRATURERULES
-  extern template class GaussQuadratureRule<float, 1>;
-  extern template class GaussQuadratureRule<double, 1>;
-  extern template class Jacobi1QuadratureRule<float, 1>;
-  extern template class Jacobi1QuadratureRule<double, 1>;
-  extern template class Jacobi2QuadratureRule<float, 1>;
-  extern template class Jacobi2QuadratureRule<double, 1>;
-  extern template class GaussLobattoQuadratureRule<float, 1>;
   extern template class GaussLobattoQuadratureRule<double, 1>;
-
-  extern template class SimplexQuadratureRule<float, 2>;
-  extern template class SimplexQuadratureRule<double, 2>;
-  extern template class SimplexQuadratureRule<float, 3>;
-  extern template class SimplexQuadratureRule<double, 3>;
-
-  extern template class PrismQuadratureRule<float, 3>;
+  extern template class GaussQuadratureRule<double, 1>;
+  extern template class Jacobi1QuadratureRule<double, 1>;
+  extern template class Jacobi2QuadratureRule<double, 1>;
   extern template class PrismQuadratureRule<double, 3>;
+  extern template class SimplexQuadratureRule<double, 2>;
+  extern template class SimplexQuadratureRule<double, 3>;
 #endif // !DUNE_NO_EXTERN_QUADRATURERULES
 
 } // end namespace
