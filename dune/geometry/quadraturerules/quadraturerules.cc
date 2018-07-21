@@ -18,21 +18,12 @@ namespace Dune {
   PrismQuadraturePoints<3> PrismQuadraturePointsSingleton<3>::prqp;
 
   // explicit template instatiation
-  template class Jacobi1QuadratureRule<float, 1>;
   template class Jacobi1QuadratureRule<double, 1>;
-  template class Jacobi2QuadratureRule<float, 1>;
   template class Jacobi2QuadratureRule<double, 1>;
-  template class GaussQuadratureRule<float, 1>;
   template class GaussQuadratureRule<double, 1>;
-  template class GaussLobattoQuadratureRule<float, 1>;
   template class GaussLobattoQuadratureRule<double, 1>;
-
-  template class SimplexQuadratureRule<float, 2>;
-  template class SimplexQuadratureRule<double, 2>;
-  template class SimplexQuadratureRule<float, 3>;
-  template class SimplexQuadratureRule<double, 3>;
-
-  template class PrismQuadratureRule<float, 3>;
   template class PrismQuadratureRule<double, 3>;
+  template class SimplexQuadratureRule<double, 2>;
+  template class SimplexQuadratureRule<double, 3>;
 
 } // namespace

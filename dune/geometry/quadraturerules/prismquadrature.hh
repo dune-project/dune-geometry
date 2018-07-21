@@ -167,7 +167,7 @@ namespace Dune {
   };
 
   template<typename ct>
-  PrismQuadratureRule<ct,3>::PrismQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryType(GeometryType::prism, 3))
+  PrismQuadratureRule<ct,3>::PrismQuadratureRule(int p) : QuadratureRule<ct,3>(GeometryTypes::prism)
   {
     int m=6;
     this->delivered_order = PrismQuadraturePointsSingleton<3>::prqp.order(m);

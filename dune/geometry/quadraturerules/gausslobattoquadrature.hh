@@ -28,7 +28,7 @@ namespace Dune {
   {
   public:
     /** brief The highest quadrature order available */
-    enum { highest_order=31 };
+    enum { highest_order=61 };
 
   private:
     friend class QuadratureRuleFactory<ct,1>;
@@ -951,7 +951,7 @@ namespace Dune {
 
   template<typename ct>
   GaussLobattoQuadratureRule<ct,1>::GaussLobattoQuadratureRule (int p)
-      : QuadratureRule<ct,1>(GeometryType(GeometryType::cube, 1))
+      : QuadratureRule<ct,1>(GeometryTypes::line)
   {
     //! set up quadrature of given order in d dimensions
     std::vector< FieldVector<ct,1> > _points;
