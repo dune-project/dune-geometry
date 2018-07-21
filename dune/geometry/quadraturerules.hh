@@ -236,7 +236,7 @@ namespace Dune {
     //! singleton provider
     DUNE_EXPORT static QuadratureRules& instance()
     {
-      thread_local QuadratureRules instance;
+      static QuadratureRules instance;
       return instance;
     }
     //! private constructor
