@@ -32,7 +32,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,2>;
     SimplexQuadratureRule (int p);
-    ~SimplexQuadratureRule(){}
   };
 
   /** \brief Quadrature rules for tetrahedra
@@ -47,7 +46,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,3>;
     SimplexQuadratureRule (int p);
-    ~SimplexQuadratureRule(){}
   };
 
   //!
@@ -819,7 +817,7 @@ namespace Dune {
     default : m=33;
     }
 
-    this->delivered_order = SimplexQuadraturePointsSingleton<2>::sqp.order(m);
+    this->order_ = SimplexQuadraturePointsSingleton<2>::sqp.order(m);
 
     for(int i=0; i<m; ++i)
     {
@@ -1071,7 +1069,7 @@ namespace Dune {
       break;
     default : m=15;
     }
-    this->delivered_order = SimplexQuadraturePointsSingleton<3>::sqp.order(m);
+    this->order_ = SimplexQuadraturePointsSingleton<3>::sqp.order(m);
 
     for(int i=0; i<m; ++i)
     {

@@ -158,7 +158,7 @@ void checkWeights(const QuadratureRule &quad)
 template<class ctype, int dim>
 void check(Dune::GeometryType type,
            unsigned int maxOrder,
-           Dune::QuadratureType::Enum qt = Dune::QuadratureType::GaussLegendre)
+           Dune::QuadratureType qt = Dune::QuadratureType::GaussLegendre)
 {
   typedef Dune::QuadratureRule<ctype, dim> Quad;
 
@@ -187,7 +187,7 @@ template<class ctype, int dim>
 void checkCompositeRule(Dune::GeometryType type,
                         unsigned int maxOrder,
                         unsigned int maxRefinement,
-                        Dune::QuadratureType::Enum qt = Dune::QuadratureType::GaussLegendre)
+                        Dune::QuadratureType qt = Dune::QuadratureType::GaussLegendre)
 {
   typedef Dune::QuadratureRule<ctype, dim> BaseQuad;
   typedef Dune::CompositeQuadratureRule<ctype, dim> Quad;

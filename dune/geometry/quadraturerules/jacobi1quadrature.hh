@@ -17,14 +17,8 @@ namespace Dune {
    * Quadraturerule for 1d line
    *************************************************/
 
-  template<typename ct, int dim>
-  class Jacobi1QuadratureRule;
-
   template<typename ct>
-  using Jacobi1QuadratureRule1D = Jacobi1QuadratureRule<ct,1>;
-
-  template<typename ct>
-  class Jacobi1QuadratureRule<ct,1> : public QuadratureRule<ct,1>
+  class Jacobi1QuadratureRule : public QuadratureRule<ct,1>
   {
   public:
     /** brief The highest quadrature order available */
@@ -33,7 +27,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,1>;
     Jacobi1QuadratureRule (int p);
-    ~Jacobi1QuadratureRule(){}
   };
 
   //! internal Helper template for the initialization of the quadrature rules
@@ -2566,21 +2559,21 @@ namespace Dune {
   }
 
   template<typename ct>
-  Jacobi1QuadratureRule<ct,1>::Jacobi1QuadratureRule (int p)
+  Jacobi1QuadratureRule<ct>::Jacobi1QuadratureRule (int p)
       : QuadratureRule<ct,1>(GeometryTypes::line)
   {
     //! set up quadrature of given order in d dimensions
     std::vector< FieldVector<ct,1> > _points;
     std::vector< ct > _weight;
 
-    int deliveredOrder_;
+    int _deliveredOrder;
 
-    Jacobi1QuadratureInitHelper<ct>::init(p, _points, _weight, deliveredOrder_);
+    Jacobi1QuadratureInitHelper<ct>::init(p, _points, _weight, _deliveredOrder);
 
-    this->delivered_order = deliveredOrder_;
+    this->order_ = _deliveredOrder;
     assert(_points.size() == _weight.size());
     for (size_t i = 0; i < _points.size(); i++)
-      this->push_back(QuadraturePoint<ct,1>(_points[i], _weight[i]));
+      this->emplace_back(_points[i], _weight[i]);
   }
 
 } // namespace Dune

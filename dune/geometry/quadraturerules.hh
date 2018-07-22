@@ -5,19 +5,16 @@
 #define DUNE_GEOMETRY_QUADRATURERULES_HH
 
 #include <algorithm>
-#include <iostream>
 #include <limits>
-#include <mutex>
+#include <map>
 #include <utility>
 #include <vector>
 
+#include <dune/common/concurrentcache.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/exceptions.hh>
-#include <dune/common/stdstreams.hh>
-#include <dune/common/stdthread.hh>
 #include <dune/common/visibility.hh>
 
-#include <dune/geometry/quadraturerules/nocopyvector.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/typeindex.hh>
 
@@ -34,60 +31,64 @@ namespace Dune {
    */
   class QuadratureOrderOutOfRange : public NotImplemented {};
 
-  /** \brief Single evaluation point in a quadrature rule
-      \ingroup Quadrature
-      \tparam ct Number type used for both coordinates and the weights
-      \tparam dim Dimension of the integration domain
-   */
+  /// \brief Single evaluation point in a quadrature rule
+  /**
+   * \ingroup Quadrature
+   * \tparam ct   Number type used for both coordinates and the weights
+   * \tparam dim  Dimension of the integration domain
+   **/
   template<typename ct, int dim>
-  class QuadraturePoint {
+  class QuadraturePoint
+  {
   public:
-    /** \brief Dimension of the integration domain */
+    //! Dimension of the integration domain
     enum { dimension = dim };
 
-    /** \brief Number type used for coordinates and quadrature weights */
-    typedef ct Field;
+    //! Number type used for coordinates and quadrature weights
+    using Field = ct;
 
-    /** \brief Type used for the position of a quadrature point */
-    typedef Dune::FieldVector<ct,dim> Vector;
+    //! Type used for the position of a quadrature point
+    using Vector = Dune::FieldVector<ct,dim>;
 
-    //! set up quadrature of given order in d dimensions
-    QuadraturePoint (const Vector& x, ct w) : local(x)
-    {
-      weight_ = w;
-    }
+    //! Default constructor
+    QuadraturePoint() = default;
 
-    //! return local coordinates of integration point i
+    //! Set up quadrature of given order in d dimensions
+    QuadraturePoint (const Vector& local, Field weight)
+      : local_(local)
+      , weight_(weight)
+    {}
+
+    //! Return local coordinates of integration point
     const Vector& position () const
     {
-      return local;
+      return local_;
     }
 
-    //! return weight associated with integration point i
-    const ct &weight () const
+    //! Return weight associated with integration point
+    const Field& weight () const
     {
       return weight_;
     }
 
   protected:
-    FieldVector<ct, dim> local;
-    ct weight_;
+    Vector local_;
+    Field weight_;
   };
 
   /** \brief Defines an \p enum for currently available quadrature rules.
       \ingroup Quadrature
    */
-  namespace QuadratureType {
-    enum Enum {
-      GaussLegendre = 0,
+  enum class QuadratureType
+  {
+    GaussLegendre = 0,
 
-      GaussJacobi_1_0 = 1,
-      GaussJacobi_2_0 = 2,
+    GaussJacobi_1_0 = 1,
+    GaussJacobi_2_0 = 2,
 
-      GaussLobatto = 4,
-      size
-    };
-  }
+    GaussLobatto = 4,
+    size
+  };
 
   /** \brief Abstract base class for quadrature rules
       \ingroup Quadrature
@@ -96,40 +97,46 @@ namespace Dune {
   class QuadratureRule : public std::vector<QuadraturePoint<ct,dim> >
   {
   public:
+    //! The space dimension
+    enum { d = dim };
+
+    //! The type used for coordinates
+    using CoordType = ct;
+
+    // This container is always a const container,
+    // therefore iterator is the same as const_iterator
+    using iterator = typename std::vector<QuadraturePoint<ct,dim> >::const_iterator;
+
+  public:
     /** \brief Default constructor
      *
      * Create an invalid empty quadrature rule.  This must be initialized
      * later by copying another quadraturerule before it can be used.
      */
-    QuadratureRule() : delivered_order(-1) {}
+    QuadratureRule () = default;
 
   protected:
-    /** \brief Constructor for a given geometry type.  Leaves the quadrature order invalid  */
-    QuadratureRule(GeometryType t) : geometry_type(t), delivered_order(-1) {}
+    //! Constructor for a given geometry type. Leaves the quadrature order invalid
+    QuadratureRule (const GeometryType& type)
+      : type_(type) {}
 
-    /** \brief Constructor for a given geometry type and a given quadrature order */
-    QuadratureRule(GeometryType t, int order) : geometry_type(t), delivered_order(order) {}
+    //! Constructor for a given geometry type and a given quadrature order
+    QuadratureRule (const GeometryType& type, int order)
+      : type_(type), order_(order) {}
+
   public:
-    /** \brief The space dimension */
-    enum { d=dim };
+    //! Return order
+    virtual int order () const { return order_; }
 
-    /** \brief The type used for coordinates */
-    typedef ct CoordType;
+    //! Return type of element
+    virtual GeometryType type () const { return type_; }
 
-    //! return order
-    virtual int order () const { return delivered_order; }
-
-    //! return type of element
-    virtual GeometryType type () const { return geometry_type; }
-    virtual ~QuadratureRule(){}
-
-    //! this container is always a const container,
-    //! therefore iterator is the same as const_iterator
-    typedef typename std::vector<QuadraturePoint<ct,dim> >::const_iterator iterator;
+    //! Virtual destructor
+    virtual ~QuadratureRule () = default;
 
   protected:
-    GeometryType geometry_type;
-    int delivered_order;
+    GeometryType type_;
+    int order_ = -1;
   };
 
   // Forward declaration of the factory class,
@@ -140,101 +147,47 @@ namespace Dune {
       \ingroup Quadrature
    */
   template<typename ctype, int dim>
-  class QuadratureRules {
+  class QuadratureRules
+  {
+  public:
+    //! type of quadrature rule provided by this cache
+    using QuadratureRule = Dune::QuadratureRule<ctype, dim>;
 
-    /** \brief Internal short-hand notation for the type of quadrature rules this container contains */
-    typedef Dune::QuadratureRule<ctype, dim> QuadratureRule;
-    //! \brief a quadrature rule (for each quadrature order, geometry type,
-    //!        and quadrature type)
-    static void initQuadratureRule(QuadratureRule *qr, QuadratureType::Enum qt,
-                                   const GeometryType &t, int p)
+    //! identifier for quadrature rules, used in the cache container
+    struct QuadratureKey
     {
-      *qr = QuadratureRuleFactory<ctype,dim>::rule(t,p,qt);
-    }
+      unsigned int id; // topologyId
+      int p;  // order
+      QuadratureType qt; // quadrature type
 
-    typedef NoCopyVector<std::pair<std::once_flag, QuadratureRule> >
-      QuadratureOrderVector; // indexed by quadrature order
-    //! \brief initialize the vector indexed by the quadrature order (for each
-    //!        geometry type and quadrature type)
-    static void initQuadratureOrderVector(QuadratureOrderVector *qov,
-                                          QuadratureType::Enum qt,
-                                          const GeometryType &t)
-    {
-      if(dim == 0)
-        // we only need one quadrature rule for points, not maxint
-        qov->resize(1);
-      else
-        qov->resize(QuadratureRuleFactory<ctype,dim>::maxOrder(t,qt)+1);
-    }
+      friend bool operator< (const QuadratureKey& lhs, const QuadratureKey& rhs)
+      {
+        return std::tie(lhs.id,lhs.p,lhs.qt) < std::tie(rhs.id,rhs.p,rhs.qt);
+      }
+    };
 
-    typedef NoCopyVector<std::pair<std::once_flag, QuadratureOrderVector> >
-      GeometryTypeVector; // indexed by geometry type
-    //! \brief initialize the vector indexed by the geometry type (for each
-    //!        quadrature type)
-    static void initGeometryTypeVector(GeometryTypeVector *gtv)
-    {
-      gtv->resize(LocalGeometryTypeIndex::size(dim));
-    }
-
-    //! real rule creator
-    DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
-    {
-      assert(t.dim()==dim);
-
-      DUNE_ASSERT_CALL_ONCE();
-
-      static NoCopyVector<std::pair< // indexed by quadrature type
-        std::once_flag,
-        GeometryTypeVector
-        > > quadratureCache(QuadratureType::size);
-
-      auto & quadratureTypeLevel = quadratureCache[qt];
-      std::call_once(quadratureTypeLevel.first, initGeometryTypeVector,
-                     &quadratureTypeLevel.second);
-
-      auto & geometryTypeLevel =
-        quadratureTypeLevel.second[LocalGeometryTypeIndex::index(t)];
-      std::call_once(geometryTypeLevel.first, initQuadratureOrderVector,
-                     &geometryTypeLevel.second, qt, t);
-
-      // we only have one quadrature rule for points
-      auto & quadratureOrderLevel = geometryTypeLevel.second[dim == 0 ? 0 : p];
-      std::call_once(quadratureOrderLevel.first, initQuadratureRule,
-                     &quadratureOrderLevel.second, qt, t, p);
-
-      return quadratureOrderLevel.second;
-    }
-    //! singleton provider
-    DUNE_EXPORT static QuadratureRules& instance()
-    {
-      static QuadratureRules instance;
-      return instance;
-    }
+  private:
     //! private constructor
-    QuadratureRules () {}
+    QuadratureRules () = default;
+
   public:
     //! maximum quadrature order for given geometry type and quadrature type
-    static unsigned
-    maxOrder(const GeometryType& t,
-             QuadratureType::Enum qt=QuadratureType::GaussLegendre)
+    static unsigned maxOrder (const GeometryType& t, QuadratureType qt = QuadratureType::GaussLegendre)
     {
       return QuadratureRuleFactory<ctype,dim>::maxOrder(t,qt);
     }
 
     //! select the appropriate QuadratureRule for GeometryType t and order p
-    static const QuadratureRule& rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
+    static const QuadratureRule& rule (const GeometryType& t, int p, QuadratureType qt = QuadratureType::GaussLegendre)
     {
-      return instance()._rule(t,p,qt);
+      return QuadratureRuleCache::get(QuadratureKey{t.id(),p,qt}, [&](const QuadratureKey&) {
+        return QuadratureRuleFactory<ctype,dim>::rule(t,p,qt);
+      });
     }
 
-    DUNE_NO_DEPRECATED_BEGIN
-    //! @copydoc rule
-    static const QuadratureRule& rule(const GeometryType::BasicType t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
-    {
-      GeometryType gt(t,dim);
-      return instance()._rule(gt,p,qt);
-    }
-    DUNE_NO_DEPRECATED_END
+  private:
+    using QuadratureRuleCache = ConcurrentCache<QuadratureKey, QuadratureRule, ThreadLocalPolicy,
+      std::map<QuadratureKey, QuadratureRule>>;
   };
 
 } // end namespace Dune
@@ -265,79 +218,84 @@ namespace Dune {
       by the singleton container class QuadratureRules.
    */
   template<typename ctype, int dim>
-  class QuadratureRuleFactory {
-  private:
+  class QuadratureRuleFactory
+  {
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+
+  private:
+    static unsigned maxOrder (const GeometryType& t, QuadratureType qt)
     {
       return TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+
+    static QuadratureRule<ctype, dim> rule (const GeometryType& t, int p, QuadratureType qt)
     {
       return TensorProductQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
   template<typename ctype>
-  class QuadratureRuleFactory<ctype, 0> {
-  private:
+  class QuadratureRuleFactory<ctype, 0>
+  {
     enum { dim = 0 };
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+
+  private:
+    static unsigned maxOrder (const GeometryType& t, QuadratureType qt)
     {
       if (t.isVertex())
-      {
         return std::numeric_limits<int>::max();
-      }
       DUNE_THROW(Exception, "Unknown GeometryType");
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+
+    static QuadratureRule<ctype, dim> rule (const GeometryType& t, int p, QuadratureType qt)
     {
       if (t.isVertex())
-      {
         return PointQuadratureRule<ctype>();
-      }
       DUNE_THROW(Exception, "Unknown GeometryType");
     }
   };
 
   template<typename ctype>
-  class QuadratureRuleFactory<ctype, 1> {
-  private:
+  class QuadratureRuleFactory<ctype, 1>
+  {
     enum { dim = 1 };
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+
+  private:
+    static unsigned maxOrder (const GeometryType& t, QuadratureType qt)
     {
       if (t.isLine())
       {
         switch (qt) {
         case QuadratureType::GaussLegendre :
-          return GaussQuadratureRule1D<ctype>::highest_order;
+          return GaussQuadratureRule<ctype>::highest_order;
         case QuadratureType::GaussJacobi_1_0 :
-          return Jacobi1QuadratureRule1D<ctype>::highest_order;
+          return Jacobi1QuadratureRule<ctype>::highest_order;
         case QuadratureType::GaussJacobi_2_0 :
-          return Jacobi2QuadratureRule1D<ctype>::highest_order;
+          return Jacobi2QuadratureRule<ctype>::highest_order;
         case QuadratureType::GaussLobatto :
-          return GaussLobattoQuadratureRule1D<ctype>::highest_order;
+          return GaussLobattoQuadratureRule<ctype>::highest_order;
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
       }
       DUNE_THROW(Exception, "Unknown GeometryType");
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+
+    static QuadratureRule<ctype, dim> rule (const GeometryType& t, int p, QuadratureType qt)
     {
       if (t.isLine())
       {
         switch (qt) {
         case QuadratureType::GaussLegendre :
-          return GaussQuadratureRule1D<ctype>(p);
+          return GaussQuadratureRule<ctype>(p);
         case QuadratureType::GaussJacobi_1_0 :
-          return Jacobi1QuadratureRule1D<ctype>(p);
+          return Jacobi1QuadratureRule<ctype>(p);
         case QuadratureType::GaussJacobi_2_0 :
-          return Jacobi2QuadratureRule1D<ctype>(p);
+          return Jacobi2QuadratureRule<ctype>(p);
         case QuadratureType::GaussLobatto :
-          return GaussLobattoQuadratureRule1D<ctype>(p);
+          return GaussLobattoQuadratureRule<ctype>(p);
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
@@ -347,20 +305,22 @@ namespace Dune {
   };
 
   template<typename ctype>
-  class QuadratureRuleFactory<ctype, 2> {
-  private:
+  class QuadratureRuleFactory<ctype, 2>
+  {
     enum { dim = 2 };
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+
+  private:
+    static unsigned maxOrder (const GeometryType& t, QuadratureType qt)
     {
       unsigned order =
         TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
       if (t.isSimplex())
-        order = std::max
-          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+        order = std::max(order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
       return order;
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+
+    static QuadratureRule<ctype, dim> rule (const GeometryType& t, int p, QuadratureType qt)
     {
       if (t.isSimplex()
         && qt == QuadratureType::GaussLegendre
@@ -373,23 +333,24 @@ namespace Dune {
   };
 
   template<typename ctype>
-  class QuadratureRuleFactory<ctype, 3> {
-  private:
+  class QuadratureRuleFactory<ctype, 3>
+  {
     enum { dim = 3 };
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+
+  private:
+    static unsigned maxOrder (const GeometryType& t, QuadratureType qt)
     {
       unsigned order =
         TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
       if (t.isSimplex())
-        order = std::max
-          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+        order = std::max(order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
       if (t.isPrism())
-        order = std::max
-          (order, unsigned(PrismQuadratureRule<ctype,dim>::highest_order));
+        order = std::max(order, unsigned(PrismQuadratureRule<ctype>::highest_order));
       return order;
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+
+    static QuadratureRule<ctype, dim> rule (const GeometryType& t, int p, QuadratureType qt)
     {
       if (t.isSimplex()
         && qt == QuadratureType::GaussLegendre
@@ -399,20 +360,20 @@ namespace Dune {
       }
       if (t.isPrism()
         && qt == QuadratureType::GaussLegendre
-        && p <= PrismQuadratureRule<ctype,dim>::highest_order)
+        && p <= PrismQuadratureRule<ctype>::highest_order)
       {
-        return PrismQuadratureRule<ctype,dim>(p);
+        return PrismQuadratureRule<ctype>(p);
       }
       return TensorProductQuadratureRule<ctype,dim>(t.id(), p, qt);
     }
   };
 
 #ifndef DUNE_NO_EXTERN_QUADRATURERULES
-  extern template class GaussLobattoQuadratureRule<double, 1>;
-  extern template class GaussQuadratureRule<double, 1>;
-  extern template class Jacobi1QuadratureRule<double, 1>;
-  extern template class Jacobi2QuadratureRule<double, 1>;
-  extern template class PrismQuadratureRule<double, 3>;
+  extern template class GaussLobattoQuadratureRule<double>;
+  extern template class GaussQuadratureRule<double>;
+  extern template class Jacobi1QuadratureRule<double>;
+  extern template class Jacobi2QuadratureRule<double>;
+  extern template class PrismQuadratureRule<double>;
   extern template class SimplexQuadratureRule<double, 2>;
   extern template class SimplexQuadratureRule<double, 3>;
 #endif // !DUNE_NO_EXTERN_QUADRATURERULES
