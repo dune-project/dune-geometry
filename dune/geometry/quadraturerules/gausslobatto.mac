@@ -13,7 +13,7 @@ orthopoly_returns_intervals : false;
 
 fpprec: 120$
 fpprintprec: 100$
-maxp: 30$
+maxp: 31$
 /* float2bf: false$ */
 
 /* points are given as the roots of (x^2-1)*L_p(x) */
