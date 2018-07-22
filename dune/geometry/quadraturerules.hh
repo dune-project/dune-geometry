@@ -51,7 +51,7 @@ namespace Dune {
     using Vector = Dune::FieldVector<ct,dim>;
 
     //! Default constructor
-    QuadraturePoint() = default;
+    QuadraturePoint () = default;
 
     //! Set up quadrature of given order in d dimensions
     QuadraturePoint (const Vector& local, Field weight)

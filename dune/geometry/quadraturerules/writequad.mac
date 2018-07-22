@@ -29,146 +29,57 @@ namespace Dune {
   {
   public:
     /** \brief The highest quadrature order available */
-    enum { highest_order=~d };
+    enum { highest_order = ~d };
 
   private:
     friend class QuadratureRuleFactory<ct,1>;
     ~aQuadratureRule (int p);
   };
 
-  //! \internal Helper template for the initialization of the quadrature rules
-  template<typename ct,
-      bool fundamental = std::numeric_limits<ct>::is_specialized>
-  struct ~aQuadratureInitHelper;
-
   template<typename ct>
-  struct ~aQuadratureInitHelper<ct, true> {
-    static void init(int p,
-                     std::vector< FieldVector<ct, 1> > & _points,
-                     std::vector< ct > & _weight,
-                     int & delivered_order);
-  };
-
-  template<typename ct>
-  struct ~aQuadratureInitHelper<ct, false> {
-    static void init(int p,
-                     std::vector< FieldVector<ct, 1> > & _points,
-                     std::vector< ct > & _weight,
-                     int & delivered_order);
-  };
-
-  // for fundamental types
-  template<typename ct>
-  void ~aQuadratureInitHelper<ct,true>::init(int p,
-         std::vector< FieldVector<ct, 1> > & _points,
-         std::vector< ct > & _weight,
-         int & delivered_order)
+  ~aQuadratureRule<ct>::~aQuadratureRule (int p)
+    : QuadratureRule<ct,1>(GeometryTypes::line)
   {
-    switch(p)
+    switch (p)
     {
-", scriptname, name, name, name, maxp, name, name, name, name, name),
+", scriptname, name, name, name, maxp, name, name, name),
 for i: 1 thru maxp/2+1 do block([],
   printf(fd,"    // order ~d,~d
-    case ~d :
-    case ~d :
+    case ~d:
+    case ~d:
 ", 2*i-2,2*i-1, 2*i-2,2*i-1),
   points: makelist(rhs(p), p, bfallroots(polynome_fnkt(i))),
   weights: makelist(bfloat(weight_fnkt(i, p)), p, points),
   N: length(points),
   S: sort(makelist(n, n, 1, N), lambda([x,y], weights[x] < weights[y])),
-  printf(fd,"      delivered_order = ~d;
+  printf(fd,"      this->order_ = ~d;
 ",2*i-1),
-  printf(fd,"      _points.resize(~d);
-",N),
-  printf(fd,"      _weight.resize(~d);
+  printf(fd,"      this->resize(~d);
 ",N),
   for n_: 1 thru N do block([n],
     n: S[n_],
     p: (points[n]+1)/2,
     p: max(p-epsilon,-epsilon)+epsilon,
     w: weights[n]/2,
-    printf(fd,"      _points[~d] = ~h;
-",n_-1, p),
-    printf(fd,"      _weight[~d] = ~h;
-",n_-1, w)
-  ),
-  printf(fd,"      break;
-
-")
-),
-
-printf(fd,"    default :
-      DUNE_THROW(QuadratureOrderOutOfRange, \"Quadrature rule \" << p << \" not supported!\");
-    }
-  }
-
-  // for non-fundamental types: assign numbers as strings
-  template<typename ct>
-  void ~aQuadratureInitHelper<ct,false>::init(int p,
-         std::vector< FieldVector<ct, 1> > & _points,
-         std::vector< ct > & _weight,
-         int & delivered_order)
-  {
-    switch(p)
-    {
-",name),
-
-for i: 1 thru maxp/2+1 do block([],
-  printf(fd,"    // order ~d,~d
-    case ~d :
-    case ~d :
-", 2*i-2,2*i-1, 2*i-2,2*i-1),
-  points: makelist(rhs(p), p, bfallroots(polynome_fnkt(i))),
-  weights: makelist(bfloat(weight_fnkt(i,p)), p, points),
-  N: length(points),
-  S: sort(makelist(n, n, 1, N), lambda([x,y], weights[x] < weights[y])),
-  printf(fd,"      delivered_order = ~d;
-",2*i-1),
-  printf(fd,"      _points.resize(~d);
-",N),
-  printf(fd,"      _weight.resize(~d);
-",N),
-  for n_: 1 thru N do block([n],
-    n: S[n_],
-    p: (points[n]+1)/2,
-    p: max(p-epsilon,-epsilon)+epsilon,
-    w: weights[n]/2,
-    printf(fd,"      _points[~d] = ct(\"~h\");
+    printf(fd,"      (*this)[~d] = {
+        {~h},
 ",n_-1,p),
-    printf(fd,"      _weight[~d] = ct(\"~h\");
-",n_-1,w)
+    printf(fd,"         ~h};
+",w)
   ),
   printf(fd,"      break;
 
 ")
 ),
 
-printf(fd,"    default :
+printf(fd,"    default:
       DUNE_THROW(QuadratureOrderOutOfRange, \"Quadrature rule \" << p << \" not supported!\");
     }
-  }
-
-  template<typename ct>
-  ~aQuadratureRule<ct>::~aQuadratureRule (int p)
-      : QuadratureRule<ct,1>(GeometryTypes::line)
-  {
-    //! set up quadrature of given order in d dimensions
-    std::vector< FieldVector<ct,1> > _points;
-    std::vector< ct > _weight;
-
-    int _deliveredOrder;
-
-    ~aQuadratureInitHelper<ct>::init(p, _points, _weight, _deliveredOrder);
-
-    this->order_ = _deliveredOrder;
-    assert(_points.size() == _weight.size());
-    for (size_t i = 0; i < _points.size(); i++)
-      this->emplace_back(_points[i], _weight[i]);
   }
 
 } // namespace Dune
 
 #endif // DUNE_GEOMETRY_QUADRATURE_~a_HH
-", name, name, name, name),
+", name),
 close(fd)
 )$
