@@ -18,7 +18,7 @@ maxp: 30$
 
 /* points are given as the roots of (x^2-1)*L_p(x) */
 point(n) := (x^2-1)*diff(legendre_p(n,x),x)$
-weight(n,xx) := ratsimp(2/((n*(n+1))*legendre_p(n,xx)^2))$
+weight(n,xx) := at(ratsimp(2/((n*(n+1))*legendre_p(n,x)^2)), x=xx)$
 
 /*
   write files
