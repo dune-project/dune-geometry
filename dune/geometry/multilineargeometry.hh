@@ -343,7 +343,7 @@ namespace Dune
      *  \endcode
      *  which is wrong for n-linear surface maps and other nonlinear maps.
      */
-    ctype volume () const
+    Volume volume () const
     {
       return integrationElement( refElement().position( 0, 0 ) ) * refElement().volume();
     }
@@ -603,7 +603,7 @@ namespace Dune
     }
 
     /** \brief obtain the volume of the mapping's image */
-    ctype volume () const
+    Volume volume () const
     {
       if( affine() )
         return integrationElement( refElement().position( 0, 0 ) ) * refElement().volume();

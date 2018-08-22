@@ -260,7 +260,7 @@ namespace Dune {
     }
 
     /** \brief Return the element volume */
-    ctype volume() const
+    Volume volume() const
     {
       ctype vol = 1;
       if (dim == coorddim) {         // fast case
