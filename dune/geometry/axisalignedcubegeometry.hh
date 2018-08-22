@@ -66,6 +66,9 @@ namespace Dune {
     /** \brief Type used for a vector of world coordinates */
     typedef FieldVector<ctype,coorddim> GlobalCoordinate;
 
+    /** \brief Type used for volume */
+    typedef ctype Volume;
+
     /** \brief Return type of jacobianTransposed
 
         This is a fast DiagonalMatrix if dim==coorddim, and a FieldMatrix otherwise.

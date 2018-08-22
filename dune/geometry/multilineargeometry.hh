@@ -192,6 +192,8 @@ namespace Dune
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
     //! type of global coordinates
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
+    //! type of volume
+    typedef ctype Volume;
 
     //! type of jacobian transposed
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
