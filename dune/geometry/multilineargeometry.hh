@@ -500,6 +500,7 @@ namespace Dune
 
     typedef typename Base::LocalCoordinate LocalCoordinate;
     typedef typename Base::GlobalCoordinate GlobalCoordinate;
+    typedef typename Base::Volume Volume;
 
     typedef typename Base::JacobianTransposed JacobianTransposed;
     typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
