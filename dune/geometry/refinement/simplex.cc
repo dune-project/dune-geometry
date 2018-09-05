@@ -249,6 +249,7 @@
 #include <algorithm>
 
 #include <dune/common/fvector.hh>
+#include <dune/common/power.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
 #include <dune/geometry/referenceelements.hh>
