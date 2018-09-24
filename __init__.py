@@ -13,6 +13,10 @@ def _duneIntegrate(self,entity,f):
 _duneQuadratureRules = {}
 def quadratureRule(geometryType, order):
     try:
+        geometryType = geometryType.type
+    except AttributeError:
+        pass
+    try:
         rule = _duneQuadratureRules[(geometryType,order)]
     except KeyError:
         rule = module(geometryType.dim).rule(geometryType,order)
@@ -20,7 +24,7 @@ def quadratureRule(geometryType, order):
         _duneQuadratureRules[(geometryType,order)] = rule
     return rule
 def quadratureRules(order):
-    return lambda entity: quadratureRule(entity.type,order)
+    return lambda entity: quadratureRule(entity,order)
 
 def integrate(rules,entity,f):
     return rules(entity).apply(entity,f)

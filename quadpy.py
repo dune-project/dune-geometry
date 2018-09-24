@@ -35,7 +35,7 @@ try:
                 self.weights_ = transform.get_vol(self.vertices_)*self.quadrature_.weights
             self.quadPoints_ = [ QPQuadPoint(p,w) for p,w in zip(self.points_,self.weights_) ]
             self.points_ = self.points_.transpose().copy()
-        def get():
+        def get(self):
             return self.points_, self.weights_
         def apply(self,entity,f):
             ie = entity.geometry.integrationElement
@@ -47,6 +47,10 @@ try:
         def order(self):
             return self.quadrature_.degree
     def rule(gt,quadDescription):
+        try:
+            gt = gt.type
+        except AttributeError:
+            pass
         try:
             quad = _cache[(gt,quadDescription)]
             return quad
@@ -94,7 +98,12 @@ try:
         return ret
 
     def rules(methods):
-        return lambda entity: rule(entity.type, methods[entity.type])
+        def r(entity):
+            try:
+                return rule(entity.type, methods[entity.type])
+            except AttributeError:
+                return rule(entity, methods[entity])
+        return r
 
 except ImportError as e:
     logger.warning('Unable to import quadpy: ' + " ".join(str(e).splitlines()))
