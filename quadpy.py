@@ -46,6 +46,8 @@ try:
         @property
         def order(self):
             return self.quadrature_.degree
+        def name(self):
+            return self.method_
     def rule(gt,quadDescription):
         try:
             gt = gt.type
