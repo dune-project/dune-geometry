@@ -1,6 +1,5 @@
 install(FILES
   compositequadraturerule.hh
-  nocopyvector.hh
   pointquadrature.hh
   simplexquadrature.hh
   tensorproductquadrature.hh

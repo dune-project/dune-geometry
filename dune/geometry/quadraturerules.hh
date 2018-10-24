@@ -17,7 +17,6 @@
 #include <dune/common/stdthread.hh>
 #include <dune/common/visibility.hh>
 
-#include <dune/geometry/quadraturerules/nocopyvector.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/typeindex.hh>
 
@@ -152,7 +151,7 @@ namespace Dune {
       *qr = QuadratureRuleFactory<ctype,dim>::rule(t,p,qt);
     }
 
-    typedef NoCopyVector<std::pair<std::once_flag, QuadratureRule> >
+    typedef std::vector<std::pair<std::once_flag, QuadratureRule> >
       QuadratureOrderVector; // indexed by quadrature order
     //! \brief initialize the vector indexed by the quadrature order (for each
     //!        geometry type and quadrature type)
@@ -162,18 +161,18 @@ namespace Dune {
     {
       if(dim == 0)
         // we only need one quadrature rule for points, not maxint
-        qov->resize(1);
+        *qov = QuadratureOrderVector(1);
       else
-        qov->resize(QuadratureRuleFactory<ctype,dim>::maxOrder(t,qt)+1);
+        *qov = QuadratureOrderVector(QuadratureRuleFactory<ctype,dim>::maxOrder(t,qt)+1);
     }
 
-    typedef NoCopyVector<std::pair<std::once_flag, QuadratureOrderVector> >
+    typedef std::vector<std::pair<std::once_flag, QuadratureOrderVector> >
       GeometryTypeVector; // indexed by geometry type
     //! \brief initialize the vector indexed by the geometry type (for each
     //!        quadrature type)
     static void initGeometryTypeVector(GeometryTypeVector *gtv)
     {
-      gtv->resize(LocalGeometryTypeIndex::size(dim));
+      *gtv = GeometryTypeVector(LocalGeometryTypeIndex::size(dim));
     }
 
     //! real rule creator
@@ -183,7 +182,7 @@ namespace Dune {
 
       DUNE_ASSERT_CALL_ONCE();
 
-      static NoCopyVector<std::pair< // indexed by quadrature type
+      static std::vector<std::pair< // indexed by quadrature type
         std::once_flag,
         GeometryTypeVector
         > > quadratureCache(QuadratureType::size);
