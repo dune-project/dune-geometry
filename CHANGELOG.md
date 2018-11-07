@@ -1,5 +1,9 @@
 # Master (will become release 2.7)
 
+- The methods `GeometryType(int)` and `GeometryType(unsigned int)` have been deprecated
+  and will be removed after the release of dune-geometry 2.7.  Instead, please now use
+  `GeometryTypes::cube(dim)` to construct one- or two-dimensional `GeometryType` objects.
+
 # Release 2.6
 
 - The enum `GeometryType::BasicType` is deprecated, and will be removed after Dune 2.6.
