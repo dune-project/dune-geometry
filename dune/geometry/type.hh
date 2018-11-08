@@ -387,6 +387,7 @@ namespace Dune
     }
 
     /** \brief Constructor for vertices and segments */
+    DUNE_DEPRECATED_MSG("GeometryType(unsigned dim) is deprecated in DUNE 2.7, please use Dune::GeometryTypes::cube(dim) instead")
     explicit GeometryType(unsigned int dim)
       : dim_(dim), none_(false), topologyId_(0)
     {
@@ -397,6 +398,7 @@ namespace Dune
     // We need this constructor for "int" and "unsigned int",
     // because otherwise GeometryType(int) would try to call the
     // generic GeometryType(TopologyType) constructor
+    DUNE_DEPRECATED_MSG("GeometryType(dim) is deprecated in DUNE 2.7, please use Dune::GeometryTypes::cube(dim) instead")
     explicit GeometryType(int dim)
       : dim_(dim), none_(false), topologyId_(0)
     {
