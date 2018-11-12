@@ -221,7 +221,7 @@ namespace Dune
         std::vector<CoordVector> corners(1);
         corners[0] = transformCoordinate(referenceToKuhn(backend.coords(),
                                                          getPermutation<dimension>((kuhnIndex + 2) % 4)));
-        return Geometry(GeometryType(0), corners);
+        return Geometry(GeometryTypes::cube(0), corners);
       }
 
       template<int dimension, class CoordType>
