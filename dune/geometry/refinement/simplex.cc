@@ -585,7 +585,7 @@ namespace Dune {
       {
         std::vector<CoordVector> corners(1);
         corners[0] = (CoordVector)vertex;
-        return Geometry(GeometryType(0), corners);
+        return Geometry(GeometryTypes::vertex, corners);
       }
 
       template<int dimension, class CoordType>
