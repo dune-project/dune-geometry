@@ -223,7 +223,7 @@ namespace Dune
       {
         std::vector<CoordVector> corners(1);
         corners[0] = referenceToKuhn(backend.coords(), getPermutation<dimension>(kuhnIndex));
-        return Geometry(GeometryType(0), corners);
+        return Geometry(GeometryTypes::vertex, corners);
       }
 
       template<int dimension, class CoordType>
