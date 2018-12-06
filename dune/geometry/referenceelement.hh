@@ -141,6 +141,9 @@ namespace Dune {
        *  codimension as well as the numbers in the returned range are
        *  given with respect to the reference element itself and not with
        *  respect to E. For 0<=cc<c this will return an empty range.
+       *  The returned range r provide the methods r.begin(), r.end(),
+       *  r.contains(std::size_t) and r.size() mimicking an immutable
+       *  iterable set.
        *
        *  \param[in]  i   number of subentity E (0 <= i < size( c ))
        *  \param[in]  c   codimension of subentity E
