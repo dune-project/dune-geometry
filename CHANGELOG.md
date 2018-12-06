@@ -1,5 +1,10 @@
 # Master (will become release 2.7)
 
+- The reference elements have a new method `subEntities`. The result of
+  `referenceELement.subEntities(i,codim, c)` is an iterable range
+  containing the indices of all codim-`c` subentities of the subentity
+  `(i,codim)`, e.g., the vertices of an edge. The range also provides
+  the methods `size()` and `contains()`.
 - The methods `GeometryType(int)` and `GeometryType(unsigned int)` have been deprecated
   and will be removed after the release of dune-geometry 2.7.  Instead, please now use
   `GeometryTypes::cube(dim)` to construct one- or two-dimensional `GeometryType` objects.
