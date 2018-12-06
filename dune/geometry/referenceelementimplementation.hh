@@ -20,6 +20,7 @@
 #include <dune/common/unused.hh>
 #include <dune/common/iteratorrange.hh>
 #include <dune/common/power.hh>
+#include <dune/common/math.hh>
 
 #include <dune/geometry/referenceelement.hh>
 #include <dune/geometry/affinegeometry.hh>
@@ -630,11 +631,17 @@ namespace Dune
     struct ReferenceElementImplementation< ctype, dim >::SubEntityInfo
     {
       // Compute upper bound for the number of subsentities.
-      // Let n_{d,i} the number of subentities of codim i in a
-      // d-dim element. Then we get in the worst case:
-      //
-      //   n_{d+1,i} = 2*n_{d,j}+n_{d,k} <= 3*max_j n_{d,j} <= 3^d
-      using SubEntityFlags = std::bitset<StaticPower<3,dim>::power>;
+      // If someone knows an explicit formal feel free to
+      // implement it here.
+      static constexpr std::size_t maxSubEntityCount()
+      {
+        std::size_t maxCount=0;
+        for(std::size_t codim=0; codim<=dim; ++codim)
+          maxCount = std::max(maxCount, binomial(std::size_t(dim),codim)*(1 << codim));
+        return maxCount;
+      }
+
+      using SubEntityFlags = std::bitset<maxSubEntityCount()>;
 
       class SubEntityRange
         : public Dune::IteratorRange<const unsigned int*>
