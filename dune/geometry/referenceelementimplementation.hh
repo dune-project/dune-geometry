@@ -11,12 +11,16 @@
 #include <utility>
 #include <vector>
 #include <array>
+#include <bitset>
 
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/hybridutilities.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
+#include <dune/common/iteratorrange.hh>
+#include <dune/common/power.hh>
+#include <dune/common/math.hh>
 
 #include <dune/geometry/referenceelement.hh>
 #include <dune/geometry/affinegeometry.hh>
@@ -454,6 +458,27 @@ namespace Dune
         return info_[ c ][ i ].number( ii, cc );
       }
 
+      /** \brief Obtain the range of numbers of subentities with codim cc of (i,c)
+       *
+       *  Denote by E the i-th subentity of codimension c of the current
+       *  reference element. This method returns a range of numbers of
+       *  all subentities of E with codimension cc. Notice that the sub-subentity
+       *  codimension as well as the numbers in the returned range are
+       *  given with respect to the reference element itself and not with
+       *  respect to E. For 0<=cc<c this will return an empty range.
+       *
+       *  \param[in]  i   number of subentity E (0 <= i < size( c ))
+       *  \param[in]  c   codimension of subentity E
+       *  \param[in]  cc  codimension of subentity S (0 <= cc <= dim)
+       *
+       *  \returns An iterable range of numbers of the sub-subentities.
+       */
+      auto subEntities ( int i, int c, int cc ) const
+      {
+        assert( (i >= 0) && (i < size( c )) );
+        return info_[ c ][ i ].numbers( cc );
+      }
+
       /** \brief obtain the type of subentity (i,c)
        *
        *  Denote by E the i-th subentity of codimension c of the current
@@ -605,6 +630,59 @@ namespace Dune
     template< class ctype, int dim >
     struct ReferenceElementImplementation< ctype, dim >::SubEntityInfo
     {
+      // Compute upper bound for the number of subsentities.
+      // If someone knows an explicit formal feel free to
+      // implement it here.
+      static constexpr std::size_t maxSubEntityCount()
+      {
+        std::size_t maxCount=0;
+        for(std::size_t codim=0; codim<=dim; ++codim)
+          maxCount = std::max(maxCount, binomial(std::size_t(dim),codim)*(1 << codim));
+        return maxCount;
+      }
+
+      using SubEntityFlags = std::bitset<maxSubEntityCount()>;
+
+      class SubEntityRange
+        : public Dune::IteratorRange<const unsigned int*>
+      {
+        using Base = typename Dune::IteratorRange<const unsigned int*>;
+
+      public:
+
+        using iterator = Base::iterator;
+        using const_iterator = Base::const_iterator;
+
+        SubEntityRange(const iterator& begin, const iterator& end, const SubEntityFlags& contains) :
+          Base(begin, end),
+          containsPtr_(&contains),
+          size_(end-begin)
+        {}
+
+        SubEntityRange() :
+          Base(),
+          containsPtr_(nullptr),
+          size_(0)
+        {}
+
+        std::size_t size() const
+        {
+          return size_;
+        }
+
+        bool contains(std::size_t i) const
+        {
+          return (*containsPtr_)[i];
+        }
+
+      private:
+        const SubEntityFlags* containsPtr_;
+        std::size_t size_;
+        std::size_t offset_;
+      };
+
+      using NumberRange = typename Dune::IteratorRange<const unsigned int*>;
+
       SubEntityInfo ()
         : numbering_( nullptr )
       {
@@ -613,7 +691,8 @@ namespace Dune
 
       SubEntityInfo ( const SubEntityInfo &other )
         : offset_( other.offset_ ),
-          type_( other.type_ )
+          type_( other.type_ ),
+          containsSubentity_( other.containsSubentity_ )
       {
         numbering_ = allocate();
         std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
@@ -630,6 +709,8 @@ namespace Dune
         numbering_ = allocate();
         std::copy( other.numbering_, other.numbering_ + capacity(), numbering_ );
 
+        containsSubentity_ = other.containsSubentity_;
+
         return *this;
       }
 
@@ -643,6 +724,11 @@ namespace Dune
       {
         assert( (ii >= 0) && (ii < size( cc )) );
         return numbering_[ offset_[ cc ] + ii ];
+      }
+
+      auto numbers ( int cc ) const
+      {
+        return SubEntityRange( numbering_ + offset_[ cc ], numbering_ + offset_[ cc+1 ], containsSubentity_[cc]);
       }
 
       const GeometryType &type () const { return type_; }
@@ -663,6 +749,14 @@ namespace Dune
         numbering_ = allocate();
         for( int cc = codim; cc <= dim; ++cc )
           Impl::subTopologyNumbering( topologyId, dim, codim, i, cc-codim, numbering_+offset_[ cc ], numbering_+offset_[ cc+1 ] );
+
+        // initialize containsSubentity lookup-table
+        for(std::size_t cc=0; cc<= dim; ++cc)
+        {
+          containsSubentity_[cc].reset();
+          for(std::size_t i=0; i<std::size_t(size(cc)); ++i)
+            containsSubentity_[cc][number(i,cc)] = true;
+        }
       }
 
     protected:
@@ -676,6 +770,7 @@ namespace Dune
       unsigned int *numbering_;
       std::array< unsigned int, dim+2 > offset_;
       GeometryType type_;
+      std::array< SubEntityFlags, dim+1> containsSubentity_;
     };
 
 

@@ -16,6 +16,70 @@ using namespace Dune;
 #define test(a) if (! (a) ) { std::cerr << __FILE__ << ":" << __LINE__ << ": Test `" # a "' failed" << std::endl; errors++; }
 #define testcmp(a,b) if (! (a == b) ) { std::cerr << __FILE__ << ":" << __LINE__ << ": Test `" # a " == " # b "' failed (got " << a << ")" << std::endl; errors++; }
 
+
+
+template<class RE>
+int checkSubEntities(const RE& re)
+{
+  int errors = 0;
+
+  for (std::size_t codim = 0; codim <= RE::dimension; ++codim)
+  {
+    for (std::size_t i = 0; i < std::size_t(re.size(codim)); ++i)
+    {
+      for (std::size_t c = 0; c <= RE::dimension; ++c)
+      {
+        auto subEntities = re.subEntities(i, codim, c);
+        auto it = subEntities.begin();
+        auto end = subEntities.end();
+
+        // check size of subEntities range
+        testcmp(re.size(i, codim, c), end-it);
+        testcmp(std::size_t(re.size(i, codim, c)), subEntities.size());
+
+        // check if sub-subentity range is empty if
+        // sub-subentity codim c < codim of subentity
+        if (c<codim)
+          testcmp(re.size(i, codim, c), 0);
+
+        // check if sub-subentity range is singleton if
+        // sub-subentity codim c = codim of subentity
+        if (c==codim)
+          testcmp(re.size(i, codim, c), 1);
+
+        // check if sub-subentity range has multiple
+        // entries for sub-subentity codim c > codim of subentity
+        if (c>codim)
+          test(re.size(i, codim, c) > 1);
+
+        // check if subEntities() is conforming with subEntity()
+        for(std::size_t j = 0; j < subEntities.size(); ++j)
+        {
+          testcmp(*it, std::size_t(re.subEntity(i, codim, j, c)));
+          ++it;
+        }
+
+        // check is contains is true for all indices in the range
+        for(auto j : subEntities)
+          test(subEntities.contains(j));
+
+        // check if contains is consistent
+        std::vector<bool> containedSubEntities(re.size(c), false);
+        for(auto j : subEntities)
+          containedSubEntities[j] = true;
+        for(auto j: range(std::size_t(re.size(c))))
+          testcmp(containedSubEntities[j],subEntities.contains(j));
+
+        // after incrementing size times, the range should be exhausted
+        testcmp(it, end);
+      }
+    }
+  }
+  return errors;
+}
+
+
+
 int main () try
 {
   int errors = 0;
@@ -65,6 +129,8 @@ int main () try
   // test the 'geometry' method
   const ReferenceElements<double,1>::ReferenceElement::Codim<0>::Geometry referenceLineMapping = referenceLine.geometry< 0 >( 0 );
   referenceLineMapping.corner(0);
+
+  errors += checkSubEntities(referenceLine);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test triangle
@@ -136,6 +202,8 @@ int main () try
 
   // test the checkInside method
   test(referenceTriangle.checkInside({0.3,0.3}));
+
+  errors += checkSubEntities(referenceTriangle);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test quadrilateral
@@ -212,6 +280,7 @@ int main () try
   test(referenceQuad.type(2,2).isVertex());
   test(referenceQuad.type(3,2).isVertex());
 
+  errors += checkSubEntities(referenceQuad);
 
   // test the 'geometry' method
   const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
@@ -272,6 +341,8 @@ int main () try
 
   // test the checkInside method
   test(referenceTetra.checkInside({0.3,0.3,0.3}));
+
+  errors += checkSubEntities(referenceTetra);
 
   // //////////////////////////////////////////////////////////////////////////
   //   Test pyramid
@@ -338,6 +409,8 @@ int main () try
   const auto referencePyramidMapping = referencePyramid.geometry< 0 >( 0 );
   referencePyramidMapping.corner(0);
 
+  errors += checkSubEntities(referencePyramid);
+
   // //////////////////////////////////////////////////////////////////////////
   //   Test prism
   // //////////////////////////////////////////////////////////////////////////
@@ -403,6 +476,8 @@ int main () try
   const auto referencePrismMapping = referencePrism.geometry< 0 >( 0 );
   referencePrismMapping.corner(0);
 
+  errors += checkSubEntities(referencePrism);
+
   // //////////////////////////////////////////////////////////////////////////
   //   Test hexahedron
   // //////////////////////////////////////////////////////////////////////////
@@ -454,6 +529,8 @@ int main () try
   // test the 'geometry' method
   const Transitional::ReferenceElement<double,Dim<3>>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 );
   referenceHexaMapping.corner(0);
+
+  errors += checkSubEntities(referenceHexa);
 
   return errors>0 ? 1 : 0;
 

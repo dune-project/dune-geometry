@@ -133,6 +133,29 @@ namespace Dune {
         return _impl->subEntity(i,c,ii,cc);
       }
 
+      /** \brief Obtain the range of numbers of subentities with codim cc of (i,c)
+       *
+       *  Denote by E the i-th subentity of codimension c of the current
+       *  reference element. This method returns a range of numbers of
+       *  all subentities of E with codimension cc. Notice that the sub-subentity
+       *  codimension as well as the numbers in the returned range are
+       *  given with respect to the reference element itself and not with
+       *  respect to E. For 0<=cc<c this will return an empty range.
+       *  The returned range r provide the methods r.begin(), r.end(),
+       *  r.contains(std::size_t) and r.size() mimicking an immutable
+       *  iterable set.
+       *
+       *  \param[in]  i   number of subentity E (0 <= i < size( c ))
+       *  \param[in]  c   codimension of subentity E
+       *  \param[in]  cc  codimension of subentity S (0 <= cc <= dim)
+       *
+       *  \returns An iterable range of numbers of the sub-subentities.
+       */
+      auto subEntities ( int i, int c, int cc ) const
+      {
+        return _impl->subEntities(i,c,cc);
+      }
+
 
       /** \brief obtain the type of subentity (i,c)
        *
