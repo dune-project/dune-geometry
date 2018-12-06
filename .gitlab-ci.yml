@@ -4,4 +4,5 @@ include:
   - "https://gitlab.dune-project.org/core/ci-config/raw/master/jobs/common/releases/2.6.yml"
 
 before_script:
+  - . /duneci/bin/duneci-init-job
   - duneci-install-module https://gitlab.dune-project.org/core/dune-common.git
