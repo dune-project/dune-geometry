@@ -397,9 +397,9 @@ namespace Dune
     struct Traits<
         topologyId, CoordType, coerceToId, 3,
         typename std::enable_if<
-            (Impl::PyramidTopology<3>::type::id >> 1) ==
+            (GeometryTypes::pyramid.id() >> 1) ==
             (topologyId >> 1) &&
-            (Impl::SimplexTopology<3>::type::id >> 1) ==
+            (GeometryTypes::simplex(3).id() >> 1) ==
             (coerceToId >> 1)
             >::type>
     {

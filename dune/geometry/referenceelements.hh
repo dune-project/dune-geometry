@@ -99,22 +99,22 @@ namespace Dune
 
         const ReferenceElement& simplex () const
         {
-          return reference_elements_[ Dune::Impl::SimplexTopology< dim >::type::id ];
+          return reference_elements_[ Dune::GeometryTypes::simplex(dim).id() ];
         }
 
         const ReferenceElement& cube () const
         {
-          return reference_elements_[ Dune::Impl::CubeTopology< dim >::type::id ];
+          return reference_elements_[ Dune::GeometryTypes::cube(dim).id() ];
         }
 
         const ReferenceElement& pyramid () const
         {
-          return reference_elements_[ Dune::Impl::PyramidTopology< dim >::type::id ];
+          return reference_elements_[ Dune::GeometryTypes::pyramid.id() ];
         }
 
         const ReferenceElement& prism () const
         {
-          return reference_elements_[ Dune::Impl::PrismTopology< dim >::type::id ];
+          return reference_elements_[ Dune::GeometryTypes::prism.id() ];
         }
 
         const_iterator begin () const

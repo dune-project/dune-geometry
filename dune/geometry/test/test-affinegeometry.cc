@@ -143,71 +143,56 @@ static bool testAffineGeometry ()
 {
   bool pass = true;
 
-  Dune::GeometryType cube0d( Dune::Impl::CubeTopology< 0 >::type::id, 0 );
-  Dune::GeometryType cube1d( Dune::Impl::CubeTopology< 1 >::type::id, 1 );
-  Dune::GeometryType cube2d( Dune::Impl::CubeTopology< 2 >::type::id, 2 );
-  Dune::GeometryType cube3d( Dune::Impl::CubeTopology< 3 >::type::id, 3 );
-  Dune::GeometryType cube4d( Dune::Impl::CubeTopology< 4 >::type::id, 4 );
+  pass &= testAffineGeometry< ctype, 0, 0 >( Dune::GeometryTypes::simplex(0) );
+  pass &= testAffineGeometry< ctype, 0, 1 >( Dune::GeometryTypes::simplex(0) );
+  pass &= testAffineGeometry< ctype, 0, 2 >( Dune::GeometryTypes::simplex(0) );
+  pass &= testAffineGeometry< ctype, 0, 3 >( Dune::GeometryTypes::simplex(0) );
+  pass &= testAffineGeometry< ctype, 0, 4 >( Dune::GeometryTypes::simplex(0) );
 
-  Dune::GeometryType simplex0d( Dune::Impl::SimplexTopology< 0 >::type::id, 0 );
-  Dune::GeometryType simplex1d( Dune::Impl::SimplexTopology< 1 >::type::id, 1 );
-  Dune::GeometryType simplex2d( Dune::Impl::SimplexTopology< 2 >::type::id, 2 );
-  Dune::GeometryType simplex3d( Dune::Impl::SimplexTopology< 3 >::type::id, 3 );
-  Dune::GeometryType simplex4d( Dune::Impl::SimplexTopology< 4 >::type::id, 4 );
+  pass &= testAffineGeometry< ctype, 0, 0 >( Dune::GeometryTypes::cube(0) );
+  pass &= testAffineGeometry< ctype, 0, 1 >( Dune::GeometryTypes::cube(0) );
+  pass &= testAffineGeometry< ctype, 0, 2 >( Dune::GeometryTypes::cube(0) );
+  pass &= testAffineGeometry< ctype, 0, 3 >( Dune::GeometryTypes::cube(0) );
+  pass &= testAffineGeometry< ctype, 0, 4 >( Dune::GeometryTypes::cube(0) );
 
-  Dune::GeometryType prism3d( Dune::Impl::PrismTopology< 3 >::type::id, 3 );
-  Dune::GeometryType pyramid3d( Dune::Impl::PyramidTopology< 3 >::type::id, 3 );
+  pass &= testAffineGeometry< ctype, 1, 1 >( Dune::GeometryTypes::simplex(1) );
+  pass &= testAffineGeometry< ctype, 1, 2 >( Dune::GeometryTypes::simplex(1) );
+  pass &= testAffineGeometry< ctype, 1, 3 >( Dune::GeometryTypes::simplex(1) );
+  pass &= testAffineGeometry< ctype, 1, 4 >( Dune::GeometryTypes::simplex(1) );
 
-  pass &= testAffineGeometry< ctype, 0, 0 >( simplex0d );
-  pass &= testAffineGeometry< ctype, 0, 1 >( simplex0d );
-  pass &= testAffineGeometry< ctype, 0, 2 >( simplex0d );
-  pass &= testAffineGeometry< ctype, 0, 3 >( simplex0d );
-  pass &= testAffineGeometry< ctype, 0, 4 >( simplex0d );
+  pass &= testAffineGeometry< ctype, 1, 3 >( Dune::GeometryTypes::cube(1) );
+  pass &= testAffineGeometry< ctype, 1, 1 >( Dune::GeometryTypes::cube(1) );
+  pass &= testAffineGeometry< ctype, 1, 2 >( Dune::GeometryTypes::cube(1) );
+  pass &= testAffineGeometry< ctype, 1, 4 >( Dune::GeometryTypes::cube(1) );
 
-  pass &= testAffineGeometry< ctype, 0, 0 >( cube0d );
-  pass &= testAffineGeometry< ctype, 0, 1 >( cube0d );
-  pass &= testAffineGeometry< ctype, 0, 2 >( cube0d );
-  pass &= testAffineGeometry< ctype, 0, 3 >( cube0d );
-  pass &= testAffineGeometry< ctype, 0, 4 >( cube0d );
+  pass &= testAffineGeometry< ctype, 2, 2 >( Dune::GeometryTypes::simplex(2) );
+  pass &= testAffineGeometry< ctype, 2, 3 >( Dune::GeometryTypes::simplex(2) );
+  pass &= testAffineGeometry< ctype, 2, 4 >( Dune::GeometryTypes::simplex(2) );
 
-  pass &= testAffineGeometry< ctype, 1, 1 >( simplex1d );
-  pass &= testAffineGeometry< ctype, 1, 2 >( simplex1d );
-  pass &= testAffineGeometry< ctype, 1, 3 >( simplex1d );
-  pass &= testAffineGeometry< ctype, 1, 4 >( simplex1d );
+  pass &= testAffineGeometry< ctype, 2, 2 >( Dune::GeometryTypes::cube(2) );
+  pass &= testAffineGeometry< ctype, 2, 3 >( Dune::GeometryTypes::cube(2) );
+  pass &= testAffineGeometry< ctype, 2, 4 >( Dune::GeometryTypes::cube(2) );
 
-  pass &= testAffineGeometry< ctype, 1, 3 >( cube1d );
-  pass &= testAffineGeometry< ctype, 1, 1 >( cube1d );
-  pass &= testAffineGeometry< ctype, 1, 2 >( cube1d );
-  pass &= testAffineGeometry< ctype, 1, 4 >( cube1d );
-
-  pass &= testAffineGeometry< ctype, 2, 2 >( simplex2d );
-  pass &= testAffineGeometry< ctype, 2, 3 >( simplex2d );
-  pass &= testAffineGeometry< ctype, 2, 4 >( simplex2d );
-
-  pass &= testAffineGeometry< ctype, 2, 2 >( cube2d );
-  pass &= testAffineGeometry< ctype, 2, 3 >( cube2d );
-  pass &= testAffineGeometry< ctype, 2, 4 >( cube2d );
-
-  pass &= testAffineGeometry< ctype, 3, 3 >( simplex3d );
-  pass &= testAffineGeometry< ctype, 3, 4 >( simplex3d );
+  pass &= testAffineGeometry< ctype, 3, 3 >( Dune::GeometryTypes::simplex(3) );
+  pass &= testAffineGeometry< ctype, 3, 4 >( Dune::GeometryTypes::simplex(3) );
 
   /** \bug These tests currently fail. */
-  //   pass &= testAffineGeometry< ctype, 3, 3 >( pyramid3d );
-  //   pass &= testAffineGeometry< ctype, 3, 4 >( pyramid3d );
+  //   pass &= testAffineGeometry< ctype, 3, 3 >( Dune::GeometryTypes::pyramid );
+  //   pass &= testAffineGeometry< ctype, 3, 4 >( Dune::GeometryTypes::pyramid );
 
-  pass &= testAffineGeometry< ctype, 3, 3 >( prism3d );
-  pass &= testAffineGeometry< ctype, 3, 4 >( prism3d );
-
-  /** \bug These tests currently fail. */
-  //   pass &= testAffineGeometry< ctype, 3, 3 >( cube3d );
-  //   pass &= testAffineGeometry< ctype, 3, 4 >( cube3d );
-
-  pass &= testAffineGeometry< ctype, 4, 4 >( simplex4d );
-  pass &= testAffineGeometry< ctype, 4, 5 >( simplex4d );
+  pass &= testAffineGeometry< ctype, 3, 3 >( Dune::GeometryTypes::prism );
+  pass &= testAffineGeometry< ctype, 3, 4 >( Dune::GeometryTypes::prism );
 
   /** \bug These tests currently fail. */
-  //   pass &= testAffineGeometry< ctype, 4, 4 >( cube4d );
-  //   pass &= testAffineGeometry< ctype, 4, 5 >( cube4d );
+  //   pass &= testAffineGeometry< ctype, 3, 3 >( Dune::GeometryTypes::cube(3) );
+  //   pass &= testAffineGeometry< ctype, 3, 4 >( Dune::GeometryTypes::cube(3) );
+
+  pass &= testAffineGeometry< ctype, 4, 4 >( Dune::GeometryTypes::simplex(4) );
+  pass &= testAffineGeometry< ctype, 4, 5 >( Dune::GeometryTypes::simplex(4) );
+
+  /** \bug These tests currently fail. */
+  //   pass &= testAffineGeometry< ctype, 4, 4 >( Dune::GeometryTypes::cube(4) );
+  //   pass &= testAffineGeometry< ctype, 4, 5 >( Dune::GeometryTypes::cube(4) );
 
   return pass;
 }

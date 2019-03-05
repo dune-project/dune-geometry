@@ -399,9 +399,9 @@ namespace Dune
         topologyId, CoordType, coerceToId, dim,
         typename std::enable_if<
             (dim >= 2 &&
-             (Impl::CubeTopology<dim>::type::id >> 1) ==
+             (GeometryTypes::cube(dim).id() >> 1) ==
              (topologyId >> 1) &&
-             (Impl::SimplexTopology<dim>::type::id >> 1) ==
+             (GeometryTypes::simplex(dim).id() >> 1) ==
              (coerceToId >> 1)
             )>::type
         >
