@@ -138,18 +138,6 @@ void testStaticRefinementGeometry(int &result, Dune::RefinementIntervals tag, st
 
 int main(int argc, char** argv) try
 {
-  using Impl::Point;
-
-  typedef Impl::Prism  <Point>    Line;
-
-  typedef Impl::Prism  <Line>     Square;
-  typedef Impl::Pyramid<Line>     Triangle;
-
-  typedef Impl::Prism  <Square>   Cube;
-  typedef Impl::Pyramid<Square>   Pyramid;
-  typedef Impl::Prism  <Triangle> Prism;
-  typedef Impl::Pyramid<Triangle> Tet;
-
   // 77 means 'SKIP'
   int result = 77;
 
@@ -161,9 +149,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,1>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,1>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Line::id,double,Line::id,1>
+    testStaticRefinementGeometry<GeometryTypes::line.id(),double,GeometryTypes::line.id(),1>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Line::id,double,Line::id,1>
+    testStaticRefinementGeometry<GeometryTypes::line.id(),double,GeometryTypes::line.id(),1>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -173,9 +161,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Triangle::id,double,Triangle::id,2>
+    testStaticRefinementGeometry<GeometryTypes::triangle.id(),double,GeometryTypes::triangle.id(),2>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Triangle::id,double,Triangle::id,2>
+    testStaticRefinementGeometry<GeometryTypes::triangle.id(),double,GeometryTypes::triangle.id(),2>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -185,9 +173,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Square::id,double,Square::id,2>
+    testStaticRefinementGeometry<GeometryTypes::quadrilateral.id(),double,GeometryTypes::quadrilateral.id(),2>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Square::id,double,Square::id,2>
+    testStaticRefinementGeometry<GeometryTypes::quadrilateral.id(),double,GeometryTypes::quadrilateral.id(),2>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -197,9 +185,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,2>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Square::id,double,Triangle::id,2>
+    testStaticRefinementGeometry<GeometryTypes::quadrilateral.id(),double,GeometryTypes::triangle.id(),2>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Square::id,double,Triangle::id,2>
+    testStaticRefinementGeometry<GeometryTypes::quadrilateral.id(),double,GeometryTypes::triangle.id(),2>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -209,9 +197,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Tet::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::tetrahedron.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Tet::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::tetrahedron.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -222,9 +210,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Pyramid::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::pyramid.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Pyramid::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::pyramid.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -235,9 +223,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Prism::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::prism.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Prism::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::prism.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -247,9 +235,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Cube::id,double,Cube::id,3>
+    testStaticRefinementGeometry<GeometryTypes::hexahedron.id(),double,GeometryTypes::hexahedron.id(),3>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Cube::id,double,Cube::id,3>
+    testStaticRefinementGeometry<GeometryTypes::hexahedron.id(),double,GeometryTypes::hexahedron.id(),3>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 
@@ -259,9 +247,9 @@ int main(int argc, char** argv) try
   {
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementLevels(refinement), "levels");
     testVirtualRefinement<double,3>(result, gt1, gt2, refinementIntervals(1<<refinement), "intervals");
-    testStaticRefinementGeometry<Cube::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::hexahedron.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementLevels(refinement), "levels");
-    testStaticRefinementGeometry<Cube::id,double,Tet::id,3>
+    testStaticRefinementGeometry<GeometryTypes::hexahedron.id(),double,GeometryTypes::tetrahedron.id(),3>
         (result, refinementIntervals(1<<refinement), "intervals");
   }
 

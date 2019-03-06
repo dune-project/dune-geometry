@@ -292,20 +292,20 @@ static bool testMultiLinearGeometry ( const Traits& traits )
 {
   bool pass = true;
 
-  Dune::GeometryType cube0d( Dune::Impl::CubeTopology< 0 >::type::id, 0 );
-  Dune::GeometryType cube1d( Dune::Impl::CubeTopology< 1 >::type::id, 1 );
-  Dune::GeometryType cube2d( Dune::Impl::CubeTopology< 2 >::type::id, 2 );
-  Dune::GeometryType cube3d( Dune::Impl::CubeTopology< 3 >::type::id, 3 );
-  Dune::GeometryType cube4d( Dune::Impl::CubeTopology< 4 >::type::id, 4 );
+  Dune::GeometryType cube0d = Dune::GeometryTypes::cube(0);
+  Dune::GeometryType cube1d = Dune::GeometryTypes::cube(1);
+  Dune::GeometryType cube2d = Dune::GeometryTypes::cube(2);
+  Dune::GeometryType cube3d = Dune::GeometryTypes::cube(3);
+  Dune::GeometryType cube4d = Dune::GeometryTypes::cube(4);
 
-  Dune::GeometryType simplex0d( Dune::Impl::SimplexTopology< 0 >::type::id, 0 );
-  Dune::GeometryType simplex1d( Dune::Impl::SimplexTopology< 1 >::type::id, 1 );
-  Dune::GeometryType simplex2d( Dune::Impl::SimplexTopology< 2 >::type::id, 2 );
-  Dune::GeometryType simplex3d( Dune::Impl::SimplexTopology< 3 >::type::id, 3 );
-  Dune::GeometryType simplex4d( Dune::Impl::SimplexTopology< 4 >::type::id, 4 );
+  Dune::GeometryType simplex0d = Dune::GeometryTypes::simplex(0);
+  Dune::GeometryType simplex1d = Dune::GeometryTypes::simplex(1);
+  Dune::GeometryType simplex2d = Dune::GeometryTypes::simplex(2);
+  Dune::GeometryType simplex3d = Dune::GeometryTypes::simplex(3);
+  Dune::GeometryType simplex4d = Dune::GeometryTypes::simplex(4);
 
-  Dune::GeometryType prism3d( Dune::Impl::PrismTopology< 3 >::type::id, 3 );
-  Dune::GeometryType pyramid3d( Dune::Impl::PyramidTopology< 3 >::type::id, 3 );
+  Dune::GeometryType prism3d = Dune::GeometryTypes::prism;
+  Dune::GeometryType pyramid3d = Dune::GeometryTypes::pyramid;
 
   pass &= testMultiLinearGeometry< ctype, 0, 0 >( simplex0d, traits );
   pass &= testMultiLinearGeometry< ctype, 0, 1 >( simplex0d, traits );
