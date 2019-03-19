@@ -1,11 +1,9 @@
-if(INKSCAPE)
-  set(EPS_IMGS simplexvertexindex.eps referencetokuhn0.eps kuhntriangulation.eps)
-  inkscape_generate_eps_from_svg(DPI 180
-    OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
-    INPUT_DIR ${CMAKE_CURRENT_BINARY_DIR} ${EPS_IMGS})
-endif()
+set(PNG_IMGS simplexvertexindex.png referencetokuhn0.png kuhntriangulation.png)
+inkscape_generate_png_from_svg(
+ DPI 180
+ ${PNG_IMGS})
 
-dune_add_latex_document(refinement.tex
-  DEPENDS ${EPS_IMGS})
-
-create_doc_install(${CMAKE_CURRENT_BINARY_DIR}/refinement.pdf ${CMAKE_INSTALL_DOCDIR}/refinement refinement_safepdf)
+dune_add_latex_document(
+  SOURCE refinement.tex
+  FATHER_TARGET doc
+  INSTALL ${CMAKE_INSTALL_DOCDIR})
