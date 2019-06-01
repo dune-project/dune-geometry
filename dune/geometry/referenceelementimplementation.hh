@@ -386,6 +386,9 @@ namespace Dune
       //! The dimension of the reference element.
       static constexpr int dimension = dim;
 
+      /** \brief Type used for volume */
+      typedef ctype Volume;
+
     private:
 
       friend class Impl::ReferenceElementContainer< ctype, dim >;
@@ -542,7 +545,7 @@ namespace Dune
       }
 
       /** \brief obtain the volume of the reference element */
-      ctype volume () const
+      Volume volume () const
       {
         return volume_;
       }

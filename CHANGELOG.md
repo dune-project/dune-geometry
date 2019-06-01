@@ -8,6 +8,8 @@
 - The methods `GeometryType(int)` and `GeometryType(unsigned int)` have been deprecated
   and will be removed after the release of dune-geometry 2.7.  Instead, please now use
   `GeometryTypes::cube(dim)` to construct one- or two-dimensional `GeometryType` objects.
+- Geometry implementations now export a type `Volume` that is used for the return
+  value of the `volume` methods.  So does the generic `ReferenceElement` implementation.
 
 # Release 2.6
 
