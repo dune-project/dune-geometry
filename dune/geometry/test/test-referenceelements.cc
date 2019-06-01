@@ -126,6 +126,10 @@ int main () try
   test(referenceLine.type(0,1).isVertex());
   test(referenceLine.type(1,1).isVertex());
 
+  // test the 'volume' method
+  decltype(referenceLine)::Volume lineVolume = referenceLine.volume();
+  testcmp(lineVolume, 1);
+
   // test the 'geometry' method
   const ReferenceElements<double,1>::ReferenceElement::Codim<0>::Geometry referenceLineMapping = referenceLine.geometry< 0 >( 0 );
   referenceLineMapping.corner(0);
@@ -195,6 +199,10 @@ int main () try
   test(referenceTriangle.type(0,2).isVertex());
   test(referenceTriangle.type(1,2).isVertex());
   test(referenceTriangle.type(2,2).isVertex());
+
+  // test the 'volume' method
+  decltype(referenceTriangle)::Volume triangleVolume = referenceTriangle.volume();
+  testcmp(triangleVolume, 0.5);
 
   // test the 'geometry' method
   const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
@@ -282,6 +290,10 @@ int main () try
 
   errors += checkSubEntities(referenceQuad);
 
+  // test the 'volume' method
+  decltype(referenceQuad)::Volume quadVolume = referenceQuad.volume();
+  testcmp(quadVolume, 1);
+
   // test the 'geometry' method
   const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
   referenceQuadMapping.corner(0);
@@ -334,6 +346,10 @@ int main () try
 
   for (int i=0; i<referenceTetra.size(3); i++)
     test(referenceTetra.type(i,3).isVertex());
+
+  // test the 'volume' method
+  decltype(referenceTetra)::Volume tetraVolume = referenceTetra.volume();
+  testcmp(tetraVolume, 1.0/6.0);
 
   // test the 'geometry' method
   const decltype(referenceTetra)::Codim<0>::Geometry referenceTetraMapping = referenceTetra.geometry< 0 >( 0 );
@@ -405,6 +421,10 @@ int main () try
   for (int i=0; i<referencePyramid.size(3); i++)
     test(referencePyramid.type(i,3).isVertex());
 
+  // test the 'volume' method
+  decltype(referencePyramid)::Volume pyramidVolume = referencePyramid.volume();
+  testcmp(pyramidVolume, 1.0/3.0);
+
   // test the 'geometry' method
   const auto referencePyramidMapping = referencePyramid.geometry< 0 >( 0 );
   referencePyramidMapping.corner(0);
@@ -472,6 +492,10 @@ int main () try
   for (int i=0; i<referencePrism.size(3); i++)
     test(referencePrism.type(i,3).isVertex());
 
+  // test the 'volume' method
+  decltype(referencePrism)::Volume prismVolume = referencePrism.volume();
+  testcmp(prismVolume, 0.5);
+
   // test the 'geometry' method
   const auto referencePrismMapping = referencePrism.geometry< 0 >( 0 );
   referencePrismMapping.corner(0);
@@ -525,6 +549,10 @@ int main () try
 
   for (int i=0; i<referenceHexa.size(3); i++)
     test(referenceHexa.type(i,3).isVertex());
+
+  // test the 'volume' method
+  decltype(referenceHexa)::Volume hexaVolume = referenceHexa.volume();
+  testcmp(hexaVolume, 1);
 
   // test the 'geometry' method
   const Transitional::ReferenceElement<double,Dim<3>>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 );

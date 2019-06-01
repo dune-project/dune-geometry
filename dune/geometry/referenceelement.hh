@@ -84,6 +84,9 @@ namespace Dune {
       //! The coordinate type.
       using Coordinate = typename Implementation::Coordinate;
 
+      /** \brief Type used for volume */
+      typedef ctype Volume;
+
       //! The dimension of the reference element.
       static constexpr int dimension = Implementation::dimension;
 
