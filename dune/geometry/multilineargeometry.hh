@@ -192,6 +192,8 @@ namespace Dune
     typedef FieldVector< ctype, mydimension > LocalCoordinate;
     //! type of global coordinates
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
+    //! type of volume
+    typedef ctype Volume;
 
     //! type of jacobian transposed
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
@@ -341,7 +343,7 @@ namespace Dune
      *  \endcode
      *  which is wrong for n-linear surface maps and other nonlinear maps.
      */
-    ctype volume () const
+    Volume volume () const
     {
       return integrationElement( refElement().position( 0, 0 ) ) * refElement().volume();
     }
@@ -498,6 +500,7 @@ namespace Dune
 
     typedef typename Base::LocalCoordinate LocalCoordinate;
     typedef typename Base::GlobalCoordinate GlobalCoordinate;
+    typedef typename Base::Volume Volume;
 
     typedef typename Base::JacobianTransposed JacobianTransposed;
     typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
@@ -601,7 +604,7 @@ namespace Dune
     }
 
     /** \brief obtain the volume of the mapping's image */
-    ctype volume () const
+    Volume volume () const
     {
       if( affine() )
         return integrationElement( refElement().position( 0, 0 ) ) * refElement().volume();
