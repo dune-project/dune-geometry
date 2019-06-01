@@ -483,6 +483,9 @@ namespace Dune
     /** \brief Type for coordinate vector in world space */
     typedef FieldVector< ctype, coorddimension > GlobalCoordinate;
 
+    /** \brief Type used for volume */
+    typedef ctype Volume;
+
     /** \brief Type for the transposed Jacobian matrix */
     typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianTransposed;
 
@@ -597,7 +600,7 @@ namespace Dune
     }
 
     /** \brief Obtain the volume of the element */
-    ctype volume () const
+    Volume volume () const
     {
       return integrationElement_ * refElement_.volume();
     }
