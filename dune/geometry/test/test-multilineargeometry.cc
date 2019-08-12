@@ -46,6 +46,38 @@ map ( const Dune::FieldMatrix< ctype, mydim, mydim > &A,
   return y;
 }
 
+static bool testLocalMethod ()
+{
+  bool pass = true;
+  static const int cdim = 2;
+  static const int mydim = 2;
+  typedef double ctype;
+
+  Dune::GeometryType simplex2d = Dune::GeometryTypes::simplex( cdim );
+  auto refElement = Dune::referenceElement< ctype, cdim >( simplex2d );
+
+  typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Dune::MultiLinearGeometryTraits< ctype > > Geometry;
+
+  const int numCorners = refElement.size( mydim );
+  std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
+  corners[ 0 ] = {{ 0.5, 0 }};
+  corners[ 1 ] = {{ 0.5, 0.5 }};
+  corners[ 2 ] = {{ 0  , 0.5 }};
+
+
+  Geometry geometry( refElement, corners );
+
+  Dune::FieldVector< ctype, cdim > global( 0 );
+  auto local = geometry.local( global );
+
+  if( refElement.checkInside( local ) )
+  {
+    std::cerr << "Error: Local operation failed!" << std::endl;
+    return false;
+  }
+  return pass;
+}
+
 
 template< class ctype, int mydim, int cdim, class Traits >
 static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
@@ -381,6 +413,8 @@ int main ( int argc, char **argv )
   //           << "storage" << std::endl;
   // pass &= testMultiLinearGeometry< float >
   //   ( ReferenceWrapperGeometryTraits< float >{} );
+
+  pass &= testLocalMethod();
 
   return (pass ? 0 : 1);
 }
