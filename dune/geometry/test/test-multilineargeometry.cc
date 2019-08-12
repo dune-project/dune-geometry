@@ -46,6 +46,33 @@ map ( const Dune::FieldMatrix< ctype, mydim, mydim > &A,
   return y;
 }
 
+template< class ctype, int mydim, int cdim, class Traits >
+static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
+                                      const Traits &traits )
+{
+  bool pass = true;
+
+  typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Traits > Geometry;
+
+  const Dune::FieldVector< ctype, mydim > &localCenter = refElement.position( 0, 0 );
+  const ctype epsilon = ctype( 1e5 )*std::numeric_limits< ctype >::epsilon();
+
+  const ctype detA = A.determinant();
+  assert( std::abs( std::abs( B.determinant() ) - ctype( 1 ) ) <= epsilon );
+
+  const int numCorners = refElement.size( mydim );
+  std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
+  corners[ 0 ] = {{ 0, 0 }};
+  corners[ 1 ] = {{ 1, 0 }};
+  corners[ 2 ] = {{ 0.5, 0.5 }};
+
+  Geometry geometry( refElement, corners );
+
+
+
+  return pass;
+}
+
 
 template< class ctype, int mydim, int cdim, class Traits >
 static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
