@@ -70,7 +70,8 @@ static bool testCheckInside( const RefElement& refElement,
       return false ;
     }
   }
-  std::cout << " checkInside test: passed" << std::endl;
+  std::string name = testResult ? " checkInside" : " checkOutside";
+  std::cout << name << " test: passed" << std::endl;
   return true;
 }
 
@@ -111,17 +112,17 @@ static bool testLocalMethod ()
     auto refElement = Dune::referenceElement< ctype, cdim >( type );
     const int numCorners = refElement.size( mydim );
     std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
-    corners[ 0 ] = {{ 0.5, 0 }};
-    corners[ 1 ] = {{ 1  , 0.5 }};
-    corners[ 2 ] = {{ 0.4, 0.7 }};
-    corners[ 3 ] = {{ 1.2, 0.4 }};
+    corners[ 0 ] = {{ 0.0, 0.0 }};
+    corners[ 1 ] = {{ 0.5, 0.5 }};
+    corners[ 2 ] = {{ 0.0, 1.0 }};
+    corners[ 3 ] = {{ 0.5, 1.0 }};
 
     Geometry geometry( refElement, corners );
     // point inside
-    Dune::FieldVector< ctype, cdim > inside( {{ 0.6, 0.3 }});
+    Dune::FieldVector< ctype, cdim > inside( {{ 0.25, 0.75 }});
     pass &= testCheckInside( refElement, geometry, inside, true );
     // point outside of geometry
-    Dune::FieldVector< ctype, cdim > outside( -1 );
+    Dune::FieldVector< ctype, cdim > outside( {{ 1, 0}} );
     pass &= testCheckInside( refElement, geometry, outside, false );
     // another point outside
     Dune::FieldVector< ctype, cdim > outside2( 4 );
