@@ -82,7 +82,7 @@ namespace Dune {
 
       GaussJacobi_1_0 = 1,
       GaussJacobi_2_0 = 2,
-      GaussJacobiArbitraryOrder = 3,
+      GaussJacobi_n_0 = 3,
 
       GaussLobatto = 4,
       size
@@ -743,8 +743,8 @@ namespace Dune {
           return Jacobi2QuadratureRule1D<ctype>::highest_order;
         case QuadratureType::GaussLobatto :
           return GaussLobattoQuadratureRule1D<ctype>::highest_order;
-        case QuadratureType::GaussJacobiArbitraryOrder :
-          return JacobiArbitraryOrderQuadratureRule1D<ctype>::maxOrder();
+        case QuadratureType::GaussJacobi_n_0 :
+          return JacobiNQuadratureRule1D<ctype>::maxOrder();
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
@@ -764,8 +764,8 @@ namespace Dune {
           return Jacobi2QuadratureRule1D<ctype>(p);
         case QuadratureType::GaussLobatto :
           return GaussLobattoQuadratureRule1D<ctype>(p);
-        case QuadratureType::GaussJacobiArbitraryOrder :
-          return JacobiArbitraryOrderQuadratureRule1D<ctype>(p);
+        case QuadratureType::GaussJacobi_n_0 :
+          return JacobiNQuadratureRule1D<ctype>(p);
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
@@ -791,7 +791,7 @@ namespace Dune {
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
     {
       if (t.isSimplex()
-        && ( qt == QuadratureType::GaussLegendre || qt == QuadratureType::GaussJacobiArbitraryOrder )
+        && ( qt == QuadratureType::GaussLegendre || qt == QuadratureType::GaussJacobi_n_0 )
         && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
       {
         return SimplexQuadratureRule<ctype,dim>(p);
@@ -821,7 +821,7 @@ namespace Dune {
     {
 
       if (t.isSimplex()
-        && ( qt == QuadratureType::GaussLegendre || qt == QuadratureType::GaussJacobiArbitraryOrder )
+        && ( qt == QuadratureType::GaussLegendre || qt == QuadratureType::GaussJacobi_n_0 )
         && p <= SimplexQuadratureRule<ctype,dim>::highest_order)
       {
         return SimplexQuadratureRule<ctype,dim>(p);

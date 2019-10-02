@@ -7,7 +7,7 @@
 #include <bitset>
 
 #include <dune/geometry/type.hh>
-#include <dune/geometry/quadraturerules/calculatesimplexrules.hh>
+#include <dune/geometry/quadraturerules/jacobi_n_0.hh>
 
 namespace Dune
 {
@@ -112,11 +112,11 @@ namespace Dune
 
       OneDQuadrature onedQuad;
       bool respectWeightFunction = false;
-      if( qt != QuadratureType::GaussJacobiArbitraryOrder)
+      if( qt != QuadratureType::GaussJacobi_n_0)
         onedQuad = QuadratureRules<ctype,1>::rule(GeometryTypes::line, order + dim-1, qt);
       else
       {
-        onedQuad = JacobiArbitraryOrderQuadratureRule1D<ctype>(order,dim-1);
+        onedQuad = JacobiNQuadratureRule1D<ctype>(order,dim-1);
         respectWeightFunction = true;
       }
 
@@ -159,7 +159,7 @@ namespace Dune
       if (isPrism)
         order = std::min
           (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt));
-      else if (qt != QuadratureType::GaussJacobiArbitraryOrder)
+      else if (qt != QuadratureType::GaussJacobi_n_0)
         order = std::min
           (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt)-(dim-1));
       else
