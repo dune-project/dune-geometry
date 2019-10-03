@@ -1,4 +1,5 @@
 install(FILES
+  calculatesimplexrules.hh
   compositequadraturerule.hh
   pointquadrature.hh
   simplexquadrature.hh
@@ -17,7 +18,13 @@ exclude_from_headercheck(
   gausslobatto_imp.hh
   jacobi_1_0_imp.hh
   jacobi_2_0_imp.hh
-  tensorproductquadrature.hh")
+  tensorproductquadrature.hh
+  calculatesimplexrules")
+
+add_executable(intfunc intfunc.cc intfunc.hh calculatesimplexrules.hh)
+#target_compile_definitions(intfunc PRIVATE -DUG_DIM_3)
+target_compile_definitions(intfunc PRIVATE -DUG_DIM_3)
+target_link_libraries(intfunc PRIVATE ${DUNE_LIBS})
 
 #build the library libquadraturerules
 dune_add_library(quadraturerules OBJECT
