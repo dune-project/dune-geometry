@@ -9,7 +9,7 @@ template<typename ct, int dim>
 ct f(Dune::FieldVector<ct,dim> const& vec)
 {
   auto const& x = vec[0];
-  return x*x;
+  return x*x*x*x*x*x*x*x;
 }
 
 template<typename ct, int dim>

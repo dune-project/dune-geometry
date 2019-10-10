@@ -78,11 +78,37 @@ namespace Dune {
    */
   namespace QuadratureType {
     enum Enum {
-      GaussLegendre = 0,
+      GaussLegendre = 0, /** \brief Gauss-Legendre rules (default)
+                         *
+                         *   1D: Gauss-Jacobi rule with parameters \f$\alpha = \beta =0 \f$
+                         *   higher dimension: For the 2D/3D case efficient rules for certain geometries may be used if available.
+                         *                     Higher dimensional quadrature rules are constructed via \p TensorProductQuadratureRule.
+                         *                     In this case the 1D rules eventually need higher order to compensate occuring weight functions(i.e. simplices).
+                         */
 
-      GaussJacobi_1_0 = 1,
-      GaussJacobi_2_0 = 2,
-      GaussJacobi_n_0 = 3,
+      GaussJacobi_1_0 = 1,/** \brief Gauss-Jacobi rules with \f$\alpha =1\f$
+                          *
+                          *   1D Gauss-Jacobi rule with parameters \f$\alpha =1,\ \beta =0 \f$
+                          *   Is used to construct efficient simplex quadrature rules of higher order
+                          */
+
+      GaussJacobi_2_0 = 2,/** \brief Gauss-Legendre rules with \f$\alpha =2\f$
+                          *
+                          *   1D Gauss-Jacobi rule with parameters \f$\alpha =2,\ \beta =0 \f$
+                          *   Is used to construct efficient simplex quadrature rules of higher order
+                          */
+
+      GaussJacobi_n_0 = 3,/** \brief Gauss-Legendre rules with \f$\alpha =n\f$.
+                          *
+                          *   1D: Gauss-Jacobi rule with parameters \f$\alpha = n,\ \beta =0 \f$
+                          *   higher dimension: For the 2D/3D case efficient rules for certain geometries may be used if available.
+                          *                     Higher dimensional quadrature rules are constructed via \p TensorProductQuadratureRule.
+                          *                     In this case the 1D rules respect eventually occuring weight functions(i.e. simplices).
+                          *   The rules for high dimension or order are computed at run time and only floating point number types are supported.(LAPACK is needed for this case)
+                          *   Most efficient quadrature type for simplices.
+                          *
+                          *   \note For details please use the book "Approximate Calculation of Multiple Integrals" by A.H. Stroud published in 1971.
+                          */
 
       GaussLobatto = 4,
       size

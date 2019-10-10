@@ -26,10 +26,13 @@ int main()
   //printRule(quadRule);
 
   std::cout << "int(f) = "<< integrate<double,dim>(f<double,dim>, quadRule) <<"\n";
-
+/*
   std::cout << "\n----------------------------------------------------------\n";
   const int alpha =1;
   std::cout << "jacobi alpha ="<< alpha <<"\n";
   const auto& rule = JacobiNQuadratureRule1D<double>(order, alpha);
+  printRule(rule);
   const auto& rule1 = JacobiNQuadratureRule1D<int>(order, alpha);
+  const auto& rule2 = JacobiNQuadratureRule1D<int>(order, 5+alpha);
+  */
 }

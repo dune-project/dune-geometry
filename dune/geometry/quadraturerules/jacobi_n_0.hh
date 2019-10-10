@@ -16,8 +16,10 @@
 namespace Dune {
 
   /*
-   * This class calculates quadrature rules of arbitrary order, that respect the
+   * This class calculates 1D quadrature rules of dynamic order, that respect the
    * weightfunctions resulting from the conical product.
+   * For quadrature rules with order <= highest order (61) and dimension <= 3 exact quadrature rules are used.
+   * Else the quadrature rules are computed by Lapack and thus a floating point type is required.
    * For more information see the comment in `tensorproductquadrature.hh`
    *
    */
@@ -30,7 +32,7 @@ namespace Dune {
     enum { dim=1 };
 
     ~JacobiNQuadratureRule1D(){}
-  //private:
+  private:
 
     typedef QuadratureRule<ct, dim> Rule;
 
@@ -45,8 +47,8 @@ namespace Dune {
       if (unsigned(order) > maxOrder())
         DUNE_THROW(QuadratureOrderOutOfRange, "Quadrature rule " << order << " not supported!");
       auto&& rule = decideRule(order,alpha);
-      for(unsigned int i=0; i< rule.size(); i++)
-        this->push_back(rule[i]);
+      for( auto qpoint : rule )
+        this->push_back(qpoint);
       this->delivered_order = 2*rule.size()-1;
 
     }
@@ -68,8 +70,7 @@ namespace Dune {
     template<typename type, std::enable_if_t<!(std::is_floating_point<type>::value)>* = nullptr>
     QuadratureRule<ct,1> UseLapackOrError( int const degree, int const alpha)
     {
-      // TODO make an Error
-      DUNE_THROW(QuadratureOrderOutOfRange, "Quadrature rule " << degree << " not supported!");
+      DUNE_THROW(QuadratureOrderOutOfRange, "Quadrature rule with degree: "<< degree << " and jacobi exponent: "<< alpha<< " is not supported for this type!");
     }
 
     template<typename type, std::enable_if_t<std::is_floating_point<type>::value>* = nullptr>
