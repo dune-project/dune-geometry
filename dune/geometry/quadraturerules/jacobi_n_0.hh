@@ -84,8 +84,8 @@ namespace Dune {
       switch(alpha)
       {
         case 0 :  return QuadratureRules<ct,1>::rule(GeometryTypes::line, degree, QuadratureType::GaussLegendre);
-                  // the weights are not correct for the use of quadrature rules
         case 1 :  {
+                    // scale the existing weights by 0.5
                     auto&& rule = QuadratureRules<ct,1>::rule(GeometryTypes::line, degree, QuadratureType::GaussJacobi_1_0);
                     QuadratureRule<ct,1> quadratureRule;
                     quadratureRule.reserve(rule.size());
@@ -94,6 +94,7 @@ namespace Dune {
                     return quadratureRule;
                   }
         case 2 :  {
+                    // scale the existing weights by 0.25
                     auto&& rule = QuadratureRules<ct,1>::rule(GeometryTypes::line, degree, QuadratureType::GaussJacobi_2_0);
                     QuadratureRule<ct,1> quadratureRule;
                     quadratureRule.reserve(rule.size());
