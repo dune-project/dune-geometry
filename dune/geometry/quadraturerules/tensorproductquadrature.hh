@@ -7,6 +7,7 @@
 #include <bitset>
 
 #include <dune/geometry/type.hh>
+#include <dune/geometry/quadraturerules/jacobi_n_0.hh>
 
 namespace Dune
 {
@@ -108,8 +109,16 @@ namespace Dune
     void conicalProduct(const BaseQuadrature & baseQuad, unsigned int order, QuadratureType::Enum qt)
     {
       typedef QuadratureRule<ctype,1> OneDQuadrature;
-      const OneDQuadrature & onedQuad =
-        QuadratureRules<ctype,1>::rule(GeometryTypes::line, order + dim-1, qt);
+
+      OneDQuadrature onedQuad;
+      bool respectWeightFunction = false;
+      if( qt != QuadratureType::GaussJacobi_n_0)
+        onedQuad = QuadratureRules<ctype,1>::rule(GeometryTypes::line, order + dim-1, qt);
+      else
+      {
+        onedQuad = JacobiNQuadratureRule1D<ctype>(order,dim-1);
+        respectWeightFunction = true;
+      }
 
       const unsigned int baseQuadSize = baseQuad.size();
       for( unsigned int bqi = 0; bqi < baseQuadSize; ++bqi )
@@ -128,8 +137,12 @@ namespace Dune
             point[ i ] = scale * basePoint[ i ];
 
           ctype weight = baseWeight * onedQuad[oqi].weight( );
-          for ( unsigned int p = 0; p<dim-1; ++p)
-            weight *= scale;                    // pow( scale, dim-1 );
+          if (!respectWeightFunction)
+          {
+            for ( unsigned int p = 0; p<dim-1; ++p)
+              weight *= scale;                    // pow( scale, dim-1 );
+          }
+
           this->push_back( QPoint(point, weight) );
         }
       }
@@ -146,9 +159,12 @@ namespace Dune
       if (isPrism)
         order = std::min
           (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt));
-      else
+      else if (qt != QuadratureType::GaussJacobi_n_0)
         order = std::min
           (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt)-(dim-1));
+      else
+        order = std::min
+          (order, QuadratureRules<ctype,1>::maxOrder(GeometryTypes::line, qt));
       return order;
     }
 
