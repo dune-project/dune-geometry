@@ -1,5 +1,5 @@
-#ifndef JACOBI_N_0_H
-#define JACOBI_N_0_H
+#ifndef DUNE_GEOMETRY_QUADRATURERULES_JACOBI_N_0_H
+#define DUNE_GEOMETRY_QUADRATURERULES_JACOBI_N_0_H
 
 #include <vector>
 #include <type_traits>
