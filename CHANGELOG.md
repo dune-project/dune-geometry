@@ -10,6 +10,15 @@
   `GeometryTypes::cube(dim)` to construct one- or two-dimensional `GeometryType` objects.
 - Geometry implementations now export a type `Volume` that is used for the return
   value of the `volume` methods.  So does the generic `ReferenceElement` implementation.
+-   More efficient quadrature rules for simplices are available that
+    need less quadrature points to achive the same order.  For now these
+    have to be explicitly requested:
+    ```c++
+    auto&& rule = Dune::QuadratureRules<...>::rule(..., Dune::QuadratureType::GaussJacobi_n_0);
+    ```
+    See [!127].
+
+    [!127]: https://gitlab.dune-project.org/core/dune-geometry/merge_requests/127
 
 # Release 2.6
 
