@@ -111,13 +111,10 @@ namespace Dune {
     {
       using std::sqrt;
 
-      typedef DynamicVector<double> Vector;
-      typedef DynamicMatrix<double> Matrix;
-
       // compute the degree of the needed jacobi polynomial
       const int n = degree/2 +1;
 
-      Matrix J(n,n,0);
+      DynamicMatrix<double> J(n,n,0);
 
       J[0][0] = -double(alpha)/(2 + alpha);
       for(int i=1; i<n; ++i)
@@ -143,7 +140,7 @@ namespace Dune {
       {
         auto&& eV0 = eigenVectors[i][0];
         ct weight =  mu * eV0*eV0;
-        Vector node(1,0.5*eigenValues[i].real() + 0.5);
+        DynamicVector<ct> node(1,0.5*eigenValues[i].real() + 0.5);
 
         // bundle the nodes and the weights
         QuadraturePoint<ct,1> temp(node, weight);
