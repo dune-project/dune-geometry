@@ -230,7 +230,7 @@ namespace Dune
       }
 
       template< int n >
-      static void cholesky_L ( const FieldMatrix< ctype, n, n > &A, FieldMatrix< ctype, n, n > &ret )
+      static bool cholesky_L ( const FieldMatrix< ctype, n, n > &A, FieldMatrix< ctype, n, n > &ret, const bool checkSingular = false )
       {
         for( int i = 0; i < n; ++i )
         {
@@ -239,6 +239,13 @@ namespace Dune
           ctype xDiag = A[ i ][ i ];
           for( int j = 0; j < i; ++j )
             xDiag -= ret[ i ][ j ] * ret[ i ][ j ];
+
+          // in some cases A can be singular, e.g. when checking local for
+          // outside points during checkInside
+          if( checkSingular && ! ( xDiag > ctype( 0 )) )
+            return false ;
+
+          // otherwise this should be true always
           assert( xDiag > ctype( 0 ) );
           rii = sqrt( xDiag );
 
@@ -251,6 +258,9 @@ namespace Dune
             ret[ k ][ i ] = invrii * x;
           }
         }
+
+        // return true for meaning A is non-singular
+        return true;
       }
 
       template< int n >
@@ -328,12 +338,14 @@ namespace Dune
 
       // calculate x := A^{-1} x
       template< int n >
-      static void spdInvAx ( FieldMatrix< ctype, n, n > &A, FieldVector< ctype, n > &x )
+      static bool spdInvAx ( FieldMatrix< ctype, n, n > &A, FieldVector< ctype, n > &x, const bool checkSingular = false )
       {
         FieldMatrix< ctype, n, n > L;
-        cholesky_L( A, L );
+        const bool invertible = cholesky_L( A, L, checkSingular );
+        if( ! invertible ) return invertible ;
         invLx( L, x );
         invLTx( L, x );
+        return invertible;
       }
 
       template< int m, int n >
@@ -444,13 +456,14 @@ namespace Dune
       }
 
       template< int m, int n >
-      static void xTRightInvA ( const FieldMatrix< ctype, m, n > &A, const FieldVector< ctype, n > &x, FieldVector< ctype, m > &y )
+      static bool xTRightInvA ( const FieldMatrix< ctype, m, n > &A, const FieldVector< ctype, n > &x, FieldVector< ctype, m > &y )
       {
         static_assert((n >= m), "Matrix has no right inverse.");
         FieldMatrix< ctype, m, m > aat;
         Ax( A, x, y );
         AAT_L( A, aat );
-        spdInvAx( aat, y );
+        // check whether aat is singular and return true if non-singular
+        return spdInvAx( aat, y, true );
       }
     };
 
