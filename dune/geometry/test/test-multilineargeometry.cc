@@ -46,6 +46,91 @@ map ( const Dune::FieldMatrix< ctype, mydim, mydim > &A,
   return y;
 }
 
+template <class RefElement, class Geometry, class GlobalCoordinate>
+static bool testCheckInside( const RefElement& refElement,
+                             const Geometry& geometry,
+                             const GlobalCoordinate& global,
+                             const bool testResult )
+{
+  auto local = geometry.local( global );
+  std::cout << "Checking geometry " << geometry.type() << std::endl;
+  if( refElement.checkInside( local ) != testResult )
+  {
+    std::cerr << "Error: Local operation failed!" << std::endl;
+    return false;
+  }
+  else if( testResult ) // for positive result check global and local
+  {
+    // double check that global and local are inverse to each other
+    auto globalCheck = geometry.global( local );
+    if( (globalCheck - global).two_norm() > 1e-8 )
+    {
+      std::cerr << " global and local not inverse to each other!" << std::endl;
+      std::cerr << "(" << globalCheck << ") is not (" << global << ")" << std::endl;
+      return false ;
+    }
+  }
+  std::string name = testResult ? " checkInside" : " checkOutside";
+  std::cout << name << " test: passed" << std::endl;
+  return true;
+}
+
+static bool testLocalMethod ()
+{
+  bool pass = true;
+  static const int cdim = 2;
+  static const int mydim = 2;
+  typedef double ctype;
+
+  typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Dune::MultiLinearGeometryTraits< ctype > > Geometry;
+
+  {
+    Dune::GeometryType type = Dune::GeometryTypes::simplex( cdim );
+    auto refElement = Dune::referenceElement< ctype, cdim >( type );
+    const int numCorners = refElement.size( mydim );
+    std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
+    corners[ 0 ] = {{ 0.5, 0 }};
+    corners[ 1 ] = {{ 0.5, 0.5 }};
+    corners[ 2 ] = {{ 0  , 0.5 }};
+
+    Geometry geometry( refElement, corners );
+    // point inside of geometry
+    Dune::FieldVector< ctype, cdim > inside( 0.4 );
+    pass &= testCheckInside( refElement, geometry, inside, true );
+
+    // point outside of geometry
+    Dune::FieldVector< ctype, cdim > outside( -0.1 );
+    pass &= testCheckInside( refElement, geometry, outside, false );
+
+    // point outside of geometry
+    Dune::FieldVector< ctype, cdim > outside2( 0 );
+    pass &= testCheckInside( refElement, geometry, outside2, false );
+  }
+
+  {
+    Dune::GeometryType type = Dune::GeometryTypes::cube( cdim );
+    auto refElement = Dune::referenceElement< ctype, cdim >( type );
+    const int numCorners = refElement.size( mydim );
+    std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
+    corners[ 0 ] = {{ 0.0, 0.0 }};
+    corners[ 1 ] = {{ 0.5, 0.5 }};
+    corners[ 2 ] = {{ 0.0, 1.0 }};
+    corners[ 3 ] = {{ 0.5, 1.0 }};
+
+    Geometry geometry( refElement, corners );
+    // point inside
+    Dune::FieldVector< ctype, cdim > inside( {{ 0.25, 0.75 }});
+    pass &= testCheckInside( refElement, geometry, inside, true );
+    // point outside of geometry
+    Dune::FieldVector< ctype, cdim > outside( {{ 1, 0}} );
+    pass &= testCheckInside( refElement, geometry, outside, false );
+    // another point outside
+    Dune::FieldVector< ctype, cdim > outside2( 4 );
+    pass &= testCheckInside( refElement, geometry, outside2, false );
+  }
+  return pass;
+}
+
 
 template< class ctype, int mydim, int cdim, class Traits >
 static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
@@ -381,6 +466,8 @@ int main ( int argc, char **argv )
   //           << "storage" << std::endl;
   // pass &= testMultiLinearGeometry< float >
   //   ( ReferenceWrapperGeometryTraits< float >{} );
+
+  pass &= testLocalMethod();
 
   return (pass ? 0 : 1);
 }
