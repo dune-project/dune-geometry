@@ -271,6 +271,8 @@ namespace Dune
    * GeometryType is a C++ "literal type" and can be used in `constexpr` context if created
    * with a `constexpr` constructor.
    *
+   * If you want to use a GeometryType as a template parameter, see GeometryType::Id.
+   *
    * \ingroup GeometryType
    */
   class GeometryType
@@ -300,7 +302,76 @@ namespace Dune
     /** \brief Topology Id element */
     unsigned int topologyId_;
 
+    // Internal type used for the Id. The exact nature of this type is kept
+    // as an implementation detail on purpose. We use a scoped enum here because scoped enums
+    // can be used as template parameters, but are not implicitly converted to other integral
+    // types by the compiler. That way, we avoid unfortunate implicit conversion chains, e.g.
+    // people trying to work with GlobalGeometryTypeIndex, but forgetting to actually call
+    // GlobalGeometryTypeIndex::index(gt) and just using gt directly.
+    enum class IdType : std::uint64_t
+    {};
+
   public:
+
+    /** \brief An integral id representing a GeometryType. */
+    /**
+     * Id is an unspecified built-in integral type that uniquely represents a GeometryType.
+     * It mostly exists to be able to use a geometry type as a template parameter, as C++
+     * does not let us use GeometryType directly for this purpose.
+     *
+     * GeometryType and GeometryType::Id are implicitly convertible to each other, while the
+     * Id does not implicitly convert into other integral types. They should be used as follows:
+     *
+       \code
+       // define a template with a GeometryType::Id parameter
+       template<GeometryType::Id gtid>
+       class Foo
+       {
+         // reconstruct a full-blown constexpr GeometryType as needed to access
+         // information like the dimension etc.
+         static constexpr GeometryType gt = gtid;
+       };
+
+       // Instantiate a Foo template
+       Foo<GeometryTypes::triangle> foo;
+       \endcode
+     *
+     * As you can see, the conversion between GeometryType and the id is completely transparent
+     * to the user (apart from the slightly different template parameter type).
+     *
+     * \note The Id really only exists for this template parameter workaround. Do not use it to
+     *       store a more compact version of the GeometryType - GeometryType and GeometryType::Id
+     *       use the same amount of storage (64 bits).
+     */
+    using Id = IdType;
+
+    /** \brief Construct an Id representing this GeometryType. */
+    /**
+     * This constructor exists mostly to transparently support using a GeometryType as a
+     * template parameter.
+     *
+     * \sa Id
+     */
+    constexpr operator Id() const
+    {
+      // recreate the exact storage layout that this class is using, making conversion
+      // extremely cheap
+      std::uint64_t id = dim_ | (std::uint64_t(none_) << 8) | (std::uint64_t(topologyId_) << 32);
+      return static_cast<Id>(id);
+    }
+
+    /** \brief Reconstruct a Geometry type from a GeometryType::Id */
+    /**
+     * This constructor exists mostly to transparently support using a GeometryType as a
+     * template parameter.
+     *
+     * \sa Id
+     */
+    constexpr GeometryType(Id id)
+      : dim_(static_cast<std::uint64_t>(id) & 0xFF)
+      , none_(static_cast<std::uint64_t>(id) & 0x100)
+      , topologyId_(static_cast<std::uint64_t>(id) >> 32)
+    {}
 
     /** @name Constructors */
     /*@{*/
