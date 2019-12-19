@@ -306,12 +306,21 @@ namespace Dune
       const ctype tolerance = Traits::tolerance();
       LocalCoordinate x = refElement().position( 0, 0 );
       LocalCoordinate dx;
+      const bool affineMapping = this->affine();
       do
       {
         // Newton's method: DF^n dx^n = F^n, x^{n+1} -= dx^n
         const GlobalCoordinate dglobal = (*this).global( x ) - globalCoord;
-        MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
+        const bool invertible =
+          MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
+        if( ! invertible )
+          return LocalCoordinate( std::numeric_limits< ctype > :: max() );
+
+        // update x with correction
         x -= dx;
+
+        // for affine mappings only one iteration is needed
+        if ( affineMapping ) break;
       } while( dx.two_norm2() > tolerance );
       return x;
     }
