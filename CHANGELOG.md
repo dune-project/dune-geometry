@@ -1,4 +1,4 @@
-# Master (will become release 2.7)
+# Release 2.7
 
 - The reference elements have a new method `subEntities`. The result of
   `referenceELement.subEntities(i,codim, c)` is an iterable range
