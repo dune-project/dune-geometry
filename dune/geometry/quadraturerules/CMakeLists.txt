@@ -18,6 +18,7 @@ exclude_from_headercheck(
   gausslobatto_imp.hh
   jacobi_1_0_imp.hh
   jacobi_2_0_imp.hh
+  jacobi_n_0.hh
   tensorproductquadrature.hh")
 
 #build the library libquadraturerules
