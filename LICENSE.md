@@ -10,7 +10,7 @@ Copyright holders:
 2011--2018    Jorrit Fahlke
 2012          Bernd Flemisch
 2013          Christoph Gersbacher
-2016          Janick Gerstenberger
+2016--2020    Janick Gerstenberger
 2014--2018    Carsten Gräser
 2015--2017    Felix Gruber
 2011--2019    Christoph Grüninger
