@@ -11,7 +11,6 @@
 
 #include <string>
 
-#include <dune/common/deprecated.hh>
 #include <dune/common/exceptions.hh>
 #include <dune/common/keywords.hh>
 #include <dune/common/typetraits.hh>
@@ -19,10 +18,6 @@
 
 namespace Dune
 {
-
-  // forward declaration needed for deprecated makeFromVertices
-  class GeometryType;
-  GeometryType geometryTypeFromVertexCount(unsigned int dim, unsigned int vertices);
 
   namespace Impl
   {
@@ -381,45 +376,6 @@ namespace Dune
       : dim_(0), none_(true), topologyId_(0)
     {}
 
-    DUNE_NO_DEPRECATED_BEGIN
-    /** \brief Constructor, using the basic type and the dimension */
-    GeometryType(BasicType basicType, unsigned int dim)
-      DUNE_DEPRECATED_MSG("The GeometryType constructor taking BasicType is deprecated and will be removed after DUNE 2.6")
-      : dim_(dim), none_((basicType == GeometryType::none) ? true : false), topologyId_(0)
-    {
-      if (dim < 2)
-        return;
-      switch( basicType )
-      {
-      case GeometryType::simplex :
-        topologyId_ = 0;
-        break;
-      case GeometryType::cube :
-        topologyId_ = ((1 << dim) - 1);
-        break;
-      case GeometryType::pyramid :
-        if (dim == 3)
-          topologyId_ = 0b0011;
-        else
-          DUNE_THROW( RangeError,
-                      "Invalid basic geometry type: no pyramids for dimension " << dim << "." );
-        break;
-      case GeometryType::prism :
-        if (dim == 3)
-          topologyId_ = 0b0101;
-        else
-          DUNE_THROW( RangeError,
-                      "Invalid basic geometry type: no prisms for dimension " << dim << "." );
-        break;
-      case GeometryType::none :
-        break;
-      default :
-        DUNE_THROW( RangeError,
-                    "Invalid basic geometry type: " << basicType << " for dimension " << dim << "." );
-      }
-    }
-    DUNE_NO_DEPRECATED_END
-
     /** \brief Constructor, using the topologyId (integer), the dimension and a flag for type none.
      * \note With this constructor, you can easily create an invalid GeometryType,
      *       it is mostly here for internal use!
@@ -477,110 +433,6 @@ namespace Dune
     }
 
     /** @} */
-
-
-    /** @name Setup Methods */
-    /*@{*/
-
-    /** \brief Make a vertex */
-    DUNE_DEPRECATED_MSG("makeVertex() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::vertex instead")
-    void makeVertex() {
-      none_  = false;
-      dim_ = 0;
-      topologyId_ = 0;
-    }
-
-    /** \brief Make a line segment */
-    DUNE_DEPRECATED_MSG("makeLine() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::line instead")
-    void makeLine() {
-      none_  = false;
-      dim_ = 1;
-      topologyId_ = 0;
-    }
-
-    /** \brief Make a triangle */
-    DUNE_DEPRECATED_MSG("makeTriangle() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::triangle instead")
-    void makeTriangle() {
-      none_  = false;
-      dim_ = 2;
-      topologyId_ = 0;
-    }
-
-    /** \brief Make a quadrilateral */
-    DUNE_DEPRECATED_MSG("makeQuadrilateral() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::quadrilateral instead")
-    void makeQuadrilateral() {
-      none_  = false;
-      dim_ = 2;
-      topologyId_ = 0b0011;
-    }
-
-    /** \brief Make a tetrahedron */
-    DUNE_DEPRECATED_MSG("makeTetrahedron() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::tetrahedron instead")
-    void makeTetrahedron() {
-      none_  = false;
-      dim_ = 3;
-      topologyId_ = 0;
-    }
-
-    /** \brief Make a pyramid */
-    DUNE_DEPRECATED_MSG("makePyramid() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::pyramid instead")
-    void makePyramid() {
-      none_  = false;
-      dim_ = 3;
-      topologyId_ = 0b0011;
-    }
-
-    /** \brief Make a prism */
-    DUNE_DEPRECATED_MSG("makePrism() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::prism instead")
-    void makePrism() {
-      none_  = false;
-      dim_ = 3;
-      topologyId_ = 0b0101;       // (1 << (dim_-1)) - 1;
-    }
-
-    /** \brief Make a hexahedron */
-    DUNE_DEPRECATED_MSG("makeHexahedron() is deprecated in DUNE 2.6, please use Dune::GeometryTypes::hexahedron instead")
-    void makeHexahedron() {
-      none_  = false;
-      dim_ = 3;
-      topologyId_ = 0b0111;
-    }
-
-    /** \brief Make a simplex of given dimension */
-    DUNE_DEPRECATED_MSG("makeSimplex(dim) is deprecated in DUNE 2.6, please use Dune::GeometryTypes::simplex(dim) instead")
-    void makeSimplex(unsigned int dim) {
-      none_  = false;
-      dim_ = dim;
-      topologyId_ = 0;
-    }
-
-    /** \brief Make a hypercube of given dimension */
-    DUNE_DEPRECATED_MSG("makeCube(dim) is deprecated in DUNE 2.6, please use Dune::GeometryTypes::cube(dim) instead")
-    void makeCube(unsigned int dim) {
-      none_  = false;
-      dim_ = dim;
-      topologyId_ = ((dim>1) ? ((1 << dim) - 1) : 0);
-    }
-
-    /** \brief Make a singular of given dimension */
-    DUNE_DEPRECATED_MSG("makeNone(dim) is deprecated in DUNE 2.6, please use Dune::GeometryTypes::none(dim) instead")
-    void makeNone(unsigned int dim) {
-      none_ = true;
-      dim_ = dim;
-      topologyId_  = 0;
-    }
-
-    /** \brief Construct the correct geometry type given the dimension and the number of vertices
-     *  \note This code only works up to dimension 3.
-     *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedron.
-     */
-    void makeFromVertices(unsigned int dim, unsigned int vertices) DUNE_DEPRECATED_MSG("Use the utility function geometryTypeFromVertexCount(...) instead.")
-    {
-      *this = geometryTypeFromVertexCount(dim, vertices);
-      return;
-    }
-
-    /*@}*/
 
 
     /** @name Query Methods */
@@ -722,35 +574,6 @@ namespace Dune
     return s;
   }
 
-  DUNE_NO_DEPRECATED_BEGIN
-  /** \brief Prints a GeometryType::BasicType to an output stream */
-  inline std::ostream& operator<< (std::ostream& s, GeometryType::BasicType type)
-  {
-    switch (type) {
-    case GeometryType::simplex :
-      s << "simplex";
-      break;
-    case GeometryType::cube :
-      s << "cube";
-      break;
-    case GeometryType::pyramid :
-      s << "pyramid";
-      break;
-    case GeometryType::prism :
-      s << "prism";
-      break;
-    case GeometryType::extended :
-      s << "other";
-    case GeometryType::none :
-      s << "none";
-      break;
-    default :
-      DUNE_THROW(Exception, "invalid GeometryType::BasicType");
-    }
-    return s;
-  }
-  DUNE_NO_DEPRECATED_END
-
 
   //! Predefined GeometryTypes for common geometries
   /**
@@ -846,8 +669,5 @@ namespace Dune
 
 
 } // namespace Dune
-
-// include utility header needed for deprecated makeFromVertices
-#include "utility/typefromvertexcount.hh"
 
 #endif // DUNE_GEOMETRY_TYPE_HH
