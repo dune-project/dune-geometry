@@ -316,27 +316,20 @@ namespace Dune
     typedef SubEntityIteratorBack<dimension> VertexIteratorBack;
     typedef SubEntityIteratorBack<0> ElementIteratorBack;
 
-    //! Get the number of Vertices
-    DUNE_DEPRECATED_MSG("nVertices(int) is deprecated, use nVertices(Dune::refinement{Intervals|Levels}(int))")
-    virtual int nVertices(int level) const = 0;
     /*!
      * \brief Get the number of Vertices
      *
      * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
      */
     virtual int nVertices(Dune::RefinementIntervals tag) const = 0;
-    //! Get a VertexIterator
-    DUNE_DEPRECATED_MSG("vBegin(int) is deprecated, use vBegin(Dune::refinement{Intervals|Levels}(int))")
-    VertexIterator vBegin(int level) const;
+
     /*!
      * \brief Get an VertexIterator
      *
      * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
      */
     VertexIterator vBegin(Dune::RefinementIntervals tag) const;
-    //! Get a VertexIterator
-    DUNE_DEPRECATED_MSG("vEnd(int) is deprecated, use vEnd(Dune::refinement{Intervals|Levels}(int))")
-    VertexIterator vEnd(int level) const;
+
     /*!
      * \brief Get an VertexIterator
      *
@@ -344,27 +337,20 @@ namespace Dune
      */
     VertexIterator vEnd(Dune::RefinementIntervals tag) const;
 
-    //! Get the number of Elements
-    DUNE_DEPRECATED_MSG("nElements(int) is deprecated, use nElements(Dune::refinement{Intervals|Levels}(int))")
-    virtual int nElements(int level) const = 0;
     /*!
      * \brief Get the number of Elements
      *
      * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
      */
     virtual int nElements(Dune::RefinementIntervals tag) const = 0;
-    //! Get an ElementIterator
-    DUNE_DEPRECATED_MSG("eBegin(int) is deprecated, use eBegin(Dune::refinement{Intervals|Levels}(int))")
-    ElementIterator eBegin(int level) const;
+
     /*!
      * \brief Get an ElementIterator
      *
      * \param tag RefinementIntervals object returned by either refinementIntervals() or refinementLevels()
      */
     ElementIterator eBegin(Dune::RefinementIntervals tag) const;
-    //! Get an ElementIterator
-    DUNE_DEPRECATED_MSG("eEnd(int) is deprecated, use eEnd(Dune::refinement{Intervals|Levels}(int))")
-    ElementIterator eEnd(int level) const;
+
     /*!
      * \brief Get an ElementIterator
      *
