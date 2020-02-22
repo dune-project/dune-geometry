@@ -3,8 +3,6 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENT_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENT_HH
 
-#include <dune/common/deprecated.hh>
-
 #include <dune/geometry/type.hh>
 
 namespace Dune {
