@@ -59,15 +59,6 @@ namespace Dune {
 
     }
 
-    /** \brief Construct composite quadrature rule
-     * \param quad Base quadrature rule.  Element type of this rule must be simplex
-     * \param refinement Number of uniform refinement steps
-     */
-    DUNE_DEPRECATED_MSG("CompositeQuadratureRule(QuadratureRule, int) is deprecated, use CompositeQuadratureRule(QuadratureRule, Dune::refinement{Intervals|Levels}(int))")
-    CompositeQuadratureRule(const Dune::QuadratureRule<ctype,dim>& quad, int refinement)
-        : CompositeQuadratureRule(quad, Dune::refinementLevels(refinement))
-    { }
-
   };
 
 }

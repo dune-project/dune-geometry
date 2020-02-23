@@ -1,5 +1,18 @@
 # Master (will become release 2.8)
 
+## Deprecations and removals
+
+- Remove code needed to use reference elements by reference.
+
+- Remove `GeometryType`'s deprecated member functions
+  `GeometryType::make...()`.
+
+- Remove deprecated constructor `GeometryType(unsigned dim)`.
+
+- Remove deprecated `CompositeQuadratureRule(QuadratureRule, int)`. Use
+  `CompositeQuadratureRule(QuadratureRule, Dune::refinement{Intervals|Levels}(int))`
+  instead.
+
 # Release 2.7
 
 - The reference elements have a new method `subEntities`. The result of

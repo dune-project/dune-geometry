@@ -8,8 +8,6 @@
 #include <iostream>
 #include <vector>
 
-// Also test the deprecated version
-#include <dune/common/deprecated.hh>
 #include <dune/geometry/type.hh>
 
 #include <dune/geometry/utility/typefromvertexcount.hh>
@@ -71,13 +69,6 @@ void testGuess(unsigned int dim, unsigned int vertices)
   Dune::GeometryType gt = Dune::geometryTypeFromVertexCount(dim, vertices);
   if (Dune::GeometryType(id,dim) != gt)
     DUNE_THROW(Dune::Exception, "Failed to guess the geometry type from the number of vertices.");
-
-  DUNE_NO_DEPRECATED_BEGIN
-  Dune::GeometryType gt2;
-  gt2.makeFromVertices(dim, vertices);
-  if (gt != gt2)
-    DUNE_THROW(Dune::Exception, "geometryTypeFromVertexCount and makeFromVertices return different type");
-  DUNE_NO_DEPRECATED_END
 }
 
 int main()
