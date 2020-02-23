@@ -187,12 +187,6 @@ namespace Dune
     using typename RefinementImp::ElementIterator;
     using typename RefinementImp::IndexVector;
 
-    //! Get the number of Vertices
-    DUNE_DEPRECATED_MSG("nVertices(int) is deprecated, use nVertices(Dune::refinement{Intervals|Levels})")
-    static int nVertices(int level)
-    {
-      return RefinementImp::nVertices(1<<level);
-    }
     /*!
      * \brief Get the number of Vertices
      *
@@ -202,12 +196,7 @@ namespace Dune
     {
       return RefinementImp::nVertices(tag.intervals());
     }
-    //! Get a VertexIterator
-    DUNE_DEPRECATED_MSG("vBegin(int) is deprecated, use vBegin(Dune::refinement{Intervals|Levels})")
-    static VertexIterator vBegin(int level)
-    {
-      return RefinementImp::vBegin(1<<level);
-    }
+
     /*!
      * \brief Get a VertexIterator
      *
@@ -217,12 +206,7 @@ namespace Dune
     {
       return RefinementImp::vBegin(tag.intervals());
     }
-    //! Get a VertexIterator
-    DUNE_DEPRECATED_MSG("nEnd(int) is deprecated, use vEnd(Dune::refinement{Intervals|Levels}(int))")
-    static VertexIterator vEnd(int level)
-    {
-      return RefinementImp::vEnd(1<<level);
-    }
+
     /*!
      * \brief Get a VertexIterator
      *
@@ -233,12 +217,6 @@ namespace Dune
       return RefinementImp::vEnd(tag.intervals());
     }
 
-    //! Get the number of Elements
-    DUNE_DEPRECATED_MSG("nElements(int) is deprecated, use nElements(Dune::refinement{Intervals|Levels}(int))")
-    static int nElements(int level)
-    {
-      return RefinementImp::nElements(1<<level);
-    }
     /*!
      * \brief Get the number of Elements
      *
@@ -248,12 +226,7 @@ namespace Dune
     {
       return RefinementImp::nElements(tag.intervals());
     }
-    //! Get an ElementIterator
-    DUNE_DEPRECATED_MSG("eBegin(int) is deprecated, use eBegin(Dune::refinement{Intervals|Levels}(int))")
-    static ElementIterator eBegin(int level)
-    {
-      return RefinementImp::eBegin(1<<level);
-    }
+
     /*!
      * \brief Get an ElementIterator
      *
@@ -263,12 +236,7 @@ namespace Dune
     {
       return RefinementImp::eBegin(tag.intervals());
     }
-    //! Get an ElementIterator
-    DUNE_DEPRECATED_MSG("eEnd(int) is deprecated, use eEnd(Dune::refinement{Intervals|Levels}(int))")
-    static ElementIterator eEnd(int level)
-    {
-      return RefinementImp::eEnd(1<<level);
-    }
+
     /*!
      * \brief Get an ElementIterator
      *

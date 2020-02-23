@@ -256,14 +256,12 @@ namespace Dune {
       return instance()._rule(t,p,qt);
     }
 
-    DUNE_NO_DEPRECATED_BEGIN
     //! @copydoc rule
     static const QuadratureRule& rule(const GeometryType::BasicType t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
     {
       GeometryType gt(t,dim);
       return instance()._rule(gt,p,qt);
     }
-    DUNE_NO_DEPRECATED_END
   };
 
 } // end namespace Dune

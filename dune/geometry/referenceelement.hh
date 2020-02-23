@@ -3,8 +3,6 @@
 #ifndef DUNE_GEOMETRY_REFERENCEELEMENT_HH
 #define DUNE_GEOMETRY_REFERENCEELEMENT_HH
 
-#include <dune/common/deprecated.hh>
-
 #include <dune/geometry/type.hh>
 
 namespace Dune {
@@ -21,10 +19,6 @@ namespace Dune {
     // forward declaration for constructing default reference element type
     template<typename ctype, int dim>
     class ReferenceElementImplementation;
-
-    // forward declaration for deprecation check reference element type
-    template<typename ctype, int dim>
-    class DeprecatedReferenceElement;
 
     // forward declaration for backwards compatibility conversion
     template<typename ctype, int dim>
@@ -285,17 +279,6 @@ namespace Dune {
       {
         return *_impl;
       }
-
-#ifndef DOXYGEN
-
-      DUNE_DEPRECATED_MSG("Capturing reference elements by reference is deprecated in DUNE 2.6. Please store a copy instead.")
-      operator const DeprecatedReferenceElement<ctype,dimension>&() const
-      {
-        return ReferenceElements<ctype,dimension>::deprecated(*this);
-      }
-
-#endif // DOXYGEN
-
 
       //! Compares for equality with another reference element.
       bool operator==(const ReferenceElement& r) const

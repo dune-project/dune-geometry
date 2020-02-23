@@ -438,7 +438,7 @@ namespace Dune
     template<typename T>
     struct DeprecatedReferenceElementTypeSignature
     {
-      DUNE_DEPRECATED_MSG("Dune::ReferenceElement<T,int> is deprecated, please use Dune::ReferenceElement<Geometry> (if you have a geometry), Dune::ReferenceElements<T,int>::ReferenceElement or Dune::Transitional::ReferenceElement<T,Dune::Dim<int>> instead. After Dune 2.6, you will be able to use Dune::ReferenceElement<T,Dune::Dim<int>>.") T check();
+      [[deprecated("Dune::ReferenceElement<T,int> is deprecated, please use Dune::ReferenceElement<Geometry> (if you have a geometry), Dune::ReferenceElements<T,int>::ReferenceElement or Dune::Transitional::ReferenceElement<T,Dune::Dim<int>> instead. After Dune 2.6, you will be able to use Dune::ReferenceElement<T,Dune::Dim<int>>.")]] T check();
     };
 
   } // namespace Impl
