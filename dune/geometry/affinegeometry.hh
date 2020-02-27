@@ -232,6 +232,7 @@ namespace Dune
       template< int n >
       static bool cholesky_L ( const FieldMatrix< ctype, n, n > &A, FieldMatrix< ctype, n, n > &ret, const bool checkSingular = false )
       {
+        using std::sqrt;
         for( int i = 0; i < n; ++i )
         {
           ctype &rii = ret[ i ][ i ];
