@@ -28,7 +28,7 @@ namespace Dune {
   class JacobiNQuadratureRule;
 
   template<typename ct>
-  using Jacobi1QuadratureRule1D = JacobiNQuadratureRule<ct,1>;
+  using JacobiNQuadratureRule1D = JacobiNQuadratureRule<ct,1>;
 
   template<typename ct>
   class JacobiNQuadratureRule<ct,1> : public QuadratureRule<ct,1>
