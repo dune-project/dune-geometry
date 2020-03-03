@@ -275,6 +275,7 @@ namespace Dune {
 #include "quadraturerules/gaussquadrature.hh"
 #include "quadraturerules/jacobi1quadrature.hh"
 #include "quadraturerules/jacobi2quadrature.hh"
+#include "quadraturerules/jacobiNquadrature.hh"
 // 3d rules
 #include "quadraturerules/prismquadrature.hh"
 // general rules
@@ -444,6 +445,7 @@ namespace Dune {
   extern template class GaussQuadratureRule<double, 1>;
   extern template class Jacobi1QuadratureRule<double, 1>;
   extern template class Jacobi2QuadratureRule<double, 1>;
+  extern template class JacobiNQuadratureRule<double, 1>;
   extern template class PrismQuadratureRule<double, 3>;
   extern template class SimplexQuadratureRule<double, 2>;
   extern template class SimplexQuadratureRule<double, 3>;

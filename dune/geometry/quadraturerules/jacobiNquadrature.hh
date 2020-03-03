@@ -24,8 +24,14 @@ namespace Dune {
    *
    */
 
+  template<typename ct, int dim>
+  class JacobiNQuadratureRule;
+
   template<typename ct>
-  class JacobiNQuadratureRule1D : public QuadratureRule<ct,1>
+  using Jacobi1QuadratureRule1D = JacobiNQuadratureRule<ct,1>;
+
+  template<typename ct>
+  class JacobiNQuadratureRule<ct,1> : public QuadratureRule<ct,1>
   {
   public:
     // compile time parameters
@@ -40,7 +46,7 @@ namespace Dune {
     template< class ctype, int dimension>
     friend class TensorProductQuadratureRule;
 
-    explicit JacobiNQuadratureRule1D (int const order, int const alpha=0)
+    explicit JacobiNQuadratureRule (int const order, int const alpha=0)
       : Rule( GeometryTypes::line )
     {
       if (unsigned(order) > maxOrder())

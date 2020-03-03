@@ -20,6 +20,7 @@ namespace Dune {
   // explicit template instatiation
   template class Jacobi1QuadratureRule<double, 1>;
   template class Jacobi2QuadratureRule<double, 1>;
+  template class JacobiNQuadratureRule<double, 1>;
   template class GaussQuadratureRule<double, 1>;
   template class GaussLobattoQuadratureRule<double, 1>;
   template class PrismQuadratureRule<double, 3>;
