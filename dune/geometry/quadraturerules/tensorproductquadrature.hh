@@ -12,7 +12,7 @@
 #include <bitset>
 
 #include <dune/geometry/type.hh>
-#include <dune/geometry/quadraturerules/jacobi_n_0.hh>
+#include <dune/geometry/quadraturerules/jacobiNquadrature.hh>
 
 namespace Dune
 {
