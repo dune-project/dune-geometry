@@ -24,7 +24,7 @@ try:
             self.method_ = method
             self.vertices_ = numpy.array(vertices)
             # here an error will occur if the method is invalid - how to catch?
-            self.quadrature_ = getattr(quad,method)(order)
+            self.quadrature_ = getattr(quad,method)
             try:
                 self.points_ = transform.transform(self.quadrature_.points.T, self.vertices_)
             except ValueError:
@@ -63,23 +63,23 @@ try:
         if gt.isLine:
             vertices = [0,1]
             quad = qp.line_segment
-            from quadpy.ncube import tools as transform
+            from quadpy.ncube import transform
         elif gt.isTriangle:
             vertices = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]]
             quad = qp.triangle
-            from quadpy.nsimplex import tools as transform
+            from quadpy.nsimplex import transform
         elif gt.isQuadrilateral:
             vertices = qp.quadrilateral.rectangle_points([0.0, 1.0], [0.0, 1.0])
             quad = qp.quadrilateral
-            from quadpy.ncube import tools as transform
+            from quadpy.ncube import transform
         elif gt.isTetrahedron:
             vertices = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
             quad = qp.tetrahedron
-            from quadpy.nsimplex import tools as transform
+            from quadpy.nsimplex import transform
         elif gt.isHexahedron:
             vertices = qp.hexahedron.cube_points([0.0, 1.0], [0.0, 1.0], [0.0, 1.0])
             quad = qp.hexahedron
-            from quadpy.ncube import tools as transform
+            from quadpy.ncube import transform
         elif gt.isPyramid:
             vertices = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0] [0.0, 0.0, 1.0]]
             quad = qp.pyramid
