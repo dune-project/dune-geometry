@@ -31,6 +31,8 @@ namespace Dune
   template <class TestGeometry>
   bool checkGeometry ( const TestGeometry& geometry )
   {
+    using std::sqrt;
+    using std::abs;
     bool pass = true;
 
     ////////////////////////////////////////////////////////////////
@@ -226,12 +228,12 @@ namespace Dune
           for( int k = 0; k < coorddim; ++k )
             jtj[ i ][ j ] += jtAsFieldMatrix[ i ][ k ] * jtAsFieldMatrix[ j ][ k ];
 
-      if( std::abs( std::sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > tolerance ) {
+      if( abs( sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > tolerance ) {
         std::cerr << "Error: integrationElement is not consistent with jacobianTransposed." << std::endl;
         pass = false;
       }
       if (geometry.affine())
-        if( std::abs( geometry.volume() - refElement.volume()*geometry.integrationElement( x ) ) > tolerance ) {
+        if( abs( geometry.volume() - refElement.volume()*geometry.integrationElement( x ) ) > tolerance ) {
           std::cerr << "Error: volume is not consistent with jacobianTransposed." << std::endl;
           pass = false;
         }
