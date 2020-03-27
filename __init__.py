@@ -1,4 +1,4 @@
-from .._geometry import *
+from ._geometry import *
 from ._referenceelements import *
 import numpy
 
