@@ -10,8 +10,7 @@
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
 
-#include <dune/python/common/fvector.hh>
-#include <dune/python/common/fmatrix.hh>
+#include <dune/python/common/fvecmatregistry.hh>
 
 #include <dune/python/geometry/quadraturerules.hh>
 #include <dune/python/pybind11/pybind11.h>
@@ -101,8 +100,8 @@ namespace Dune
 
       static const std::size_t dimension = RefElement::dimension;
       typedef typename RefElement::ctype ctype;
-      registerFieldVector<ctype,dimension>( module );
-      registerFieldMatrix<ctype,dimension,dimension>( module );
+      registerFieldVecMat<FieldVector<ctype,dimension>>::apply();
+      registerFieldVecMat<FieldMatrix<ctype,dimension,dimension>>::apply();
 
       cls.def_property_readonly( "dimension", [] ( pybind11::object ) { return pybind11::int_( RefElement::dimension ); } );
 
