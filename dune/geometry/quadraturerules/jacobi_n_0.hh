@@ -46,7 +46,7 @@ namespace Dune {
       if (unsigned(order) > maxOrder())
         DUNE_THROW(QuadratureOrderOutOfRange, "Quadrature rule " << order << " not supported!");
       auto&& rule = decideRule(order,alpha);
-      for( auto qpoint : rule )
+      for( const auto& qpoint : rule )
         this->push_back(qpoint);
       this->delivered_order = 2*rule.size()-1;
 
@@ -88,7 +88,7 @@ namespace Dune {
                     auto&& rule = QuadratureRules<ct,1>::rule(GeometryTypes::line, degree, QuadratureType::GaussJacobi_1_0);
                     QuadratureRule<ct,1> quadratureRule;
                     quadratureRule.reserve(rule.size());
-                    for( auto qpoint : rule )
+                    for( const auto& qpoint : rule )
                       quadratureRule.push_back(QuadraturePoint<ct,1>(qpoint.position(),ct(0.5)*qpoint.weight()));
                     return quadratureRule;
                   }
@@ -97,7 +97,7 @@ namespace Dune {
                     auto&& rule = QuadratureRules<ct,1>::rule(GeometryTypes::line, degree, QuadratureType::GaussJacobi_2_0);
                     QuadratureRule<ct,1> quadratureRule;
                     quadratureRule.reserve(rule.size());
-                    for( auto qpoint : rule )
+                    for( const auto& qpoint : rule )
                       quadratureRule.push_back(QuadraturePoint<ct,1>(qpoint.position(),ct(0.25)*qpoint.weight()));
                     return quadratureRule;
                   }
