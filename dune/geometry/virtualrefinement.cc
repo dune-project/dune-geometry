@@ -522,8 +522,8 @@ namespace Dune
       topologyId &= ~1;
       coerceToId &= ~1;
 
-      const unsigned idSimplex = GeometryTypes::simplex(dimension).id() & ~1;
-      const unsigned idCube = GeometryTypes::cube(dimension).id() & ~1;
+      constexpr unsigned idSimplex = GeometryTypes::simplex(dimension).id() & ~1;
+      constexpr unsigned idCube = GeometryTypes::cube(dimension).id() & ~1;
 
       switch( topologyId )
       {
@@ -573,7 +573,7 @@ namespace Dune
       topologyId &= ~1;
       coerceToId &= ~1;
 
-      const unsigned idSimplex = GeometryTypes::simplex(dimension).id() & ~1;
+      constexpr unsigned idSimplex = GeometryTypes::simplex(dimension).id() & ~1;
 
       if (topologyId == 0 && coerceToId == 0)
         return VirtualRefinementImp< idSimplex, CoordType, idSimplex, dimension>::instance();
@@ -595,10 +595,10 @@ namespace Dune
       topologyId &= ~1;
       coerceToId &= ~1;
 
-      const unsigned idSimplex = GeometryTypes::simplex(dimension).id() & ~1;
-      const unsigned idCube = GeometryTypes::cube(dimension).id() & ~1;
-      const unsigned idPrism = GeometryTypes::prism.id() & ~1;
-      const unsigned idPyramid = GeometryTypes::pyramid.id() & ~1;
+      constexpr unsigned idSimplex = GeometryTypes::simplex(dimension).id() & ~1;
+      constexpr unsigned idCube = GeometryTypes::cube(dimension).id() & ~1;
+      constexpr unsigned idPrism = GeometryTypes::prism.id() & ~1;
+      constexpr unsigned idPyramid = GeometryTypes::pyramid.id() & ~1;
 
       switch( topologyId )
       {
