@@ -1,7 +1,7 @@
 add_python_targets(geometry
   __init__
   _referenceelements
+  _geometry
   quadpy
 )
-dune_add_pybind11_module(NAME _geometry)
-set_property(TARGET _geometry PROPERTY LINK_LIBRARIES dunecommon dunegeometry APPEND)
+dune_symlink_to_source_files(FILES _geometry.cc)

@@ -1,5 +1,5 @@
 from ..generator.generator import SimpleGenerator
-from dune.common.hashit import hashIt
+from dune.utility import hashIt
 def module(dim):
     typeName = "Dune::Geo::ReferenceElement<Dune::Geo::ReferenceElementImplementation<double," + str(dim) + "> >"
     includes = ["dune/python/geometry/referenceelements.hh"]

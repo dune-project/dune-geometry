@@ -13,7 +13,7 @@
 #include <dune/python/common/fvecmatregistry.hh>
 
 #include <dune/python/geometry/quadraturerules.hh>
-#include <dune/python/pybind11/pybind11.h>
+#include <pybind11/pybind11.h>
 
 namespace Dune
 {
