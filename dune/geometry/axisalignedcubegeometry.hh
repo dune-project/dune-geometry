@@ -99,6 +99,8 @@ namespace Dune {
         upper_(upper),
         axes_()
     {
+      static_assert(dim==coorddim, "Use constructor taking axes as additional argument");
+
       // all 'true', but is never actually used
       axes_ = (1<<coorddim)-1;
     }
@@ -129,7 +131,9 @@ namespace Dune {
      */
     AxisAlignedCubeGeometry(const Dune::FieldVector<ctype,coorddim> lower)
       : lower_(lower)
-    {}
+    {
+        static_assert(dim==0, "Only works for dim==0");
+    }
 
     /** \brief Assignment operator */
     AxisAlignedCubeGeometry& operator=(const AxisAlignedCubeGeometry& other)
