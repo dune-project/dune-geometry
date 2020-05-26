@@ -154,7 +154,7 @@ namespace Dune {
     GlobalCoordinate global(const LocalCoordinate& local) const
     {
       GlobalCoordinate result;
-      if (dim == coorddim) {        // fast case
+      if constexpr (dim == coorddim) {        // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = lower_[i] + local[i]*(upper_[i] - lower_[i]);
       } else if (dim == 0) {              // a vertex -- the other fast case
@@ -173,7 +173,7 @@ namespace Dune {
     LocalCoordinate local(const GlobalCoordinate& global) const
     {
       LocalCoordinate result;
-      if (dim == coorddim) {        // fast case
+      if constexpr (dim == coorddim) {        // fast case
         for (size_t i=0; i<dim; i++)
           result[i] = (global[i] - lower_[i]) / (upper_[i] - lower_[i]);
       } else if (dim != 0) {          // slow case
@@ -221,7 +221,7 @@ namespace Dune {
     GlobalCoordinate center() const
     {
       GlobalCoordinate result;
-      if (dim==0)
+      if constexpr (dim==0)
         result = lower_;
       else {
         // Since lower_==upper_ for unused coordinates, this always does the right thing
@@ -241,7 +241,7 @@ namespace Dune {
     GlobalCoordinate corner(int k) const
     {
       GlobalCoordinate result;
-      if (dim == coorddim) {         // fast case
+      if constexpr (dim == coorddim) {         // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = (k & (1<<i)) ? upper_[i] : lower_[i];
       } else if (dim == 0) {         // vertex
@@ -267,7 +267,7 @@ namespace Dune {
     Volume volume() const
     {
       ctype vol = 1;
-      if (dim == coorddim) {         // fast case
+      if constexpr (dim == coorddim) {         // fast case
         for (size_t i=0; i<dim; i++)
           vol *= upper_[i] - lower_[i];
         // do nothing if dim == 0
@@ -301,7 +301,7 @@ namespace Dune {
     // jacobianTransposed: slow case --> dense matrix
     void jacobianTransposed ( FieldMatrix<ctype,dim,coorddim> &jacobianTransposed ) const
     {
-      if (dim==0)
+      if constexpr (dim==0)
           return;
 
       size_t lc = 0;
@@ -320,7 +320,7 @@ namespace Dune {
     // jacobianInverseTransposed: slow case --> dense matrix
     void jacobianInverseTransposed ( FieldMatrix<ctype,coorddim,dim> &jacobianInverseTransposed ) const
     {
-      if (dim==0)
+      if constexpr (dim==0)
           return;
 
       size_t lc = 0;
