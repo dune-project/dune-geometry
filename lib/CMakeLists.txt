@@ -1,4 +1,4 @@
 dune_add_library(dunegeometry
   _DUNE_TARGET_OBJECTS:geometry_
   _DUNE_TARGET_OBJECTS:quadraturerules_
-  ADD_LIBS ${DUNE_LIBS})
+  ADD_LIBS ${dune-common_LIBRARIES})
