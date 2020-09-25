@@ -88,6 +88,14 @@ namespace Dune {
         DiagonalMatrix<ctype,dim>,
         FieldMatrix<ctype,coorddim,dim> >::type JacobianInverseTransposed;
 
+    /** \brief Default constructor
+     */
+    AxisAlignedCubeGeometry()
+      : lower_(0.0),
+        upper_(1.0),
+        axes_()
+    {}
+
     /** \brief Constructor from a lower left and an upper right corner
 
         \note Only for dim==coorddim

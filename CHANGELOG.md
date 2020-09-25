@@ -5,6 +5,7 @@
   `DUNE_ENABLE_PYTHONBINDINGS` needs to be turned on (default is off).
   Furthermore, flags for either shared library or position independent code
   needs to be used.
+- `AxisAlignedCubeGeometry` now has a default constructor.
 
 ## Deprecations and removals
 
