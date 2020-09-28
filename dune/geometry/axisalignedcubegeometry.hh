@@ -131,15 +131,6 @@ namespace Dune {
       : lower_(lower)
     {}
 
-    /** \brief Assignment operator */
-    AxisAlignedCubeGeometry& operator=(const AxisAlignedCubeGeometry& other)
-    {
-      lower_                     = other.lower_;
-      upper_                     = other.upper_;
-      axes_                      = other.axes_;
-      return *this;
-    }
-
     /** \brief Type of the cube.  Here: a hypercube of the correct dimension */
     GeometryType type() const
     {
