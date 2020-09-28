@@ -13,7 +13,6 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/diagonalmatrix.hh>
-#include <dune/common/unused.hh>
 
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
@@ -89,6 +88,14 @@ namespace Dune {
         DiagonalMatrix<ctype,dim>,
         FieldMatrix<ctype,coorddim,dim> >::type JacobianInverseTransposed;
 
+    /** \brief Default constructor
+     */
+    AxisAlignedCubeGeometry()
+      : lower_(0.0),
+        upper_(1.0),
+        axes_()
+    {}
+
     /** \brief Constructor from a lower left and an upper right corner
 
         \note Only for dim==coorddim
@@ -99,6 +106,8 @@ namespace Dune {
         upper_(upper),
         axes_()
     {
+      static_assert(dim==coorddim, "Use constructor taking axes as additional argument");
+
       // all 'true', but is never actually used
       axes_ = (1<<coorddim)-1;
     }
@@ -129,7 +138,9 @@ namespace Dune {
      */
     AxisAlignedCubeGeometry(const Dune::FieldVector<ctype,coorddim> lower)
       : lower_(lower)
-    {}
+    {
+        static_assert(dim==0, "Only works for dim==0");
+    }
 
     /** \brief Type of the cube.  Here: a hypercube of the correct dimension */
     GeometryType type() const
@@ -141,7 +152,7 @@ namespace Dune {
     GlobalCoordinate global(const LocalCoordinate& local) const
     {
       GlobalCoordinate result;
-      if (dim == coorddim) {        // fast case
+      if constexpr (dim == coorddim) {        // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = lower_[i] + local[i]*(upper_[i] - lower_[i]);
       } else if (dim == 0) {              // a vertex -- the other fast case
@@ -160,7 +171,7 @@ namespace Dune {
     LocalCoordinate local(const GlobalCoordinate& global) const
     {
       LocalCoordinate result;
-      if (dim == coorddim) {        // fast case
+      if constexpr (dim == coorddim) {        // fast case
         for (size_t i=0; i<dim; i++)
           result[i] = (global[i] - lower_[i]) / (upper_[i] - lower_[i]);
       } else if (dim != 0) {          // slow case
@@ -173,7 +184,7 @@ namespace Dune {
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
-    JacobianTransposed jacobianTransposed(DUNE_UNUSED const LocalCoordinate& local) const
+    JacobianTransposed jacobianTransposed([[maybe_unused]] const LocalCoordinate& local) const
     {
       JacobianTransposed result;
 
@@ -185,7 +196,7 @@ namespace Dune {
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
-    JacobianInverseTransposed jacobianInverseTransposed(DUNE_UNUSED const LocalCoordinate& local) const
+    JacobianInverseTransposed jacobianInverseTransposed([[maybe_unused]] const LocalCoordinate& local) const
     {
       JacobianInverseTransposed result;
 
@@ -199,7 +210,7 @@ namespace Dune {
     /** \brief Return the integration element, i.e., the determinant term in the integral
                transformation formula
      */
-    ctype integrationElement(DUNE_UNUSED const LocalCoordinate& local) const
+    ctype integrationElement([[maybe_unused]] const LocalCoordinate& local) const
     {
       return volume();
     }
@@ -208,7 +219,7 @@ namespace Dune {
     GlobalCoordinate center() const
     {
       GlobalCoordinate result;
-      if (dim==0)
+      if constexpr (dim==0)
         result = lower_;
       else {
         // Since lower_==upper_ for unused coordinates, this always does the right thing
@@ -228,7 +239,7 @@ namespace Dune {
     GlobalCoordinate corner(int k) const
     {
       GlobalCoordinate result;
-      if (dim == coorddim) {         // fast case
+      if constexpr (dim == coorddim) {         // fast case
         for (size_t i=0; i<coorddim; i++)
           result[i] = (k & (1<<i)) ? upper_[i] : lower_[i];
       } else if (dim == 0) {         // vertex
@@ -254,7 +265,7 @@ namespace Dune {
     Volume volume() const
     {
       ctype vol = 1;
-      if (dim == coorddim) {         // fast case
+      if constexpr (dim == coorddim) {         // fast case
         for (size_t i=0; i<dim; i++)
           vol *= upper_[i] - lower_[i];
         // do nothing if dim == 0
@@ -288,7 +299,7 @@ namespace Dune {
     // jacobianTransposed: slow case --> dense matrix
     void jacobianTransposed ( FieldMatrix<ctype,dim,coorddim> &jacobianTransposed ) const
     {
-      if (dim==0)
+      if constexpr (dim==0)
           return;
 
       size_t lc = 0;
@@ -307,7 +318,7 @@ namespace Dune {
     // jacobianInverseTransposed: slow case --> dense matrix
     void jacobianInverseTransposed ( FieldMatrix<ctype,coorddim,dim> &jacobianInverseTransposed ) const
     {
-      if (dim==0)
+      if constexpr (dim==0)
           return;
 
       size_t lc = 0;
