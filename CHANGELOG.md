@@ -6,6 +6,12 @@
   Furthermore, flags for either shared library or position independent code
   needs to be used.
 
+- The class `AxisAlignedCubeGeometry` has always had a constructor taking
+  two arguments `FieldVector<ctype,coorddim> lower` and `FieldVector<ctype,coorddim> upper`.
+  This constructor was always to be used in the case `dim==coorddim` only,
+  but this was never enforced.  Starting with version 2.8, compilation
+  fails with an error message if this constructor is used with `dim!=coorddim`.
+
 ## Deprecations and removals
 
 - Remove code needed to use reference elements by reference.

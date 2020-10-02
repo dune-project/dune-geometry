@@ -397,19 +397,22 @@ namespace Dune
 
         assert(codimension == 0 or codimension == dimension);
 
-        if (codimension == 0) {
+        if constexpr (codimension == 0) {
           for (size_t j = 0; j < dimension; j++)
           {
             lower[j] = double(intCoords[j])     / double(_nIntervals);
             upper[j] = double(intCoords[j] + 1) / double(_nIntervals);
           }
+
+          return typename RefinementImp<dimension,
+                                        CoordType>::template Codim<codimension>::Geometry(lower,upper);
         } else {
           for (size_t j = 0; j < dimension; j++)
             lower[j] = upper[j] = double(intCoords[j]) / double(_nIntervals);
-        }
 
-        return typename RefinementImp<dimension,
-            CoordType>::template Codim<codimension>::Geometry(lower,upper);
+          return typename RefinementImp<dimension,
+                                        CoordType>::template Codim<codimension>::Geometry(lower,upper,std::bitset<dimension>(0));
+        }
       }
 
 #endif // DOXYGEN
