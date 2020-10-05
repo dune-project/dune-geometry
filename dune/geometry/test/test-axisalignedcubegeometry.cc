@@ -58,8 +58,11 @@ void testCodimZero(int& result)
 
   FieldVector<double,coorddim> lower(0);
   FieldVector<double,coorddim> upper(1);
+  std::bitset<coorddim> axes(0);
+  for (int i=0; i<dim; i++)
+    axes[i] = true;
 
-  ElementGeometry geometry( lower, upper );
+  ElementGeometry geometry( lower, upper, axes );
 
   if (checkGeometry(geometry))
     pass(result);
@@ -69,7 +72,7 @@ void testCodimZero(int& result)
   testBasicGeometryAffine(geometry, result);
 
   // test assignability
-  ElementGeometry geometry2( lower, upper );
+  ElementGeometry geometry2( lower, upper, axes );
   geometry2 = geometry;
 }
 

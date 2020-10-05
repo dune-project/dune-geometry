@@ -99,6 +99,7 @@ namespace Dune {
         upper_(upper),
         axes_()
     {
+      static_assert(dim==coorddim, "Use this constructor only if dim==coorddim!");
       // all 'true', but is never actually used
       axes_ = (1<<coorddim)-1;
     }
