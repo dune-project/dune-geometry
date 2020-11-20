@@ -16,7 +16,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="dune-geometry",
-    version="2.8.dev314",
+    version="2.8.20201123",
     author="The Dune Core developers",
     author_email="dune@lists.dune-project.org",
     description="Geometry Transformations, Reference Elements and Quadrature Rules",
@@ -25,13 +25,17 @@ setup(
     url="https://gitlab.dune-project.org/core/dune-geometry",
     packages=find_packages(where="python"),
     package_dir={"": "python"},
-    install_requires=[],
+    install_requires=["dune-common"],
     cmake_args=['-DBUILD_SHARED_LIBS=TRUE',
                 '-DDUNE_ENABLE_PYTHONBINDINGS=TRUE',
+                '-DDUNE_PYTHON_INSTALL_LOCATION=none',
                 '-DDUNE_GRID_GRIDTYPE_SELECTOR=ON',
                 '-DALLOW_CXXFLAGS_OVERWRITE=ON',
                 '-DUSE_PTHREADS=ON',
                 '-DCMAKE_BUILD_TYPE=Release',
                 '-DCMAKE_DISABLE_FIND_PACKAGE_LATEX=TRUE',
-                '-DCMAKE_DISABLE_DOCUMENTATION=TRUE']
+                '-DCMAKE_DISABLE_DOCUMENTATION=TRUE',
+                '-DINKSCAPE=FALSE',
+                '-DCMAKE_INSTALL_RPATH='+sys.prefix+'/lib/',
+                ]
 )
