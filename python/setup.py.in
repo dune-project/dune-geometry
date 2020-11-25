@@ -8,5 +8,5 @@ setup(name="dune.geometry",
     packages = find_packages(),
     zip_safe = 0,
     package_data = {'': ['*.so']},
-    install_requires = ['portalocker']
+    install_requires = []
   )
