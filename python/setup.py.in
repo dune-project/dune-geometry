@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 
-setup(name="dune.geometry",
+setup(name="${ProjectName}",
     namespace_packages=['dune'],
-    description="Python lib for dune",
-    version="${DUNE_GEOMETRY_VERSION}",
-    author="Andreas Dedner and Martin Nolte",
+    description="${ProjectDescription}",
+    version="${ProjectVersionString}",
+    author="${ProjectAuthor}",
+    author_email="${ProjectAuthorEmail}",
     packages = find_packages(),
     zip_safe = 0,
     package_data = {'': ['*.so']},
-    install_requires = []
+    install_requires = "${ProjectPythonRequires}".split(' ')
   )
