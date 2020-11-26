@@ -1,6 +1,6 @@
 from skbuild import setup
 
-from dune.common.dunepackaging import metaData
+from dune.dunepackaging import metaData
 
 print(metaData()[1])
 
