@@ -600,6 +600,75 @@ namespace Dune {
 
 
 
+namespace Dune {
+
+  //! \internal Helper template for the initialization of the quadrature rules
+  template<typename ct,
+      bool fundamental = std::numeric_limits<ct>::is_specialized>
+  struct GaussRadauRightQuadratureInitHelper;
+  template<typename ct>
+  struct GaussRadauRightQuadratureInitHelper<ct, true> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+  template<typename ct>
+  struct GaussRadauRightQuadratureInitHelper<ct, false> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+
+  /** \brief Gauss-Radau quadrature, including the left endpoint of the interval
+      \ingroup Quadrature
+   */
+  template<typename ct>
+  class GaussRadauRightQuadratureRule1D :
+    public QuadratureRule<ct,1>
+  {
+  public:
+    /** \brief The space dimension */
+    enum { dim=1 };
+
+    /** \brief The highest quadrature order available */
+    enum { highest_order=10};
+
+    ~GaussRadauRightQuadratureRule1D(){}
+  private:
+    friend class QuadratureRuleFactory<ct,dim>;
+    GaussRadauRightQuadratureRule1D (int p)
+      : QuadratureRule<ct,1>(GeometryTypes::line)
+    {
+      //! set up quadrature of given order in d dimensions
+      std::vector< FieldVector<ct, dim> > _points;
+      std::vector< ct > _weight;
+
+      int deliveredOrder_;
+
+      GaussRadauLeftQuadratureInitHelper<ct>::init
+        (p, _points, _weight, deliveredOrder_);
+
+      this->delivered_order = deliveredOrder_;
+      assert(_points.size() == _weight.size());
+      for (size_t i = 0; i < _points.size(); i++)
+        this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
+    }
+  };
+
+#ifndef DOXYGEN
+  extern template GaussRadauRightQuadratureRule1D<float>::GaussRadauRightQuadratureRule1D(int);
+  extern template GaussRadauRightQuadratureRule1D<double>::GaussRadauRightQuadratureRule1D(int);
+#endif // !DOXYGEN
+
+} // namespace Dune
+
+#define DUNE_INCLUDING_IMPLEMENTATION
+#include "quadraturerules/gaussradauright_imp.hh"
+
+
+
 
 #include "quadraturerules/tensorproductquadrature.hh"
 
@@ -849,6 +918,8 @@ namespace Dune {
           return JacobiNQuadratureRule1D<ctype>::maxOrder();
         case QuadratureType::GaussRadauLeft :
           return GaussRadauLeftQuadratureRule1D<ctype>::highest_order;
+        case QuadratureType::GaussRadauRight :
+          return GaussRadauRightQuadratureRule1D<ctype>::highest_order;
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
@@ -872,6 +943,8 @@ namespace Dune {
           return JacobiNQuadratureRule1D<ctype>(p);
         case QuadratureType::GaussRadauLeft :
           return GaussRadauLeftQuadratureRule1D<ctype>(p);
+        case QuadratureType::GaussRadauRight :
+          return GaussRadauRightQuadratureRule1D<ctype>(p);
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
