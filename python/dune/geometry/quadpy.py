@@ -80,7 +80,7 @@ try:
             quad = qp.hexahedron
             from quadpy.ncube import transform
         elif gt.isPyramid:
-            vertices = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0] [0.0, 0.0, 1.0]]
+            vertices = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
             quad = qp.pyramid
             raise ValueError("prism quadratures not yet fully supported")
         elif gt.isPrism:
