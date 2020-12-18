@@ -8,8 +8,8 @@ DEPENDENCIES=@REQUIRES@
 
 Name: @PACKAGE_NAME@
 Version: @VERSION@
-Description: DUNE (Distributed and Unified Numerics Environment) geometry module
-URL: http://dune-project.org/
+Description: @DESCRIPTION@
+URL: @URL@
 Requires: ${DEPENDENCIES}
 Libs: -L${libdir} -ldunegeometry
 Cflags: -I${includedir}
