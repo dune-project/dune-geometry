@@ -7,7 +7,7 @@ file_search_maxima: append(["$$$.{mac,max}"],file_search_maxima);
 
 load(orthopoly)$
 load(stringproc)$
-load(writequad2)$
+load(writequad_old)$
 
 fpprec: 100$
 /*maxp: 61$*/
@@ -32,18 +32,18 @@ weight(n,a,b,xx) := A(n,a,b)/A(n-1,a,b)*gamma_n(n-1,a,b)/(at(ratexpand(jacobi_p(
   write files
 */
 
-write_quad("jacobi_1_0_imp2.hh", "Jacobi1", "jacobian.mac",
+write_quad("jacobi_1_0_imp_old.hh", "Jacobi1", "jacobian.mac",
 		   lambda([i],jacobi(i,1,0)),
            lambda([i,p],weight(i,1,0,p)),
-		   maxp, 0)$
-write_quad("jacobi_2_0_imp2.hh", "Jacobi2", "jacobian.mac",
+		   maxp)$
+write_quad("jacobi_2_0_imp_old.hh", "Jacobi2", "jacobian.mac",
 		   lambda([i],jacobi(i,2,0)),
            lambda([i,p],weight(i,2,0,p)),
-           maxp, 0)$
-write_quad("gauss_imp2.hh", "Gauss", "jacobian.mac",
+           maxp)$
+write_quad("gauss_imp_old.hh", "Gauss", "jacobian.mac",
 		   lambda([i],jacobi(i,0,0)),
            lambda([i,p],weight(i,0,0,p)),
-           maxp, 0)$
+           maxp)$
 
 /*
  * Local variables:

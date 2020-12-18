@@ -6,7 +6,7 @@
 
 namespace Dune {
 
-  template GaussRadauLeftQuadratureRule1D<float>::GaussRadauLeftQuadratureRule1D(int);
-  template GaussRadauLeftQuadratureRule1D<double>::GaussRadauLeftQuadratureRule1D(int);
+  template GaussRadauRightQuadratureRule1D<float>::GaussRadauRightQuadratureRule1D(int);
+  template GaussRadauRightQuadratureRule1D<double>::GaussRadauRightQuadratureRule1D(int);
 
 } // namespace Dune
