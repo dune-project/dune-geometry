@@ -60,9 +60,11 @@ for delivered_order: 0 thru max_order do block([],
 ",n_-1, w)
        ),
         printf(fd,"      break;
+
 ")
-    ) else printf(fd, "    case ~d :
-", delivered_order)
+    ) else printf(fd, "    // order ~d,~d
+    case ~d :
+", delivered_order, delivered_order+1, delivered_order)
 ), 
 
 printf(fd,"    default :
@@ -113,9 +115,11 @@ for delivered_order: 0 thru max_order do block([],
 ",n_-1, w)
        ),
         printf(fd,"      break;
+
 ")
-    ) else printf(fd, "    case ~d :
-", delivered_order)
+    ) else printf(fd, "    // order ~d,~d
+    case ~d :
+", delivered_order, delivered_order+1, delivered_order)
 ), 
 
 printf(fd,"    default :
