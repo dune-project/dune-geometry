@@ -2,9 +2,33 @@ load(to_poly_solve)$
 
 epsilon: 1e-110$
 
-write_quad(file, name, scriptname, abscissae_generator, weights_generator, max_order, num_endpoints) :=
-block([i,N,n_,points,p,w,fd],
+
+/*
+  write_quad computes the points and weights for quadrature rules and writes. 
+  It writes c++ code to initialize the quadrature rules in quadraturerules.hh to a file 
+  The resulting quadrature rule is defined for the reference interval [0,1]
+  
+  Arguments: 
+    file: The file to write to
+    name: The name of the quadrature rule. This script will define <name>QuadratureInitHelper::init(....)
+    scriptname: The name of the script calling this function
+    
+    points_generator: This is an expression which takes one argument n and yields a polynomial of order n
+          whose roots are the quadrature points in the interval [-1, 1].
+    weights_generator: This is an expression which takes two arguments n, xx and yields the weight of point xx in the rule with n points 
+    max_order: Generate all rules up to and including max_order.
+          The quadrature is assumed to be optimal, i.e. the order of accuracy is 2*n-1-e, where n is the total number of points, and e is the number of fixed endpoints
+    num_endpoints: The number of endpoints that are included in the quadrature rule.
+          Gauss-Legendre type quadratures don't include the enpoints of the interval, thus e = 0,
+          Gauss-Lobatto quadratures include both endpoints, thus, e = 2,
+          and Gauss-Radau quadratures include only one endpoints (either left or right), thus e = 1
+    
+*/
+write_quad(file, name, scriptname, points_generator, weights_generator, max_order, num_endpoints) :=
+block([delivered_order,twice_free_points,free_points,num_points,points,weights,S,i,p,w,fd],
+
 fd: openw(file),
+
 printf(fd, "// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi: set et ts=4 sw=2 sts=2:
 //
@@ -30,39 +54,40 @@ namespace Dune {
     {
 ", scriptname, name),
 
-
 for delivered_order: 0 thru max_order do block([], 
-    two_r: delivered_order - num_endpoints + 1,
-    if mod(two_r, 2) = 0 then block([],
-        printf(fd, "    case ~d :
+  twice_free_points: delivered_order - num_endpoints + 1,
+  if mod(twice_free_points, 2) = 0 then block([],
+    printf(fd, "    case ~d :
 ", delivered_order),
-        r: two_r / 2, /* number of abscissae without endpoints */
-        num_abscissae: r + num_endpoints, 
-        points: makelist(rhs(p), p, bfallroots(abscissae_generator(num_abscissae))),
-        weights: makelist(bfloat(weights_generator(num_abscissae, p)), p, points),
-        N: length(points), /* number of abscissae including endpoints */
-        if not N = num_abscissae then print("number of endpoints does not match: N = ~d, r + e = ~d", N, num_abscissae), 
-        S: sort(makelist(n, n, 1, N), lambda([x,y], weights[x] < weights[y])),
-        printf(fd,"      delivered_order = ~d;
+    free_points: twice_free_points / 2, 
+    num_points: free_points + num_endpoints, 
+    points: makelist(rhs(p), p, bfallroots(points_generator(num_points))),
+    weights: makelist(bfloat(weights_generator(num_points, p)), p, points),
+    if not length(points) = num_points then print("points_generator returned ", length(points), "points, but ", num_points, " were requested!"), 
+    printf(fd,"      delivered_order = ~d;
 ",delivered_order),
-        printf(fd,"      _points.resize(~d);
-",N),
-        printf(fd,"      _weight.resize(~d);
-",N),
-        for n_: 1 thru N do block([n],
-            n: S[n_],
-            p: (points[n]+1)/2,
-            p: max(p-epsilon,-epsilon)+epsilon,
-            w: weights[n]/2,
-            printf(fd,"      _points[~d] = ~h;
-",n_-1, p),
-            printf(fd,"      _weight[~d] = ~h;
-",n_-1, w)
-       ),
-        printf(fd,"      break;
+    printf(fd,"      _points.resize(~d);
+",num_points),
+    printf(fd,"      _weight.resize(~d);
+",num_points),
+    /* sort the list of indices according to the corresponding weights*/
+    S: sort(makelist(n, n, 1, num_points), lambda([x,y], weights[x] < weights[y])),
+    for i: 1 thru num_points do block([j],
+      /* for numerical stability: write points sorted by their weights in ascending order*/
+      j: S[i],
+      /* shift points and weights from the interval [-1,1] to [0,1] */
+      p: (points[j]+1)/2,
+      p: max(p-epsilon,-epsilon)+epsilon,
+      w: weights[j]/2,
+      printf(fd,"      _points[~d] = ~h;
+",i-1, p),
+      printf(fd,"      _weight[~d] = ~h;
+",i-1, w)
+    ),
+    printf(fd,"      break;
 
 ")
-    ) else printf(fd, "    // order ~d,~d
+  ) else printf(fd, "    // order ~d,~d
     case ~d :
 ", delivered_order, delivered_order+1, delivered_order)
 ), 
@@ -72,7 +97,6 @@ printf(fd,"    default :
     }
   }
 "),
-
 
 printf(fd,"
   // for non-fundamental types: assign numbers as strings
@@ -87,37 +111,39 @@ printf(fd,"
 ",name),
 
 for delivered_order: 0 thru max_order do block([], 
-    two_r: delivered_order - num_endpoints + 1,
-    if mod(two_r, 2) = 0 then block([],
-        printf(fd, "    case ~d :
+  twice_free_points: delivered_order - num_endpoints + 1,
+  if mod(twice_free_points, 2) = 0 then block([],
+    printf(fd, "    case ~d :
 ", delivered_order),
-        r: two_r / 2, /* number of abscissae without endpoints */
-        num_abscissae: r + num_endpoints, 
-        points: makelist(rhs(p), p, bfallroots(abscissae_generator(num_abscissae))),
-        weights: makelist(bfloat(weights_generator(num_abscissae, p)), p, points),
-        N: length(points), /* number of abscissae including endpoints */
-        if not N = num_abscissae then print("number of endpoints does not match: N = ~d, r + e = ~d", N, num_abscissae), 
-        S: sort(makelist(n, n, 1, N), lambda([x,y], weights[x] < weights[y])),
-        printf(fd,"      delivered_order = ~d;
+    free_points: twice_free_points / 2,
+    num_points: free_points + num_endpoints, 
+    points: makelist(rhs(p), p, bfallroots(points_generator(num_points))),
+    weights: makelist(bfloat(weights_generator(num_points, p)), p, points),
+    if not length(points) = num_points then print("points_generator returned ", length(points), "points, but ", num_points, " were requested!"),
+    printf(fd,"      delivered_order = ~d;
 ",delivered_order),
-        printf(fd,"      _points.resize(~d);
-",N),
-        printf(fd,"      _weight.resize(~d);
-",N),
-        for n_: 1 thru N do block([n],
-            n: S[n_],
-            p: (points[n]+1)/2,
-            p: max(p-epsilon,-epsilon)+epsilon,
-            w: weights[n]/2,
-            printf(fd,"      _points[~d] = ct(\"~h\");
-",n_-1, p),
-            printf(fd,"      _weight[~d] = ct(\"~h\");
-",n_-1, w)
-       ),
-        printf(fd,"      break;
+    printf(fd,"      _points.resize(~d);
+",num_points),
+    printf(fd,"      _weight.resize(~d);
+",num_points),
+    /* sort the list of indices according to the corresponding weights*/
+    S: sort(makelist(n, n, 1, num_points), lambda([x,y], weights[x] < weights[y])),
+    for i: 1 thru num_points do block([j],
+      /* for numerical stability: write points sorted by their weights in ascending order*/
+      j: S[i],
+      /* shift points and weights from the interval [-1,1] to [0,1] */
+      p: (points[j]+1)/2,
+      p: max(p-epsilon,-epsilon)+epsilon,
+      w: weights[j]/2,
+      printf(fd,"      _points[~d] = ct(\"~h\");
+",i-1, p),
+      printf(fd,"      _weight[~d] = ct(\"~h\");
+",i-1, w)
+    ),
+    printf(fd,"      break;
 
 ")
-    ) else printf(fd, "    // order ~d,~d
+  ) else printf(fd, "    // order ~d,~d
     case ~d :
 ", delivered_order, delivered_order+1, delivered_order)
 ), 
@@ -131,5 +157,6 @@ printf(fd,"    default :
 printf(fd,"
 } // namespace
 "),
+
 close(fd)
 )$
