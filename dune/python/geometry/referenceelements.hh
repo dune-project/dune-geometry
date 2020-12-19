@@ -13,6 +13,8 @@
 #include <dune/python/common/fvecmatregistry.hh>
 
 #include <dune/python/geometry/quadraturerules.hh>
+
+#include <dune/python/common/typeregistry.hh>
 #include <dune/python/pybind11/pybind11.h>
 
 namespace Dune
@@ -241,6 +243,22 @@ namespace Dune
       module.def( "rule", [] (const GeometryType &gt, int order) {
             return Dune::QuadratureRules< typename RefElement::ctype, RefElement::dimension >::rule( gt, order );
       }, pybind11::return_value_policy::reference );
+    }
+
+    template <int dim>
+    void registerReferenceElementToModule( pybind11::module module )
+    {
+      using pybind11::operator""_a;
+      pybind11::module cls0 = module;
+      {
+        using DuneType = Dune::Geo::ReferenceElement<Dune::Geo::ReferenceElementImplementation<double,dim> >;
+        std::string typeName ("Dune::Geo::ReferenceElement<Dune::Geo::ReferenceElementImplementation<double,");
+        typeName += std::to_string( dim ) + "> >";
+        auto cls = Dune::Python::insertClass< DuneType >( cls0, "ReferenceElements",
+              Dune::Python::GenerateTypeName( typeName.c_str() ),
+              Dune::Python::IncludeFiles{"dune/python/geometry/referenceelements.hh"}).first;
+        Dune::Python::registerReferenceElements( cls0, cls );
+      }
     }
 
   } // namespace Python
