@@ -564,7 +564,7 @@ namespace Dune {
     enum { dim=1 };
 
     /** \brief The highest quadrature order available */
-    enum { highest_order=10};
+    enum { highest_order=30};
 
     ~GaussRadauLeftQuadratureRule1D(){}
   private:
@@ -633,7 +633,7 @@ namespace Dune {
     enum { dim=1 };
 
     /** \brief The highest quadrature order available */
-    enum { highest_order=10};
+    enum { highest_order=30};
 
     ~GaussRadauRightQuadratureRule1D(){}
   private:

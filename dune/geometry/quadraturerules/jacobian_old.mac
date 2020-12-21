@@ -10,8 +10,7 @@ load(stringproc)$
 load(writequad_old)$
 
 fpprec: 100$
-/*maxp: 61$*/
-maxp: 11$
+maxp: 61$
 /* float2bf: false$ */
 
 jacobi(p,a,b) := jacobi_p(p,a,b,x)$
