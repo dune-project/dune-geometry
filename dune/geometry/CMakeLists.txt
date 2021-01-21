@@ -14,6 +14,7 @@ install(FILES
   referenceelementimplementation.hh
   referenceelements.hh
   refinement.hh
+  staticgeometrytype.hh
   topologyfactory.hh
   type.hh
   typeindex.hh
