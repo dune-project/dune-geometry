@@ -13,22 +13,22 @@ orthopoly_returns_intervals : false;
 
 fpprec: 120$
 fpprintprec: 100$
-maxp: 30$
+maxp: 31$
 /* float2bf: false$ */
 
-/* points are given as the roots of (x^2-1)*L_p(x) */
-point(n) := (x^2-1)*diff(legendre_p(n,x),x)$
-weight(n,xx) := at(ratsimp(2/((n*(n+1))*legendre_p(n,x)^2)), x=xx)$
-
-/*
-  write files
+/* 
+  see https://mathworld.wolfram.com/LobattoQuadrature.html,
+  
+  inner points are given as the roots of legendre_{n-1}'(x)
+  to generate outer points at -1 and 1, we multiply by (x^2 - 1)
 */
+point(n) := (x^2-1)*diff(legendre_p(n-1,x),x)$
+weight(n,xx) := at(ratsimp(2/((n*(n-1))*legendre_p(n-1,x)^2)), x=xx)$
 
-/* num-points 4 */
 write_quad("gausslobatto_imp.hh", "GaussLobatto", "gausslobatto.mac",
 		   lambda([i],point(i)),
            lambda([i,p],weight(i,p)),
-		   maxp)$
+		   maxp, 2)$
 
 /*
  * Local variables:
