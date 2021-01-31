@@ -219,6 +219,10 @@ int main (int argc, char** argv)
     check<double,4>(Dune::GeometryTypes::cube(4), maxOrder);
     check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(31)),
                     Dune::QuadratureType::GaussLobatto);
+    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+                    Dune::QuadratureType::GaussRadauLeft);
+    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+                    Dune::QuadratureType::GaussRadauRight);
     check<double,4>(Dune::GeometryTypes::simplex(4), maxOrder);
     check<double,4>(Dune::GeometryTypes::simplex(4), maxOrder, Dune::QuadratureType::GaussJacobi_n_0);
     check<double,3>(Dune::GeometryTypes::prism, maxOrder);

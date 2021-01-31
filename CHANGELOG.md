@@ -12,6 +12,10 @@
   but this was never enforced.  Starting with version 2.8, compilation
   fails with an error message if this constructor is used with `dim!=coorddim`.
 
+- Two new sets of quadrature rules are provided: the left and right Gauss-Radau quadrature rules.
+  These are optimal rules that include only one endpoint of the integration interval
+  (either left or right) and integrate polynomials of order 2n - 2 exactly.
+
 ## Deprecations and removals
 
 - Remove code needed to use reference elements by reference.

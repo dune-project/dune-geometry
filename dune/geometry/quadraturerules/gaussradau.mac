@@ -1,0 +1,51 @@
+/*
+ * Run `maxima --batch gaussradau.mac'.
+ */
+
+/* adjust search path */
+file_search_maxima: append(["$$$.{mac,max}"],file_search_maxima);
+
+load(orthopoly)$
+load(stringproc)$
+load(writequad)$
+
+orthopoly_returns_intervals : false;
+
+fpprec: 120$
+fpprintprec: 100$
+maxp: 30$ /* rules exist only for even orders */
+/* float2bf: false$ */
+
+/* 
+  see https://mathworld.wolfram.com/RadauQuadrature.htm
+  
+  Left Gauss-Radau rule:
+    inner points are given as the roots of (legendre_{n-1} + legendre_{n})/(x + 1),
+    the outer point -1 is obtained by multiplication with (x + 1)
+  
+  Right Gauss-Radau rule:
+    substitue x by -x
+*/
+points_left(n) := legendre_p(n-1,x) + legendre_p(n, x)$
+weights_left(n,xx) := at(ratsimp((1 - x)/(n*n*legendre_p(n-1,x)^2)), x=xx)$
+
+points_right(n) := legendre_p(n-1,-x) + legendre_p(n, -x)$
+weights_right(n,xx) := at(ratsimp((1 + x)/(n*n*legendre_p(n-1,-x)^2)), x=xx)$
+
+
+write_quad("gaussradauleft_imp.hh", "GaussRadauLeft", "gaussradau.mac",
+		   lambda([i],points_left(i)),
+           lambda([i,p],weights_left(i,p)),
+		   maxp, 1)$
+		   
+write_quad("gaussradauright_imp.hh", "GaussRadauRight", "gaussradau.mac",
+           lambda([i],points_right(i)),
+           lambda([i,p],weights_right(i,p)),
+           maxp, 1)$
+
+/*
+ * Local variables:
+ * mode: maxima
+ * compile-command: "maxima --batch gaussradau.mac"
+ * End:
+ */

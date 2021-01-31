@@ -80,7 +80,9 @@ namespace Dune {
     enum Enum {
       /** \brief Gauss-Legendre rules (default)
       *
-      *  -1D: Gauss-Jacobi rule with parameters \f$\alpha = \beta =0 \f$
+      *  -1D: Gauss-Jacobi rule with parameters \f$\alpha = \beta =0 \f$, i.e. for integrals with a constant weight function.
+      *       The quadrature points do not include interval endpoints.
+      *       Polynomials of order 2n - 1 can be integrated exactly.
       *  -higher dimension: For the 2D/3D case efficient rules for certain geometries may be used if available.
       *                     Higher dimensional quadrature rules are constructed via \p TensorProductQuadratureRule.
       *                     In this case the 1D rules eventually need higher order to compensate occuring weight functions(i.e. simplices).
@@ -101,7 +103,7 @@ namespace Dune {
       */
       GaussJacobi_2_0 = 2,
 
-      /** \brief Gauss-Legendre rules with \f$\alpha =n\f$.
+      /** \brief Gauss-Legendre rules with \f$\alpha =n\f$
       *
       *  -1D: Gauss-Jacobi rule with parameters \f$\alpha = n,\ \beta =0 \f$
       *  -higher dimension: For the 2D/3D case efficient rules for certain geometries may be used if available.
@@ -113,7 +115,31 @@ namespace Dune {
       *   \note For details please use the book "Approximate Calculation of Multiple Integrals" by A.H. Stroud published in 1971.
       */
       GaussJacobi_n_0 = 3,
+
+      /** \brief Gauss-Lobatto rules
+       *
+       * 1D: Gauss-Lobatto rules for a constant weight function.
+       * These are optimal rules under the constraint that both interval endpoints are quadrature points.
+       * Polynomials of order 2n - 3 can be integrated exactly.
+       */
       GaussLobatto = 4,
+
+      /** \brief Gauss-Radau rules including the left endpoint
+       *
+       * 1D: Gauss-Radau rules for a constant weight function.
+       * These are optimal rules under the constraint that the left endpoint of the integration interval is a quadrature point.
+       * Polynomials of order 2n - 2 can be integrated exactly.
+       */
+      GaussRadauLeft = 5,
+
+      /** \brief Gauss-Radau rules including the right endpoint
+       *
+       * 1D: Gauss-Radau rules for a constant weight function.
+       * These are optimal rules under the constraint that the right endpoint of the integration interval is a quadrature point.
+       * Polynomials of order 2n - 2 can be integrated exactly.
+       * The right Gauss-Radau rules are the just the mirrored left Gauss-Radau rules.
+       */
+      GaussRadauRight = 6,
       size
     };
   }
@@ -525,6 +551,149 @@ namespace Dune {
 #define DUNE_INCLUDING_IMPLEMENTATION
 #include "quadraturerules/gausslobatto_imp.hh"
 
+
+
+
+
+namespace Dune {
+
+  //! \internal Helper template for the initialization of the quadrature rules
+  template<typename ct,
+      bool fundamental = std::numeric_limits<ct>::is_specialized>
+  struct GaussRadauLeftQuadratureInitHelper;
+  template<typename ct>
+  struct GaussRadauLeftQuadratureInitHelper<ct, true> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+  template<typename ct>
+  struct GaussRadauLeftQuadratureInitHelper<ct, false> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+
+  /** \brief Gauss-Radau quadrature, including the left endpoint of the interval
+      \ingroup Quadrature
+   */
+  template<typename ct>
+  class GaussRadauLeftQuadratureRule1D :
+    public QuadratureRule<ct,1>
+  {
+  public:
+    /** \brief The space dimension */
+    enum { dim=1 };
+
+    /** \brief The highest quadrature order available */
+    enum { highest_order=30};
+
+    ~GaussRadauLeftQuadratureRule1D(){}
+  private:
+    friend class QuadratureRuleFactory<ct,dim>;
+    GaussRadauLeftQuadratureRule1D (int p)
+      : QuadratureRule<ct,1>(GeometryTypes::line)
+    {
+      //! set up quadrature of given order in d dimensions
+      std::vector< FieldVector<ct, dim> > _points;
+      std::vector< ct > _weight;
+
+      int deliveredOrder_;
+
+      GaussRadauLeftQuadratureInitHelper<ct>::init
+        (p, _points, _weight, deliveredOrder_);
+
+      this->delivered_order = deliveredOrder_;
+      assert(_points.size() == _weight.size());
+      for (size_t i = 0; i < _points.size(); i++)
+        this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
+    }
+  };
+
+#ifndef DOXYGEN
+  extern template GaussRadauLeftQuadratureRule1D<float>::GaussRadauLeftQuadratureRule1D(int);
+  extern template GaussRadauLeftQuadratureRule1D<double>::GaussRadauLeftQuadratureRule1D(int);
+#endif // !DOXYGEN
+
+} // namespace Dune
+
+#define DUNE_INCLUDING_IMPLEMENTATION
+#include "quadraturerules/gaussradauleft_imp.hh"
+
+
+
+namespace Dune {
+
+  //! \internal Helper template for the initialization of the quadrature rules
+  template<typename ct,
+      bool fundamental = std::numeric_limits<ct>::is_specialized>
+  struct GaussRadauRightQuadratureInitHelper;
+  template<typename ct>
+  struct GaussRadauRightQuadratureInitHelper<ct, true> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+  template<typename ct>
+  struct GaussRadauRightQuadratureInitHelper<ct, false> {
+    static void init(int p,
+                     std::vector< FieldVector<ct, 1> > & _points,
+                     std::vector< ct > & _weight,
+                     int & delivered_order);
+  };
+
+  /** \brief Gauss-Radau quadrature, including the left endpoint of the interval
+      \ingroup Quadrature
+   */
+  template<typename ct>
+  class GaussRadauRightQuadratureRule1D :
+    public QuadratureRule<ct,1>
+  {
+  public:
+    /** \brief The space dimension */
+    enum { dim=1 };
+
+    /** \brief The highest quadrature order available */
+    enum { highest_order=30};
+
+    ~GaussRadauRightQuadratureRule1D(){}
+  private:
+    friend class QuadratureRuleFactory<ct,dim>;
+    GaussRadauRightQuadratureRule1D (int p)
+      : QuadratureRule<ct,1>(GeometryTypes::line)
+    {
+      //! set up quadrature of given order in d dimensions
+      std::vector< FieldVector<ct, dim> > _points;
+      std::vector< ct > _weight;
+
+      int deliveredOrder_;
+
+      GaussRadauLeftQuadratureInitHelper<ct>::init
+        (p, _points, _weight, deliveredOrder_);
+
+      this->delivered_order = deliveredOrder_;
+      assert(_points.size() == _weight.size());
+      for (size_t i = 0; i < _points.size(); i++)
+        this->push_back(QuadraturePoint<ct,dim>(_points[i], _weight[i]));
+    }
+  };
+
+#ifndef DOXYGEN
+  extern template GaussRadauRightQuadratureRule1D<float>::GaussRadauRightQuadratureRule1D(int);
+  extern template GaussRadauRightQuadratureRule1D<double>::GaussRadauRightQuadratureRule1D(int);
+#endif // !DOXYGEN
+
+} // namespace Dune
+
+#define DUNE_INCLUDING_IMPLEMENTATION
+#include "quadraturerules/gaussradauright_imp.hh"
+
+
+
+
 #include "quadraturerules/tensorproductquadrature.hh"
 
 #include "quadraturerules/simplexquadrature.hh"
@@ -771,6 +940,10 @@ namespace Dune {
           return GaussLobattoQuadratureRule1D<ctype>::highest_order;
         case QuadratureType::GaussJacobi_n_0 :
           return JacobiNQuadratureRule1D<ctype>::maxOrder();
+        case QuadratureType::GaussRadauLeft :
+          return GaussRadauLeftQuadratureRule1D<ctype>::highest_order;
+        case QuadratureType::GaussRadauRight :
+          return GaussRadauRightQuadratureRule1D<ctype>::highest_order;
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
@@ -792,6 +965,10 @@ namespace Dune {
           return GaussLobattoQuadratureRule1D<ctype>(p);
         case QuadratureType::GaussJacobi_n_0 :
           return JacobiNQuadratureRule1D<ctype>(p);
+        case QuadratureType::GaussRadauLeft :
+          return GaussRadauLeftQuadratureRule1D<ctype>(p);
+        case QuadratureType::GaussRadauRight :
+          return GaussRadauRightQuadratureRule1D<ctype>(p);
         default :
           DUNE_THROW(Exception, "Unknown QuadratureType");
         }
