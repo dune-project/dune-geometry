@@ -9,7 +9,7 @@ install(FILES
   jacobi_2_0_imp.hh
   jacobi_n_0.hh
   gaussradauleft_imp.hh
-  gausradauright_imp.hh
+  gaussradauright_imp.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
 
 exclude_from_headercheck(
