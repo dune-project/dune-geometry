@@ -13,7 +13,6 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/diagonalmatrix.hh>
-#include <dune/common/unused.hh>
 
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
@@ -174,7 +173,7 @@ namespace Dune {
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
-    JacobianTransposed jacobianTransposed(DUNE_UNUSED const LocalCoordinate& local) const
+    JacobianTransposed jacobianTransposed([[maybe_unused]] const LocalCoordinate& local) const
     {
       JacobianTransposed result;
 
@@ -186,7 +185,7 @@ namespace Dune {
     }
 
     /** \brief Jacobian transposed of the transformation from local to global coordinates */
-    JacobianInverseTransposed jacobianInverseTransposed(DUNE_UNUSED const LocalCoordinate& local) const
+    JacobianInverseTransposed jacobianInverseTransposed([[maybe_unused]] const LocalCoordinate& local) const
     {
       JacobianInverseTransposed result;
 
@@ -200,7 +199,7 @@ namespace Dune {
     /** \brief Return the integration element, i.e., the determinant term in the integral
                transformation formula
      */
-    ctype integrationElement(DUNE_UNUSED const LocalCoordinate& local) const
+    ctype integrationElement([[maybe_unused]] const LocalCoordinate& local) const
     {
       return volume();
     }
