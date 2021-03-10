@@ -16,6 +16,18 @@
   These are optimal rules that include only one endpoint of the integration interval
   (either left or right) and integrate polynomials of order 2n - 2 exactly.
 
+- GeometryType has four new methods: `isPrismatic()`, `isPrismatic(int step)` and `isConical()`,`isConical(int step)`.
+  The versions with an argument return true if the corresponding construction was used in step 0 <= `step` <=dim-1.
+  The other two assume a default argument of `dim-1` (the latest construction step).
+
+- GeometryTypes has two new methods: `prismaticExtension(GeometryType gt)` and `conicalExtension(GeometryType gt)`.
+  They return an extended GeometryType based on `gt` via the corresponding construction. For example:
+  ```c++
+  GeometryType gt = GeometryTypes::line;
+  auto square = GeometryTypes::prismaticExtension(gt);
+  auto triangle = GeometryTypes::conicalExtension(gt);
+  ```
+
 ## Deprecations and removals
 
 - Remove code needed to use reference elements by reference.
