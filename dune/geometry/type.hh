@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include <string>
+#include <type_traits>
 
 #include <dune/common/exceptions.hh>
 #include <dune/common/keywords.hh>
@@ -406,7 +407,7 @@ namespace Dune
      * \param t             Any object of type TopologyType. The object t itself is ignored.
      */
     template<class TopologyType,
-      class = Dune::void_t<decltype(TopologyType::dimension), decltype(TopologyType::id)>>
+      class = std::void_t<decltype(TopologyType::dimension), decltype(TopologyType::id)>>
     explicit GeometryType(TopologyType t)
       : dim_(TopologyType::dimension), none_(false), topologyId_(TopologyType::id)
     {
