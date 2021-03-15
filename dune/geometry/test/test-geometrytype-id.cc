@@ -2,10 +2,17 @@
 
 #include <dune/geometry/type.hh>
 
+#include <iostream>
+
 template<Dune::GeometryType::Id gtid>
 struct Foo
 {
   static constexpr Dune::GeometryType gt = gtid;
+  static unsigned int apply()
+  {
+    //return Foo<Dune::GeometryTypes::prismaticExtension(gt)>::gt.id(); //does not work for gcc < 10.2
+    return Foo<Dune::GeometryTypes::prismaticExtension(gt).toId()>::gt.id();
+  }
 };
 
 int main(int argc, char** argv)
@@ -13,14 +20,25 @@ int main(int argc, char** argv)
 
   // make sure we can correctly roundtrip between GeometryType
   // and its Id in constexpr context
-  constexpr Dune::GeometryType gt1 = Dune::GeometryTypes::triangle;
+  constexpr Dune::GeometryType gt2a = Dune::GeometryTypes::triangle;
 
-  Foo<gt1> foo;
+  Foo<gt2a> foo2;
 
-  constexpr Dune::GeometryType gt2 = foo.gt;
+  constexpr Dune::GeometryType gt2b = foo2.gt;
 
-  static_assert(gt1 == gt2, "The two geometry types have to compare equal");
+  static_assert(gt2a == gt2b, "The two geometry types have to compare equal");
 
+  Foo<Dune::GeometryTypes::prismaticExtension(gt2b)> foo3;
+
+  constexpr Dune::GeometryType gt3 = foo3.gt;
+
+  static_assert(gt3 == Dune::GeometryTypes::prism, "The two geometry types have to compare equal");
+
+  if (foo2.apply() != foo3.gt.id())
+  {
+    std::cerr << "The two topologyIds have to compare equal\n";
+    return 1;
+  }
   return 0;
 
 }
