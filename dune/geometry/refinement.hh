@@ -131,9 +131,9 @@
  * //#include <dune/grid/common/refinement/hcube.cc>
  *
  * // Get yourself the Refinement you need:
- * typedef StaticRefinement<Impl::CubeTopology<2>::type::id,
+ * typedef StaticRefinement<GeometryTypes::cube(2),
  *                          SGrid<2, 2>::ctype,
- *                          Impl::CubeTopology<2>::type::id,
+ *                          GeometryTypes::cube(2),
  *                          2> MyRefinement;
  *
  * int main()
@@ -194,7 +194,7 @@
  *   // we're only implementing this for dim=2
  *   template<class CoordType>
  *   struct Traits<sphereTopologyId, CoordType,
- *               Impl::CubeTopology<2>::type::id, 2>
+ *                 GeometryTypes::cube(2), 2>
  * {
  *     typedef SquaringTheCircle::RefinementImp<CoordType> Imp;
  *   };
