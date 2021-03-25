@@ -138,7 +138,7 @@ namespace Dune
      *  parameter <em>topologyId</em> is required.
      *  Here's an example:
      *  \code
-     *  static const unsigned int topologyId = SimplexTopology< dim >::type::id;
+     *  static const unsigned int topologyId = GeometryTypes::simplex(dim).id();
      *  \endcode
      */
     template< int dim >

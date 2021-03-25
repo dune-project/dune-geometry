@@ -356,6 +356,11 @@ namespace Dune
       return static_cast<Id>(id);
     }
 
+    constexpr Id toId() const
+    {
+      return static_cast<Id>(*this);
+    }
+
     /** \brief Reconstruct a Geometry type from a GeometryType::Id */
     /**
      * This constructor exists mostly to transparently support using a GeometryType as a
@@ -469,6 +474,32 @@ namespace Dune
       return ! none_ && ((topologyId_ ^ ((1 << dim_)-1)) >> 1 == 0);
     }
 
+    /** \brief Return true if entity was constructed with a conical product in the last step */
+    constexpr bool isConical() const {
+      return ! none_ && (((topologyId_ & ~1) & (1u << (dim_-1))) == 0);
+    }
+
+    /** \brief Return true if entity was constructed with a conical product in the chosen step
+     *
+     * \param step    0 <= step <= dim-1
+     */
+    constexpr bool isConical(const int& step) const {
+      return ! none_ && (((topologyId_ & ~1) & (1u << step)) == 0);
+    }
+
+    /** \brief Return true if entity was constructed with a prismatic product in the last step */
+    constexpr bool isPrismatic() const {
+      return ! none_ && (( (topologyId_ | 1) & (1u << (dim_-1))) != 0);
+    }
+
+    /** \brief Return true if entity was constructed with a prismatic product in the chosen step
+     *
+     * \param step    0 <= step <= dim-1
+     */
+    constexpr bool isPrismatic(const int& step) const {
+      return ! none_ && (( (topologyId_ | 1) & (1u << step)) != 0);
+    }
+
     /** \brief Return true if entity is a singular of any dimension */
     constexpr bool isNone() const {
       return none_;
@@ -485,7 +516,6 @@ namespace Dune
     }
 
     /*@}*/
-
 
     /** @name Comparison operators */
 
@@ -591,6 +621,18 @@ namespace Dune
       return GeometryType(0,dim,true);
     }
 
+    /** \brief Return GeometryType of a conical construction with gt as base  */
+    inline constexpr GeometryType conicalExtension(const GeometryType& gt)
+    {
+      return GeometryType(gt.id(), gt.dim()+1, gt.isNone());
+    }
+
+    /** \brief Return GeometryType of a prismatic construction with gt as base  */
+    inline constexpr GeometryType prismaticExtension(const GeometryType& gt)
+    {
+      return GeometryType(gt.id() | ((1 << gt.dim())), gt.dim()+1, gt.isNone());
+    }
+
 #ifndef __cpp_inline_variables
     namespace {
 #endif
@@ -649,7 +691,45 @@ namespace Dune
 
   }
 
+  namespace Impl
+  {
 
+    /** \brief Removes the bit for the highest dimension and returns the lower-dimensional GeometryType */
+    inline constexpr GeometryType getBase(const GeometryType& gt) {
+      return GeometryType(gt.id() & ((1 << (gt.dim()-1))-1), gt.dim()-1, gt.isNone());
+    }
+
+
+    // IfGeometryType
+    // ----------
+
+    template< template< GeometryType::Id > class Operation, int dim, GeometryType::Id geometryId = GeometryTypes::vertex >
+    struct IfGeometryType
+    {
+      static constexpr GeometryType geometry = geometryId;
+      template< class... Args >
+      static auto apply ( GeometryType gt, Args &&... args )
+      {
+        GeometryType lowerGeometry(gt.id() >>1 , gt.dim()-1, gt.isNone());
+
+        if( gt.id() & 1 )
+          return IfGeometryType< Operation, dim-1, GeometryTypes::prismaticExtension(geometry).toId() >::apply( lowerGeometry, std::forward< Args >( args )... );
+        else
+          return IfGeometryType< Operation, dim-1, GeometryTypes::conicalExtension(geometry).toId() >::apply( lowerGeometry, std::forward< Args >( args )... );
+      }
+    };
+
+    template< template< GeometryType::Id > class Operation, GeometryType::Id geometryId >
+    struct IfGeometryType< Operation, 0, geometryId>
+    {
+      template< class... Args >
+      static auto apply ( GeometryType gt, Args &&... args )
+      {
+        DUNE_UNUSED_PARAMETER( gt );
+        return Operation< geometryId >::apply( std::forward< Args >( args )... );
+      }
+    };
+  } // namespace Impl
 } // namespace Dune
 
 #endif // DUNE_GEOMETRY_TYPE_HH
