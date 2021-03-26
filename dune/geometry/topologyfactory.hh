@@ -35,7 +35,7 @@ namespace Dune
    * method.
    **/
   template <class Traits>
-  struct TopologyFactory
+  struct [[deprecated("Use the new version from dune/localfunctions/utility/topologyfactory.hh instead.")]] TopologyFactory
   {
     // extract types from Traits class
     static const unsigned int dimension = Traits::dimension;
@@ -78,7 +78,7 @@ namespace Dune
    *         but with empty release method an internal storage.
    **/
   template <class Factory>
-  struct TopologySingletonFactory
+  struct [[deprecated("Use the new version from dune/localfunctions/utility/topologyfactory.hh instead.")]] TopologySingletonFactory
   {
     static const unsigned int dimension = Factory::dimension;
     typedef typename Factory::Key Key;
