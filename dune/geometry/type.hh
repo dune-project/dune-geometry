@@ -245,9 +245,8 @@ namespace Dune
     struct IfTopology< Operation, 0, Topology >
     {
       template< class... Args >
-      static auto apply ( unsigned int topologyId, Args &&... args )
+      static auto apply ([[maybe_unused]] unsigned int topologyId, Args &&... args)
       {
-        DUNE_UNUSED_PARAMETER( topologyId );
         return Operation< Topology >::apply( std::forward< Args >( args )... );
       }
     };

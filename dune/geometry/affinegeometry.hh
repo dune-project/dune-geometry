@@ -607,9 +607,8 @@ namespace Dune
      *
      *  \returns the integration element \f$\mu(x)\f$.
      */
-    ctype integrationElement ( const LocalCoordinate &local ) const
+    ctype integrationElement ([[maybe_unused]] const LocalCoordinate &local) const
     {
-      DUNE_UNUSED_PARAMETER(local);
       return integrationElement_;
     }
 
@@ -625,9 +624,8 @@ namespace Dune
      *
      *  \returns a reference to the transposed of the Jacobian
      */
-    const JacobianTransposed &jacobianTransposed ( const LocalCoordinate &local ) const
+    const JacobianTransposed &jacobianTransposed ([[maybe_unused]] const LocalCoordinate &local) const
     {
-      DUNE_UNUSED_PARAMETER(local);
       return jacobianTransposed_;
     }
 
@@ -637,9 +635,8 @@ namespace Dune
      *  the Jacobian by \f$J(x)\f$, the following condition holds:
      *  \f[J^{-1}(x) J(x) = I.\f]
      */
-    const JacobianInverseTransposed &jacobianInverseTransposed ( const LocalCoordinate &local ) const
+    const JacobianInverseTransposed &jacobianInverseTransposed ([[maybe_unused]] const LocalCoordinate &local) const
     {
-      DUNE_UNUSED_PARAMETER(local);
       return jacobianInverseTransposed_;
     }
 

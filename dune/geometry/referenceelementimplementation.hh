@@ -17,7 +17,6 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/hybridutilities.hh>
 #include <dune/common/typetraits.hh>
-#include <dune/common/unused.hh>
 #include <dune/common/iteratorrange.hh>
 #include <dune/common/power.hh>
 #include <dune/common/math.hh>
@@ -789,9 +788,9 @@ namespace Dune
       }
 
       static typename ReferenceElements< ctype, dim >::ReferenceElement
-      subRefElement( const ReferenceElementImplementation< ctype, dim > &refElement, int i, std::integral_constant< int, 0 > )
+      subRefElement(const ReferenceElementImplementation< ctype, dim > &refElement,
+                    [[maybe_unused]] int i, std::integral_constant<int, 0>)
       {
-        DUNE_UNUSED_PARAMETER(i);
         return refElement;
       }
 
