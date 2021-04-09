@@ -722,9 +722,8 @@ namespace Dune
     struct IfGeometryType< Operation, 0, geometryId>
     {
       template< class... Args >
-      static auto apply ( GeometryType gt, Args &&... args )
+      static auto apply ([[maybe_unused]] GeometryType gt, Args &&... args )
       {
-        DUNE_UNUSED_PARAMETER( gt );
         return Operation< geometryId >::apply( std::forward< Args >( args )... );
       }
     };
