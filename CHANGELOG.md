@@ -41,6 +41,11 @@
   `CompositeQuadratureRule(QuadratureRule, Dune::refinement{Intervals|Levels}(int))`
   instead.
 
+- Deprecated all structs from `Impl` dealing with the recursive topology construction: `TopologyFactory`, `TopologySingletonFactory`,
+  `Point`, `Prism`, `Pyramid`, `IsSimplex`, `IsCube`, `SimplexTopology`, `CubeTopology`, `PyramidTopology`, `PrismTopology`, `IfTopology`.
+  Deprecated the free function `Impl::isTopology`.
+  Use the geometries provided by `GeometryType` and `GeometryTypes` instead.
+
 # Release 2.7
 
 - The reference elements have a new method `subEntities`. The result of

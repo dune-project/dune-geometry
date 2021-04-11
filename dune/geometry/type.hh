@@ -30,7 +30,7 @@ namespace Dune
     // Basic Topology Types
     // --------------------
 
-    struct Point
+    struct [[deprecated("Use GeometryTypes::vertex instead.")]] Point
     {
       static const unsigned int dimension = 0;
       static const unsigned int numCorners = 1;
@@ -42,7 +42,7 @@ namespace Dune
 
 
     template< class BaseTopology >
-    struct Prism
+    struct [[deprecated("Use GeometryTypes::prismaticExtension(GeometryType gt) instead.")]] Prism
     {
       static const unsigned int dimension = BaseTopology::dimension + 1;
       static const unsigned int numCorners = 2 * BaseTopology::numCorners;
@@ -54,7 +54,7 @@ namespace Dune
 
 
     template< class BaseTopology >
-    struct Pyramid
+    struct [[deprecated("Use GeometryTypes::conicalExtension(GeometryType gt) instead.")]] Pyramid
     {
       static const unsigned int dimension = BaseTopology::dimension + 1;
       static const unsigned int numCorners = BaseTopology::numCorners + 1;
@@ -70,12 +70,12 @@ namespace Dune
     // ------------------------
 
     template< class Topology >
-    struct IsSimplex
+    struct [[deprecated("Use GeometryType::isSimplex() instead.")]] IsSimplex
       : public std::integral_constant< bool, (Topology::id >> 1) == 0 >
     {};
 
     template< class Topology >
-    struct IsCube
+    struct [[deprecated("Use GeometryType::isCube() instead.")]] IsCube
       : public std::integral_constant< bool,  (Topology::id | 1) == (1 << Topology::dimension) - 1 >
     {};
 
@@ -145,6 +145,7 @@ namespace Dune
      *  \returns true, if construction was used to generate the codimension the
      *           topology.
      */
+    [[deprecated("Use GeometryType::isPrismatic() or GeometryType::isConical() instead.")]]
     inline static bool isTopology ( TopologyConstruction construction, unsigned int topologyId, int dim, int codim = 0 ) noexcept
     {
       assert( (dim > 0) && (topologyId < numTopologies( dim )) );
@@ -172,13 +173,13 @@ namespace Dune
     // ---------------
 
     template< unsigned int dim >
-    struct SimplexTopology
+    struct [[deprecated("Use GeometryTypes::simplex(dim) instead.")]] SimplexTopology
     {
       typedef Pyramid< typename SimplexTopology< dim-1 >::type > type;
     };
 
     template<>
-    struct SimplexTopology< 0 >
+    struct [[deprecated("Use GeometryTypes::simplex(dim) instead.")]] SimplexTopology< 0 >
     {
       typedef Point type;
     };
@@ -189,13 +190,13 @@ namespace Dune
     // ------------
 
     template< unsigned int dim >
-    struct CubeTopology
+    struct [[deprecated("Use GeometryTypes::cube(dim) instead.")]] CubeTopology
     {
       typedef Prism< typename CubeTopology< dim-1 >::type > type;
     };
 
     template<>
-    struct CubeTopology< 0 >
+    struct [[deprecated("Use GeometryTypes::simplex(dim) instead.")]] CubeTopology< 0 >
     {
       typedef Point type;
     };
@@ -206,7 +207,7 @@ namespace Dune
     // ---------------
 
     template< unsigned int dim >
-    struct PyramidTopology
+    struct [[deprecated]] PyramidTopology
     {
       typedef Pyramid< typename CubeTopology< dim-1 >::type > type;
     };
@@ -217,7 +218,7 @@ namespace Dune
     // -------------
 
     template< unsigned int dim >
-    struct PrismTopology
+    struct [[deprecated]] PrismTopology
     {
       typedef Prism< typename SimplexTopology< dim-1 >::type > type;
     };
@@ -229,7 +230,7 @@ namespace Dune
     // ----------
 
     template< template< class > class Operation, int dim, class Topology = Point >
-    struct IfTopology
+    struct [[deprecated("Use IfGeometryType instead.")]] IfTopology
     {
       template< class... Args >
       static auto apply ( unsigned int topologyId, Args &&... args )
@@ -242,7 +243,7 @@ namespace Dune
     };
 
     template< template< class > class Operation, class Topology >
-    struct IfTopology< Operation, 0, Topology >
+    struct [[deprecated("Use IfGeometryType instead.")]] IfTopology< Operation, 0, Topology >
     {
       template< class... Args >
       static auto apply ([[maybe_unused]] unsigned int topologyId, Args &&... args)
@@ -355,6 +356,18 @@ namespace Dune
       return static_cast<Id>(id);
     }
 
+    /** \brief Create an Id representation of this GeometryType. */
+    /**
+     * The returned Id encapsulates the whole information of this
+     * GeometryType into an enum suitable for being used as template
+     * parameter. The GeometryType can be reconstructed from the Id
+     * using GeometryType{id}.
+     *
+     * This function was mainly introduced to support older GCC versions (<10.2).
+     * There the implicit conversion from GeometryType to Id failed if a pure r-value
+     * template argument based on a static class member was used.
+     * (See dune/geometry/test/test-geometrytype-id.cc)
+     */
     constexpr Id toId() const
     {
       return static_cast<Id>(*this);
