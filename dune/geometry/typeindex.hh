@@ -11,6 +11,9 @@
 
 #include <cstddef>
 
+#include <dune/common/indices.hh>
+#include <dune/common/hybridutilities.hh>
+
 #include "type.hh"
 
 namespace Dune
@@ -135,6 +138,25 @@ namespace Dune
       return offset(gt.dim()) + LocalGeometryTypeIndex::index(gt);
     }
   };
+
+  namespace Impl {
+
+    // Map a dynamic GeometryType to a static integral_constant<GeometryType::Id, ...>
+    template<int dim, class F>
+    static auto toGeometryTypeIdConstant(const GeometryType& gt, F&& f) {
+      // Transform LocalGeometryTypeIndex to GeometryType::Id
+      auto callWithId = [&](auto index) {
+        static constexpr auto id = LocalGeometryTypeIndex::type(dim, decltype(index)::value).toId();
+        return f(std::integral_constant<GeometryType::Id, id>{});
+      };
+      // switchCases needs a fallback to determine the return type.
+      auto fallBack = [&]() { return callWithId(Dune::Indices::_0); };
+      // Iterate over all _regular_ GeometryType indices for given dimension
+      auto allIndices = std::make_index_sequence<LocalGeometryTypeIndex::size(dim)-1>{};
+      return Dune::Hybrid::switchCases(allIndices, LocalGeometryTypeIndex::index(gt), callWithId, fallBack);
+    }
+
+  } // namespace Impl
 } // namespace Dune
 
 #endif // DUNE_GEOMETRY_TYPEINDEX_HH
