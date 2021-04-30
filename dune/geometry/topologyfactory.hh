@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <dune/geometry/type.hh>
+#include <dune/geometry/typeindex.hh>
 
 namespace Dune
 {
@@ -46,7 +47,9 @@ namespace Dune
     //! dynamically create objects
     static Object *create ( const Dune::GeometryType &gt, const Key &key )
     {
-      return Impl::IfTopology< Maker, dimension >::apply( gt.id(), key );
+      return Impl::toGeometryTypeIdConstant<dimension>(gt, [&](auto id) {
+        return create<decltype(id)::value>(key);
+      });
     }
 
     //! statically create objects
@@ -58,17 +61,6 @@ namespace Dune
 
     //! release the object returned by the create methods
     static void release( Object *object ) { delete object; }
-
-  private:
-    // Internal maker class used in ifTopology helper
-    template< class Topology >
-    struct Maker
-    {
-      static Object *apply ( const Key &key )
-      {
-        return create< Topology >( key );
-      };
-    };
   };
 
 
