@@ -51,6 +51,12 @@ namespace Dune
         return create<decltype(id)::value>(key);
       });
     }
+    //! statically create objects
+    template< GeometryType::Id geometryId >
+    static Object *create ( const Key &key )
+    {
+      return Factory::template createObject< geometryId >( key );
+    }
 
     //! statically create objects
     template< class Topology >
@@ -81,6 +87,13 @@ namespace Dune
     {
       assert( gt.id() < numTopologies );
       return instance().getObject( gt, key );
+    }
+    //! @copydoc TopologyFactory::create(const Key &key)
+    template< GeometryType::Id geometryId >
+    static auto create ( const Key &key )
+      -> std::enable_if_t< static_cast<GeometryType>(geometryId).dim() == dimension, Object * >
+    {
+      return instance().template getObject< geometryId >( key );
     }
 
     //! @copydoc TopologyFactory::create(const Key &key)
@@ -123,6 +136,16 @@ namespace Dune
       auto &object = find( gt.id(), key );
       if( !object )
         object.reset( Factory::create( gt, key ) );
+      return object.get();
+    }
+
+    template< GeometryType::Id geometryId >
+    Object *getObject ( const Key &key )
+    {
+      static constexpr GeometryType geometry = geometryId;
+      auto &object = find( geometry.id(), key );
+      if( !object )
+        object.reset( Factory::template create< geometry >( key ) );
       return object.get();
     }
 
