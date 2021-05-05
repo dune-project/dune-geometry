@@ -36,7 +36,7 @@ namespace Dune
    * method.
    **/
   template <class Traits>
-  struct [[deprecated("Use the new version from dune/localfunctions/utility/topologyfactory.hh instead.")]] TopologyFactory
+  struct TopologyFactory
   {
     // extract types from Traits class
     static const unsigned int dimension = Traits::dimension;
@@ -50,6 +50,12 @@ namespace Dune
       return Impl::toGeometryTypeIdConstant<dimension>(gt, [&](auto id) {
         return create<decltype(id)::value>(key);
       });
+    }
+    //! statically create objects
+    template< GeometryType::Id geometryId >
+    static Object *create ( const Key &key )
+    {
+      return Factory::template createObject< geometryId >( key );
     }
 
     //! statically create objects
@@ -70,7 +76,7 @@ namespace Dune
    *         but with empty release method an internal storage.
    **/
   template <class Factory>
-  struct [[deprecated("Use the new version from dune/localfunctions/utility/topologyfactory.hh instead.")]] TopologySingletonFactory
+  struct TopologySingletonFactory
   {
     static const unsigned int dimension = Factory::dimension;
     typedef typename Factory::Key Key;
@@ -81,6 +87,13 @@ namespace Dune
     {
       assert( gt.id() < numTopologies );
       return instance().getObject( gt, key );
+    }
+    //! @copydoc TopologyFactory::create(const Key &key)
+    template< GeometryType::Id geometryId >
+    static auto create ( const Key &key )
+      -> std::enable_if_t< static_cast<GeometryType>(geometryId).dim() == dimension, Object * >
+    {
+      return instance().template getObject< geometryId >( key );
     }
 
     //! @copydoc TopologyFactory::create(const Key &key)
@@ -123,6 +136,16 @@ namespace Dune
       auto &object = find( gt.id(), key );
       if( !object )
         object.reset( Factory::create( gt, key ) );
+      return object.get();
+    }
+
+    template< GeometryType::Id geometryId >
+    Object *getObject ( const Key &key )
+    {
+      static constexpr GeometryType geometry = geometryId;
+      auto &object = find( geometry.id(), key );
+      if( !object )
+        object.reset( Factory::template create< geometry >( key ) );
       return object.get();
     }
 
