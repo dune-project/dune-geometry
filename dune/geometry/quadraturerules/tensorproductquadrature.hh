@@ -3,11 +3,16 @@
 #ifndef DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
 #define DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
 
+#ifndef DUNE_INCLUDING_IMPLEMENTATION
+#error This is a private header that should not be included directly.
+#error Use #include <dune/geometry/quadraturerules.hh> instead.
+#endif
+
 #include <algorithm>
 #include <bitset>
 
 #include <dune/geometry/type.hh>
-#include <dune/geometry/quadraturerules/jacobi_n_0.hh>
+#include <dune/geometry/quadraturerules/jacobiNquadrature.hh>
 
 namespace Dune
 {
@@ -170,6 +175,6 @@ namespace Dune
 
   };
 
-}
+} // end namspace Dune
 
-#endif // #ifndef DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH
+#endif // DUNE_GEOMETRY_QUADRATURERULES_TENSORPRODUCTQUADRATURE_HH

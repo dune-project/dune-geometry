@@ -3,6 +3,11 @@
 #ifndef DUNE_GEOMETRY_QUADRATURE_SIMPLEX_HH
 #define DUNE_GEOMETRY_QUADRATURE_SIMPLEX_HH
 
+#ifndef DUNE_INCLUDING_IMPLEMENTATION
+#error This is a private header that should not be included directly.
+#error Use #include <dune/geometry/quadraturerules.hh> instead.
+#endif
+
 namespace Dune {
 
   /************************************************
@@ -819,7 +824,7 @@ namespace Dune {
     for(int i=0; i<m; ++i)
     {
       FieldVector<ct,2> local = SimplexQuadraturePointsSingleton<2>::sqp.point(m,i);
-      double weight = SimplexQuadraturePointsSingleton<2>::sqp.weight(m,i);
+      ct weight = SimplexQuadraturePointsSingleton<2>::sqp.weight(m,i);
       // put in container
       this->push_back(QuadraturePoint<ct,2>(local,weight));
     }
@@ -1071,7 +1076,7 @@ namespace Dune {
     for(int i=0; i<m; ++i)
     {
       FieldVector<ct,3> local = SimplexQuadraturePointsSingleton<3>::sqp.point(m,i);
-      double weight = SimplexQuadraturePointsSingleton<3>::sqp.weight(m,i);
+      ct weight = SimplexQuadraturePointsSingleton<3>::sqp.weight(m,i);
       // put in container
       this->push_back(QuadraturePoint<ct,3>(local,weight));
     }
