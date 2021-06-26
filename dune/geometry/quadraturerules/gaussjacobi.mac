@@ -13,10 +13,10 @@ fpprec: 100$
 maxp: 61$
 /* float2bf: false$ */
 
-/* 
-  see https://mathworld.wolfram.com/Jacobi-GaussQuadrature.html 
-  
-  Gauss-Jacobi uses a weight function (1- x)^a (1 + x)^b, 
+/*
+  see https://mathworld.wolfram.com/Jacobi-GaussQuadrature.html
+
+  Gauss-Jacobi uses a weight function (1- x)^a (1 + x)^b,
   thus the case a = 0, b = 0 is the Gauss-Legendre rule.
 */
 jacobi(p,a,b) := jacobi_p(p,a,b,x)$
@@ -30,15 +30,15 @@ gamma_n(n,a,b) := 1/(2^(2*n)*(n!)^2)*(2^(2*n+a+b+1)*n!)/(2*n+a+b+1)*(gamma(n+a+1
 weight(n,a,b,xx) := A(n,a,b)/A(n-1,a,b)*gamma_n(n-1,a,b)/(at(ratexpand(jacobi_p(n-1,a,b,x)*jacobi_p_x(n,a,b,x)), x=xx))$
 
 
-write_quad("jacobi_1_0_imp.hh", "Jacobi1", "gaussjacobi.mac",
+write_quad("jacobi1quadrature.hh", "Jacobi1", "jacobian.mac",
 		   lambda([i],jacobi(i,1,0)),
            lambda([i,p],weight(i,1,0,p)),
 		   maxp, 0)$
-write_quad("jacobi_2_0_imp.hh", "Jacobi2", "gaussjacobi.mac",
+write_quad("jacobi2quadrature.hh", "Jacobi2", "jacobian.mac",
 		   lambda([i],jacobi(i,2,0)),
            lambda([i,p],weight(i,2,0,p)),
            maxp, 0)$
-write_quad("gauss_imp.hh", "Gauss", "gaussjacobi.mac",
+write_quad("gaussquadrature.hh", "Gauss", "jacobian.mac",
 		   lambda([i],jacobi(i,0,0)),
            lambda([i,p],weight(i,0,0,p)),
            maxp, 0)$

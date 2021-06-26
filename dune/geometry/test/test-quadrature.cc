@@ -161,7 +161,18 @@ void check(Dune::GeometryType type,
            Dune::QuadratureType::Enum qt = Dune::QuadratureType::GaussLegendre)
 {
   typedef Dune::QuadratureRule<ctype, dim> Quad;
-
+  std::string qt_str = "";
+  switch (qt) {
+    case Dune::QuadratureType::GaussLegendre: qt_str = "GaussLegendre"; break;
+    case Dune::QuadratureType::GaussJacobi_1_0: qt_str = "GaussJacobi_1_0"; break;
+    case Dune::QuadratureType::GaussJacobi_2_0: qt_str = "GaussJacobi_2_0"; break;
+    case Dune::QuadratureType::GaussJacobi_n_0: qt_str = "GaussJacobi_n_0"; break;
+    case Dune::QuadratureType::GaussLobatto: qt_str = "GaussLobatto"; break;
+    case Dune::QuadratureType::GaussRadauLeft: qt_str = "GaussRadauLeft"; break;
+    case Dune::QuadratureType::GaussRadauRight: qt_str = "GaussRadauRight"; break;
+    default: qt_str = "unknown";
+  }
+  std::cout << "check(Quadrature of type " << qt_str << ")" << std::endl;
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
     const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(type, p, qt);
