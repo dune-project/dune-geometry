@@ -1,28 +1,29 @@
 install(FILES
   compositequadraturerule.hh
-  pointquadrature.hh
-  simplexquadrature.hh
-  tensorproductquadrature.hh
-  gaussquadrature.hh
   gausslobattoquadrature.hh
+  gaussquadrature.hh
   gaussradauleftquadrature.hh
   gaussradaurightquadrature.hh
   jacobi1quadrature.hh
   jacobi2quadrature.hh
   jacobiNquadrature.hh
+  pointquadrature.hh
+  prismquadrature.hh
+  simplexquadrature.hh
+  tensorproductquadrature.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/quadraturerules)
 
 exclude_from_headercheck(
-  "pointquadrature.hh
-  simplexquadrature.hh
-  genericquadrature.hh
+  "gausslobattoquadrature.hh
   gaussquadrature.hh
-  gausslobattoquadrature.hh
   gaussradauleftquadrature.hh
   gaussradaurightquadrature.hh
   jacobi1quadrature.hh
   jacobi2quadrature.hh
   jacobiNquadrature.hh
+  pointquadrature.hh
+  prismquadrature.hh
+  simplexquadrature.hh
   tensorproductquadrature.hh")
 
 #build the library libquadraturerules
