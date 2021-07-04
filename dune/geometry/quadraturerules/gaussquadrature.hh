@@ -38,7 +38,7 @@ namespace Dune {
 
   //! internal Helper template for the initialization of the quadrature rules
   template<typename ct,
-      bool fundamental = std::numeric_limits<ct>::is_specialized>
+      bool fundamental = std::is_floating_point<ct>::value>
   struct GaussQuadratureInitHelper;
 
   template<typename ct>

@@ -72,6 +72,7 @@ namespace Dune {
       return unsigned(degree) < maxOrder ? decideRuleExponent(degree,alpha) : UseLapackOrError<ct>(degree, alpha);
     }
 
+#if HAVE_LAPACK
     template<typename type, std::enable_if_t<!(std::is_floating_point<type>::value)>* = nullptr>
     QuadratureRule<ct,1> UseLapackOrError( int const degree, int const alpha)
     {
@@ -83,6 +84,13 @@ namespace Dune {
     {
       return jacobiNodesWeights<ct>(degree, alpha);
     }
+#else
+    template<typename type>
+    QuadratureRule<ct,1> UseLapackOrError( int const degree, int const alpha)
+    {
+      DUNE_THROW(NotImplemented, "LAPACK must be enable to use JacobiN quadrature rules.");
+    }
+#endif
 
     QuadratureRule<ct,1> decideRuleExponent(int const degree, int const alpha)
     {
@@ -111,6 +119,7 @@ namespace Dune {
       }
     }
 
+#if HAVE_LAPACK
     // computes the nodes and weights for the weight function (1-x)^alpha, which are exact for given polynomials with degree "degree"
     template<typename ctype, std::enable_if_t<std::is_floating_point<ctype>::value>* = nullptr>
     QuadratureRule<ct,1> jacobiNodesWeights(int const degree, int const alpha)
@@ -156,6 +165,7 @@ namespace Dune {
       return quadratureRule;
 
     }
+#endif
 
   };
 
