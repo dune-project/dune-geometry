@@ -4,15 +4,29 @@
 #include <algorithm>
 #include <limits>
 #include <iostream>
+#include <type_traits>
 
 #include <config.h>
 
+#include <dune/common/quadmath.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/quadraturerules.hh>
 #include <dune/geometry/quadraturerules/compositequadraturerule.hh>
 #include <dune/geometry/refinement.hh>
 
 bool success = true;
+
+template <class ctype, std::enable_if_t<std::numeric_limits<ctype>::is_specialized, int> = 0>
+ctype eps ()
+{
+  return std::numeric_limits<ctype>::epsilon();
+}
+
+template <class ctype, std::enable_if_t<!std::numeric_limits<ctype>::is_specialized, int> = 0>
+ctype eps ()
+{
+  return std::numeric_limits<float>::epsilon();
+}
 
 /*
    This is a simple accuracy test on the reference element. It integrates
@@ -32,7 +46,7 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
 
   if (t.isCube())
   {
-    exact=1.0/(p+1);
+    exact = ctype( 1 )/(p+1);
     return exact;
   }
 
@@ -68,10 +82,10 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
     {
     case 0 :
     case 1 :
-      exact=1.0/((p+3)*(p+1));
+      exact = ctype( 1 )/((p+3)*(p+1));
       break;
     case 2 :
-      exact=2.0/((p+1)*(p+2)*(p+3));
+      exact = ctype( 2 )/((p+1)*(p+2)*(p+3));
       break;
     };
     return exact;
@@ -84,6 +98,7 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
 template<class QuadratureRule>
 void checkQuadrature(const QuadratureRule &quad)
 {
+  using std::pow; using std::abs;
   using namespace Dune;
   typedef typename QuadratureRule::CoordType ctype;
   const unsigned int dim = QuadratureRule::d;
@@ -97,28 +112,26 @@ void checkQuadrature(const QuadratureRule &quad)
     const ctype weight = qp->weight();
 
     for (unsigned int d=0; d<dim; d++)
-      integral[d] += weight*std::pow(x[d],double(p));
+      integral[d] += weight*pow(x[d], p);
   }
 
   ctype maxRelativeError = 0;
   for(unsigned int d=0; d<dim; d++)
   {
     ctype exact = analyticalSolution<ctype,dim>(t,p,d);
-    ctype relativeError = std::abs(integral[d]-exact) /
-                          (std::abs(integral[d])+std::abs(exact));
+    ctype relativeError = abs(integral[d] - exact) / (abs(integral[d]) + abs(exact));
     if (relativeError > maxRelativeError)
       maxRelativeError = relativeError;
   }
-  ctype epsilon = std::pow(2.0,double(p))*p*std::numeric_limits<double>::epsilon();
+  ctype epsilon = pow(2.0,p)*p*eps<ctype>();
   if (p==0)
-    epsilon = 2.0*std::numeric_limits<double>::epsilon();
+    epsilon = 2.0*eps<ctype>();
   if (maxRelativeError > epsilon) {
     std::cerr << "Error: Quadrature for " << t << " and order=" << p << " failed" << std::endl;
     for (unsigned int d=0; d<dim; d++)
     {
       ctype exact = analyticalSolution<ctype,dim>(t,p,d);
-      ctype relativeError = std::abs(integral[d]-exact) /
-                            (std::abs(integral[d])+std::abs(exact));
+      ctype relativeError = abs(integral[d] - exact) / (abs(integral[d]) + abs(exact));
       std::cerr << "       relative error " << relativeError << " in direction " << d << " (exact = " << exact << " numerical = " << integral[d] << ")" << std::endl;
     }
     success = false;
@@ -128,21 +141,21 @@ void checkQuadrature(const QuadratureRule &quad)
 template<class QuadratureRule>
 void checkWeights(const QuadratureRule &quad)
 {
+  using std::abs;
   typedef typename QuadratureRule::CoordType ctype;
   const unsigned int dim = QuadratureRule::d;
   const unsigned int p = quad.order();
   const Dune::GeometryType& t = quad.type();
   typedef typename QuadratureRule::iterator QuadIterator;
-  double volume = 0;
+  ctype volume = 0;
   QuadIterator qp = quad.begin();
   QuadIterator qend = quad.end();
   for (; qp!=qend; ++qp)
   {
     volume += qp->weight();
   }
-  if (std::abs(volume -
-               Dune::ReferenceElements<ctype, dim>::general(t).volume())
-      > quad.size()*std::numeric_limits<double>::epsilon())
+  if (abs(volume - Dune::ReferenceElements<ctype, dim>::general(t).volume())
+      > quad.size()*eps<ctype>())
   {
     std::cerr << "Error: Quadrature for " << t << " and order=" << p
               << " does not sum to volume of RefElem" << std::endl;
@@ -235,13 +248,31 @@ int main (int argc, char** argv)
     check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
                     Dune::QuadratureType::GaussRadauRight);
     check<double,4>(Dune::GeometryTypes::simplex(4), maxOrder);
+
+#if HAVE_LAPACK
     check<double,4>(Dune::GeometryTypes::simplex(4), maxOrder, Dune::QuadratureType::GaussJacobi_n_0);
+#else
+    std::cout << "Skip GaussJacobi_n_0 tests as LAPACK has not been found" << std::endl;
+#endif
+
     check<double,3>(Dune::GeometryTypes::prism, maxOrder);
     check<double,3>(Dune::GeometryTypes::pyramid, maxOrder);
 
     unsigned int maxRefinement = 4;
 
     checkCompositeRule<double,2>(Dune::GeometryTypes::triangle, maxOrder, maxRefinement);
+
+#if HAVE_QUADMATH
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), maxOrder);
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(31)),
+                    Dune::QuadratureType::GaussLobatto);
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+                    Dune::QuadratureType::GaussRadauLeft);
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+                    Dune::QuadratureType::GaussRadauRight);
+#else
+    std::cout << "Skip Float128 tests as Quadmath is not supported" << std::endl;
+#endif
   }
   catch( const Dune::Exception &e )
   {
