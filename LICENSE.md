@@ -5,27 +5,31 @@ Copyright holders:
 2013--2014    Andreas Buhr
 2014--2019    Ansgar Burchardt
 2013          Benjamin Bykowski
-2011--2017    Andreas Dedner
-2012--2016    Christian Engwer
-2011--2018    Jorrit Fahlke
+2020--2021    Gregor Corbin
+2011--2021    Andreas Dedner
+2020          Nils-Arne Dreier
+2012--2021    Christian Engwer
+2011--2020    Jorrit Fahlke
 2012          Bernd Flemisch
 2013          Christoph Gersbacher
-2016          Janick Gerstenberger
-2014--2018    Carsten Gräser
+2016--2020    Janick Gerstenberger
+2014--2021    Carsten Gräser
 2015--2017    Felix Gruber
-2011--2019    Christoph Grüninger
+2011--2021    Christoph Grüninger
+2020          René Heß
 2018          Max Kahnt
 2013--2018    Dominic Kempf
-2012          Robert Klöfkorn
+2012--2020    Robert Klöfkorn
 2017          Marcel Koch
 2012--2014    Tobias Malkmus
-2012--2018    Steffen Müthing
+2012--2019    Steffen Müthing
 2011--2018    Martin Nolte
 2018          Santiago Ospina
 2011--2016    Elias Pipping
-2018--2019    Simon Praetorius
-2011--2019    Oliver Sander
-2019          Henrik Stolzmann
+2018--2021    Simon Praetorius
+2011--2021    Oliver Sander
+2019--2021    Henrik Stolzmann
+2020          Kilian Weishaupt
 
 The DUNE library and headers are licensed under version 2 of the GNU
 General Public License (see below), with a special exception for
