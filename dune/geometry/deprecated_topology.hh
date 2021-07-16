@@ -9,7 +9,8 @@
     // Basic Topology Types
     // --------------------
 
-    struct [[deprecated("Use GeometryTypes::vertex instead.")]] Point
+    // PointDeprecationHelper can be used to prevent a deprecation warning for Point
+    struct PointDeprecationHelper
     {
       static const unsigned int dimension = 0;
       static const unsigned int numCorners = 1;
@@ -18,6 +19,8 @@
 
       static std::string name () { return "p"; }
     };
+
+    using Point [[deprecated("Use GeometryTypes::vertex instead.")]] = PointDeprecationHelper;
 
 
     template< class BaseTopology >
@@ -139,7 +142,7 @@
     // IfTopology
     // ----------
 
-    template< template< class > class Operation, int dim, class Topology = Point >
+    template< template< class > class Operation, int dim, class Topology = PointDeprecationHelper >
     struct [[deprecated("Use IfGeometryType instead.")]] IfTopology
     {
       template< class... Args >
