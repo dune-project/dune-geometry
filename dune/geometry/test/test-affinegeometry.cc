@@ -197,7 +197,7 @@ static bool testAffineGeometry ()
   return pass;
 }
 
-int main ( int argc, char **argv )
+int main ( int /* argc */, char ** /* argv */ )
 {
   bool pass = true;
 

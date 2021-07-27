@@ -15,7 +15,7 @@ struct Foo
   }
 };
 
-int main(int argc, char** argv)
+int main(int /* argc */, char** /* argv */)
 {
 
   // make sure we can correctly roundtrip between GeometryType

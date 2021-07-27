@@ -272,7 +272,7 @@ namespace Dune {
       return true;
     }
 
-    friend Dune::Transitional::ReferenceElement< ctype, Dim<dim> > referenceElement ( const AxisAlignedCubeGeometry &geometry )
+    friend Dune::Transitional::ReferenceElement< ctype, Dim<dim> > referenceElement ( const AxisAlignedCubeGeometry & /* geometry */ )
     {
       return ReferenceElements< ctype, dim >::cube();
     }

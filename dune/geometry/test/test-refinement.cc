@@ -136,7 +136,7 @@ void testStaticRefinementGeometry(int &result, Dune::RefinementIntervals tag, st
 }
 
 
-int main(int argc, char** argv) try
+int main(int /* argc */, char** /* argv */) try
 {
   // 77 means 'SKIP'
   int result = 77;

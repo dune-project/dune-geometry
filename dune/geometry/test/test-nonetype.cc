@@ -4,7 +4,7 @@
 
 #include <dune/geometry/type.hh>
 
-int main ( int argc, char **argv )
+int main ( int /* argc */, char ** /* argv */ )
 {
   int fail = 0;
   for( int dim = 0; dim < 10; ++dim )
