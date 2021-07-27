@@ -438,7 +438,7 @@ namespace Dune
     // integral type.
     static unsigned int toUnsignedInt(unsigned int i) { return i; }
     template<unsigned int v>
-    static unsigned int toUnsignedInt(std::integral_constant<unsigned int,v> i) { return v; }
+    static unsigned int toUnsignedInt(std::integral_constant<unsigned int,v> ) { return v; }
     TopologyId topologyId ( std::integral_constant< bool, true > ) const { return TopologyId(); }
     unsigned int topologyId ( std::integral_constant< bool, false > ) const { return refElement().type().id(); }
 
@@ -722,8 +722,8 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, class CornerIterator >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::global ( TopologyId topologyId, std::integral_constant< int, 0 >,
-             CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
+  ::global ( TopologyId, std::integral_constant< int, 0 >,
+             CornerIterator &cit, const ctype &, const LocalCoordinate &,
              const ctype &rf, GlobalCoordinate &y )
   {
     const GlobalCoordinate &origin = *cit;
@@ -838,9 +838,9 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< bool add, int rows, class CornerIterator >
   inline void MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::jacobianTransposed ( TopologyId topologyId, std::integral_constant< int, 0 >,
-                         CornerIterator &cit, const ctype &df, const LocalCoordinate &x,
-                         const ctype &rf, FieldMatrix< ctype, rows, cdim > &jt )
+  ::jacobianTransposed ( TopologyId, std::integral_constant< int, 0 >,
+                         CornerIterator &cit, const ctype &, const LocalCoordinate &,
+                         const ctype &, FieldMatrix< ctype, rows, cdim > & )
   {
     ++cit;
   }
@@ -879,7 +879,7 @@ namespace Dune
   template< class ct, int mydim, int cdim, class Traits >
   template< class CornerIterator >
   inline bool MultiLinearGeometry< ct, mydim, cdim, Traits >
-  ::affine ( TopologyId topologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed &jt )
+  ::affine ( TopologyId, std::integral_constant< int, 0 >, CornerIterator &cit, JacobianTransposed & )
   {
     ++cit;
     return true;

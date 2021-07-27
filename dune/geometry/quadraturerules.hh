@@ -339,7 +339,7 @@ namespace Dune {
   private:
     enum { dim = 0 };
     friend class QuadratureRules<ctype, dim>;
-    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
+    static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum)
     {
       if (t.isVertex())
       {
@@ -347,7 +347,7 @@ namespace Dune {
       }
       DUNE_THROW(Exception, "Unknown GeometryType");
     }
-    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
+    static QuadratureRule<ctype, dim> rule(const GeometryType& t, int , QuadratureType::Enum)
     {
       if (t.isVertex())
       {
