@@ -756,8 +756,8 @@ namespace Dune
         for(std::size_t cc=0; cc<= dim; ++cc)
         {
           containsSubentity_[cc].reset();
-          for(std::size_t i=0; i<std::size_t(size(cc)); ++i)
-            containsSubentity_[cc][number(i,cc)] = true;
+          for(std::size_t idx=0; idx<std::size_t(size(cc)); ++idx)
+            containsSubentity_[cc][number(idx,cc)] = true;
         }
       }
 
