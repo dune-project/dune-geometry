@@ -248,8 +248,8 @@ namespace Dune
      *       the TypologyType, users are encouraged to use the
      *       GeometryType(TopologyType t) constructor.
      */
-    constexpr GeometryType(unsigned int topologyId, unsigned int dim, bool none)
-      : dim_(dim), none_(none), topologyId_(topologyId)
+    constexpr GeometryType(unsigned int topologyId, unsigned int dim, bool isNone)
+      : dim_(dim), none_(isNone), topologyId_(topologyId)
     {}
 
     /** \brief Constructor, using the topologyId (integer) and the dimension

@@ -136,7 +136,7 @@ template< class ctype, int mydim, int cdim, class Traits >
 static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
                                       const Dune::FieldMatrix< ctype, mydim, mydim > &A,
                                       const Dune::FieldMatrix< ctype, cdim, cdim > &B,
-                                      const Traits &traits )
+                                      const Traits & /* traits */ )
 {
   bool pass = true;
 
@@ -283,7 +283,7 @@ static bool testMultiLinearGeometry ( Dune::GeometryType gt,
 }
 
 template<class ctype, class Traits>
-static bool testNonLinearGeometry(const Traits &traits)
+static bool testNonLinearGeometry(const Traits & /* traits */)
 {
   const unsigned dim = 2;
   typedef Dune::FieldVector<ctype,dim> Vector;
@@ -445,7 +445,7 @@ static bool testMultiLinearGeometry ( const Traits& traits )
   return pass;
 }
 
-int main ( int argc, char **argv )
+int main ( int /* argc */, char ** /* argv */)
 {
   bool pass = true;
 

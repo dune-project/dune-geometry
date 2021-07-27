@@ -86,7 +86,7 @@ namespace Dune {
     }
 #else
     template<typename type>
-    QuadratureRule<ct,1> UseLapackOrError( int const degree, int const alpha)
+    QuadratureRule<ct,1> UseLapackOrError( int const, int const)
     {
       DUNE_THROW(NotImplemented, "LAPACK must be enable to use JacobiN quadrature rules.");
     }

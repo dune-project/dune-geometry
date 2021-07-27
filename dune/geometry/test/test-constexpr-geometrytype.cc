@@ -4,7 +4,7 @@
 
 #include <dune/geometry/type.hh>
 
-int main ( int argc, char **argv )
+int main ( int /* argc */, char ** /* argv */ )
 {
   constexpr auto gt_none_1 = Dune::GeometryType();
   constexpr auto gt_none_2 = Dune::GeometryTypes::none(0);
