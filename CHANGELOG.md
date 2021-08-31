@@ -1,4 +1,4 @@
-# Master (will become release 2.8)
+# Release 2.8
 
 - Python bindings have been moved from the `dune-python` module which is now
   obsolete. To activate Python bindings the CMake flag
