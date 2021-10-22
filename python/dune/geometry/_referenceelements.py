@@ -1,4 +1,4 @@
-from ..generator.generator import SimpleGenerator
+from dune.generator.generator import SimpleGenerator
 from dune.common.hashit import hashIt
 def module(dim):
     typeName = "Dune::Geo::ReferenceElement<Dune::Geo::ReferenceElementImplementation<double," + str(dim) + "> >"
