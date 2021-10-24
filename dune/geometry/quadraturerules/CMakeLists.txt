@@ -27,6 +27,6 @@ exclude_from_headercheck(
   tensorproductquadrature.hh")
 
 #build the library libquadraturerules
-dune_add_library(quadraturerules OBJECT
+target_sources(quadraturerules PRIVATE
   quadraturerules.cc
 )
