@@ -1,12 +1,9 @@
-# set up project
-project("dune-geometry" C CXX)
-
-# general stuff
 cmake_minimum_required(VERSION 3.13)
+project("dune-geometry" C CXX)
 
 if(NOT (dune-common_DIR OR dune-common_ROOT OR
         "${CMAKE_PREFIX_PATH}" MATCHES ".*dune-common.*"))
-    string(REPLACE  ${CMAKE_PROJECT_NAME} dune-common dune-common_DIR
+    string(REPLACE  ${PROJECT_NAME} dune-common dune-common_DIR
       ${PROJECT_BINARY_DIR})
 endif()
 
@@ -20,9 +17,11 @@ include(DuneMacros)
 # start a dune project with information from dune.module
 dune_project()
 
+dune_add_library(dunegeometry)
+target_link_libraries(dunegeometry PUBLIC ${DUNE_LIBS})
+
 add_subdirectory("dune")
 add_subdirectory("doc")
-add_subdirectory("lib")
 
 # if Python bindings are enabled, include necessary sub directories.
 if( DUNE_ENABLE_PYTHONBINDINGS )

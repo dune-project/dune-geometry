@@ -27,6 +27,6 @@ install(FILES
 install(FILES test/checkgeometry.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/test)
 
-dune_add_library(geometry OBJECT
+target_sources(dunegeometry PRIVATE
   referenceelementimplementation.cc
   )
