@@ -279,7 +279,11 @@ namespace Dune {
       /*! @brief Calculate n!
 
          Runtime is of order O(n).
+
+         \deprecate Use factorial from dune/common/math instead. Will be
+                    removed after Dune 2.9.
        */
+      [[deprecated("Use factorial from dune-common's math.hh")]]
       inline int factorial(int n)
       {
         int prod = 1;
@@ -291,7 +295,11 @@ namespace Dune {
       /*! @brief calculate \f$\left({upper}\atop{lower}\right)\f$
 
          Runtime is of order O(min {lower, upper-lower})
+
+         \deprecate Use binomial from dune/common/math instead. Will be
+                    removed after Dune 2.9.
        */
+      [[deprecated("Use binomial from dune-common's math.hh")]]
       inline int binomial(int upper, int lower)
       {
         lower = std::min( lower, upper - lower );
@@ -300,7 +308,7 @@ namespace Dune {
         int prod = 1;
         for(int i = upper - lower; i < upper; ++i)
           prod *= (i+1);
-        return prod / factorial(lower);
+        return prod / Dune::factorial(lower);
       }
 
       /*! @brief calculate the index of a given gridpoint within a
@@ -314,7 +322,7 @@ namespace Dune {
       {
         int index = 0;
         for(int i = 0; i < dimension; ++i)
-          index += binomial(dimension-i + point[i]-1, dimension-i);
+          index += Dune::binomial(dimension-i + point[i]-1, dimension-i);
         return index;
       }
 
@@ -455,7 +463,7 @@ namespace Dune {
       RefinementImp<dimension, CoordType>::
       nVertices(int nIntervals)
       {
-        return binomial(dimension + nIntervals, dimension);
+        return Dune::binomial(dimension + nIntervals, (int)dimension);
       }
 
       template<int dimension, class CoordType>
@@ -624,7 +632,7 @@ namespace Dune {
 
       protected:
         typedef FieldVector<int, dimension> Vertex;
-        enum { nKuhnIntervals = Factorial<dimension>::factorial };
+        enum { nKuhnIntervals = Dune::factorial(dimension) };
 
         Vertex origin;
         int kuhnIndex;
