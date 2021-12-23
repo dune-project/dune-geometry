@@ -249,7 +249,7 @@
 #include <algorithm>
 
 #include <dune/common/fvector.hh>
-#include <dune/common/power.hh>
+#include <dune/common/math.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
 #include <dune/geometry/referenceelements.hh>
@@ -479,7 +479,7 @@ namespace Dune {
       RefinementImp<dimension, CoordType>::
       nElements(int nIntervals)
       {
-        return Dune::Power<dimension>::eval(nIntervals);
+        return Dune::power(nIntervals, int(dimension));
       }
 
       template<int dimension, class CoordType>

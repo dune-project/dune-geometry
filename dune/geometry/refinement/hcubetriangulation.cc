@@ -102,7 +102,7 @@ namespace Dune
       RefinementImp<dimension, CoordType>::
       nVertices(int nIntervals)
       {
-        return BackendRefinement::nVertices(nIntervals) * Factorial<dimension>::factorial;
+        return BackendRefinement::nVertices(nIntervals) * factorial(int(dimension));
       }
 
       template<int dimension, class CoordType>
@@ -126,7 +126,7 @@ namespace Dune
       RefinementImp<dimension, CoordType>::
       nElements(int nIntervals)
       {
-        return BackendRefinement::nElements(nIntervals) * Factorial<dimension>::factorial;
+        return BackendRefinement::nElements(nIntervals) * factorial(int(dimension));
       }
 
       template<int dimension, class CoordType>
@@ -171,7 +171,7 @@ namespace Dune
       protected:
         typedef typename Refinement::BackendRefinement BackendRefinement;
         typedef typename BackendRefinement::template Codim<dimension>::SubEntityIterator BackendIterator;
-        enum { nKuhnSimplices = Factorial<dimension>::factorial };
+        enum { nKuhnSimplices = factorial(int(dimension)) };
 
         int nIntervals_;
 
@@ -256,7 +256,7 @@ namespace Dune
       protected:
         typedef typename Refinement::BackendRefinement BackendRefinement;
         typedef typename BackendRefinement::template Codim<0>::SubEntityIterator BackendIterator;
-        enum { nKuhnSimplices = Factorial<dimension>::factorial };
+        enum { nKuhnSimplices = factorial(dimension) };
 
         int nIntervals_;
 

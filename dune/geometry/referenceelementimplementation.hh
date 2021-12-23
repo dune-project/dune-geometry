@@ -18,7 +18,6 @@
 #include <dune/common/hybridutilities.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/iteratorrange.hh>
-#include <dune/common/power.hh>
 #include <dune/common/math.hh>
 
 #include <dune/geometry/referenceelement.hh>
