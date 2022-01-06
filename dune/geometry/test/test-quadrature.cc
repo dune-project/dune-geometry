@@ -8,6 +8,7 @@
 
 #include <config.h>
 
+#include <dune/common/math.hh>
 #include <dune/common/quadmath.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/quadraturerules.hh>
@@ -72,7 +73,7 @@ ctype analyticalSolution (Dune::GeometryType t, int p, int direction )
         exact = ctype( 1 );
     }
     else
-      exact = ctype( 1 ) / ctype( Dune::Factorial< pdim >::factorial * (p+1));
+      exact = ctype( 1 ) / ctype( Dune::factorial(pdim) * (p+1));
     return exact;
   }
 

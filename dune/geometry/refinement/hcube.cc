@@ -41,7 +41,6 @@
 
 #include <dune/common/fvector.hh>
 #include <dune/common/iteratorfacades.hh>
-#include <dune/common/power.hh>
 
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/axisalignedcubegeometry.hh>
@@ -107,7 +106,7 @@ namespace Dune
       nVertices(unsigned nIntervals)
       {
         // return (nIntervals + 1)^dim
-        return Power<dimension>::eval(nIntervals+1u);
+        return Dune::power(nIntervals+1u, unsigned(dimension));
       }
 
       template<int dimension, class CoordType>
@@ -134,7 +133,7 @@ namespace Dune
         static_assert(dimension >= 0,
                       "Negative dimension given, what the heck is that supposed to mean?");
         // return nIntervals^dim
-        return Power<dimension>::eval(nIntervals);
+        return Dune::power(nIntervals, unsigned(dimension));
       }
 
       template<int dimension, class CoordType>
