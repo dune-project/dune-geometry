@@ -291,6 +291,7 @@ namespace Dune
 #ifndef DOXYGEN
 
   // helpers for the ReferenceElement<> meta function
+  // the complete Impl block can be removed together with deprecated Transitional::ReferenceElement
 
   namespace Impl {
 
@@ -323,7 +324,7 @@ namespace Dune
 
 #endif // DOXYGEN
 
-  namespace Transitional {
+  namespace [[deprecated]] Transitional {
 
 #ifndef DOXYGEN
 
@@ -331,10 +332,14 @@ namespace Dune
     // ReferenceElement<number_type,Dune::Dim<int>> and otherwise defers the type lookup
     // to a decltype on a call to referenceElement(std::declval<T>())
 
+    /**
+     * \deprecated Transitional::ReferenceElement is deprecated and will be removed after Dune 2.10.
+     *             Use Dune::Geo::ReferenceElement directly.
+     */
     template<typename... T>
-    using ReferenceElement = Std::detected_or_t<
-      Std::detected_t<LookupReferenceElement,T...>,
+    using ReferenceElement = detected_or_fallback_t<
       Impl::DefaultReferenceElement,
+      LookupReferenceElement,
       T...
       >;
 
@@ -449,6 +454,8 @@ namespace Dune
 #endif // DOXYGEN
 
 
+  template<typename... T>
+  using ReferenceElement = decltype(referenceElement(std::declval<T>()...));
 
 } // namespace Dune
 
