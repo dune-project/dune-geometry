@@ -32,27 +32,6 @@ namespace Dune
 #ifndef DOXYGEN
 
 
-    template<typename ctype, int dim>
-    class DeprecatedReferenceElement
-      : public ReferenceElement<ReferenceElementImplementation<ctype,dim>>
-    {
-
-    protected:
-
-      DeprecatedReferenceElement() = default;
-
-    public:
-
-      DeprecatedReferenceElement(const DeprecatedReferenceElement&) = delete;
-      DeprecatedReferenceElement& operator=(const DeprecatedReferenceElement&) = delete;
-
-      DeprecatedReferenceElement(const ReferenceElementImplementation<ctype,dim>& impl)
-        : ReferenceElement<ReferenceElementImplementation<ctype,dim>>(impl)
-      {}
-
-    };
-
-
     namespace Impl
     {
 
@@ -67,8 +46,6 @@ namespace Dune
         using Implementation   = ReferenceElementImplementation< ctype, dim >;
 
       public:
-
-        using DeprecatedReferenceElement = Dune::Geo::DeprecatedReferenceElement<ctype,dim>;
 
         using ReferenceElement = Dune::Geo::ReferenceElement< Implementation >;
         using value_type       = ReferenceElement;
@@ -427,7 +404,7 @@ namespace Dune
       typename std::conditional<
         dim == -1,
         Impl::ValidReferenceElementTypeSignature<T>,
-        Impl::DeprecatedReferenceElementTypeSignature<Geo::DeprecatedReferenceElement<T,dim>>
+        Impl::DeprecatedReferenceElementTypeSignature<Geo::ReferenceElement<Geo::ReferenceElementImplementation<T,dim>>>
         >::type
       >().check());
 
