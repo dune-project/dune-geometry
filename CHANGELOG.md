@@ -1,5 +1,10 @@
 # Master (will become release 2.9)
 
+- The `Geometry` interface was extended by methods `jacobian(local)` and `jacobianInverse(local)`
+  and corresponding typedefs `Jacobian` and `JacobianInverse`. This is implemented by all geometry
+  implementations provided by dune-geometry. But external implementations need to be adjusted
+  to pass the interface check provided by `checkgeometry.hh`.
+
 - The `Geometry::integrationElement` now needs to return the type `Volume`
   instead of `ctype`. Note that this may be different from `ctype` if the
   geometry supports typed dimensions. In such case, `ctype` is a length, and not
