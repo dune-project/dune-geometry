@@ -506,6 +506,12 @@ namespace Dune
     /** \brief Type for the transposed inverse Jacobian matrix */
     typedef FieldMatrix< ctype, coorddimension, mydimension > JacobianInverseTransposed;
 
+    /** \brief Type for the Jacobian matrix */
+    typedef FieldMatrix< ctype, coorddimension, mydimension > Jacobian;
+
+    /** \brief Type for the inverse Jacobian matrix */
+    typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianInverse;
+
   private:
     //! type of reference element
     typedef Geo::ReferenceElement< Geo::ReferenceElementImplementation< ctype, mydimension > > ReferenceElement;
@@ -638,6 +644,28 @@ namespace Dune
     const JacobianInverseTransposed &jacobianInverseTransposed ([[maybe_unused]] const LocalCoordinate &local) const
     {
       return jacobianInverseTransposed_;
+    }
+
+    /** \brief Obtain the Jacobian
+     *
+     *  \param[in]  local  local coordinate to evaluate Jacobian in
+     *
+     *  \returns a copy of the transposed of the Jacobian
+     */
+    Jacobian jacobian ([[maybe_unused]] const LocalCoordinate &local) const
+    {
+      return jacobianTransposed_.transposed();
+    }
+
+    /** \brief Obtain the Jacobian's inverse
+     *
+     *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
+     *  the Jacobian by \f$J(x)\f$, the following condition holds:
+     *  \f[J^{-1}(x) J(x) = I.\f]
+     */
+    JacobianInverse jacobianInverse ([[maybe_unused]] const LocalCoordinate &local) const
+    {
+      return jacobianInverseTransposed_.transposed();
     }
 
     friend ReferenceElement referenceElement ( const AffineGeometry &geometry )
