@@ -17,6 +17,39 @@
 namespace Dune
 {
 
+  namespace Impl
+  {
+
+    // Helper function to convert a matrix to a FieldMatrix
+    // using only the mv method.
+    template<class ctype, int rows, int cols, class M>
+    Dune::FieldMatrix<ctype, rows, cols> toFieldMatrix(const M& m){
+      Dune::FieldMatrix<ctype, rows, cols> result;
+      for (int j=0; j<cols; j++) {
+        FieldVector<ctype,cols> idColumn(0);
+        idColumn[j] = 1;
+        FieldVector<ctype,rows> column;
+        m.mv(idColumn,column);
+        for (int k=0; k<rows; k++)
+          result[k][j] = column[k];
+      }
+      return result;
+    }
+
+    // Helper function to check if FieldMatrix is an identity matrix
+    template<class ctype, int rows, int cols>
+    bool isIdentity(const Dune::FieldMatrix<ctype, rows, cols>& m, double tolerance){
+      if (rows != cols)
+        return false;
+      for(int i=0; i<rows; ++i)
+        for(int j=0; j<rows; ++j)
+          if (std::abs(m[i][j] - (i == j ? 1 : 0)) >= tolerance)
+            return false;
+      return true;
+    }
+
+  }
+
   /**
    * \brief Static and dynamic checks for all features of a Geometry
    *
@@ -59,6 +92,12 @@ namespace Dune
 
     // Matrix-like type for the return value of the jacobianInverseTransposed method
     typedef typename TestGeometry::JacobianInverseTransposed JacobianInverseTransposed;
+
+    // Matrix-like type for the return value of the jacobian method
+    typedef typename TestGeometry::Jacobian Jacobian;
+
+    // Matrix-like type for the return value of the jacobianInverse method
+    typedef typename TestGeometry::JacobianInverse JacobianInverse;
 
     const ctype tolerance = std::sqrt( std::numeric_limits< ctype >::epsilon() );
 
@@ -161,60 +200,65 @@ namespace Dune
         pass = false;
       }
 
-      // Test whether the methods 'jacobianTransposed' and 'jacobianInverseTransposed'
-      // return matrices that are inverse to each other.
-      const JacobianTransposed &jt = geometry.jacobianTransposed( x );
-      const JacobianInverseTransposed &jit = geometry.jacobianInverseTransposed( x );
+      const JacobianTransposed &Jt = geometry.jacobianTransposed( x );
+      const JacobianInverseTransposed &Jit = geometry.jacobianInverseTransposed( x );
+      const Jacobian &J = geometry.jacobian( x );
+      const JacobianInverse &Ji = geometry.jacobianInverse( x );
 
       // Transform to FieldMatrix, so we can have coefficent access and other goodies
-      // We need some black magic for the transformation, because there is no
-      // official easy way yet.
-      // The following code does the transformation by multiplying jt and jit from
-      // the right by identity matrices.  That way, only the mv method is used.
-      FieldMatrix< ctype, mydim, coorddim > jtAsFieldMatrix;
-      for (int j=0; j<coorddim; j++) {
-
-        FieldVector<ctype,coorddim> idColumn(0);
-        idColumn[j] = 1;
-
-        FieldVector<ctype,mydim> column;
-        jt.mv(idColumn,column);
-
-        for (int k=0; k<mydim; k++)
-          jtAsFieldMatrix[k][j] = column[k];
-
-      }
-
-      FieldMatrix< ctype, coorddim, mydim > jitAsFieldMatrix;
-      for (int j=0; j<mydim; j++) {
-
-        FieldVector<ctype,mydim> idColumn(0);
-        idColumn[j] = 1;
-
-        FieldVector<ctype,coorddim> column;
-        jit.mv(idColumn,column);
-
-        for (int k=0; k<coorddim; k++)
-          jitAsFieldMatrix[k][j] = column[k];
-
-      }
+      auto JtAsFieldMatrix = Impl::toFieldMatrix< ctype, mydim, coorddim >(Jt);
+      auto JitAsFieldMatrix = Impl::toFieldMatrix< ctype, coorddim, mydim >(Jit);
+      auto JAsFieldMatrix = Impl::toFieldMatrix< ctype, coorddim, mydim >(J);
+      auto JiAsFieldMatrix = Impl::toFieldMatrix< ctype, mydim, coorddim >(Ji);
 
 
-      FieldMatrix< ctype, mydim, mydim > id;
-      FMatrixHelp::multMatrix( jtAsFieldMatrix, jitAsFieldMatrix, id );
-      bool isId = true;
-      for( int j = 0; j < mydim; ++j )
-        for( int k = 0; k < mydim; ++k )
-          isId &= (std::abs( id[ j ][ k ] - (j == k ? 1 : 0) ) < tolerance);
-      if( !isId)
+      // Test whether the methods 'jacobianTransposed' and 'jacobianInverseTransposed'
+      // return matrices that are inverse to each other.
       {
-        std::cerr << "Error: jacobianTransposed and jacobianInverseTransposed are not inverse to each other." << std::endl;
-        std::cout << "       id != [ ";
-        for( int j = 0; j < mydim; ++j )
-          std::cout << (j > 0 ? " | " : "") << id[ j ];
-        std::cout << " ]" << std::endl;
-        pass = false;
+        FieldMatrix< ctype, mydim, mydim > id = JtAsFieldMatrix * JitAsFieldMatrix;
+        if(not Impl::isIdentity(id, tolerance))
+        {
+          std::cerr << "Error: jacobianTransposed and jacobianInverseTransposed are not inverse to each other." << std::endl;
+          std::cout << "       id != [ ";
+          for( int j = 0; j < mydim; ++j )
+            std::cout << (j > 0 ? " | " : "") << id[ j ];
+          std::cout << " ]" << std::endl;
+          pass = false;
+        }
       }
+
+      // Test whether the methods 'jacobian' and 'jacobianInverse'
+      // return matrices that are inverse to each other.
+      {
+        FieldMatrix< ctype, mydim, mydim > id = JiAsFieldMatrix * JAsFieldMatrix;
+        if(not Impl::isIdentity(id, tolerance))
+        {
+          std::cerr << "Error: jacobian and jacobianInverse are not inverse to each other." << std::endl;
+          std::cout << "       id != [ ";
+          for( int j = 0; j < mydim; ++j )
+            std::cout << (j > 0 ? " | " : "") << id[ j ];
+          std::cout << " ]" << std::endl;
+          pass = false;
+        }
+      }
+
+      // Test whether the methods 'jacobianTransposed' and 'jacobianInverseTransposed'
+      // are the transposed of 'jacobian' and 'jacobianInverse', respectively.
+      {
+        if( (JtAsFieldMatrix - JAsFieldMatrix.transposed()).infinity_norm() != 0 )
+        {
+          std::cerr << "Error: jacobian and jacobianTransposed are not transposed to each other." << std::endl;
+          pass = false;
+        }
+      }
+      {
+        if( (JitAsFieldMatrix - JiAsFieldMatrix.transposed()).infinity_norm() != 0 )
+        {
+          std::cerr << "Error: jacobianInverse and jacobianInverseTransposed are not transposed to each other." << std::endl;
+          pass = false;
+        }
+      }
+
 
       // Test whether integrationElement returns something nonnegative
       if( geometry.integrationElement( x ) < 0 ) {
@@ -226,7 +270,7 @@ namespace Dune
       for( int i = 0; i < mydim; ++i )
         for( int j = 0; j < mydim; ++j )
           for( int k = 0; k < coorddim; ++k )
-            jtj[ i ][ j ] += jtAsFieldMatrix[ i ][ k ] * jtAsFieldMatrix[ j ][ k ];
+            jtj[ i ][ j ] += JtAsFieldMatrix[ i ][ k ] * JtAsFieldMatrix[ j ][ k ];
 
       if( abs( sqrt( jtj.determinant() ) - geometry.integrationElement( x ) ) > tolerance ) {
         std::cerr << "Error: integrationElement is not consistent with jacobianTransposed." << std::endl;
