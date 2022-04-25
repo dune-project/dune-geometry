@@ -339,7 +339,7 @@ namespace Dune
      *        jacobianInverseTransposed before integrationElement, if both
      *        are required.
      */
-    ctype integrationElement ( const LocalCoordinate &local ) const
+    Volume integrationElement ( const LocalCoordinate &local ) const
     {
       return MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransposed( local ) );
     }

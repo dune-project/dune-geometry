@@ -199,7 +199,7 @@ namespace Dune {
     /** \brief Return the integration element, i.e., the determinant term in the integral
                transformation formula
      */
-    ctype integrationElement([[maybe_unused]] const LocalCoordinate& local) const
+    Volume integrationElement([[maybe_unused]] const LocalCoordinate& local) const
     {
       return volume();
     }
