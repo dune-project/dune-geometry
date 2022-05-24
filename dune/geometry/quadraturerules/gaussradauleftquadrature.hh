@@ -28,7 +28,7 @@ namespace Dune {
   {
   public:
     /** brief The highest quadrature order available */
-    enum { highest_order=30 };
+    constexpr static int highest_order = 30;
 
   private:
     friend class QuadratureRuleFactory<ct,1>;

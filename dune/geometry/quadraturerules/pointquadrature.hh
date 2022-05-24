@@ -16,7 +16,7 @@ namespace Dune {
     public QuadratureRule<ct,0>
   {
     // compile time parameters
-    enum { dim=0 };
+    constexpr static int dim = 0;
 
     friend class QuadratureRuleFactory<ct,dim>;
 

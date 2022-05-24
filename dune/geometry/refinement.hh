@@ -61,11 +61,11 @@
  *
  * \code
  * template<unsigned topologyId, class CoordType,
- *          unsigned coerceToId, int dimension>
+ *          unsigned coerceToId, int dimension_>
  * class StaticRefinement
  * {
  * public:
- *   enum { dimension };
+ *   constexpr static int dimension = dimension_;
  *
  *   template<int codimension>
  *   struct codim

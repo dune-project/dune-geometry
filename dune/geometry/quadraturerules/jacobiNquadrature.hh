@@ -35,7 +35,7 @@ namespace Dune {
   {
   public:
     // compile time parameters
-    enum { dim=1 };
+    constexpr static int dim = 1;
 
   private:
 
