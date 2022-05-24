@@ -72,7 +72,8 @@ namespace Dune
       class RefinementImp
       {
       public:
-        enum { dimension = dimension_ /*!< Know your own dimension \hideinitializer */ };
+        /** \brief Know your own dimension \hideinitializer */
+        constexpr static int dimension = dimension_;
         //- Know yourself
         typedef RefinementImp<dimension, CoordType> Refinement;
 
@@ -234,7 +235,7 @@ namespace Dune
       RefinementSubEntityIteratorSpecial<dimension, CoordType, 0>::
       vertexIndices() const
       {
-        enum { nIndices = (1 << dimension) };
+        constexpr static int nIndices = 1 << dimension;
 
         // cell index tuple
         std::array<unsigned int, dimension> e(asCommon().cellCoord());

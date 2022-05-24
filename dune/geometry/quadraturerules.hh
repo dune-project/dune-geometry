@@ -42,7 +42,7 @@ namespace Dune {
   class QuadraturePoint {
   public:
     /** \brief Dimension of the integration domain */
-    enum { dimension = dim };
+    constexpr static int dimension = dim;
 
     /** \brief Number type used for coordinates and quadrature weights */
     typedef ct Field;
@@ -166,7 +166,7 @@ namespace Dune {
     QuadratureRule(GeometryType t, int order) : geometry_type(t), delivered_order(order) {}
   public:
     /** \brief The space dimension */
-    enum { d=dim };
+    constexpr static int d = dim;
 
     /** \brief The type used for coordinates */
     typedef ct CoordType;
@@ -337,7 +337,7 @@ namespace Dune {
   template<typename ctype>
   class QuadratureRuleFactory<ctype, 0> {
   private:
-    enum { dim = 0 };
+    constexpr static int dim = 0;
     friend class QuadratureRules<ctype, dim>;
     static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum)
     {
@@ -360,7 +360,7 @@ namespace Dune {
   template<typename ctype>
   class QuadratureRuleFactory<ctype, 1> {
   private:
-    enum { dim = 1 };
+    constexpr static int dim = 1;
     friend class QuadratureRules<ctype, dim>;
     static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
     {
@@ -417,7 +417,7 @@ namespace Dune {
   template<typename ctype>
   class QuadratureRuleFactory<ctype, 2> {
   private:
-    enum { dim = 2 };
+    constexpr static int dim = 2;
     friend class QuadratureRules<ctype, dim>;
     static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
     {
@@ -443,7 +443,7 @@ namespace Dune {
   template<typename ctype>
   class QuadratureRuleFactory<ctype, 3> {
   private:
-    enum { dim = 3 };
+    constexpr static int dim = 3;
     friend class QuadratureRules<ctype, dim>;
     static unsigned maxOrder(const GeometryType &t, QuadratureType::Enum qt)
     {

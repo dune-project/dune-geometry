@@ -51,10 +51,10 @@ namespace Dune {
   public:
 
     /** \brief Dimension of the cube element */
-    enum {mydimension = dim};
+    constexpr static int mydimension = dim;
 
     /** \brief Dimension of the world space that the cube element is embedded in*/
-    enum {coorddimension = coorddim};
+    constexpr static int coorddimension = coorddim;
 
     /** \brief Type used for single coordinate coefficients */
     typedef CoordType ctype;

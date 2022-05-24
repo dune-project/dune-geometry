@@ -430,7 +430,7 @@ namespace Dune {
       class RefinementImp
       {
       public:
-        enum { dimension = dimension_ };
+        constexpr static int dimension = dimension_;
         typedef CoordType ctype;
 
         template<int codimension>
@@ -632,7 +632,7 @@ namespace Dune {
 
       protected:
         typedef FieldVector<int, dimension> Vertex;
-        enum { nKuhnIntervals = Dune::factorial(dimension) };
+        constexpr static int nKuhnIntervals = Dune::factorial(dimension);
 
         Vertex origin;
         int kuhnIndex;

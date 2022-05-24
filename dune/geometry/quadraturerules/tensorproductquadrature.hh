@@ -37,7 +37,7 @@ namespace Dune
     TensorProductQuadratureRule (unsigned int topologyId, unsigned int order, QuadratureType::Enum qt)
       : Base( GeometryType(topologyId, dim), order )
     {
-      enum { bitSize = sizeof(unsigned int)*8 };
+      constexpr static int bitSize = sizeof(unsigned int)*8;
       std::bitset<bitSize> baseId(topologyId);
       bool isPrism = baseId[dim-1];
       baseId.reset(dim-1);
@@ -155,7 +155,7 @@ namespace Dune
 
     static unsigned maxOrder(unsigned int topologyId, QuadratureType::Enum qt)
     {
-      enum { bitSize = sizeof(unsigned int)*8 };
+      constexpr static int bitSize = sizeof(unsigned int)*8;
       std::bitset<bitSize> baseId(topologyId);
       bool isPrism = baseId[dim-1];
       baseId.reset(dim-1);

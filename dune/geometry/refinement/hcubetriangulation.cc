@@ -64,7 +64,7 @@ namespace Dune
       class RefinementImp
       {
       public:
-        enum { dimension = dimension_ };
+        constexpr static int dimension = dimension_;
 
         typedef CoordType ctype;
 
@@ -171,7 +171,7 @@ namespace Dune
       protected:
         typedef typename Refinement::BackendRefinement BackendRefinement;
         typedef typename BackendRefinement::template Codim<dimension>::SubEntityIterator BackendIterator;
-        enum { nKuhnSimplices = factorial(int(dimension)) };
+        constexpr static int nKuhnSimplices = factorial(int(dimension));
 
         int nIntervals_;
 
@@ -256,7 +256,7 @@ namespace Dune
       protected:
         typedef typename Refinement::BackendRefinement BackendRefinement;
         typedef typename BackendRefinement::template Codim<0>::SubEntityIterator BackendIterator;
-        enum { nKuhnSimplices = factorial(dimension) };
+        constexpr static int nKuhnSimplices = factorial(dimension);
 
         int nIntervals_;
 

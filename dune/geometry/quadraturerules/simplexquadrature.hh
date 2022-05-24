@@ -28,7 +28,7 @@ namespace Dune {
   {
   public:
     /** \brief The highest quadrature order available */
-    enum { highest_order = 12 };
+    constexpr static int highest_order = 12;
   private:
     friend class QuadratureRuleFactory<ct,2>;
     SimplexQuadratureRule (int p);
@@ -43,7 +43,7 @@ namespace Dune {
   {
   public:
     /** \brief The highest quadrature order available */
-    enum { highest_order = 5 };
+    constexpr static int highest_order = 5;
   private:
     friend class QuadratureRuleFactory<ct,3>;
     SimplexQuadratureRule (int p);
@@ -72,8 +72,8 @@ namespace Dune {
   class SimplexQuadraturePoints<2>
   {
   public:
-    enum { MAXP=33};
-    enum { highest_order=12 };
+    constexpr static int MAXP = 33;
+    constexpr static int highest_order = 12;
 
     //! initialize quadrature points on the interval for all orders
     SimplexQuadraturePoints ()
@@ -835,8 +835,8 @@ namespace Dune {
   class SimplexQuadraturePoints<3>
   {
   public:
-    enum { MAXP=15};
-    enum { highest_order=5 };
+    constexpr static int MAXP = 15;
+    constexpr static int highest_order = 5;
 
     //! initialize quadrature points on the interval for all orders
     SimplexQuadraturePoints()

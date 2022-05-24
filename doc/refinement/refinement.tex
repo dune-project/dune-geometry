@@ -143,11 +143,11 @@ calculation with the same precision as the grid itself.
 template<NewGeometryType::BasicType geometryType,
          class CoordType,
          NewGeometryType::BasicType coerceTo,
-         int dimension>
+         int dimension_>
 class Refinement
 {
 public:
-  enum { dimension };
+  constexpr static int dimension = dimension_;
 
   template<int codimension>
   struct Codim {
