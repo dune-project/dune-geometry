@@ -1,5 +1,10 @@
 # Master (will become release 2.9)
 
+- The `Geometry::integrationElement` now needs to return the type `Volume`
+  instead of `ctype`. Note that this may be different from `ctype` if the
+  geometry supports typed dimensions. In such case, `ctype` is a length, and not
+  appropriate for a volume quantity.
+
 # Release 2.8
 
 - Python bindings have been moved from the `dune-python` module which is now
