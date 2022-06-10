@@ -88,6 +88,24 @@ namespace Dune {
         DiagonalMatrix<ctype,dim>,
         FieldMatrix<ctype,coorddim,dim> >::type JacobianInverseTransposed;
 
+    /**
+     * \brief Return type of jacobian
+     *
+     * This is a fast DiagonalMatrix if dim==coorddim, and a FieldMatrix otherwise.
+     * The FieldMatrix will never contain more than one entry per row,
+     * hence it could be replaced by something more efficient.
+     */
+    using Jacobian = std::conditional_t<dim==coorddim, DiagonalMatrix<ctype,dim>, FieldMatrix<ctype,coorddim,dim> >;
+
+    /**
+     * \brief Return type of jacobianInverse
+     *
+     * This is a fast DiagonalMatrix if dim==coorddim, and a FieldMatrix otherwise.
+     * The FieldMatrix will never contain more than one entry per row,
+     * hence it could be replaced by something more efficient.
+     */
+    using JacobianInverse = std::conditional_t<dim==coorddim, DiagonalMatrix<ctype,dim>, FieldMatrix<ctype,dim,coorddim> >;
+
     /** \brief Constructor from a lower left and an upper right corner
 
         \note Only for dim==coorddim
@@ -184,7 +202,7 @@ namespace Dune {
       return result;
     }
 
-    /** \brief Jacobian transposed of the transformation from local to global coordinates */
+    /** \brief Inverse Jacobian transposed of the transformation from local to global coordinates */
     JacobianInverseTransposed jacobianInverseTransposed([[maybe_unused]] const LocalCoordinate& local) const
     {
       JacobianInverseTransposed result;
@@ -194,6 +212,18 @@ namespace Dune {
       jacobianInverseTransposed(result);
 
       return result;
+    }
+
+    /** \brief Jacobian of the transformation from local to global coordinates */
+    Jacobian jacobian([[maybe_unused]] const LocalCoordinate& local) const
+    {
+      return jacobianTransposed(local).transposed();
+    }
+
+    /** \brief Inverse Jacobian of the transformation from local to global coordinates */
+    JacobianInverse jacobianInverse([[maybe_unused]] const LocalCoordinate& local) const
+    {
+      return jacobianInverseTransposed(local).transposed();
     }
 
     /** \brief Return the integration element, i.e., the determinant term in the integral

@@ -201,6 +201,12 @@ namespace Dune
     //! type of jacobian inverse transposed
     class JacobianInverseTransposed;
 
+    /** \brief Type for the Jacobian matrix */
+    typedef FieldMatrix< ctype, coorddimension, mydimension > Jacobian;
+
+    /** \brief Type for the inverse Jacobian matrix */
+    typedef FieldMatrix< ctype, mydimension, coorddimension > JacobianInverse;
+
   protected:
 
     typedef Dune::ReferenceElements< ctype, mydimension > ReferenceElements;
@@ -389,6 +395,29 @@ namespace Dune
       return geometry.refElement();
     }
 
+
+    /** \brief Obtain the Jacobian
+     *
+     *  \param[in]  local  local coordinate to evaluate Jacobian in
+     *
+     *  \returns a copy of the transposed of the Jacobian
+     */
+    Jacobian jacobian (const LocalCoordinate &local) const
+    {
+      return jacobianTransposed(local).transposed();
+    }
+
+    /** \brief Obtain the Jacobian's inverse
+     *
+     *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
+     *  the Jacobian by \f$J(x)\f$, the following condition holds:
+     *  \f[J^{-1}(x) J(x) = I.\f]
+     */
+    JacobianInverse jacobianInverse (const LocalCoordinate &local) const
+    {
+      return jacobianInverseTransposed(local).transposed();
+    }
+
   protected:
 
     ReferenceElement refElement () const
@@ -513,6 +542,8 @@ namespace Dune
 
     typedef typename Base::JacobianTransposed JacobianTransposed;
     typedef typename Base::JacobianInverseTransposed JacobianInverseTransposed;
+    typedef typename Base::Jacobian Jacobian;
+    typedef typename Base::JacobianInverse JacobianInverse;
 
     template< class CornerStorage >
     CachedMultiLinearGeometry ( const ReferenceElement &referenceElement, const CornerStorage &cornerStorage )
@@ -658,6 +689,28 @@ namespace Dune
       }
       else
         return Base::jacobianInverseTransposed( local );
+    }
+
+    /** \brief Obtain the Jacobian
+     *
+     *  \param[in]  local  local coordinate to evaluate Jacobian in
+     *
+     *  \returns a copy of the transposed of the Jacobian
+     */
+    Jacobian jacobian (const LocalCoordinate &local) const
+    {
+      return jacobianTransposed(local).transposed();
+    }
+
+    /** \brief Obtain the Jacobian's inverse
+     *
+     *  The Jacobian's inverse is defined as a pseudo-inverse. If we denote
+     *  the Jacobian by \f$J(x)\f$, the following condition holds:
+     *  \f[J^{-1}(x) J(x) = I.\f]
+     */
+    JacobianInverse jacobianInverse (const LocalCoordinate &local) const
+    {
+      return jacobianInverseTransposed(local).transposed();
     }
 
   protected:
