@@ -198,75 +198,59 @@ namespace Dune {
   class QuadratureRules {
 
     /** \brief Internal short-hand notation for the type of quadrature rules this container contains */
-    typedef Dune::QuadratureRule<ctype, dim> QuadratureRule;
-    //! \brief a quadrature rule (for each quadrature order, geometry type,
-    //!        and quadrature type)
-    static void initQuadratureRule(QuadratureRule *qr, QuadratureType::Enum qt,
-                                   const GeometryType &t, int p)
-    {
-      *qr = QuadratureRuleFactory<ctype,dim>::rule(t,p,qt);
-    }
+    using QuadratureRule = Dune::QuadratureRule<ctype, dim>;
 
-    typedef std::vector<std::pair<std::once_flag, QuadratureRule> >
-      QuadratureOrderVector; // indexed by quadrature order
-    //! \brief initialize the vector indexed by the quadrature order (for each
-    //!        geometry type and quadrature type)
-    static void initQuadratureOrderVector(QuadratureOrderVector *qov,
-                                          QuadratureType::Enum qt,
-                                          const GeometryType &t)
-    {
-      if(dim == 0)
-        // we only need one quadrature rule for points, not maxint
-        *qov = QuadratureOrderVector(1);
-      else
-        *qov = QuadratureOrderVector(QuadratureRuleFactory<ctype,dim>::maxOrder(t,qt)+1);
-    }
+    // indexed by quadrature order
+    using QuadratureOrderVector = std::vector<std::pair<std::once_flag, QuadratureRule> >;
 
-    typedef std::vector<std::pair<std::once_flag, QuadratureOrderVector> >
-      GeometryTypeVector; // indexed by geometry type
-    //! \brief initialize the vector indexed by the geometry type (for each
-    //!        quadrature type)
-    static void initGeometryTypeVector(GeometryTypeVector *gtv)
-    {
-      *gtv = GeometryTypeVector(LocalGeometryTypeIndex::size(dim));
-    }
+    // indexed by geometry type
+    using GeometryTypeVector = std::vector<std::pair<std::once_flag, QuadratureOrderVector> >;
+
+    // indexed by quadrature type enum
+    using QuadratureCacheVector = std::vector<std::pair<std::once_flag, GeometryTypeVector> >;
 
     //! real rule creator
-    DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre)
+    DUNE_EXPORT const QuadratureRule& _rule(const GeometryType& t, int p, QuadratureType::Enum qt=QuadratureType::GaussLegendre) const
     {
       assert(t.dim()==dim);
 
       DUNE_ASSERT_CALL_ONCE();
 
-      static std::vector<std::pair< // indexed by quadrature type
-        std::once_flag,
-        GeometryTypeVector
-        > > quadratureCache(QuadratureType::size);
+      static QuadratureCacheVector quadratureCache(QuadratureType::size);
 
-      auto & quadratureTypeLevel = quadratureCache[qt];
-      std::call_once(quadratureTypeLevel.first, initGeometryTypeVector,
-                     &quadratureTypeLevel.second);
+      auto& [ onceFlagQuadratureType, geometryTypes ] = quadratureCache[qt];
+      // initialize geometry types for this quadrature type once
+      std::call_once(onceFlagQuadratureType, [&types = geometryTypes]{
+        types = GeometryTypeVector(LocalGeometryTypeIndex::size(dim));
+      });
 
-      auto & geometryTypeLevel =
-        quadratureTypeLevel.second[LocalGeometryTypeIndex::index(t)];
-      std::call_once(geometryTypeLevel.first, initQuadratureOrderVector,
-                     &geometryTypeLevel.second, qt, t);
+      auto& [ onceFlagGeometryType, quadratureOrders ] = geometryTypes[LocalGeometryTypeIndex::index(t)];
+      // initialize quadrature orders for this geometry type and quadrature type once
+      std::call_once(onceFlagGeometryType, [&, &orders = quadratureOrders]{
+        // we only need one quadrature rule for points, not maxint
+        const auto numRules = dim == 0 ? 1 : QuadratureRuleFactory<ctype,dim>::maxOrder(t, qt)+1;
+        orders = QuadratureOrderVector(numRules);
+      });
 
       // we only have one quadrature rule for points
-      auto & quadratureOrderLevel = geometryTypeLevel.second[dim == 0 ? 0 : p];
-      std::call_once(quadratureOrderLevel.first, initQuadratureRule,
-                     &quadratureOrderLevel.second, qt, t, p);
+      auto& [ onceFlagQuadratureOrder, quadratureRule ] = quadratureOrders[dim == 0 ? 0 : p];
+      // initialize quadrature rule once
+      std::call_once(onceFlagQuadratureOrder, [&, &rule = quadratureRule]{
+        rule = QuadratureRuleFactory<ctype,dim>::rule(t, p, qt);
+      });
 
-      return quadratureOrderLevel.second;
+      return quadratureRule;
     }
+
     //! singleton provider
     DUNE_EXPORT static QuadratureRules& instance()
     {
       static QuadratureRules instance;
       return instance;
     }
+
     //! private constructor
-    QuadratureRules () {}
+    QuadratureRules () = default;
   public:
     //! maximum quadrature order for given geometry type and quadrature type
     static unsigned
