@@ -85,7 +85,7 @@ namespace Dune {
       *       Polynomials of order 2n - 1 can be integrated exactly.
       *  -higher dimension: For the 2D/3D case efficient rules for certain geometries may be used if available.
       *                     Higher dimensional quadrature rules are constructed via \p TensorProductQuadratureRule.
-      *                     In this case the 1D rules eventually need higher order to compensate occuring weight functions(i.e. simplices).
+      *                     In this case the 1D rules eventually need higher order to compensate occurring weight functions(i.e. simplices).
       */
       GaussLegendre = 0,
 
@@ -108,7 +108,7 @@ namespace Dune {
       *  -1D: Gauss-Jacobi rule with parameters \f$\alpha = n,\ \beta =0 \f$
       *  -higher dimension: For the 2D/3D case efficient rules for certain geometries may be used if available.
       *                     Higher dimensional quadrature rules are constructed via \p TensorProductQuadratureRule.
-      *                     In this case the 1D rules respect eventually occuring weight functions(i.e. simplices).
+      *                     In this case the 1D rules respect eventually occurring weight functions(i.e. simplices).
       *  -The rules for high dimension or order are computed at run time and only floating point number types are supported.(LAPACK is needed for this case)
       *  -Most efficient quadrature type for simplices.
       *

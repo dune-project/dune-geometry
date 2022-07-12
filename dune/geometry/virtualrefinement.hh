@@ -32,7 +32,7 @@
  * class for each geometryType and coerceTo from that class.  The
  * derived classes simply wrap the non-virtual classes from \link
  * Refinement Refinement\endlink.  This makes it possible to treat each
- * geometryType (of a given dimension) the same, and thus eleminates
+ * geometryType (of a given dimension) the same, and thus eliminates
  * the many repetitions of lots of code.
  *
  * But the case statements are not totally gone yet.  VirtualRefinement
@@ -231,7 +231,7 @@
  * VirtualRefinement.  Since they are polymorph we cannot simply pass
  * them into user code.  They are not singletons, so we also cannot
  * pass references to them.  Passing pointers to iterators would work,
- * but then the programmer has to remember to explecitely delete them.
+ * but then the programmer has to remember to explicitly delete them.
  * Also, it is uncommon for iterators to be handled by their pointers.
  *
  * What we do instead is having a wrapper class which conforms to the

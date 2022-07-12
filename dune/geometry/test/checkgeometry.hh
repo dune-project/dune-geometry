@@ -205,7 +205,7 @@ namespace Dune
       const Jacobian &J = geometry.jacobian( x );
       const JacobianInverse &Ji = geometry.jacobianInverse( x );
 
-      // Transform to FieldMatrix, so we can have coefficent access and other goodies
+      // Transform to FieldMatrix, so we can have coefficient access and other goodies
       auto JtAsFieldMatrix = Impl::toFieldMatrix< ctype, mydim, coorddim >(Jt);
       auto JitAsFieldMatrix = Impl::toFieldMatrix< ctype, coorddim, mydim >(Jit);
       auto JAsFieldMatrix = Impl::toFieldMatrix< ctype, coorddim, mydim >(J);

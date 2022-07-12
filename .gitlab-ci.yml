@@ -38,3 +38,12 @@ ubuntu:18.04 clang-5-17:
     DUNECI_TOOLCHAIN: clang-5-17
     DUNECI_CMAKE_FLAGS: "-DDUNE_ENABLE_PYTHONBINDINGS=OFF"
   tags: [duneci]
+
+# Check for spelling mistakes in text
+code-spelling-check:
+  stage: .pre
+  # Avoid the global 'before_script'
+  before_script: ""
+  image: registry.dune-project.org/docker/ci/debian:11
+  script:
+  - codespell

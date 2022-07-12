@@ -193,7 +193,7 @@ For these topologies we have \f$s_d( T_1 ) = s_d( T_2 ) = 10\f$.
 
 \section GeometryGeometryElement Reference Domains
 
-For each reference topology \f$T\f$ we assosiate the set of corners
+For each reference topology \f$T\f$ we associate the set of corners
 \f$\mathcal{C}(T):=(p_i(T))_{1=1}^{s_d(T)}\subset\mathbf{R}^d(T)\f$ 
 defined through 
 - \f$T=\mathbf{p}\f$: \f$p_0(T)=0\in\mathbf{R}^0\f$

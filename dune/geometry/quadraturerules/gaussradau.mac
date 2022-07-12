@@ -24,7 +24,7 @@ maxp: 30$ /* rules exist only for even orders */
     the outer point -1 is obtained by multiplication with (x + 1)
 
   Right Gauss-Radau rule:
-    substitue x by -x
+    substitute x by -x
 */
 points_left(n) := legendre_p(n-1,x) + legendre_p(n, x)$
 weights_left(n,xx) := at(ratsimp((1 - x)/(n*n*legendre_p(n-1,x)^2)), x=xx)$
