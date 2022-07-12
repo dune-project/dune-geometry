@@ -362,7 +362,7 @@ namespace Dune
   // looks up the type of a reference element by trying to instantiate the correct overload
   // of referenceElement() for the given arguments. This will fail if there is no valid
   // overload and should be used with detected_or or some other utility that places the
-  // instantation in SFINAE context.
+  // instantiation in SFINAE context.
   //
   // this is placed directly in namespace Dune to avoid any weird surprises
 
@@ -422,7 +422,7 @@ namespace Dune
 
   namespace Impl {
 
-    // helpers for triggering a deprecation warning for occurences of the old
+    // helpers for triggering a deprecation warning for occurrences of the old
     // ReferenceElement syntax (Dune::ReferenceElement<T,int>)
 
     // this looks a little weird, encoding the type in the return type of a nested function,

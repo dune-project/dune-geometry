@@ -72,7 +72,7 @@
 - Geometry implementations now export a type `Volume` that is used for the return
   value of the `volume` methods.  So does the generic `ReferenceElement` implementation.
 -   More efficient quadrature rules for simplices are available that
-    need less quadrature points to achive the same order.  For now these
+    need less quadrature points to achieve the same order.  For now these
     have to be explicitly requested:
     ```c++
     auto&& rule = Dune::QuadratureRules<...>::rule(..., Dune::QuadratureType::GaussJacobi_n_0);

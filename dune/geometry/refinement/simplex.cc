@@ -104,7 +104,7 @@
    \f$(x_0,x_1,x_2)=(2,2,2)\f$.
    - First we count the number of vertices in the green tetrahedron of
     width \f$x_0-1=1\f$ (4).  Then we take the green tetrahedron away.
-    Whats left is a triangle, which extends into the (1,2)-plane.
+    What's left is a triangle, which extends into the (1,2)-plane.
    - Now we count the number of vertices in the red triangle of width
     \f$x_1-1=1\f$ (3).  Again we take the counted points away and are
     left with a line which extends into direction 2.
