@@ -50,3 +50,12 @@ code-spelling-check:
   image: registry.dune-project.org/docker/ci/debian:11
   script:
   - codespell
+
+reuse:
+  image:
+    name: docker.io/fsfe/reuse:latest
+    entrypoint: [""]
+  tags: [duneci]
+  before_script: ""
+  script:
+    - reuse lint
