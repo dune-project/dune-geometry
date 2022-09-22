@@ -51,3 +51,12 @@ code-spelling-check:
   tags: [duneci]
   script:
   - codespell
+
+reuse:
+  image:
+    name: docker.io/fsfe/reuse:latest
+    entrypoint: [""]
+  tags: [duneci]
+  before_script: ""
+  script:
+    - reuse lint
