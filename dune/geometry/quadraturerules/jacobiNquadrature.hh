@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright © DUNE Project contributors, see file LICENSE.md in module root
+// SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 #ifndef DUNE_GEOMETRY_QUADRATURERULES_JACOBI_N_0_H
 #define DUNE_GEOMETRY_QUADRATURERULES_JACOBI_N_0_H
 
