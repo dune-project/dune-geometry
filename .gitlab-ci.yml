@@ -45,5 +45,6 @@ code-spelling-check:
   # Avoid the global 'before_script'
   before_script: ""
   image: registry.dune-project.org/docker/ci/debian:11
+  tags: [duneci]
   script:
   - codespell
