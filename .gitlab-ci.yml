@@ -52,6 +52,7 @@ code-spelling-check:
   - codespell
 
 reuse:
+  stage: .pre
   image:
     name: docker.io/fsfe/reuse:latest
     entrypoint: [""]
