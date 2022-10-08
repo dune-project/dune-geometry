@@ -3,9 +3,8 @@
 
 add_subdirectory(dune)
 
-dune_python_install_package(
+dune_python_configure_bindings(
   PATH "."
-  DEPENDS _geometry
   CMAKE_METADATA_FLAGS DUNE_OPTS_FILE
 )
 if(POLICY CMP0087)
