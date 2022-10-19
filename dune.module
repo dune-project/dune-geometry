@@ -7,5 +7,5 @@ Author: The Dune Core developers
 Maintainer: dune-devel@lists.dune-project.org
 Description: Geometry Transformations, Reference Elements and Quadrature Rules
 URL: https://gitlab.dune-project.org/core/dune-geometry
-Depends: dune-common (>= 2.9)
+Depends: dune-common (>= 2.10)
 Whitespace-Hook: Yes
