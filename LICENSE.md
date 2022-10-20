@@ -1,33 +1,35 @@
 Copyright holders:
 
 2015--2016    Marco Agnese
-2012--2014    Markus Blatt
+2012--2021    Markus Blatt
 2013--2014    Andreas Buhr
-2014--2019    Ansgar Burchardt
+2022          Samuel Burbulla
+2014--2022    Ansgar Burchardt
 2013          Benjamin Bykowski
 2020--2021    Gregor Corbin
-2011--2021    Andreas Dedner
+2011--2022    Andreas Dedner
 2020          Nils-Arne Dreier
 2012--2021    Christian Engwer
 2011--2020    Jorrit Fahlke
 2012          Bernd Flemisch
 2013          Christoph Gersbacher
 2016--2020    Janick Gerstenberger
-2014--2021    Carsten Gräser
 2015--2017    Felix Gruber
+2014--2022    Carsten Gräser
 2011--2021    Christoph Grüninger
 2020          René Heß
 2018          Max Kahnt
-2013--2018    Dominic Kempf
-2012--2020    Robert Klöfkorn
+2013--2021    Dominic Kempf
+2012--2022    Robert Klöfkorn
 2017          Marcel Koch
+2021--2022    Timo Koch
 2012--2014    Tobias Malkmus
 2012--2019    Steffen Müthing
 2011--2018    Martin Nolte
-2018          Santiago Ospina
 2011--2016    Elias Pipping
-2018--2021    Simon Praetorius
-2011--2021    Oliver Sander
+2018--2022    Simon Praetorius
+2018--2022    Santiago Ospina De Los Ríos
+2011--2022    Oliver Sander
 2019--2021    Henrik Stolzmann
 2020          Kilian Weishaupt
 
