@@ -3,7 +3,10 @@ SPDX-FileCopyrightText: Copyright © DUNE Project contributors, see file LICENSE
 SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 -->
 
-# Master (will become release 2.9)
+# Master (will become release 2.10)
+
+
+# Release 2.9
 
 - The `Geometry` interface was extended by methods `jacobian(local)` and `jacobianInverse(local)`
   and corresponding typedefs `Jacobian` and `JacobianInverse`. This is implemented by all geometry
@@ -14,6 +17,7 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
   instead of `ctype`. Note that this may be different from `ctype` if the
   geometry supports typed dimensions. In such case, `ctype` is a length, and not
   appropriate for a volume quantity.
+
 
 # Release 2.8
 
