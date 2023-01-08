@@ -9,7 +9,7 @@
 
 namespace Dune {
 
-  /** \brief Utitlity function to construct the correct geometry type given the dimension and the number of vertices
+  /** \brief Utility function to construct the correct geometry type given the dimension and the number of vertices
    *  \note This code only works up to dimension 3.
    *        In higher dimensions the number of vertices does not uniquely identify the type of polyhedron.
    */
