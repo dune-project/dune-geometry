@@ -35,7 +35,7 @@ map ( const Dune::FieldMatrix< ctype, mydim, mydim > &A,
 
 
 template< class ctype, int mydim, int cdim >
-static bool testAffineGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
+static bool testAffineGeometry ( typename Dune::ReferenceElements< ctype, mydim >::ReferenceElement refElement,
                                  const Dune::FieldMatrix< ctype, mydim, mydim > &A,
                                  const Dune::FieldMatrix< ctype, cdim, cdim > &B )
 {

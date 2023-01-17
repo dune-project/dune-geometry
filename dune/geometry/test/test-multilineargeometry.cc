@@ -135,7 +135,7 @@ static bool testLocalMethod ()
 
 
 template< class ctype, int mydim, int cdim, class Traits >
-static bool testMultiLinearGeometry ( Dune::Transitional::ReferenceElement< ctype, Dune::Dim<mydim> > refElement,
+static bool testMultiLinearGeometry ( typename Dune::ReferenceElements< ctype, mydim >::ReferenceElement refElement,
                                       const Dune::FieldMatrix< ctype, mydim, mydim > &A,
                                       const Dune::FieldMatrix< ctype, cdim, cdim > &B,
                                       const Traits & /* traits */ )
