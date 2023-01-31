@@ -109,7 +109,7 @@ int main () try
     testcmp(hash_value(r1),0);
   }
 
-  const Transitional::ReferenceElement<double,Dim<1>> referenceLine = ReferenceElements<double, 1>::general(type);
+  const ReferenceElements<double,1>::ReferenceElement referenceLine = ReferenceElements<double, 1>::general(type);
 
   // size(int c)
   testcmp(referenceLine.size(0),1);
@@ -207,7 +207,7 @@ int main () try
   testcmp(triangleVolume, 0.5);
 
   // test the 'geometry' method
-  const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
+  const ReferenceElements<double,2>::ReferenceElement::Codim<0>::Geometry referenceTriangleMapping = referenceTriangle.geometry< 0 >( 0 );
   referenceTriangleMapping.corner(0);
 
   // test the checkInside method
@@ -221,7 +221,7 @@ int main () try
 
   type = GeometryTypes::quadrilateral;
 
-  const Transitional::ReferenceElement<double,Dim<2>> referenceQuad = referenceElement<double>(type,Dim<2>());
+  const ReferenceElements<double,2>::ReferenceElement referenceQuad = referenceElement<double>(type,Dim<2>());
 
   // size(int c)
   testcmp(referenceQuad.size(0),1);
@@ -297,7 +297,7 @@ int main () try
   testcmp(quadVolume, 1);
 
   // test the 'geometry' method
-  const Transitional::ReferenceElement<double,Dim<2>>::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
+  const ReferenceElements<double,2>::ReferenceElement::Codim<0>::Geometry referenceQuadMapping = referenceQuad.geometry< 0 >( 0 );
   referenceQuadMapping.corner(0);
 
   // //////////////////////////////////////////////////////////////////////////
@@ -306,7 +306,7 @@ int main () try
 
   type = GeometryTypes::tetrahedron;
 
-  const Transitional::ReferenceElement<double,Dim<3>> referenceTetra = referenceElement(double(),type,Dim<3>());
+  const ReferenceElements<double,3>::ReferenceElement referenceTetra = referenceElement(double(),type,Dim<3>());
 
   // size(int c)
   testcmp(referenceTetra.size(0),1);
@@ -557,7 +557,7 @@ int main () try
   testcmp(hexaVolume, 1);
 
   // test the 'geometry' method
-  const Transitional::ReferenceElement<double,Dim<3>>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 );
+  const Transitional::ReferenceElement<double,Dim<3>>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 ); // keep Transitional to check for deprecation warning
   referenceHexaMapping.corner(0);
 
   errors += checkSubEntities(referenceHexa);

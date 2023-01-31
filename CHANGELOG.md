@@ -5,6 +5,14 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 # Master (will become release 2.10)
 
+- `Dune::Geo::ReferenceElement` methods that have returned references, return
+  by value. This affects `type()`, `position()`, and `integrationOuterNormal()`.
+
+## Deprecations and removals
+
+- `Dune::Transitional::ReferenceElement` is deprecated and will be removed after
+  Dune 2.10. Use `Dune::Geo::ReferenceElement` directly.
+
 
 # Release 2.9
 
