@@ -118,6 +118,17 @@ void checkQuadrature(const QuadratureRule &quad)
       integral[d] += weight*pow(x[d], p);
   }
 
+  // check structured bindings
+  std::size_t qp = 0;
+  for (auto [position, weight] : quad) {
+    if ((quad[qp].position() != position) or (quad[qp].weight() != weight)) {
+      std::cerr << "structured binding `[position, weight] = qp` does not match `{qp.position(), qp.weight()}`" << std::endl;
+      success = false;
+    }
+    qp++;
+  }
+
+
   ctype maxRelativeError = 0;
   for(unsigned int d=0; d<dim; d++)
   {

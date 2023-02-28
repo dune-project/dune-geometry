@@ -5,6 +5,12 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 # Master (will become release 2.10)
 
+- Quadrature point now allows C++ structured bindings so that
+  numerical integrations are less verbose:
+  ```c++
+  for(auto [position, weight] : Dune::QuadratureRules</*...*/>::rule(/*...*/))
+    result += f(position) * weight;
+  ```
 - `Dune::Geo::ReferenceElement` methods that have returned references, return
   by value. This affects `type()`, `position()`, and `integrationOuterNormal()`.
 
