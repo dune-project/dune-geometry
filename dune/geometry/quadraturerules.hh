@@ -27,6 +27,25 @@
    Interface for quadrature points and rules
  */
 
+
+namespace Dune {
+  // forward declaration
+  template<typename ct, int dim>
+  class QuadraturePoint;
+}
+
+// class specialization of standard classes that allow to use structured bindings on QuadraturePoint
+namespace std {
+  template<typename ct, int dim>
+  struct tuple_size<Dune::QuadraturePoint<ct,dim>> : public std::integral_constant<std::size_t,2> {};
+
+  template<typename ct, int dim>
+  struct tuple_element<0, Dune::QuadraturePoint<ct,dim>> { using type = Dune::FieldVector<ct, dim>; };
+
+  template<typename ct, int dim>
+  struct tuple_element<1, Dune::QuadraturePoint<ct,dim>> { using type = ct; };
+}
+
 namespace Dune {
 
   /** \brief Exception thrown if a desired QuadratureRule is not available,
@@ -36,6 +55,9 @@ namespace Dune {
   class QuadratureOrderOutOfRange : public NotImplemented {};
 
   /** \brief Single evaluation point in a quadrature rule
+      \details A quadrature point is a single `(position, weight)` pair used to
+      evaluate a function at a position with a relative weight.
+      \related QuadratureRule
       \ingroup Quadrature
       \tparam ct Number type used for both coordinates and the weights
       \tparam dim Dimension of the integration domain
@@ -68,6 +90,31 @@ namespace Dune {
     const ct &weight () const
     {
       return weight_;
+    }
+
+    /** \brief Tuple like accessor for contents of a quadrature point
+        \details This function is used by the compiler to generate structured binding
+        for the (position, weight) pair. Thus, the snippet
+        \code{.cpp}
+        QuadraturePoint<double,2> quad_point = ...;
+        auto [position, weight] = quad_point;
+        \endcode
+
+        is equivalent to
+        \code{.cpp}
+        QuadraturePoint<double,2> quad_point = ...;
+        auto position = quad_point.position();
+        auto weight = quad_point.weight();
+        \endcode
+
+        \tparam index Positional argument of the quadrature point contents
+        \return Position (`index==0`) or weight (`index==1`).
+     */
+    template<std::size_t index, std::enable_if_t<(index<=1), int> = 0>
+    std::tuple_element_t<index, QuadraturePoint<ct, dim>> get() const
+    {
+      if constexpr (index == 0) return local;
+      if constexpr (index == 1) return weight_;
     }
 
   protected:
@@ -147,7 +194,18 @@ namespace Dune {
   }
 
   /** \brief Abstract base class for quadrature rules
-      \ingroup Quadrature
+     \details Contains a list of QuadraturePoint used to integrate numerically
+     a function with a domain given by the a GeometryType.
+
+     Usage:
+     \code{.cpp}
+     auto f = [](FieldVector<ct,dim> x) -> double {...}; // function to integrate
+     QuadratureRule<ct,dim> quadrature = Dune::QuadratureRules<ct,dim>::rule(...); // obtain a quadrature rule
+     double integral = 0.;
+     for(auto [position, weight] : quadrature) // iterate over quadrature points
+       integral += f(position) * weight; // accumulate weighted results
+     \endcode
+     \ingroup Quadrature
    */
   template<typename ct, int dim>
   class QuadratureRule : public std::vector<QuadraturePoint<ct,dim> >
