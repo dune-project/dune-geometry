@@ -20,8 +20,8 @@ include(DuneMacros)
 # start a dune project with information from dune.module
 dune_project()
 
-dune_add_library(dunegeometry)
-target_link_libraries(dunegeometry PUBLIC ${DUNE_LIBS})
+dune_add_library(dunegeometry EXPORT_NAME Geometry)
+target_link_libraries(dunegeometry PUBLIC Dune::Common)
 
 add_subdirectory("dune")
 add_subdirectory("doc")
