@@ -101,6 +101,16 @@ static bool testAffineGeometry ( typename Dune::ReferenceElements< ctype, mydim 
 
   }
 
+  // test default construction and assignment
+  Geometry geometry0;
+  geometry0 = geometry;
+
+  if (geometry0.center() != geometry.center() || geometry0.volume() != geometry.volume())
+  {
+    std::cerr << "Default constructed geometry is not usable after assignment" << std::endl;
+    pass = false;
+  }
+
   pass &= checkGeometry( geometry );
 
   return pass;

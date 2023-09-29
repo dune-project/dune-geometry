@@ -524,6 +524,14 @@ namespace Dune
     typedef Impl::FieldMatrixHelper< ct > MatrixHelper;
 
   public:
+    /** \brief Constructs an empty geometry.
+     *
+     * This constructor creates an empty (invalid) affine geometry. It may not be
+     * used in any way except for assigning other affine geometries to it. After
+     * assigning a valid geometry, it may be used without restrictions.
+     */
+    AffineGeometry () = default;
+
     /** \brief Create affine geometry from reference element, one vertex, and the Jacobian matrix */
     AffineGeometry ( const ReferenceElement &refElement, const GlobalCoordinate &origin,
                      const JacobianTransposed &jt )
