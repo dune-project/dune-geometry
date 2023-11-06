@@ -108,6 +108,15 @@ namespace Dune {
      */
     using JacobianInverse = std::conditional_t<dim==coorddim, DiagonalMatrix<ctype,dim>, FieldMatrix<ctype,dim,coorddim> >;
 
+    /** \brief Constructs an empty geometry.
+     *
+     * This constructor creates an empty (invalid) axis-aligned cube geometry. It
+     * may not be used in any way except for assigning other axis-aligned cube
+     * geometries to it. After assigning a valid geometry, it may be used without
+     * restrictions.
+     */
+    AxisAlignedCubeGeometry () = default;
+
     /** \brief Constructor from a lower left and an upper right corner
 
         \note Only for dim==coorddim

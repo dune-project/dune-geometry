@@ -73,9 +73,14 @@ void testCodimZero(int& result)
 
   testBasicGeometryAffine(geometry, result);
 
-  // test assignability
-  ElementGeometry geometry2( lower, upper, axes );
+  // test default construction and assignment
+  ElementGeometry geometry2;
   geometry2 = geometry;
+
+  if (checkGeometry(geometry2))
+    pass(result);
+  else
+    fail(result);
 }
 
 template <int dim, int coorddim>
@@ -104,9 +109,14 @@ void testCodimNonZero(int& result)
 
     testBasicGeometryAffine(geometry, result);
 
-    // test assignability
-    ElementGeometry geometry2( lower, upper, axes );
+    // test default construction and assignment
+    ElementGeometry geometry2;
     geometry2 = geometry;
+
+    if (checkGeometry(geometry2))
+      pass(result);
+    else
+      fail(result);
   }
 
 }
