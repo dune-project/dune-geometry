@@ -271,7 +271,7 @@ namespace Dune
       DUNE_UNUSED_PARAMETER(t);
     }
 
-    /** @} */
+    /*@}*/
 
 
     /** @name Query Methods */
@@ -370,6 +370,7 @@ namespace Dune
     /*@}*/
 
     /** @name Comparison operators */
+    /*@{*/
 
     /** \brief Check for equality. This method knows that in dimension 0 and 1
      *  all BasicTypes are equal.
