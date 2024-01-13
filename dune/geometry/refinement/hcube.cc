@@ -18,7 +18,6 @@
  *  \ingroup Refinement
  *
  * \section Iterators The Iterators
- * <!--=========================-->
  *
  * For the iterators we have to hack around a bit.  The problem is as
  * follows:

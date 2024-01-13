@@ -14,13 +14,11 @@
 /*!
  * \addtogroup VirtualRefinement Virtual Refinement
  * \ingroup Refinement
- *   <!--WWWWWWWWWWWWWWWWWWWW-->
  *
  * Please have a look on the non-virtual \link Refinement
  * Refinement\endlink documentation.
  *
  * \section Virtual_General General
- * <!--=========-->
  *
  * \link Refinement Refinement\endlink can only be used when you know
  * the geometryType of your entities at compile time.  You could
@@ -42,10 +40,8 @@
  * buildRefinement() function.
  *
  * \section Virtual_User_interface The user Interface
- * <!--===================================-->
  *
  * \subsection VirtualRefinement The VirtualRefinement class
- * <!------------------------------------------------------>
  *
  * VirtualRefinement is not a set of unrelated specialisations of the
  * same template class.  VirtualRefinement is a base class with several
@@ -131,7 +127,6 @@
  * \endcode
  *
  * \subsection User_interface_buildRefinement buildRefinement()
- * <!------------------------------------------>
  *
  * The declaration for buildRefinement is
  *
@@ -163,7 +158,6 @@
  * refine, while coerceTo is the geometry type of the subentities.
  *
  * \section Virtual_Implementing Implementing a new Refinement type
- * <!--=================================================-->
  *
  * When you write a Refinement implementation for a new combination of
  * geometryType and coerceTo, you have to tell buildRefinement() about
@@ -184,14 +178,12 @@
  * Everything else has been done for you automatically.
  *
  * \subsection Virtual_Namespaces Namespaces
- * <!------------------->
  *
  * VirtualRefinement does not use a complicated namespace scheme like
  * \link Refinement Refinement\endlink.  The complete VirtualRefinement
  * stuff simply lives directly in namespace Dune.
  *
  * \subsection Virtual_Layers Conceptual layers
- * <!--------------------------------->
  *
  * VirtualRefinement adds to more layers to the ones already defined in
  * \link Refinement Refinement\endlink:
@@ -209,7 +201,6 @@
  *   located in refinementvirtual.cc
  *
  * \section Implementation
- * <!--================-->
  *
  * The interface is defined by the template class VirtualRefinement.
  * It simply defines the CoordVectors and IndexVectors appropriate for
@@ -227,7 +218,6 @@
  * class.
  *
  * \subsection Virtual_Iterators The iterators
- * <!-------------------------------->
  *
  * We can't do the same thing with the iterators as we do with class
  * VirtualRefinement.  Since they are polymorph we cannot simply pass
@@ -245,7 +235,6 @@
  * object when instantiating an iterator.
  *
  * \subsection Implementiaion_buildRefinement buildRefinement()
- * <!------------------------------------------>
  *
  * The template function buildRefinement() has to be specialized for
  * each dimension.  It makes no sense to test for
