@@ -13,7 +13,6 @@
 
 /*!
  * \addtogroup Refinement Refinement
- * \ingroup Grid
  *
  * \section General
  *
