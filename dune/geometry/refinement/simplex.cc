@@ -274,7 +274,7 @@ namespace Dune {
 
          Runtime is of order O(n).
 
-         \deprecate Use factorial from dune/common/math instead. Will be
+         \deprecated Use factorial from dune/common/math instead. Will be
                     removed after Dune 2.9.
        */
       [[deprecated("Use factorial from dune-common's math.hh")]]
@@ -290,7 +290,7 @@ namespace Dune {
 
          Runtime is of order O(min {lower, upper-lower})
 
-         \deprecate Use binomial from dune/common/math instead. Will be
+         \deprecated Use binomial from dune/common/math instead. Will be
                     removed after Dune 2.9.
        */
       [[deprecated("Use binomial from dune-common's math.hh")]]
