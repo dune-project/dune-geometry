@@ -13,11 +13,8 @@
 
 /*!
  * \addtogroup Refinement Refinement
- * \ingroup Grid
- *   <!--WWWWWWWWWWWWW-->
  *
  * \section General
- * <!--=========-->
  *
  * The %Refinement system allows to temporarily refine a grid or single
  * entities without changing the grid itself.  You may want to do this
@@ -26,7 +23,6 @@
  * unmodified grid afterwards.
  *
  * \subsection Can_do What Refinement can do for you
- * <!---------------------------------------------->
  *
  * For a given geometry type and number of refined intervals, %Refinement will
  * - assign consecutive integer indices starting at 0 to each
@@ -48,7 +44,6 @@
  *   triangles, hexahedrons -> tetrahedrons).
  *
  * \subsection Cannot_do What Refinement can't do for you
- * <!--------------------------------------------------->
  *
  * - %Refinement does not actually subsample your data, it only tells
  *   you \em where to subsample your data.
@@ -59,7 +54,6 @@
  *   simplices have been written yet.
  *
  * \section User_interface The user interface
- * <!--===================================-->
  *
  * \code
  * template<unsigned topologyId, class CoordType,
@@ -119,7 +113,6 @@
  * \endcode
  *
  * \subsection How_to_use_it How to use it
- * <!------------------------------------>
  *
  * Either use VirtualRefinement, or if you don't want to do that, read
  * on.
@@ -167,7 +160,6 @@
  * \endcode
  *
  * \subsection Guarantees
- * <!------------------->
  *
  * The %Refinement system gives this guarantee (besides conforming to
  * the above interface:
@@ -175,7 +167,6 @@
  *   consecutive.
  *
  * \section Implementing Implementing a new Refinement type
- * <!--=================================================-->
  *
  * If you want to write a %Refinement implementation for a particular
  * geometry type, e.g. SquaringTheCircle (or a particular set of
@@ -212,7 +203,6 @@
  * VirtualRefinement VirtualRefinement\endlink also.
  *
  * \subsection Namespaces
- * <!------------------->
  *
  * The (non-virtual) %Refinement system is organized in the following
  * way into namespaces:
@@ -225,7 +215,6 @@
  * is directly in namespace Dune.
  *
  * \subsection Layers Conceptual layers
- * <!--------------------------------->
  *
  * - <strong>Layer 0</strong> declares struct
  *   RefinementImp::Traits<topologyId, CoordType, coerceToId, dim>.

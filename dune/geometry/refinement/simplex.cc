@@ -28,7 +28,6 @@
    <http://www.igpm.rwth-aachen.de/Download/reports/bey/simplex.ps.gz>.
 
    @section Terminology
-   <!--=============-->
 
    <dl>
    <dt>Kuhn simplex</dt>
@@ -46,7 +45,6 @@
    </dl>
 
    @section KuhnSimplexIndexing Describing Kuhn simplices by their permutation
-   <!--====================================================================-->
 
    A Kuhn simplex of dimension n can be described by its size s and a
    permutation of the vector \f$\vec{p}=(0,\ldots,n-1)\f$.  To get the
@@ -58,7 +56,6 @@
    (\f$\vec{e}_i\f$ is the unit vector in direction i.)
 
    @section Kuhn0VertexCounting Number of vertices in a Kuhn0 simplex
-   <!--===========================================================-->
 
    Let N(n, x) be the number of gridpoints within an n-dimensional
    Kuhn0 simplex of x gridunits width.
@@ -98,7 +95,6 @@
    - N(n, x) = N(x, n)
 
    @section Kuhn0VertexIndexing Index of a vertex within a Kuhn0 simplex
-   <!--==============================================================-->
 
    @image html simplexvertexindex.png "The image shows the Kuhn0 tetrahedron of width 2 (wireframe).  It is partitioned into a tetrahedron (green), a triangle (red), a line (blue), and a vertex (black), each of width 1 and each a Kuhn0 simplex."
 
@@ -162,7 +158,6 @@
    swapped so the sum is somewhat ugly.
 
    @section Kuhn0SubelementIndexing Index of a subelement within a Kuhn0 simplex
-   <!--======================================================================-->
 
    We don't know of a way to simply map a subelement of a Kuhn0 simplex
    to an index number.  Luckily, the iterator interface only requires
@@ -180,7 +175,6 @@
    simplex, so we have to check for that, and skip them.
 
    @section PermutationIndexing Index of a permutation
-   <!--============================================-->
 
    [NOTE: There may be some interesting stuff in
    http://en.wikipedia.org/wiki/Factoradic .  I was not aware of it
@@ -218,7 +212,6 @@
    ('/' is integer division and '%' calculates the remainder).
 
    @section KuhnToReference Mapping between some Kuhn and the reference simplex
-   <!--=====================================================================-->
 
    @image html referencetokuhn0.png "Step 1 moves each point by its x2 value into x1 direction.  Step 2 moves each point by its new x1 value into x0 direction."
 
@@ -234,7 +227,6 @@
     - \f$x_d:=x_d-x_{d+1}\f$.
 
    @par Arbitrary Kuhn simplices
-   <!-------------------------->
 
    For arbitrary Kuhn simplices we have to take the permutation of that
    simplex into account.  So to map from the reference simplex of n
@@ -282,7 +274,7 @@ namespace Dune {
 
          Runtime is of order O(n).
 
-         \deprecate Use factorial from dune/common/math instead. Will be
+         \deprecated Use factorial from dune/common/math instead. Will be
                     removed after Dune 2.9.
        */
       [[deprecated("Use factorial from dune-common's math.hh")]]
@@ -298,7 +290,7 @@ namespace Dune {
 
          Runtime is of order O(min {lower, upper-lower})
 
-         \deprecate Use binomial from dune/common/math instead. Will be
+         \deprecated Use binomial from dune/common/math instead. Will be
                     removed after Dune 2.9.
        */
       [[deprecated("Use binomial from dune-common's math.hh")]]

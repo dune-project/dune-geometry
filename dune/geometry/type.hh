@@ -96,17 +96,6 @@ namespace Dune
 
   } // namespace Impl
 
-// the Topology classes are deprecated and will be removed for the 2.8.
-// Temporarily a header 'deprecated_topology.hh' is provided which will be removed after the 2.9 release.
-#if __GNUC__ >= 7
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#include <dune/geometry/deprecated_topology.hh>
-#if __GNUC__ >= 7
-#  pragma GCC diagnostic pop
-#endif
-
   // GeometryType
   // -------------
 
@@ -282,7 +271,7 @@ namespace Dune
       DUNE_UNUSED_PARAMETER(t);
     }
 
-    /** @} */
+    /*@}*/
 
 
     /** @name Query Methods */
@@ -381,6 +370,7 @@ namespace Dune
     /*@}*/
 
     /** @name Comparison operators */
+    /*@{*/
 
     /** \brief Check for equality. This method knows that in dimension 0 and 1
      *  all BasicTypes are equal.
