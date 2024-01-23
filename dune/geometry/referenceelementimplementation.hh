@@ -252,7 +252,8 @@ namespace Dune
                       {
                         for( int k = 0; k < dim-1; ++k )
                           jacobianTransposeds[ m+i ][ dim-codim-1 ][ k ] = -origins[ m+i ][ k ];
-                        jacobianTransposeds[ m+i ][ dim-codim-1 ][ dim-1 ] = ct( 1 );
+                        if( dim - codim - 1 >= 0 )
+                          jacobianTransposeds[ m+i ][ dim-codim-1 ][ dim-1 ] = ct( 1 );
                       }
                     return m+n;
                   }
