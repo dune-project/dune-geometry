@@ -270,41 +270,6 @@ namespace Dune {
 
       //@{
 
-      /*! @brief Calculate n!
-
-         Runtime is of order O(n).
-
-         \deprecated Use factorial from dune/common/math instead. Will be
-                    removed after Dune 2.9.
-       */
-      [[deprecated("Use factorial from dune-common's math.hh")]]
-      inline int factorial(int n)
-      {
-        int prod = 1;
-        for(int i = 1; i <= n; ++i)
-          prod *= i;
-        return prod;
-      }
-
-      /*! @brief calculate \f$\left({upper}\atop{lower}\right)\f$
-
-         Runtime is of order O(min {lower, upper-lower})
-
-         \deprecated Use binomial from dune/common/math instead. Will be
-                    removed after Dune 2.9.
-       */
-      [[deprecated("Use binomial from dune-common's math.hh")]]
-      inline int binomial(int upper, int lower)
-      {
-        lower = std::min( lower, upper - lower );
-        if(lower < 0)
-          return 0;
-        int prod = 1;
-        for(int i = upper - lower; i < upper; ++i)
-          prod *= (i+1);
-        return prod / Dune::factorial(lower);
-      }
-
       /*! @brief calculate the index of a given gridpoint within a
                  Kuhn0 simplex
 

@@ -26,6 +26,9 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 - Remove header `deprecated_topology.hh` that was introduced for transition.
 
+- Remove deprecated functions `factorial()` and `binomial()`. Use the
+  functions from dune-common's `math.hh`.
+
 
 # Release 2.9
 
