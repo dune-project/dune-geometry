@@ -344,35 +344,6 @@ namespace Dune {
         return perm;
       }
 
-#if 0
-      Has to be checked
-      // calculate the index of a permutation
-      template<int n>
-      int getPermIndex(const FieldVector<int, n>& test) // O(n^2)
-      {
-        int m = 0;
-        FieldVector<int, n> perm;
-        for(int i = 0; i < n; ++i)
-          perm[i] = i;
-
-        int base = 1;
-        for(int i = 1; i <= n; ++i)
-          base *= i;
-
-        for(int i = n; i > 0; --i) {
-          base /= i;
-          int d;
-          for(d = 0; d < i; ++d)
-            if(test[i-1] == perm[i-1-d])
-              break;
-          m += d * base;
-          int d = m / base;
-          m %= base;
-          perm[i-1-d] = perm[i-1];
-        }
-      }
-#endif
-
       // map between the reference simplex and some arbitrary kuhn simplex (denoted by it's permutation)
       /*! @brief Map from the reference simplex to some Kuhn simplex
 
