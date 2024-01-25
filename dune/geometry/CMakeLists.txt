@@ -22,7 +22,6 @@ install(FILES
   typeindex.hh
   virtualrefinement.hh
   virtualrefinement.cc
-  deprecated_topology.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry
 )
 

@@ -11,6 +11,7 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
   for(auto [position, weight] : Dune::QuadratureRules</*...*/>::rule(/*...*/))
     result += f(position) * weight;
   ```
+
 - `Dune::Geo::ReferenceElement` methods that have returned references, return
   by value. This affects `type()`, `position()`, and `integrationOuterNormal()`.
 
@@ -22,6 +23,8 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 - `Dune::Transitional::ReferenceElement` is deprecated and will be removed after
   Dune 2.10. Use `Dune::Geo::ReferenceElement` directly.
+
+- Remove header `deprecated_topology.hh` that was introduced for transition.
 
 
 # Release 2.9
