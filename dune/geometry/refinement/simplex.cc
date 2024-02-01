@@ -270,41 +270,6 @@ namespace Dune {
 
       //@{
 
-      /*! @brief Calculate n!
-
-         Runtime is of order O(n).
-
-         \deprecated Use factorial from dune/common/math instead. Will be
-                    removed after Dune 2.9.
-       */
-      [[deprecated("Use factorial from dune-common's math.hh")]]
-      inline int factorial(int n)
-      {
-        int prod = 1;
-        for(int i = 1; i <= n; ++i)
-          prod *= i;
-        return prod;
-      }
-
-      /*! @brief calculate \f$\left({upper}\atop{lower}\right)\f$
-
-         Runtime is of order O(min {lower, upper-lower})
-
-         \deprecated Use binomial from dune/common/math instead. Will be
-                    removed after Dune 2.9.
-       */
-      [[deprecated("Use binomial from dune-common's math.hh")]]
-      inline int binomial(int upper, int lower)
-      {
-        lower = std::min( lower, upper - lower );
-        if(lower < 0)
-          return 0;
-        int prod = 1;
-        for(int i = upper - lower; i < upper; ++i)
-          prod *= (i+1);
-        return prod / Dune::factorial(lower);
-      }
-
       /*! @brief calculate the index of a given gridpoint within a
                  Kuhn0 simplex
 
@@ -343,35 +308,6 @@ namespace Dune {
         }
         return perm;
       }
-
-#if 0
-      Has to be checked
-      // calculate the index of a permutation
-      template<int n>
-      int getPermIndex(const FieldVector<int, n>& test) // O(n^2)
-      {
-        int m = 0;
-        FieldVector<int, n> perm;
-        for(int i = 0; i < n; ++i)
-          perm[i] = i;
-
-        int base = 1;
-        for(int i = 1; i <= n; ++i)
-          base *= i;
-
-        for(int i = n; i > 0; --i) {
-          base /= i;
-          int d;
-          for(d = 0; d < i; ++d)
-            if(test[i-1] == perm[i-1-d])
-              break;
-          m += d * base;
-          int d = m / base;
-          m %= base;
-          perm[i-1-d] = perm[i-1];
-        }
-      }
-#endif
 
       // map between the reference simplex and some arbitrary kuhn simplex (denoted by it's permutation)
       /*! @brief Map from the reference simplex to some Kuhn simplex
