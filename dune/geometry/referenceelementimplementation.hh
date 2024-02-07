@@ -235,7 +235,7 @@ namespace Dune
 
                 return n+2*m;
               }
-            else
+            else // !isPrism
               {
                 const unsigned int m = referenceEmbeddings( baseId, dim-1, codim-1, origins, jacobianTransposeds );
                 if( codim == dim )
@@ -245,7 +245,7 @@ namespace Dune
                     jacobianTransposeds[ m ] = FieldMatrix< ct, mydim, cdim >( ct( 0 ) );
                     return m+1;
                   }
-                else
+                else if( codim < dim )
                   {
                     const unsigned int n = referenceEmbeddings( baseId, dim-1, codim, origins+m, jacobianTransposeds+m );
                     for( unsigned int i = 0; i < n; ++i )
@@ -258,7 +258,7 @@ namespace Dune
                   }
               }
           }
-        else
+        else if( codim == 0 )
           {
             origins[ 0 ] = FieldVector< ct, cdim >( ct( 0 ) );
             jacobianTransposeds[ 0 ] = FieldMatrix< ct, mydim, cdim >( ct( 0 ) );
@@ -266,6 +266,10 @@ namespace Dune
               jacobianTransposeds[ 0 ][ k ][ k ] = ct( 1 );
             return 1;
           }
+
+        // this point should not be reached since all cases are handled before.
+        std::abort();
+        return 0;
       }
 
 
