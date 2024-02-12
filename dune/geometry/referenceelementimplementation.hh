@@ -218,7 +218,7 @@ namespace Dune
         assert( (dim - codim <= mydim) && (mydim <= cdim) );
         assert( topologyId < numTopologies( dim ) );
 
-        if( codim > 0 )
+        if( (0 < codim) && (codim <= dim) )
           {
             const unsigned int baseId = baseTopologyId( topologyId, dim );
             if( isPrism( topologyId, dim ) )
