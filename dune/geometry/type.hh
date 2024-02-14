@@ -16,7 +16,6 @@
 #include <type_traits>
 
 #include <dune/common/exceptions.hh>
-#include <dune/common/keywords.hh>
 #include <dune/common/typetraits.hh>
 #include <dune/common/unused.hh>
 
@@ -486,61 +485,53 @@ namespace Dune
       return GeometryType(gt.id() | ((1 << gt.dim())), gt.dim()+1, gt.isNone());
     }
 
-#ifndef __cpp_inline_variables
-    namespace {
-#endif
+    //! GeometryType representing a vertex.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType vertex = GeometryType(0,0,false);
 
-      //! GeometryType representing a vertex.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType vertex = GeometryType(0,0,false);
+    //! GeometryType representing a line.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType line = GeometryType(0,1,false);
 
-      //! GeometryType representing a line.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType line = GeometryType(0,1,false);
+    //! GeometryType representing a triangle.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType triangle = simplex(2);
 
-      //! GeometryType representing a triangle.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType triangle = simplex(2);
+    //! GeometryType representing a quadrilateral (a square).
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType quadrilateral = cube(2);
 
-      //! GeometryType representing a quadrilateral (a square).
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType quadrilateral = cube(2);
+    //! GeometryType representing a tetrahedron.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType tetrahedron = simplex(3);
 
-      //! GeometryType representing a tetrahedron.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType tetrahedron = simplex(3);
+    //! GeometryType representing a 3D pyramid.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType pyramid = GeometryType(0b0011,3,false);
 
-      //! GeometryType representing a 3D pyramid.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType pyramid = GeometryType(0b0011,3,false);
+    //! GeometryType representing a 3D prism.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType prism = GeometryType(0b0101,3,false);
 
-      //! GeometryType representing a 3D prism.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType prism = GeometryType(0b0101,3,false);
-
-      //! GeometryType representing a hexahedron.
-      /**
-       * \ingroup GeometryType
-       */
-      DUNE_INLINE_VARIABLE constexpr GeometryType hexahedron = cube(3);
-
-#ifndef __cpp_inline_variables
-    }
-#endif
+    //! GeometryType representing a hexahedron.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType hexahedron = cube(3);
 
   }
 
