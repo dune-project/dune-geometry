@@ -485,53 +485,53 @@ namespace Dune
       return GeometryType(gt.id() | ((1 << gt.dim())), gt.dim()+1, gt.isNone());
     }
 
-      //! GeometryType representing a vertex.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType vertex = GeometryType(0,0,false);
+    //! GeometryType representing a vertex.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType vertex = GeometryType(0,0,false);
 
-      //! GeometryType representing a line.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType line = GeometryType(0,1,false);
+    //! GeometryType representing a line.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType line = GeometryType(0,1,false);
 
-      //! GeometryType representing a triangle.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType triangle = simplex(2);
+    //! GeometryType representing a triangle.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType triangle = simplex(2);
 
-      //! GeometryType representing a quadrilateral (a square).
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType quadrilateral = cube(2);
+    //! GeometryType representing a quadrilateral (a square).
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType quadrilateral = cube(2);
 
-      //! GeometryType representing a tetrahedron.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType tetrahedron = simplex(3);
+    //! GeometryType representing a tetrahedron.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType tetrahedron = simplex(3);
 
-      //! GeometryType representing a 3D pyramid.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType pyramid = GeometryType(0b0011,3,false);
+    //! GeometryType representing a 3D pyramid.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType pyramid = GeometryType(0b0011,3,false);
 
-      //! GeometryType representing a 3D prism.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType prism = GeometryType(0b0101,3,false);
+    //! GeometryType representing a 3D prism.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType prism = GeometryType(0b0101,3,false);
 
-      //! GeometryType representing a hexahedron.
-      /**
-       * \ingroup GeometryType
-       */
-      inline constexpr GeometryType hexahedron = cube(3);
+    //! GeometryType representing a hexahedron.
+    /**
+     * \ingroup GeometryType
+     */
+    inline constexpr GeometryType hexahedron = cube(3);
 
   }
 
