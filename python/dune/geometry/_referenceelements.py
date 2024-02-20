@@ -3,13 +3,26 @@
 
 from dune.generator.generator import SimpleGenerator
 from dune.common.hashit import hashIt
-def module(dim):
+def  _generateModule(dim):
+    # if code is changed here also change code in dune/python/geometry/referenceelements.hh
     typeName = "Dune::Geo::ReferenceElement<Dune::Geo::ReferenceElementImplementation<double," + str(dim) + "> >"
     includes = ["dune/python/geometry/referenceelements.hh"]
     typeHash = "referenceelements_" + hashIt(typeName)
     generator = SimpleGenerator("ReferenceElements", "Dune::Python")
     m = generator.load(includes, typeName, typeHash)
     return m
+
+def module(dim):
+    # try to load default module added in _geometry.cc
+    # this needs the DUNE_ENABLE_PYTHONMODULE_PRECOMPILE to be enabled
+    # otherwise all modules will be generated and compiled
+    try:
+        import importlib
+        return importlib.import_module( "dune.geometry._geometry._defaultreferenceelements_"+str(dim) )
+    except ImportError:
+        print(f"Generate ref-elem module for {dim}")
+        return _generateModule(dim)
+
 
 _duneReferenceElements = {}
 def referenceElement(geometryType):
