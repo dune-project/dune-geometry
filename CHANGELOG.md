@@ -14,6 +14,8 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 - `Dune::Geo::ReferenceElement` methods that have returned references, return
   by value. This affects `type()`, `position()`, and `integrationOuterNormal()`.
+- Add a meta-geometry type `MappedGeometry` that represents the chaining of another
+  geometry and a callable.
 
 - `AffineGeometry` and `AxisAlignedGeometry` are now default constructible. A
   default construction results in an "empty"/invalid geometry that can be assigned
