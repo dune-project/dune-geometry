@@ -415,21 +415,35 @@ namespace Dune
       static ctype leftInvA ( const FieldMatrix< ctype, m, n > &A, FieldMatrix< ctype, n, m > &ret )
       {
         static_assert((m >= n), "Matrix has no left inverse.");
-        FieldMatrix< ctype, n, n > ata;
-        ATA_L( A, ata );
-        const ctype det = spdInvA( ata );
-        ATBT( ata, A, ret );
-        return det;
+        using std::abs;
+        if constexpr( (n == 2) && (m == 2) )
+        {
+          const ctype det = (A[ 0 ][ 0 ]*A[ 1 ][ 1 ] - A[ 1 ][ 0 ]*A[ 0 ][ 1 ]);
+          const ctype detInv = ctype( 1 ) / det;
+          ret[ 0 ][ 0 ] = A[ 1 ][ 1 ] * detInv;
+          ret[ 1 ][ 1 ] = A[ 0 ][ 0 ] * detInv;
+          ret[ 1 ][ 0 ] = -A[ 1 ][ 0 ] * detInv;
+          ret[ 0 ][ 1 ] = -A[ 0 ][ 1 ] * detInv;
+          return abs( det );
+        }
+        else
+        {
+          FieldMatrix< ctype, n, n > ata;
+          ATA_L( A, ata );
+          const ctype det = spdInvA( ata );
+          ATBT( ata, A, ret );
+          return det;
+        }
       }
 
       template< int m, int n >
-      static void leftInvAx ( const FieldMatrix< ctype, m, n > &A, const FieldVector< ctype, m > &x, FieldVector< ctype, n > &y )
+      static bool leftInvAx ( const FieldMatrix< ctype, m, n > &A, const FieldVector< ctype, m > &x, FieldVector< ctype, n > &y )
       {
         static_assert((m >= n), "Matrix has no left inverse.");
         FieldMatrix< ctype, n, n > ata;
         ATx( A, x, y );
         ATA_L( A, ata );
-        spdInvAx( ata, y );
+        return spdInvAx( ata, y, true );
       }
 
       /** \brief Compute right pseudo-inverse of matrix A */
@@ -438,7 +452,7 @@ namespace Dune
       {
         static_assert((n >= m), "Matrix has no right inverse.");
         using std::abs;
-        if( (n == 2) && (m == 2) )
+        if constexpr( (n == 2) && (m == 2) )
         {
           const ctype det = (A[ 0 ][ 0 ]*A[ 1 ][ 1 ] - A[ 1 ][ 0 ]*A[ 0 ][ 1 ]);
           const ctype detInv = ctype( 1 ) / det;
