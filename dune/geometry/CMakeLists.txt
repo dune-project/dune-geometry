@@ -11,6 +11,7 @@ install(FILES
   axisalignedcubegeometry.hh
   dimension.hh
   generalvertexorder.hh
+  mappedgeometry.hh
   multilineargeometry.hh
   quadraturerules.hh
   referenceelement.hh
