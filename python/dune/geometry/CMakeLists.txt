@@ -7,16 +7,19 @@ add_python_targets(geometry
   quadpy
 )
 
-set(DIMS 0 1 2 3 4)
 
-set(GEOMETRY_SOURCES _geometry.cc)
+dune_add_pybind11_module(NAME _geometry SOURCES _geometry.cc)
+target_link_libraries(_geometry PUBLIC Dune::Geometry)
 if( DUNE_ENABLE_PYTHONMODULE_PRECOMPILE )
+  set(DIMS 0 1 2 3 4)
   foreach( DIM ${DIMS} )
-    set(GEOMETRY_SOURCES ${GEOMETRY_SOURCES} registerrefelem_${DIM}.cc)
+    add_library(registerrefelem_${DIM} OBJECT registerrefelem.cc)
+    target_compile_definitions(registerrefelem_${DIM} PRIVATE DIM=${DIM})
+    # minimal c++ standard required
+    target_compile_features(registerrefelem_${DIM} PUBLIC cxx_std_17)
+    target_link_libraries(_geometry PUBLIC registerrefelem_${DIM})
   endforeach()
 endif()
-
-dune_add_pybind11_module(NAME _geometry SOURCES ${GEOMETRY_SOURCES} )
 set_property(TARGET _geometry PROPERTY LINK_LIBRARIES Dune::Geometry APPEND)
 
 if(SKBUILD)

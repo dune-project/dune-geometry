@@ -5,7 +5,6 @@
 #include <config.h>
 
 #include <string>
-#include <dune/common/tupleutility.hh>
 #include <dune/python/geometry/type.hh>
 #include <dune/python/geometry/referenceelements.hh>
 #include <dune/python/pybind11/pybind11.h>
@@ -34,7 +33,10 @@ PYBIND11_MODULE( _geometry, module )
   module.attr( "hexahedron" ) = Dune::GeometryTypes::hexahedron;
 
 #ifdef DUNE_ENABLE_PYTHONMODULE_PRECOMPILE
-  Dune::Hybrid::forEach(std::make_index_sequence<5>{},
-      [&module](auto dim){ registerReferenceElementSubModule<dim>(module); } );
+  registerReferenceElementSubModule<0>(module);
+  registerReferenceElementSubModule<1>(module);
+  registerReferenceElementSubModule<2>(module);
+  registerReferenceElementSubModule<3>(module);
+  registerReferenceElementSubModule<4>(module);
 #endif
 }

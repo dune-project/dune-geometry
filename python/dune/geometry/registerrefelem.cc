@@ -5,4 +5,7 @@
 #include <config.h>
 #define INCLUDE_REFELEM_INLINE
 #include "registerrefelem.hh"
-template void registerReferenceElementSubModule<4>(pybind11::module);
+#ifndef DIM
+#error "DIM needs to be defined!"
+#endif
+template void registerReferenceElementSubModule<DIM>(pybind11::module);
