@@ -13,11 +13,9 @@ target_link_libraries(_geometry PUBLIC Dune::Geometry)
 if( DUNE_ENABLE_PYTHONMODULE_PRECOMPILE )
   set(DIMS 0 1 2 3 4)
   foreach( DIM ${DIMS} )
-    add_library(registerrefelem_${DIM} OBJECT registerrefelem.cc)
-    target_compile_definitions(registerrefelem_${DIM} PRIVATE DIM=${DIM})
-    # minimal c++ standard required
-    target_compile_features(registerrefelem_${DIM} PUBLIC cxx_std_17)
-    target_link_libraries(_geometry PUBLIC registerrefelem_${DIM})
+    dune_add_pybind11_submodule(NAME registerrefelem_${DIM}
+                                MODULE _geometry SOURCES registerrefelem.cc
+                                COMPILE_DEFINITIONS DIM=${DIM})
   endforeach()
 endif()
 set_property(TARGET _geometry PROPERTY LINK_LIBRARIES Dune::Geometry APPEND)
