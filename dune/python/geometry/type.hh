@@ -195,7 +195,7 @@ namespace Dune
   namespace Python
   {
 
-    pybind11::class_< GeometryType > registerGeometryType ( pybind11::module scope )
+    inline pybind11::class_< GeometryType > registerGeometryType ( pybind11::module scope )
     {
       pybind11::class_< GeometryType > cls( scope, "GeometryType" );
 
