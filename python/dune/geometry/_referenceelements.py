@@ -20,7 +20,6 @@ def module(dim):
         import importlib
         return importlib.import_module( "dune.geometry._geometry._defaultreferenceelements_"+str(dim) )
     except ImportError:
-        print(f"Generate ref-elem module for {dim}")
         return _generateModule(dim)
 
 
