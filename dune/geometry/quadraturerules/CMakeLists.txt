@@ -10,6 +10,7 @@ install(FILES
   jacobi1quadrature.hh
   jacobi2quadrature.hh
   jacobiNquadrature.hh
+  numberfromstring.hh
   pointquadrature.hh
   prismquadrature.hh
   simplexquadrature.hh

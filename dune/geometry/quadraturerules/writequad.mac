@@ -48,6 +48,8 @@ printf(fd, "// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 #error Use #include <dune/geometry/quadraturerules.hh> instead.
 #endif
 
+#include \"numberfromstring.hh\"
+
 namespace Dune {
 
   /************************************************
@@ -74,12 +76,8 @@ namespace Dune {
   };
 
   //! \internal Helper template for the initialization of the quadrature rules
-  template<typename ct,
-      bool fundamental = std::is_floating_point<ct>::value>
-  struct ~aQuadratureInitHelper;
-
   template<typename ct>
-  struct ~aQuadratureInitHelper<ct, true> {
+  struct ~aQuadratureInitHelper {
     static void init(int p,
                      std::vector< FieldVector<ct, 1> > & _points,
                      std::vector< ct > & _weight,
@@ -87,16 +85,7 @@ namespace Dune {
   };
 
   template<typename ct>
-  struct ~aQuadratureInitHelper<ct, false> {
-    static void init(int p,
-                     std::vector< FieldVector<ct, 1> > & _points,
-                     std::vector< ct > & _weight,
-                     int & delivered_order);
-  };
-
-  // for fundamental types
-  template<typename ct>
-  void ~aQuadratureInitHelper<ct,true>::init(int p,
+  void ~aQuadratureInitHelper<ct>::init(int p,
          std::vector< FieldVector<ct, 1> > & _points,
          std::vector< ct > & _weight,
          int & delivered_order)
@@ -130,65 +119,9 @@ for delivered_order: 0 thru max_order do block([],
       p: (points[j]+1)/2,
       p: max(p-epsilon,-epsilon)+epsilon,
       w: weights[j]/2,
-      printf(fd,"      _points[~d] = ~h;
+      printf(fd,"      _points[~d] = DUNE_NUMBER_FROM_STRING(ct, ~h);
 ",i-1, p),
-      printf(fd,"      _weight[~d] = ~h;
-",i-1, w)
-    ),
-    printf(fd,"      break;
-
-")
-  ) else printf(fd, "    // order ~d,~d
-    case ~d :
-", delivered_order, delivered_order+1, delivered_order)
-),
-
-printf(fd,"    default :
-      DUNE_THROW(QuadratureOrderOutOfRange, \"Quadrature rule \" << p << \" not supported!\");
-    }
-  }
-"),
-
-printf(fd,"
-  // for non-fundamental types: assign numbers as strings
-  template<typename ct>
-  void ~aQuadratureInitHelper<ct,false>::init(int p,
-         std::vector< FieldVector<ct, 1> > & _points,
-         std::vector< ct > & _weight,
-         int & delivered_order)
-  {
-    switch(p)
-    {
-",name),
-
-for delivered_order: 0 thru max_order do block([],
-  twice_free_points: delivered_order - num_endpoints + 1,
-  if mod(twice_free_points, 2) = 0 then block([],
-    printf(fd, "    case ~d :
-", delivered_order),
-    free_points: twice_free_points / 2,
-    num_points: free_points + num_endpoints,
-    points: makelist(rhs(p), p, bfallroots(points_generator(num_points))),
-    weights: makelist(bfloat(weights_generator(num_points, p)), p, points),
-    if not length(points) = num_points then print("points_generator returned ", length(points), "points, but ", num_points, " were requested!"),
-    printf(fd,"      delivered_order = ~d;
-",delivered_order),
-    printf(fd,"      _points.resize(~d);
-",num_points),
-    printf(fd,"      _weight.resize(~d);
-",num_points),
-    /* sort the list of indices according to the corresponding weights*/
-    S: sort(makelist(n, n, 1, num_points), lambda([x,y], weights[x] < weights[y])),
-    for i: 1 thru num_points do block([j],
-      /* for numerical stability: write points sorted by their weights in ascending order*/
-      j: S[i],
-      /* shift points and weights from the interval [-1,1] to [0,1] */
-      p: (points[j]+1)/2,
-      p: max(p-epsilon,-epsilon)+epsilon,
-      w: weights[j]/2,
-      printf(fd,"      _points[~d] = ct(\"~h\");
-",i-1, p),
-      printf(fd,"      _weight[~d] = ct(\"~h\");
+      printf(fd,"      _weight[~d] = DUNE_NUMBER_FROM_STRING(ct, ~h);
 ",i-1, w)
     ),
     printf(fd,"      break;
