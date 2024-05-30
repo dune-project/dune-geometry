@@ -6,6 +6,7 @@
 #include <vector>
 #include <type_traits>
 
+#include <dune-common-config.hh> // HAVE_LAPACK
 #include <dune/common/fvector.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/exceptions.hh>

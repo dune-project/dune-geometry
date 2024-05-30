@@ -9,8 +9,6 @@
  *        MultiLinearGeometry.
  */
 
-#include <config.h>
-
 #include <iostream>
 #include <functional>
 #include <limits>

@@ -7,8 +7,6 @@
     \todo For several element types the subEntities() method is not tested yet!
  */
 
-#include <config.h>
-
 #include <iostream>
 
 #include <dune/geometry/referenceelements.hh>

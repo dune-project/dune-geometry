@@ -8,8 +8,7 @@
 #include <iostream>
 #include <type_traits>
 
-#include <config.h>
-
+#include <dune-common-config.hh> // HAVE_LAPACK
 #include <dune/common/math.hh>
 #include <dune/common/quadmath.hh>
 #include <dune/geometry/referenceelements.hh>
