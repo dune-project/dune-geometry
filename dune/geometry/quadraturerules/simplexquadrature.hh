@@ -34,7 +34,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,2>;
     SimplexQuadratureRule (int p);
-    ~SimplexQuadratureRule(){}
   };
 
   /** \brief Quadrature rules for tetrahedra
@@ -49,7 +48,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,3>;
     SimplexQuadratureRule (int p);
-    ~SimplexQuadratureRule(){}
   };
 
   //!

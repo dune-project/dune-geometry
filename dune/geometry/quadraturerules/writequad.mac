@@ -72,7 +72,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,1>;
     ~aQuadratureRule (int p);
-    ~~~aQuadratureRule(){}
   };
 
   //! \internal Helper template for the initialization of the quadrature rules

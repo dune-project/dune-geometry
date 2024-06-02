@@ -30,9 +30,6 @@ namespace Dune {
       this->delivered_order = std::numeric_limits<int>::max();
       this->push_back(QuadraturePoint<ct,dim>(point, 1.0));
     }
-
-    ~PointQuadratureRule(){}
-
   };
 
 } // end namespace Dune
