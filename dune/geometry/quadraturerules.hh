@@ -75,10 +75,8 @@ namespace Dune {
     typedef Dune::FieldVector<ct,dim> Vector;
 
     //! set up quadrature of given order in d dimensions
-    QuadraturePoint (const Vector& x, ct w) : local(x)
-    {
-      weight_ = w;
-    }
+    QuadraturePoint (const Vector& x, ct w) : local(x), weight_(w)
+    {}
 
     //! return local coordinates of integration point i
     const Vector& position () const
