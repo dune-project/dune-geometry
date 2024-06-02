@@ -108,7 +108,7 @@ namespace Dune
       nVertices(unsigned nIntervals)
       {
         // return (nIntervals + 1)^dim
-        return Dune::power(nIntervals+1u, unsigned(dimension));
+        return Dune::power(nIntervals+1u, static_cast<unsigned>(dimension));
       }
 
       template<int dimension, class CoordType>
@@ -135,7 +135,7 @@ namespace Dune
         static_assert(dimension >= 0,
                       "Negative dimension given, what the heck is that supposed to mean?");
         // return nIntervals^dim
-        return Dune::power(nIntervals, unsigned(dimension));
+        return Dune::power(nIntervals, static_cast<unsigned>(dimension));
       }
 
       template<int dimension, class CoordType>

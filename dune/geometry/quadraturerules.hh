@@ -471,7 +471,7 @@ namespace Dune {
         TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
       if (t.isSimplex())
         order = std::max
-          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+          (order, static_cast<unsigned>(SimplexQuadratureRule<ctype,dim>::highest_order));
       return order;
     }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
@@ -497,10 +497,10 @@ namespace Dune {
         TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
       if (t.isSimplex())
         order = std::max
-          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+          (order, static_cast<unsigned>(SimplexQuadratureRule<ctype,dim>::highest_order));
       if (t.isPrism())
         order = std::max
-          (order, unsigned(PrismQuadratureRule<ctype,dim>::highest_order));
+          (order, static_cast<unsigned>(PrismQuadratureRule<ctype,dim>::highest_order));
       return order;
     }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
