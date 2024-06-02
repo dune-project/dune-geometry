@@ -113,8 +113,12 @@ namespace Dune {
     template<std::size_t index, std::enable_if_t<(index<=1), int> = 0>
     std::tuple_element_t<index, QuadraturePoint<ct, dim>> get() const
     {
-      if constexpr (index == 0) return local;
-      if constexpr (index == 1) return weight_;
+      if constexpr (index == 0) {
+        return local;
+      }
+      else {
+        return weight_;
+      }
     }
 
   protected:
