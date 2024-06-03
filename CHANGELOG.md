@@ -21,6 +21,9 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
   default construction results in an "empty"/invalid geometry that can be assigned
   a valid geometry.
 
+- Add a geometry `LocalFiniteElementGeometry` parametrized by local finite-element
+  basis functions.
+
 ## Deprecations and removals
 
 - `Dune::Transitional::ReferenceElement` is deprecated and will be removed after
