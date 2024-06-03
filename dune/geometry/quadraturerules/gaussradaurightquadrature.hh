@@ -37,7 +37,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,1>;
     GaussRadauRightQuadratureRule (int p);
-    ~GaussRadauRightQuadratureRule(){}
   };
 
   //! internal Helper template for the initialization of the quadrature rules

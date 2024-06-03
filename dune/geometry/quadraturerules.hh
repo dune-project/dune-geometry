@@ -75,10 +75,8 @@ namespace Dune {
     typedef Dune::FieldVector<ct,dim> Vector;
 
     //! set up quadrature of given order in d dimensions
-    QuadraturePoint (const Vector& x, ct w) : local(x)
-    {
-      weight_ = w;
-    }
+    QuadraturePoint (const Vector& x, ct w) : local(x), weight_(w)
+    {}
 
     //! return local coordinates of integration point i
     const Vector& position () const
@@ -113,8 +111,12 @@ namespace Dune {
     template<std::size_t index, std::enable_if_t<(index<=1), int> = 0>
     std::tuple_element_t<index, QuadraturePoint<ct, dim>> get() const
     {
-      if constexpr (index == 0) return local;
-      if constexpr (index == 1) return weight_;
+      if constexpr (index == 0) {
+        return local;
+      }
+      else {
+        return weight_;
+      }
     }
 
   protected:
@@ -469,7 +471,7 @@ namespace Dune {
         TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
       if (t.isSimplex())
         order = std::max
-          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+          (order, static_cast<unsigned>(SimplexQuadratureRule<ctype,dim>::highest_order));
       return order;
     }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)
@@ -495,10 +497,10 @@ namespace Dune {
         TensorProductQuadratureRule<ctype,dim>::maxOrder(t.id(), qt);
       if (t.isSimplex())
         order = std::max
-          (order, unsigned(SimplexQuadratureRule<ctype,dim>::highest_order));
+          (order, static_cast<unsigned>(SimplexQuadratureRule<ctype,dim>::highest_order));
       if (t.isPrism())
         order = std::max
-          (order, unsigned(PrismQuadratureRule<ctype,dim>::highest_order));
+          (order, static_cast<unsigned>(PrismQuadratureRule<ctype,dim>::highest_order));
       return order;
     }
     static QuadratureRule<ctype, dim> rule(const GeometryType& t, int p, QuadratureType::Enum qt)

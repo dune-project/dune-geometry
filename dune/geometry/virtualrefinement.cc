@@ -266,18 +266,18 @@ namespace Dune
     template<int codimension>
     class SubEntityIteratorBack;
 
-    int nVertices(Dune::RefinementIntervals tag) const;
+    int nVertices(Dune::RefinementIntervals tag) const override;
 
-    int nElements(Dune::RefinementIntervals tag) const;
+    int nElements(Dune::RefinementIntervals tag) const override;
 
     static VirtualRefinementImp<topologyId, CoordType, coerceToId, dimension> &instance();
   private:
     VirtualRefinementImp() {}
 
-    typename VirtualRefinement::VertexIteratorBack *vBeginBack(Dune::RefinementIntervals tag) const;
-    typename VirtualRefinement::VertexIteratorBack *vEndBack(Dune::RefinementIntervals tag) const;
-    typename VirtualRefinement::ElementIteratorBack *eBeginBack(Dune::RefinementIntervals tag) const;
-    typename VirtualRefinement::ElementIteratorBack *eEndBack(Dune::RefinementIntervals tag) const;
+    typename VirtualRefinement::VertexIteratorBack *vBeginBack(Dune::RefinementIntervals tag) const override;
+    typename VirtualRefinement::VertexIteratorBack *vEndBack(Dune::RefinementIntervals tag) const override;
+    typename VirtualRefinement::ElementIteratorBack *eBeginBack(Dune::RefinementIntervals tag) const override;
+    typename VirtualRefinement::ElementIteratorBack *eEndBack(Dune::RefinementIntervals tag) const override;
   };
 
   template<unsigned topologyId, class CoordType,

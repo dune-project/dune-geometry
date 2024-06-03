@@ -101,7 +101,7 @@ namespace Dune
           }
         else if( subcodim == 0 )
           {
-            assert( endOut = beginOut + 1 );
+            assert( endOut == beginOut + 1 );
             *beginOut = i;
           }
         else

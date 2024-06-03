@@ -35,7 +35,6 @@ namespace Dune {
   private:
     friend class QuadratureRuleFactory<ct,3>;
     PrismQuadratureRule(int p);
-    ~PrismQuadratureRule(){}
   };
 
   /** \todo Please doc me! */

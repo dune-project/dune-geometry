@@ -203,7 +203,7 @@ void check(Dune::GeometryType type,
   for (unsigned int p=0; p<=maxOrder; ++p)
   {
     const Quad & quad = Dune::QuadratureRules<ctype,dim>::rule(type, p, qt);
-    if (quad.type() != type || unsigned(quad.order()) < p) {
+    if (quad.type() != type || static_cast<unsigned>(quad.order()) < p) {
       std::cerr << "Error: Type mismatch! Requested Quadrature for " << type
                 << " and order=" << p << "." << std::endl
                 << "\tGot Quadrature for " << quad.type() << " and order="
@@ -255,11 +255,11 @@ int main (int argc, char** argv)
   }
   try {
     check<double,4>(Dune::GeometryTypes::cube(4), maxOrder);
-    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(31)),
+    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, 31u),
                     Dune::QuadratureType::GaussLobatto);
-    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, 30u),
                     Dune::QuadratureType::GaussRadauLeft);
-    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+    check<double,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, 30u),
                     Dune::QuadratureType::GaussRadauRight);
     check<double,4>(Dune::GeometryTypes::simplex(4), maxOrder);
 
@@ -278,11 +278,11 @@ int main (int argc, char** argv)
 
 #if HAVE_QUADMATH
     check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), maxOrder);
-    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(31)),
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, 31u),
                     Dune::QuadratureType::GaussLobatto);
-    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, 30u),
                     Dune::QuadratureType::GaussRadauLeft);
-    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, unsigned(30)),
+    check<Dune::Float128,4>(Dune::GeometryTypes::cube(4), std::min(maxOrder, 30u),
                     Dune::QuadratureType::GaussRadauRight);
 #else
     std::cout << "Skip Float128 tests as Quadmath is not supported" << std::endl;
