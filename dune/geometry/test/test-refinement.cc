@@ -8,8 +8,6 @@
  * \brief Unit tests for the virtual refinement code
  */
 
-#include "config.h"
-
 #include <iostream>
 #include <ostream>
 #include <typeinfo>

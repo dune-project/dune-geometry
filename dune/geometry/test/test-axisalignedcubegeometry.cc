@@ -7,10 +7,6 @@
     \brief A unit test for the AxisAlignedCubeGeometry class
  */
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <iostream>
 
 #include <dune/common/exceptions.hh>

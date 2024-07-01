@@ -2,9 +2,10 @@
 // vi: set et ts=4 sw=2 sts=2:
 // SPDX-FileCopyrightInfo: Copyright © DUNE Project contributors, see file LICENSE.md in module root
 // SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
-#include <config.h>
 
 #include <string>
+
+#include <dune-common-config.hh> // DUNE_ENABLE_PYTHONMODULE_PRECOMPILE
 #include <dune/python/geometry/type.hh>
 #include <dune/python/geometry/referenceelements.hh>
 #include <dune/python/pybind11/pybind11.h>
