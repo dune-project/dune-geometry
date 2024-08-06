@@ -30,15 +30,14 @@ namespace Dune {
  * \brief Geometry parametrized by a LocalFunction and a LocalGeometry.
  *
  * This class represents a geometry that is parametrized by the chained mapping
- * of a geometry `g` and the given function `f` as `f o g`. The (differentiable)
- * function `f` is of type `Map` and the geometry `g` of type `Geo`.
+ * of a geometry `g` of type `Geo` and the given (differentiable) function `f`
+ * of type `Map` as `f o g`.
  *
- * The geometry `g: LG -> GG` is of type `Geo` and maps points from the local
- * domain `LG` to its global domain `GG`. It must fulfill the dune-grid
- * geometry-concept. Examples are the geometry of a grid element, the geometry
- * of a \ref `ReferenceElement` or the special geometry types
- * \ref `ReferenceElementGeometry` and \ref `LocalDerivativeGeometry`. The local
- * domain `LG` represents the local coordinates of the `MappedGeometry`.
+ * The geometry `g: LG -> GG` maps points from the local domain `LG` to its
+ * global domain `GG`. It must fulfill the dune-grid geometry-concept. Examples
+ * are the geometry of a grid element, the geometry of a \ref `ReferenceElement`
+ * or any other geometry implementation in dune-geometry. The local domain `LG`
+ * represents the local coordinates of the `MappedGeometry`.
  *
  * The function `f: LF -> GF` is a differentiable function in the sense of the
  * dune-functions concept. It maps coordinates from the global domain of the
@@ -53,7 +52,7 @@ namespace Dune {
  * The following expressions must be valid:
  * - `GG gg = g.global(local)`: the "evaluation" of the geometry in its local domain.
  * - `GF gf = f(gg)`: the evaluation of the mapping `f` in its local domain that
- *      is the geometries range.
+ *      is the geometries' range.
  * - `auto df = derivative(f)`, `df(gg)`: The derivative of `f` w.r.t. its global
  *      coordinate `GF` evaluated at its local coordinated `LF=GG`.
  *
@@ -117,8 +116,8 @@ public:
    * \param[in]  mapping   A differentiable function for the parametrization of
    *                       the geometry
    * \param[in]  geometry  The geometry that is mapped
-   * \param[in]  affine    Flag indicating whether the geometry represents an
-   *                       affine mapping
+   * \param[in]  affine    Flag indicating whether the `MappedGeometry` represents
+   *                       an affine mapping
    **/
   template <class Geo_, class Map_,
     std::enable_if_t<Dune::IsInteroperable<Map, Map_>::value, int> = 0,
@@ -132,14 +131,15 @@ public:
 
   /**
    * \brief Is this mapping affine? Not in general, since we don't know anything
-   * about the mapping.
+   * about the mapping. The returned value can be given in the constructor of the
+   * class.
    */
   bool affine () const
   {
     return affine_;
   }
 
-  /// \brief Obtain the element type from the reference element.
+  /// \brief Obtain the geometry type from the reference element.
   GeometryType type () const
   {
     return geometry_.type();
@@ -189,7 +189,7 @@ public:
    *         space spanned by the reference element.
    *
    *  \throws In case of an error indicating that the local coordinate can not be
-   *          obtained, an exception is thrown, with an error code from
+   *          obtained, a `Dune::Exception` is thrown, with an error code from
    *          \ref `GaussNewtonErrorCode`.
    *  \note It is not guaranteed that the resulting local coordinate is inside the
    *        reference element domain.
@@ -215,7 +215,7 @@ public:
   /**
    * \brief Obtain the integration element.
    *
-   * If the Jacobian of the geometry is denoted by $J(x)$, the integration element
+   * If the Jacobian of the geometry is denoted by \f$J(x)\f$, the integration element
    * \f$\mu(x)\f$ is given by \f[ \mu(x) = \sqrt{|\det (J^T(x) J(x))|}.\f]
    *
    * \param[in]  local  local coordinate to evaluate the integration element in.
@@ -234,6 +234,9 @@ public:
    * polynomial order of the volume element is not known, iteratively compute
    * numerical integrals with increasing order of the quadrature rules, until
    * tolerance is reached.
+   *
+   * \param opts  An optional control over the convergence, providing a break
+   *              tolerance and a maximal iteration count.
    **/
   Volume volume (Impl::ConvergenceOptions<ctype> opts = {}) const
   {
@@ -329,7 +332,7 @@ private:
     return *mapping_;
   }
 
-  // internal reference to the stored localgeometry
+  // internal reference to the wrapped geometry
   const Geometry& geometry () const
   {
     return geometry_;
