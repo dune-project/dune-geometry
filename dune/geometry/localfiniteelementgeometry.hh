@@ -2,8 +2,8 @@
 // vi: set et ts=4 sw=2 sts=2:
 // SPDX-FileCopyrightInfo: Copyright © DUNE Project contributors, see file LICENSE.md in module root
 // SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
-#ifndef DUNE_GEOMETRY_PARAMETRIZEDGEOMETRY_HH
-#define DUNE_GEOMETRY_PARAMETRIZEDGEOMETRY_HH
+#ifndef DUNE_GEOMETRY_LOCALFINITEELEMENTGEOMETRY_HH
+#define DUNE_GEOMETRY_LOCALFINITEELEMENTGEOMETRY_HH
 
 #include <cassert>
 #include <functional>
@@ -145,13 +145,17 @@ public:
     : LocalFiniteElementGeometry(ReferenceElements::general(gt), std::forward<Args>(args)...)
   {}
 
-  /// \brief Obtain the polynomial order of the parametrization.
+  /// \brief Obtain the (highest) polynomial order of the parametrization.
   int order () const
   {
     return localBasis().order();
   }
 
-  /// \brief Is this mapping affine? This is only true for flat affine geometries.
+  /**
+   * \brief Is this mapping affine?
+   * Geometries of order 1 might be affine, but it needs to be checked on
+   * non-simplex geometries.
+   **/
   bool affine () const
   {
     if (!affine_)
@@ -220,7 +224,7 @@ public:
    *         space spanned by the reference element.
    *
    *  \throws In case of an error indicating that the local coordinate can not be
-   *          obtained, an exception is thrown, with an error code from
+   *          obtained, a `Dune::Exception` is thrown, with an error code from
    *          \ref `GaussNewtonErrorCode`.
    *  \note It is not guaranteed that the resulting local coordinate is inside the
    *        reference element domain.
@@ -246,7 +250,7 @@ public:
   /**
    * \brief Obtain the integration element.
    *
-   * If the Jacobian of the geometry is denoted by $J(x)$, the integration element
+   * If the Jacobian of the geometry is denoted by \f$J(x)\f$, the integration element
    * \f$\mu(x)\f$ is given by \f[ \mu(x) = \sqrt{|\det (J^T(x) J(x))|}.\f]
    *
    * \param[in]  local  local coordinate to evaluate the integration element in.
@@ -265,6 +269,9 @@ public:
    * polynomial order of the volume element is not known, iteratively compute
    * numerical integrals with increasing order of the quadrature rules, until
    * tolerance is reached.
+   *
+   * \param opts  An optional control over the convergence, providing a break
+   *              tolerance and a maximal iteration count.
    **/
   Volume volume (Impl::ConvergenceOptions<ctype> opts = {}) const
   {
@@ -419,7 +426,7 @@ private:
   /// A local finite-element
   LocalFiniteElement localFE_{};
 
-  /// The (Lagrange) coefficients of the interpolating geometry
+  /// The (local finite-element) coefficients of the interpolating geometry
   std::vector<GlobalCoordinate> vertices_{};
 
   mutable std::optional<bool> affine_ = std::nullopt;
@@ -457,4 +464,4 @@ LocalFiniteElementGeometry (GeometryType, const LFE&, const F&)
 
 } // namespace Dune
 
-#endif // DUNE_GEOMETRY_PARAMETRIZEDGEOMETRY_HH
+#endif // DUNE_GEOMETRY_LOCALFINITEELEMENTGEOMETRY_HH
