@@ -5,6 +5,12 @@ SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 # Master (will become release 2.11)
 
+## Deprecations and removals
+
+- The deprecated `Dune::Transitional::ReferenceElement` has be removed. Use
+  `Dune::Geo::ReferenceElement` directly.
+
+
 # Release 2.10
 
 - Quadrature point now allows C++ structured bindings so that

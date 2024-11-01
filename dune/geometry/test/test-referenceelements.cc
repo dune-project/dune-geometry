@@ -555,7 +555,7 @@ int main () try
   testcmp(hexaVolume, 1);
 
   // test the 'geometry' method
-  const Transitional::ReferenceElement<double,Dim<3>>::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry< 0 >( 0 ); // keep Transitional to check for deprecation warning
+  const ReferenceElements<double,3>::ReferenceElement::Codim<0>::Geometry referenceHexaMapping = referenceHexa.geometry<0>(0);
   referenceHexaMapping.corner(0);
 
   errors += checkSubEntities(referenceHexa);
