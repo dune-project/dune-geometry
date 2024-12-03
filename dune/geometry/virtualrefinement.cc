@@ -159,6 +159,7 @@ namespace Dune
   {
     delete backend;
     backend = other.backend->clone();
+    return *this;
   }
 
   template<int dimension, class CoordType>
