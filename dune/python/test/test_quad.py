@@ -9,7 +9,16 @@ def monomial(p):
         return sum( x**p for x in point)
     return function
 
-result = {3:   # integral for sum_i x_i^p over reference element
+result = {0: # integral for sum_i x_i^p over reference element
+           {geo.line: 1.,
+            geo.triangle: 2*1./2,
+            geo.quadrilateral: 2*1.,
+            geo.tetrahedron: 3*1./6.,
+            geo.pyramid: 3*1./3.,
+            geo.prism: 3*0.5,
+            geo.hexahedron: 3*1.,
+           },
+          3:   # integral for sum_i x_i^p over reference element
            {geo.line: 1./4.,
             geo.triangle: 0.1,
             geo.quadrilateral: 1./2.,
@@ -29,9 +38,7 @@ result = {3:   # integral for sum_i x_i^p over reference element
            },
          }
 
-
-
-for order in [3,4]:
+for order in [0,3,4]:
     rules = geo.quadratureRules(order)
     p = monomial(order)
     for t in (geo.line, geo.triangle, geo.quadrilateral,
