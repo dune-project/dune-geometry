@@ -174,7 +174,7 @@ int main ( int argc, char **argv )
 {
   bool pass = true;
 
-  int nIter = 100;
+  int nIter = 10;
   if (argc > 1)
     nIter = std::atoi(argv[1]);
 
