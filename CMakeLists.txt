@@ -17,11 +17,17 @@ list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH})
 #include the dune macros
 include(DuneMacros)
 
+# deactivate global include-directories
+dune_policy(SET DP_DEFAULT_INCLUDE_DIRS NEW)
+
 # start a dune project with information from dune.module
 dune_project()
 
 dune_add_library(dunegeometry EXPORT_NAME Geometry)
 target_link_libraries(dunegeometry PUBLIC Dune::Common)
+
+# set include directories to target
+dune_default_include_directories(dunegeometry PUBLIC)
 
 add_subdirectory("dune")
 add_subdirectory("doc")
