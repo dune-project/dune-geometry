@@ -15,7 +15,7 @@
 #include <dune/common/fmatrix.hh>
 #include <dune/common/ftraits.hh>
 #include <dune/common/fvector.hh>
-#include <dune/geometry/affinegeometry.hh> // for FieldMatrixHelper
+#include <dune/geometry/utility/defaultmatrixhelper.hh>
 
 namespace Dune {
 namespace Impl {

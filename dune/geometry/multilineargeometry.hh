@@ -15,9 +15,9 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/typetraits.hh>
 
-#include <dune/geometry/affinegeometry.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
+#include <dune/geometry/utility/defaultmatrixhelper.hh>
 
 namespace Dune
 {
@@ -320,7 +320,7 @@ namespace Dune
         // Newton's method: DF^n dx^n = F^n, x^{n+1} -= dx^n
         const GlobalCoordinate dglobal = (*this).global( x ) - globalCoord;
         const bool invertible =
-          MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed( x ), dglobal, dx );
+          MatrixHelper::xTRightInvA( jacobianTransposed( x ), dglobal, dx );
         if( ! invertible )
           return LocalCoordinate( std::numeric_limits< ctype > :: max() );
 
@@ -349,7 +349,7 @@ namespace Dune
      */
     Volume integrationElement ( const LocalCoordinate &local ) const
     {
-      return MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jacobianTransposed( local ) );
+      return MatrixHelper::sqrtDetAAT( jacobianTransposed( local ) );
     }
 
     /** \brief obtain the volume of the mapping's image
@@ -491,12 +491,12 @@ namespace Dune
   public:
     void setup ( const JacobianTransposed &jt )
     {
-      detInv_ = MatrixHelper::template rightInvA< mydimension, coorddimension >( jt, static_cast< Base & >( *this ) );
+      detInv_ = MatrixHelper::rightInvA( jt, static_cast< Base & >( *this ) );
     }
 
     void setupDeterminant ( const JacobianTransposed &jt )
     {
-      detInv_ = MatrixHelper::template sqrtDetAAT< mydimension, coorddimension >( jt );
+      detInv_ = MatrixHelper::sqrtDetAAT( jt );
     }
 
     ctype det () const { return ctype( 1 ) / detInv_; }
@@ -609,7 +609,7 @@ namespace Dune
         if( jacobianInverseTransposedComputed_ )
           jacobianInverseTransposed_.mtv( global - corner( 0 ), local );
         else
-          MatrixHelper::template xTRightInvA< mydimension, coorddimension >( jacobianTransposed_, global - corner( 0 ), local );
+          MatrixHelper::xTRightInvA( jacobianTransposed_, global - corner( 0 ), local );
         return local;
       }
       else

@@ -4,5 +4,6 @@
 install(FILES
   algorithms.hh
   convergence.hh
+  defaultmatrixhelper.hh
   typefromvertexcount.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dune/geometry/utility)

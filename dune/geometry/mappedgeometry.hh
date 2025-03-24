@@ -17,12 +17,12 @@
 #include <dune/common/fvector.hh>
 #include <dune/common/math.hh>
 #include <dune/common/transpose.hh>
-#include <dune/geometry/affinegeometry.hh> // for FieldMatrixHelper
 #include <dune/geometry/quadraturerules.hh>
 #include <dune/geometry/referenceelements.hh>
 #include <dune/geometry/type.hh>
 #include <dune/geometry/utility/algorithms.hh>
 #include <dune/geometry/utility/convergence.hh>
+#include <dune/geometry/utility/defaultmatrixhelper.hh>
 
 namespace Dune {
 
