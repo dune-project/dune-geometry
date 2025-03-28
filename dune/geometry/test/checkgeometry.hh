@@ -45,7 +45,7 @@ namespace Dune
         return false;
       for(int i=0; i<rows; ++i)
         for(int j=0; j<rows; ++j)
-          if (std::abs(m[i][j] - (i == j ? 1 : 0)) >= tolerance)
+          if (abs(m[i][j] - (i == j ? 1 : 0)) >= tolerance)
             return false;
       return true;
     }
@@ -101,7 +101,9 @@ namespace Dune
     // Matrix-like type for the return value of the jacobianInverse method
     typedef typename TestGeometry::JacobianInverse JacobianInverse;
 
-    const ctype tolerance = std::sqrt( std::numeric_limits< ctype >::epsilon() );
+    const ctype tolerance = std::numeric_limits< ctype >::is_specialized ?
+      sqrt( std::numeric_limits< ctype >::epsilon() ) :
+      sqrt( ctype(std::numeric_limits< float >::epsilon()) );
 
     ////////////////////////////////////////////////////////////////////////
 
