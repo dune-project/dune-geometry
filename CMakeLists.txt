@@ -20,6 +20,9 @@ include(DuneMacros)
 # deactivate global include-directories
 dune_policy(SET DP_DEFAULT_INCLUDE_DIRS NEW)
 
+# do not make all suggested dependencies required automatically
+dune_policy(SET DP_SUGGESTED_MODULE_DEPENDENCIES_REQUIRED_DOWNSTREAM NEW)
+
 # start a dune project with information from dune.module
 dune_project()
 
