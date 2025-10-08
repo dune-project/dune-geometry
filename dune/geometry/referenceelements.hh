@@ -287,62 +287,6 @@ namespace Dune
     return ReferenceElements<T,dim>::general(gt);
   }
 
-
-#ifndef DOXYGEN
-
-  // helpers for the ReferenceElement<> meta function
-  // the complete Impl block can be removed together with deprecated Transitional::ReferenceElement
-
-  namespace Impl {
-
-    // Evaluates to the correct reference element iff <T...> matches the pattern <number_type,Dim<int>>
-    // otherwise, it's ill-formed. Should be used with detected_or and friends.
-
-    template<typename... T>
-    struct DefaultReferenceElementExtractor;
-
-    template<typename T, typename std::enable_if<IsNumber<T>::value,int>::type dim>
-    struct DefaultReferenceElementExtractor<T,Dim<dim>>
-    {
-      using type = typename Dune::Geo::ReferenceElements<T,dim>::ReferenceElement;
-    };
-
-    template<typename... T>
-    using DefaultReferenceElement = typename DefaultReferenceElementExtractor<T...>::type;
-
-  }
-
-  // looks up the type of a reference element by trying to instantiate the correct overload
-  // of referenceElement() for the given arguments. This will fail if there is no valid
-  // overload and should be used with detected_or or some other utility that places the
-  // instantiation in SFINAE context.
-  //
-  // this is placed directly in namespace Dune to avoid any weird surprises
-
-  template<typename... T>
-  using LookupReferenceElement = decltype(referenceElement(std::declval<T>()...));
-
-#endif // DOXYGEN
-
-  namespace [[deprecated]] Transitional {
-
-    // this abomination checks whether the template signature matches the special case
-    // ReferenceElement<number_type,Dune::Dim<int>> and otherwise defers the type lookup
-    // to a decltype on a call to referenceElement(std::declval<T>())
-
-    /**
-     * \deprecated Transitional::ReferenceElement is deprecated and will be removed after Dune 2.10.
-     *             Use Dune::Geo::ReferenceElement directly.
-     */
-    template<typename... T>
-    using ReferenceElement = detected_or_fallback_t<
-      Impl::DefaultReferenceElement,
-      LookupReferenceElement,
-      T...
-      >;
-
-  }
-
   template<typename... T>
   using ReferenceElement = decltype(referenceElement(std::declval<T>()...));
 
