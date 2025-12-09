@@ -16,20 +16,20 @@ Copyright holders:
 2016--2020    Janick Gerstenberger
 2015--2017    Felix Gruber
 2014--2024    Carsten Gräser
-2011--2024    Christoph Grüninger
+2011--2025    Christoph Grüninger
 2020          René Heß
 2018          Max Kahnt
 2013--2023    Dominic Kempf
 2012--2024    Robert Klöfkorn
 2017          Marcel Koch
-2021--2022    Timo Koch
+2021--2025    Timo Koch
 2012--2014    Tobias Malkmus
 2012--2019    Steffen Müthing
 2011--2018    Martin Nolte
 2011--2016    Elias Pipping
-2018--2024    Simon Praetorius
+2018--2025    Simon Praetorius
 2018--2023    Santiago Ospina De Los Ríos
-2011--2022    Oliver Sander
+2011--2025    Oliver Sander
 2019--2021    Henrik Stolzmann
 2020          Kilian Weishaupt
 
