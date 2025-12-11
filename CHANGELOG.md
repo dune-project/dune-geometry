@@ -3,7 +3,11 @@ SPDX-FileCopyrightText: Copyright © DUNE Project contributors, see file LICENSE
 SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 -->
 
-# Master (will become release 2.11)
+# Master (will become release 2.12)
+
+- ...
+
+# Release 2.11
 
 ## Deprecations and removals
 
