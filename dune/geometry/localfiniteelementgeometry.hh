@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <vector>
 
+#include <dune/common/asnumber.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/math.hh>
@@ -207,7 +208,7 @@ public:
 
     GlobalCoordinate out(0);
     for (std::size_t i = 0; i < shapeValues.size(); ++i)
-      out.axpy(shapeValues[i], vertices_[i]);
+      out.axpy(Impl::asNumber(shapeValues[i]), vertices_[i]);
 
     return out;
   }
