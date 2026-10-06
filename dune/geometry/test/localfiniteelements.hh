@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <vector>
 
+#include <dune/common/asnumber.hh>
 #include <dune/common/fmatrix.hh>
 #include <dune/common/fvector.hh>
 #include <dune/common/math.hh>
@@ -232,7 +233,7 @@ public:
     assert(shapeValues.size() == coefficients_.size());
     Range range(0);
     for (std::size_t i = 0; i < shapeValues.size(); ++i)
-      range.axpy(shapeValues[i], coefficients_[i]);
+      range.axpy(Impl::asNumber(shapeValues[i]), coefficients_[i]);
     return range;
   }
 
