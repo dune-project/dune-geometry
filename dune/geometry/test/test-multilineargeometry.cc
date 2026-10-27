@@ -80,16 +80,27 @@ static bool testCheckInside( const RefElement& refElement,
   return true;
 }
 
+// Regression test: global<false> must overwrite its output without reading it.
+// The former expression (add * y[i]) + rf * origin[i] still read y[i] when
+// add == false. Besides potentially reading an uninitialized value, it kept
+// a NaN output as NaN because 0 * NaN is NaN.
 static bool testGlobalOverwrite ()
 {
-  // Expose the recursion base case to check that assignment ignores the old output.
+  // A zero-dimensional geometry embedded in 1D has one corner with one scalar
+  // coordinate. Expose the protected recursion base case so we can supply the
+  // output ourselves; the public global() creates its output internally.
   struct Geometry : Dune::MultiLinearGeometry<double, 0, 1>
   {
     using Dune::MultiLinearGeometry<double, 0, 1>::global;
   };
   const std::vector<Geometry::GlobalCoordinate> corners = {{42}};
   auto corner = corners.begin();
+  // NaN makes an unwanted dependency on the old output fail deterministically,
+  // without relying on uninitialized memory to reproduce the bug.
   Geometry::GlobalCoordinate result(std::numeric_limits<double>::quiet_NaN());
+  // false selects assignment, not accumulation. With dimension 0 and weight
+  // rf = 1 (the last scalar argument), the result must be the corner value 42.
+  // The topology id, df, and local coordinate are unused in this base case.
   Geometry::global<false>(0, std::integral_constant<int, 0>{}, corner,
                           1, Geometry::LocalCoordinate{}, 1, result);
   if (result[0] != 42)
