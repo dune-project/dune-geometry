@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <dune/common/fvector.hh>
+#include <dune/common/bigfloat.hh>
 #include <dune/common/gmpfield.hh>
 #include <dune/common/quadmath.hh>
 
@@ -76,6 +77,26 @@ static bool testCheckInside( const RefElement& refElement,
   }
   std::string name = testResult ? " checkInside" : " checkOutside";
   std::cout << name << " test: passed" << std::endl;
+  return true;
+}
+
+static bool testGlobalOverwrite ()
+{
+  // Expose the recursion base case to check that assignment ignores the old output.
+  struct Geometry : Dune::MultiLinearGeometry<double, 0, 1>
+  {
+    using Dune::MultiLinearGeometry<double, 0, 1>::global;
+  };
+  const std::vector<Geometry::GlobalCoordinate> corners = {{42}};
+  auto corner = corners.begin();
+  Geometry::GlobalCoordinate result(std::numeric_limits<double>::quiet_NaN());
+  Geometry::global<false>(0, std::integral_constant<int, 0>{}, corner,
+                          1, Geometry::LocalCoordinate{}, 1, result);
+  if (result[0] != 42)
+  {
+    std::cerr << "Error: global assignment depends on the old output." << std::endl;
+    return false;
+  }
   return true;
 }
 
@@ -148,6 +169,7 @@ static bool testMultiLinearGeometry ( typename Dune::ReferenceElements< ctype, m
   typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Traits > Geometry;
 
   const Dune::FieldVector< ctype, mydim > &localCenter = refElement.position( 0, 0 );
+  // GMPField lacks numeric_limits; retain a conservative tolerance for that case.
   const ctype epsilon = ctype( 1e5 ) * (std::numeric_limits<ctype>::is_specialized ?
     std::numeric_limits< ctype >::epsilon() :
     ctype(std::numeric_limits< float >::epsilon()));
@@ -376,6 +398,9 @@ static bool testNonLinearGeometry(const Traits & /* traits */)
     }
   }
 
+  // Also check interior points and Jacobians for the non-affine mapping.
+  pass &= checkGeometry( geometry );
+
   std::cout << (pass ? "passed" : "failed") << std::endl;
   return pass;
 }
@@ -460,6 +485,7 @@ struct Dune::MultiLinearGeometryTraits<Dune::GMPField<p>>
   using ct = Dune::GMPField<p>;
   using MatrixHelper = Impl::FieldMatrixHelper<ct>;
 
+  // GMPField has no numeric_limits specialization, so provide a nonzero tolerance.
   static ct tolerance () { return ct( 16 ) * std::numeric_limits< float >::epsilon(); }
 
   template< int mydim, int cdim >
@@ -504,7 +530,13 @@ int main ( int /* argc */, char ** /* argv */)
   pass &= testMultiLinearGeometry< Dune::GMPField<128> >
     ( Dune::MultiLinearGeometryTraits< Dune::GMPField<128> >{} );
 #endif
+#if HAVE_MPFR
+  std::cout << ">>> Checking ctype = BigFloat<128>" << std::endl;
+  pass &= testMultiLinearGeometry< Dune::BigFloat<128> >
+    ( Dune::MultiLinearGeometryTraits< Dune::BigFloat<128> >{} );
+#endif
 
+  pass &= testGlobalOverwrite();
   pass &= testLocalMethod();
 
   return (pass ? 0 : 1);
