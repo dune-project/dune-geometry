@@ -17,7 +17,6 @@
 
 #include <dune/common/exceptions.hh>
 #include <dune/common/typetraits.hh>
-#include <dune/common/unused.hh>
 
 namespace Dune
 {
@@ -264,11 +263,9 @@ namespace Dune
      */
     template<class TopologyType,
       class = std::void_t<decltype(TopologyType::dimension), decltype(TopologyType::id)>>
-    explicit GeometryType(TopologyType t)
+    explicit GeometryType([[maybe_unused]] TopologyType t)
       : dim_(TopologyType::dimension), none_(false), topologyId_(TopologyType::id)
-    {
-      DUNE_UNUSED_PARAMETER(t);
-    }
+    {}
 
     /*@}*/
 
