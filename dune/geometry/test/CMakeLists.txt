@@ -21,6 +21,9 @@ dune_add_test(SOURCES test-quadrature.cc)
 dune_add_test(SOURCES test-mappedgeometry.cc)
 
 dune_add_test(SOURCES test-multilineargeometry.cc)
+add_dune_mpfr_flags(test-multilineargeometry)
+add_dune_gmp_flags(test-multilineargeometry)
+add_dune_quadmath_flags(test-multilineargeometry)
 
 dune_add_test(SOURCES test-nonetype.cc)
 

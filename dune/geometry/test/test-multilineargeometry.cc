@@ -4,9 +4,13 @@
 // SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
 
 #include <functional>
+#include <limits>
 #include <vector>
 
 #include <dune/common/fvector.hh>
+#include <dune/common/bigfloat.hh>
+#include <dune/common/gmpfield.hh>
+#include <dune/common/quadmath.hh>
 
 #include <dune/geometry/multilineargeometry.hh>
 #include <dune/geometry/referenceelements.hh>
@@ -76,6 +80,37 @@ static bool testCheckInside( const RefElement& refElement,
   return true;
 }
 
+// Regression test: global<false> must overwrite its output without reading it.
+// The former expression (add * y[i]) + rf * origin[i] still read y[i] when
+// add == false. Besides potentially reading an uninitialized value, it kept
+// a NaN output as NaN because 0 * NaN is NaN.
+static bool testGlobalOverwrite ()
+{
+  // A zero-dimensional geometry embedded in 1D has one corner with one scalar
+  // coordinate. Expose the protected recursion base case so we can supply the
+  // output ourselves; the public global() creates its output internally.
+  struct Geometry : Dune::MultiLinearGeometry<double, 0, 1>
+  {
+    using Dune::MultiLinearGeometry<double, 0, 1>::global;
+  };
+  const std::vector<Geometry::GlobalCoordinate> corners = {{42}};
+  auto corner = corners.begin();
+  // NaN makes an unwanted dependency on the old output fail deterministically,
+  // without relying on uninitialized memory to reproduce the bug.
+  Geometry::GlobalCoordinate result(std::numeric_limits<double>::quiet_NaN());
+  // false selects assignment, not accumulation. With dimension 0 and weight
+  // rf = 1 (the last scalar argument), the result must be the corner value 42.
+  // The topology id, df, and local coordinate are unused in this base case.
+  Geometry::global<false>(0, std::integral_constant<int, 0>{}, corner,
+                          1, Geometry::LocalCoordinate{}, 1, result);
+  if (result[0] != 42)
+  {
+    std::cerr << "Error: global assignment depends on the old output." << std::endl;
+    return false;
+  }
+  return true;
+}
+
 static bool testLocalMethod ()
 {
   bool pass = true;
@@ -140,14 +175,18 @@ static bool testMultiLinearGeometry ( typename Dune::ReferenceElements< ctype, m
                                       const Traits & /* traits */ )
 {
   bool pass = true;
+  using std::abs;
 
   typedef Dune::MultiLinearGeometry< ctype, mydim, cdim, Traits > Geometry;
 
   const Dune::FieldVector< ctype, mydim > &localCenter = refElement.position( 0, 0 );
-  const ctype epsilon = ctype( 1e5 )*std::numeric_limits< ctype >::epsilon();
+  // GMPField lacks numeric_limits; retain a conservative tolerance for that case.
+  const ctype epsilon = ctype( 1e5 ) * (std::numeric_limits<ctype>::is_specialized ?
+    std::numeric_limits< ctype >::epsilon() :
+    ctype(std::numeric_limits< float >::epsilon()));
 
   const ctype detA = A.determinant();
-  assert( std::abs( std::abs( B.determinant() ) - ctype( 1 ) ) <= epsilon );
+  assert( abs( abs( B.determinant() ) - ctype( 1 ) ) <= epsilon );
 
   const int numCorners = refElement.size( mydim );
   std::vector< Dune::FieldVector< ctype, cdim > > corners( numCorners );
@@ -163,18 +202,18 @@ static bool testMultiLinearGeometry ( typename Dune::ReferenceElements< ctype, m
   }
 
   const ctype integrationElement = geometry.integrationElement( localCenter );
-  if( std::abs( integrationElement - std::abs( detA ) ) > epsilon )
+  if( abs( integrationElement - abs( detA ) ) > epsilon )
   {
     std::cerr << "Error: Wrong integration element (" << integrationElement
-              << ", should be " << std::abs( detA )
+              << ", should be " << abs( detA )
               << ")." << std::endl;
     pass = false;
   }
   const ctype volume = geometry.volume();
-  if( std::abs( volume - refElement.volume()*std::abs( detA ) ) > epsilon )
+  if( abs( volume - refElement.volume()*abs( detA ) ) > epsilon )
   {
     std::cerr << "Error: Wrong volume (" << volume
-              << ", should be " << (refElement.volume()*std::abs( detA ))
+              << ", should be " << (refElement.volume()*abs( detA ))
               << ")." << std::endl;
     pass = false;
   }
@@ -289,7 +328,8 @@ static bool testNonLinearGeometry(const Traits & /* traits */)
   const unsigned dim = 2;
   typedef Dune::FieldVector<ctype,dim> Vector;
   typedef Dune::MultiLinearGeometry<ctype,dim,dim,Traits> Geometry;
-  const ctype epsilon(ctype(16) * std::numeric_limits<ctype>::epsilon());
+  const ctype epsilon = ctype(16) * (std::numeric_limits<ctype>::is_specialized ?
+    std::numeric_limits<ctype>::epsilon() : ctype(std::numeric_limits<float>::epsilon()));
 
   bool pass(true);
   std::cout << "Checking geometry (non-linear, quadrilateral): ";
@@ -369,6 +409,9 @@ static bool testNonLinearGeometry(const Traits & /* traits */)
     }
   }
 
+  // Also check interior points and Jacobians for the non-affine mapping.
+  pass &= checkGeometry( geometry );
+
   std::cout << (pass ? "passed" : "failed") << std::endl;
   return pass;
 }
@@ -446,6 +489,31 @@ static bool testMultiLinearGeometry ( const Traits& traits )
   return pass;
 }
 
+#if HAVE_GMP
+template <unsigned int p>
+struct Dune::MultiLinearGeometryTraits<Dune::GMPField<p>>
+{
+  using ct = Dune::GMPField<p>;
+  using MatrixHelper = Impl::FieldMatrixHelper<ct>;
+
+  // GMPField has no numeric_limits specialization, so provide a nonzero tolerance.
+  static ct tolerance () { return ct( 16 ) * std::numeric_limits< float >::epsilon(); }
+
+  template< int mydim, int cdim >
+  struct CornerStorage
+  {
+    typedef std::vector< FieldVector< ct, cdim > > Type;
+  };
+
+  template< int dim >
+  struct hasSingleGeometryType
+  {
+    static const bool v = false;
+    static const unsigned int topologyId = ~0u;
+  };
+};
+#endif
+
 int main ( int /* argc */, char ** /* argv */)
 {
   bool pass = true;
@@ -463,11 +531,23 @@ int main ( int /* argc */, char ** /* argv */)
   // pass &= testMultiLinearGeometry< float >
   //   ( Dune::MultiLinearGeometryTraits< float >{} );
 
-  // std::cout << ">>> Checking ctype = float with reference_wrapped corner "
-  //           << "storage" << std::endl;
-  // pass &= testMultiLinearGeometry< float >
-  //   ( ReferenceWrapperGeometryTraits< float >{} );
+#if HAVE_QUADMATH
+  std::cout << ">>> Checking ctype = Float128" << std::endl;
+  pass &= testMultiLinearGeometry< Dune::Float128 >
+    ( Dune::MultiLinearGeometryTraits< Dune::Float128 >{} );
+#endif
+#if HAVE_GMP
+  std::cout << ">>> Checking ctype = GMPField" << std::endl;
+  pass &= testMultiLinearGeometry< Dune::GMPField<128> >
+    ( Dune::MultiLinearGeometryTraits< Dune::GMPField<128> >{} );
+#endif
+#if HAVE_MPFR
+  std::cout << ">>> Checking ctype = BigFloat<128>" << std::endl;
+  pass &= testMultiLinearGeometry< Dune::BigFloat<128> >
+    ( Dune::MultiLinearGeometryTraits< Dune::BigFloat<128> >{} );
+#endif
 
+  pass &= testGlobalOverwrite();
   pass &= testLocalMethod();
 
   return (pass ? 0 : 1);

@@ -40,12 +40,13 @@ namespace Dune
 
     // Helper function to check if FieldMatrix is an identity matrix
     template<class ctype, int rows, int cols>
-    bool isIdentity(const Dune::FieldMatrix<ctype, rows, cols>& m, double tolerance){
+    bool isIdentity(const Dune::FieldMatrix<ctype, rows, cols>& m, const ctype& tolerance){
+      using std::abs;
       if (rows != cols)
         return false;
       for(int i=0; i<rows; ++i)
         for(int j=0; j<rows; ++j)
-          if (std::abs(m[i][j] - (i == j ? 1 : 0)) >= tolerance)
+          if (abs(m[i][j] - (i == j ? 1 : 0)) >= tolerance)
             return false;
       return true;
     }
@@ -101,7 +102,11 @@ namespace Dune
     // Matrix-like type for the return value of the jacobianInverse method
     typedef typename TestGeometry::JacobianInverse JacobianInverse;
 
-    const ctype tolerance = std::sqrt( std::numeric_limits< ctype >::epsilon() );
+    // Legacy types such as GMPField have no numeric_limits specialization.
+    // Use a conservative fallback only for those types; BigFloat uses its own epsilon.
+    const ctype tolerance = std::numeric_limits< ctype >::is_specialized ?
+      sqrt( std::numeric_limits< ctype >::epsilon() ) :
+      sqrt( ctype(std::numeric_limits< float >::epsilon()) );
 
     ////////////////////////////////////////////////////////////////////////
 
